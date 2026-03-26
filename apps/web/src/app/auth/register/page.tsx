@@ -9,9 +9,9 @@ import { useState } from 'react';
 import Link         from 'next/link';
 import { signIn }   from 'next-auth/react';
 import { useRouter } from 'next/navigation';
-import { AuthCard }    from '@/components/auth/AuthCard';
-import { AuthInput }   from '@/components/auth/AuthInput';
-import { AuthMessage } from '@/components/auth/AuthMessage';
+import { AuthCard }    from '../../../components/auth/AuthCard';
+import { AuthInput }   from '../../../components/auth/AuthInput';
+import { AuthMessage } from '../../../components/auth/AuthMessage';
 
 const GoogleIcon = () => (
   <svg width="18" height="18" viewBox="0 0 24 24">

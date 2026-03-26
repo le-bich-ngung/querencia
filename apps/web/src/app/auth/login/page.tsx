@@ -11,9 +11,9 @@ import { useState, useRef } from 'react';
 import { signIn }            from 'next-auth/react';
 import Link                  from 'next/link';
 import { useRouter, useSearchParams } from 'next/navigation';
-import { AuthCard }    from '@/components/auth/AuthCard';
-import { AuthInput }   from '@/components/auth/AuthInput';
-import { AuthMessage } from '@/components/auth/AuthMessage';
+import { AuthCard }    from '../../../components/auth/AuthCard';
+import { AuthInput }   from '../../../components/auth/AuthInput';
+import { AuthMessage } from '../../../components/auth/AuthMessage';
 
 // Google logo SVG
 const GoogleIcon = () => (
