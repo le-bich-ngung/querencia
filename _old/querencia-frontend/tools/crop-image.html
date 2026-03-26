@@ -1,0 +1,294 @@
+<!-- pages/crop-image.html -->
+<meta name="description" content="Crop JPG, PNG, WebP images online for free. Drag to select area, aspect ratio presets, instant download. No upload required."/>
+<meta name="keywords" content="crop image online, image cropper, cut image, aspect ratio crop, free image crop tool"/>
+<meta property="og:title" content="<span data-i18n="t_title">Crop Image Online</span> Free — No Upload | Querencia"/>
+<meta property="og:description" content="Crop JPG, PNG, WebP images online for free. Drag to select area, aspect ratio presets, instant download. No upload required."/>
+<meta property="og:type" content="website"/>
+<meta property="og:url" content="https://querencia.com.vn/#tools"/>
+<meta name="twitter:card" content="summary"/>
+<meta name="twitter:title" content="Crop Image Online Free — No Upload | Querencia"/>
+<link rel="canonical" href="https://querencia.com.vn/#tools"/>
+<script type="application/ld+json">
+{
+  "@context": "https://schema.org",
+  "@type": "WebApplication",
+  "name": "Crop Image Online Free",
+  "url": "https://querencia.com.vn/#tools",
+  "description": "Crop JPG, PNG, WebP images online for free. Drag to select area, aspect ratio presets, instant download. No upload required.",
+  "applicationCategory": "MultimediaApplication",
+  "operatingSystem": "Any",
+  "offers": { "@type": "Offer", "price": "0", "priceCurrency": "USD" },
+  "provider": { "@type": "Organization", "name": "Querencia", "url": "https://querencia.com.vn" }
+}
+</script>
+
+<section class="section active" id="crop-image-page">
+<meta name="description" content="Crop images online free — freehand crop or use aspect ratio presets (1:1, 16:9, 4:3). JPG, PNG, WebP. 100% client-side."/>
+<style>
+.cri-wrap{max-width:800px;margin:0 auto;padding:40px 20px;font-family:var(--font-body)}
+.cri-hero{text-align:center;margin-bottom:32px}
+.cri-badge{display:inline-flex;padding:3px 10px;border-radius:20px;font-size:11px;background:var(--sage-pale);color:#2f5c3e;font-weight:600;margin-bottom:12px}
+.cri-hero h1{font-size:clamp(1.6rem,3vw,2.2rem);font-weight:700;color:var(--black);margin-bottom:8px;line-height:1.2}
+.cri-hero p{font-size:14px;color:var(--gray);max-width:460px;margin:0 auto}
+.cri-upload{border:1.5px dashed var(--border);border-radius:14px;padding:44px 24px;text-align:center;cursor:pointer;transition:all 0.2s;background:var(--white);margin-bottom:24px}
+.cri-upload:hover,.cri-upload.over{border-color:#4a7c59;background:var(--sage-pale)18}
+.cri-upload-icon{width:52px;height:52px;border-radius:12px;background:#f5f5f5;border:0.5px solid var(--border);display:flex;align-items:center;justify-content:center;margin:0 auto 12px}
+.cri-upload h2{font-size:15px;font-weight:600;color:var(--black);margin-bottom:5px}
+.cri-upload p{font-size:12px;color:var(--gray-light)}
+/* EDITOR */
+.cri-editor{display:none}
+.cri-editor.active{display:block}
+.cri-toolbar{display:flex;align-items:center;gap:8px;padding:10px 0;flex-wrap:wrap;margin-bottom:12px}
+.cri-toolbar-label{font-size:11px;font-weight:600;color:var(--gray-light);text-transform:uppercase;letter-spacing:0.06em;margin-right:4px}
+.cri-ratio-btn{padding:5px 12px;border:0.5px solid var(--border);border-radius:20px;background:none;font-size:12px;color:var(--gray);cursor:pointer;transition:all 0.15s;font-family:var(--font-body)}
+.cri-ratio-btn:hover{border-color:var(--border);color:var(--black)}
+.cri-ratio-btn.active{background:var(--sage-pale);border-color:#4a7c59;color:#2f5c3e;font-weight:600}
+/* CANVAS WRAPPER */
+.cri-canvas-wrap{position:relative;border:0.5px solid var(--border);border-radius:10px;overflow:hidden;background:#F1EFE8;display:flex;align-items:center;justify-content:center;min-height:300px;cursor:crosshair;margin-bottom:14px;user-select:none}
+.cri-canvas-wrap img{display:block;max-width:100%;max-height:480px;pointer-events:none}
+.cri-selection{position:absolute;border:2px solid #4a7c59;background:rgba(74,124,89,0.08);box-shadow:0 0 0 9999px rgba(0,0,0,0.45);cursor:move;box-sizing:border-box}
+.cri-handle{position:absolute;width:10px;height:10px;background:#4a7c59;border:2px solid #fff;border-radius:2px}
+.cri-handle.tl{top:-5px;left:-5px;cursor:nw-resize}
+.cri-handle.tr{top:-5px;right:-5px;cursor:ne-resize}
+.cri-handle.bl{bottom:-5px;left:-5px;cursor:sw-resize}
+.cri-handle.br{bottom:-5px;right:-5px;cursor:se-resize}
+.cri-info{position:absolute;top:8px;left:8px;background:rgba(0,0,0,0.55);color:#fff;font-size:11px;padding:3px 8px;border-radius:4px;pointer-events:none;backdrop-filter:blur(4px)}
+.cri-actions{display:flex;gap:10px;flex-wrap:wrap;margin-bottom:10px}
+.cri-btn{padding:10px 24px;border-radius:8px;font-size:13px;font-weight:600;cursor:pointer;transition:all 0.15s;font-family:var(--font-body);border:none}
+.cri-btn.primary{background:#4a7c59;color:#fff}
+.cri-btn.primary:hover{background:#2f5c3e}
+.cri-btn.secondary{background:none;border:0.5px solid var(--border);color:var(--gray)}
+.cri-btn.secondary:hover{background:#f5f5f5}
+.cri-privacy{display:flex;align-items:center;gap:6px;font-size:11px;color:var(--gray-light);margin-top:8px}
+</style>
+<input type="file" id="cri-file" accept="image/*" style="display:none" onchange="criLoad(this)"/>
+
+<div class="cri-wrap">
+  <div class="cri-hero">
+    <div class="cri-badge">100% Free · Client-side</div>
+    <h1>Crop Image Online</h1>
+    <p data-i18n="t_desc">Drag to select crop area, or pick an aspect ratio preset. Download instantly — no signup required.</p>
+  </div>
+
+  <div class="cri-upload" id="cri-drop"
+    onclick="document.getElementById('cri-file').click()"
+    ondragover="event.preventDefault();this.classList.add('over')"
+    ondragleave="this.classList.remove('over')"
+    ondrop="criDrop(event)">
+    <div class="cri-upload-icon">
+      <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="#4a7c59" stroke-width="1.5"><rect x="3" y="3" width="18" height="18" rx="2"/><path d="M3 9h18M9 21V9"/></svg>
+    </div>
+    <h2 data-i18n="t_drop">Click or drop image here</h2>
+    <p data-i18n="t_drop_sub">JPG · PNG · WebP · up to 50MB</p>
+  </div>
+
+  <div class="cri-editor" id="cri-editor">
+    <div class="cri-toolbar">
+      <span class="cri-toolbar-label" data-i18n="t_ratio">Ratio:</span>
+      <button class="cri-ratio-btn active" onclick="criSetRatio(0,this)" data-i18n="t_free">Free</button>
+      <button class="cri-ratio-btn" onclick="criSetRatio(1,this)">1:1</button>
+      <button class="cri-ratio-btn" onclick="criSetRatio(4/3,this)">4:3</button>
+      <button class="cri-ratio-btn" onclick="criSetRatio(16/9,this)">16:9</button>
+      <button class="cri-ratio-btn" onclick="criSetRatio(3/2,this)">3:2</button>
+      <button class="cri-ratio-btn" onclick="criSetRatio(9/16,this)">9:16</button>
+      <button class="cri-ratio-btn" onclick="criSetRatio(35/45,this)">3.5:4.5 (Passport)</button>
+    </div>
+
+    <div class="cri-canvas-wrap" id="cri-canvas-wrap">
+      <img id="cri-img" src="" alt=""/>
+      <div class="cri-selection" id="cri-sel" style="display:none">
+        <div class="cri-handle tl"></div>
+        <div class="cri-handle tr"></div>
+        <div class="cri-handle bl"></div>
+        <div class="cri-handle br"></div>
+        <div class="cri-info" id="cri-info">0 × 0</div>
+      </div>
+    </div>
+
+    <div class="cri-actions">
+      <button class="cri-btn primary" onclick="criApply()">✂ Crop & Download</button>
+      <button class="cri-btn secondary" onclick="criSelectAll()" data-i18n="t_select_all">Select all</button>
+      <button class="cri-btn secondary" onclick="criReset()" data-i18n="t_try_other">Try another image</button>
+    </div>
+    <div class="cri-privacy">🔒 Your images never leave your device</div>
+  </div>
+</div>
+
+<script>
+(function(){
+const S = { img: null, ratio: 0, filename: '', dragging: false, resizing: null, sel: {x:0,y:0,w:0,h:0}, dragStart: null };
+
+window.criLoad = function(input){
+  const file = input.files[0]; if(!file) return;
+  S.filename = file.name.replace(/\.[^.]+$/,'');
+  const reader = new FileReader();
+  reader.onload = function(e){
+    const img = document.getElementById('cri-img');
+    img.onload = function(){
+      S.img = img;
+      document.getElementById('cri-drop').style.display = 'none';
+      document.getElementById('cri-editor').classList.add('active');
+      criInitDrag();
+      // default: select all
+      setTimeout(criSelectAll, 100);
+    };
+    img.src = e.target.result;
+  };
+  reader.readAsDataURL(file);
+};
+
+window.criDrop = function(e){
+  e.preventDefault();
+  document.getElementById('cri-drop').classList.remove('over');
+  const file = e.dataTransfer.files[0];
+  if(file && file.type.startsWith('image/')){
+    const dt = new DataTransfer(); dt.items.add(file);
+    document.getElementById('cri-file').files = dt.files;
+    criLoad(document.getElementById('cri-file'));
+  }
+};
+
+window.criSetRatio = function(r, btn){
+  S.ratio = r;
+  document.querySelectorAll('.cri-ratio-btn').forEach(b=>b.classList.remove('active'));
+  btn.classList.add('active');
+  if(r && S.sel.w){
+    S.sel.h = S.sel.w / r;
+    criUpdateSel();
+  }
+};
+
+function criInitDrag(){
+  const wrap = document.getElementById('cri-canvas-wrap');
+  const sel = document.getElementById('cri-sel');
+
+  wrap.onmousedown = function(e){
+    if(e.target.classList.contains('cri-handle')){
+      S.resizing = e.target.className.split(' ')[1]; // tl/tr/bl/br
+      S.dragStart = {x:e.clientX, y:e.clientY, sel:{...S.sel}};
+    } else if(e.target === sel || e.target.className==='cri-info'){
+      S.dragging = true;
+      S.dragStart = {x:e.clientX - S.sel.x, y:e.clientY - S.sel.y};
+    } else {
+      // new selection
+      const rect = wrap.getBoundingClientRect();
+      const img = document.getElementById('cri-img');
+      const ir = img.getBoundingClientRect();
+      const startX = e.clientX - ir.left, startY = e.clientY - ir.top;
+      S.sel = {x:startX, y:startY, w:0, h:0};
+      S.newSel = {startX, startY};
+      document.onmousemove = function(e2){
+        const ex = e2.clientX - ir.left, ey = e2.clientY - ir.top;
+        S.sel.x = Math.min(S.newSel.startX, ex);
+        S.sel.y = Math.min(S.newSel.startY, ey);
+        S.sel.w = Math.abs(ex - S.newSel.startX);
+        S.sel.h = S.ratio ? S.sel.w / S.ratio : Math.abs(ey - S.newSel.startY);
+        criUpdateSel();
+      };
+      document.onmouseup = function(){
+        document.onmousemove = null; document.onmouseup = null;
+        S.newSel = null;
+      };
+      return;
+    }
+    document.onmousemove = function(e2){
+      if(S.dragging){
+        const img = document.getElementById('cri-img');
+        const ir = img.getBoundingClientRect();
+        S.sel.x = Math.max(0, Math.min(ir.width - S.sel.w, e2.clientX - S.dragStart.x));
+        S.sel.y = Math.max(0, Math.min(ir.height - S.sel.h, e2.clientY - S.dragStart.y));
+      } else if(S.resizing){
+        const dx = e2.clientX - S.dragStart.x, dy = e2.clientY - S.dragStart.y;
+        const os = S.dragStart.sel;
+        if(S.resizing==='br'){ S.sel.w=Math.max(10,os.w+dx); S.sel.h=S.ratio?S.sel.w/S.ratio:Math.max(10,os.h+dy); }
+        else if(S.resizing==='bl'){ const nw=Math.max(10,os.w-dx); S.sel.x=os.x+os.w-nw; S.sel.w=nw; S.sel.h=S.ratio?nw/S.ratio:Math.max(10,os.h+dy); }
+        else if(S.resizing==='tr'){ const nh=Math.max(10,os.h-dy); S.sel.y=os.y+os.h-nh; S.sel.w=S.ratio?nh*S.ratio:Math.max(10,os.w+dx); S.sel.h=nh; }
+        else if(S.resizing==='tl'){ const nw=Math.max(10,os.w-dx); const nh=S.ratio?nw/S.ratio:Math.max(10,os.h-dy); S.sel.x=os.x+os.w-nw; S.sel.y=os.y+os.h-nh; S.sel.w=nw; S.sel.h=nh; }
+      }
+      criUpdateSel();
+    };
+    document.onmouseup = function(){ S.dragging=false; S.resizing=null; document.onmousemove=null; document.onmouseup=null; };
+  };
+}
+
+function criUpdateSel(){
+  const sel = document.getElementById('cri-sel');
+  sel.style.cssText = `display:block;left:${S.sel.x}px;top:${S.sel.y}px;width:${S.sel.w}px;height:${S.sel.h}px;position:absolute;border:2px solid #4a7c59;background:rgba(74,124,89,0.08);box-shadow:0 0 0 9999px rgba(0,0,0,0.45);cursor:move;box-sizing:border-box`;
+  // compute real px
+  const img = document.getElementById('cri-img');
+  const scaleX = img.naturalWidth / img.clientWidth;
+  const scaleY = img.naturalHeight / img.clientHeight;
+  const rw = Math.round(S.sel.w * scaleX), rh = Math.round(S.sel.h * scaleY);
+  document.getElementById('cri-info').textContent = `${rw} × ${rh} px`;
+  // re-attach handles
+  sel.querySelectorAll('.cri-handle').forEach(h => {
+    const pos = h.classList[1];
+    h.style.cssText = `position:absolute;width:10px;height:10px;background:#4a7c59;border:2px solid #fff;border-radius:2px;${pos==='tl'?'top:-5px;left:-5px':pos==='tr'?'top:-5px;right:-5px':pos==='bl'?'bottom:-5px;left:-5px':'bottom:-5px;right:-5px'};cursor:${pos}-resize`;
+  });
+}
+
+window.criSelectAll = function(){
+  const img = document.getElementById('cri-img');
+  S.sel = {x:0, y:0, w:img.clientWidth, h:img.clientHeight};
+  criUpdateSel();
+};
+
+window.criApply = function(){
+  if(!S.img || !S.sel.w || !S.sel.h) return;
+  const img = document.getElementById('cri-img');
+  const scaleX = img.naturalWidth / img.clientWidth;
+  const scaleY = img.naturalHeight / img.clientHeight;
+  const cx = Math.round(S.sel.x * scaleX), cy = Math.round(S.sel.y * scaleY);
+  const cw = Math.round(S.sel.w * scaleX), ch = Math.round(S.sel.h * scaleY);
+  const c = document.createElement('canvas');
+  c.width = cw; c.height = ch;
+  c.getContext('2d').drawImage(img, cx, cy, cw, ch, 0, 0, cw, ch);
+  const a = document.createElement('a');
+  a.href = c.toDataURL('image/jpeg', 0.92);
+  a.download = S.filename + `-cropped-${cw}x${ch}.jpg`;
+  a.click();
+};
+
+window.criReset = function(){
+  document.getElementById('cri-drop').style.display = '';
+  document.getElementById('cri-editor').classList.remove('active');
+  document.getElementById('cri-sel').style.display = 'none';
+  document.getElementById('cri-file').value = '';
+};
+})();
+</script>
+
+<script>
+(function(){
+  const _T = {en:{t_title:'Crop Image Online',t_desc:'Drag to select crop area, or pick an aspect ratio preset. Download instantly — no signup required.',t_drop:'Click or drop image here',t_drop_sub:'JPG · PNG · WebP · up to 50MB',t_ratio:'Ratio:',t_free:'Free',t_select_all:'Select all',t_apply:'Apply Crop',t_download:'Download',t_try_other:'Try another image',t_privacy:'🔒 Images never leave your browser'},vi:{t_title:'Cắt Ảnh Online',t_desc:'Kéo để chọn vùng cắt, hoặc chọn tỷ lệ preset. Tải về ngay — không cần đăng ký.',t_drop:'Nhấn hoặc kéo thả ảnh vào đây',t_drop_sub:'JPG · PNG · WebP · tối đa 50MB',t_ratio:'Tỷ lệ:',t_free:'Tự do',t_select_all:'Chọn tất cả',t_apply:'Cắt ảnh',t_download:'Tải xuống',t_try_other:'Chọn ảnh khác',t_privacy:'🔒 Ảnh không bao giờ rời trình duyệt'},ja:{t_title:'画像トリミングオンライン',t_desc:'ドラッグで範囲選択、またはアスペクト比プリセットを選択。サインアップ不要で即ダウンロード。',t_drop:'クリックまたはドロップ',t_drop_sub:'JPG · PNG · WebP · 最大50MB',t_ratio:'比率：',t_free:'自由',t_select_all:'全選択',t_apply:'トリミング適用',t_download:'ダウンロード',t_try_other:'別の画像を試す',t_privacy:'🔒 画像はブラウザ外に出ません'},es:{t_title:'Recortar Imagen Online',t_desc:'Arrastra para seleccionar el área de recorte, o elige un preset de proporción. Descarga al instante — sin registro.',t_drop:'Haz clic o arrastra una imagen',t_drop_sub:'JPG · PNG · WebP · hasta 50MB',t_ratio:'Ratio:',t_free:'Libre',t_select_all:'Seleccionar todo',t_apply:'Aplicar recorte',t_download:'Descargar',t_try_other:'Probar otra imagen',t_privacy:'🔒 Las imágenes nunca salen de tu navegador'}};
+  function _apply(){
+    const lang = localStorage.getItem('querencia_lang')||'en';
+    const t = _T[lang]||_T.en;
+    // Merge into window.T for app.js setLang() to pick up
+    if(window.T){
+      if(!window.T[lang]) window.T[lang]={};
+      Object.assign(window.T[lang], t);
+    }
+    document.querySelectorAll('[data-i18n]').forEach(el=>{
+      const k=el.getAttribute('data-i18n');
+      if(t[k]!==undefined) el.innerHTML=t[k];
+    });
+    document.querySelectorAll('[data-i18n-ph]').forEach(el=>{
+      const k=el.getAttribute('data-i18n-ph');
+      if(t[k]!==undefined) el.placeholder=t[k];
+    });
+  }
+  // Run immediately and also hook into app.js setLang
+  _apply();
+  const _orig = window.setLang;
+  window.setLang = function(l){ if(_orig) _orig(l); _apply(); };
+  // Also re-apply when applyTranslations is called
+  const _origAT = window.applyTranslations;
+  window.applyTranslations = function(){ if(_origAT) _origAT(); _apply(); };
+  window._crop_image_t = function(k){
+    const lang=localStorage.getItem('querencia_lang')||'en';
+    return (_T[lang]||_T.en)[k]||_T.en[k]||k;
+  };
+})();
+</script>
+</section>

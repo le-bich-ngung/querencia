@@ -1,0 +1,1064 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8"/>
+<meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+<title>CV Builder — Querencia</title>
+<link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@300;400;500;600;700&family=DM+Serif+Display:ital@0;1&family=Space+Mono:wght@400;700&display=swap" rel="stylesheet"/>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/html2pdf.js/0.10.1/html2pdf.bundle.min.js"></script>
+<style>
+/* ── RESET ─────────────────────────────────────────────── */
+*, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+/* ── VARIABLES ──────────────────────────────────────────── */
+:root {
+  --sage: #4a7c59; --sage-light: #6fa882; --sage-pale: #ddeee3; --sage-dark: #2f5c3e;
+  --black: #111; --gray: #555; --gray-light: #999; --border: #e0e0e0; --white: #fff;
+  --bg: #f7f7f5;
+  --font: 'Plus Jakarta Sans', sans-serif;
+}
+
+body { font-family: var(--font); background: var(--bg); color: var(--black); min-height: 100vh; }
+
+/* ── LAYOUT ─────────────────────────────────────────────── */
+.app { display: grid; grid-template-columns: 420px 1fr; min-height: 100vh; }
+
+/* ── LEFT PANEL (EDITOR) ─────────────────────────────────── */
+.editor {
+  background: #fff;
+  border-right: 1.5px solid var(--border);
+  display: flex;
+  flex-direction: column;
+  height: 100vh;
+  overflow: hidden;
+  position: sticky;
+  top: 0;
+}
+
+.editor-header {
+  padding: 20px 24px 16px;
+  border-bottom: 1.5px solid var(--border);
+  flex-shrink: 0;
+}
+
+.editor-header h1 {
+  font-size: 1.1rem;
+  font-weight: 700;
+  color: var(--black);
+  display: flex;
+  align-items: center;
+  gap: 8px;
+}
+.editor-header h1 span { color: var(--sage); }
+
+/* Template Selector */
+.template-row {
+  display: flex;
+  gap: 8px;
+  margin-top: 14px;
+}
+
+.tpl-btn {
+  flex: 1;
+  padding: 8px 6px;
+  border: 1.5px solid var(--border);
+  border-radius: 10px;
+  background: none;
+  cursor: pointer;
+  font-family: var(--font);
+  font-size: 0.72rem;
+  font-weight: 600;
+  color: var(--gray);
+  transition: all 0.18s;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 4px;
+}
+.tpl-btn .tpl-dot {
+  width: 28px; height: 20px;
+  border-radius: 4px;
+}
+.tpl-btn.active { border-color: var(--sage); color: var(--sage); background: var(--sage-pale); }
+.tpl-btn:hover:not(.active) { border-color: #ccc; background: #fafafa; }
+
+/* Tabs */
+.tabs {
+  display: flex;
+  border-bottom: 1.5px solid var(--border);
+  flex-shrink: 0;
+  overflow-x: auto;
+}
+.tab {
+  padding: 12px 16px;
+  font-size: 0.76rem;
+  font-weight: 600;
+  color: var(--gray-light);
+  cursor: pointer;
+  border-bottom: 2px solid transparent;
+  white-space: nowrap;
+  transition: all 0.15s;
+  background: none;
+  border-top: none;
+  border-left: none;
+  border-right: none;
+  font-family: var(--font);
+}
+.tab.active { color: var(--sage); border-bottom-color: var(--sage); }
+.tab:hover:not(.active) { color: var(--gray); }
+
+/* Form area */
+.editor-body {
+  flex: 1;
+  overflow-y: auto;
+  padding: 20px 24px;
+}
+
+.section-block { display: none; }
+.section-block.active { display: block; }
+
+.field-group { margin-bottom: 16px; }
+.field-group label {
+  display: block;
+  font-size: 0.72rem;
+  font-weight: 700;
+  letter-spacing: 0.06em;
+  text-transform: uppercase;
+  color: var(--gray-light);
+  margin-bottom: 5px;
+}
+.field-group input,
+.field-group textarea,
+.field-group select {
+  width: 100%;
+  padding: 9px 12px;
+  border: 1.5px solid var(--border);
+  border-radius: 8px;
+  font-family: var(--font);
+  font-size: 0.85rem;
+  color: var(--black);
+  background: #fff;
+  outline: none;
+  transition: border-color 0.2s;
+  resize: vertical;
+}
+.field-group input:focus,
+.field-group textarea:focus { border-color: var(--sage); }
+.field-group textarea { min-height: 72px; }
+.field-row { display: grid; grid-template-columns: 1fr 1fr; gap: 10px; }
+
+/* Entry cards */
+.entry-card {
+  border: 1.5px solid var(--border);
+  border-radius: 10px;
+  padding: 14px;
+  margin-bottom: 12px;
+  background: #fafaf9;
+  position: relative;
+}
+.entry-card .entry-remove {
+  position: absolute;
+  top: 10px; right: 10px;
+  background: none;
+  border: none;
+  cursor: pointer;
+  color: var(--gray-light);
+  font-size: 1rem;
+  line-height: 1;
+  padding: 2px 4px;
+  border-radius: 4px;
+  transition: all 0.15s;
+}
+.entry-card .entry-remove:hover { color: #e74c3c; background: #ffeaea; }
+
+.add-btn {
+  width: 100%;
+  padding: 9px;
+  border: 1.5px dashed var(--border);
+  border-radius: 8px;
+  background: none;
+  cursor: pointer;
+  font-family: var(--font);
+  font-size: 0.82rem;
+  color: var(--gray);
+  transition: all 0.15s;
+  margin-top: 4px;
+}
+.add-btn:hover { border-color: var(--sage); color: var(--sage); background: var(--sage-pale); }
+
+/* Skills */
+.skill-tags { display: flex; flex-wrap: wrap; gap: 6px; margin-top: 8px; }
+.skill-tag {
+  display: flex;
+  align-items: center;
+  gap: 4px;
+  padding: 4px 10px;
+  background: var(--sage-pale);
+  border-radius: 20px;
+  font-size: 0.78rem;
+  font-weight: 600;
+  color: var(--sage-dark);
+}
+.skill-tag button {
+  background: none;
+  border: none;
+  cursor: pointer;
+  color: var(--sage);
+  font-size: 0.9rem;
+  line-height: 1;
+  padding: 0;
+}
+.skill-input-row { display: flex; gap: 8px; }
+.skill-input-row input { flex: 1; }
+.skill-input-row button {
+  padding: 9px 14px;
+  background: var(--sage);
+  color: #fff;
+  border: none;
+  border-radius: 8px;
+  cursor: pointer;
+  font-family: var(--font);
+  font-size: 0.82rem;
+  font-weight: 600;
+  white-space: nowrap;
+}
+
+/* Download button */
+.editor-footer {
+  padding: 16px 24px;
+  border-top: 1.5px solid var(--border);
+  flex-shrink: 0;
+}
+.download-btn {
+  width: 100%;
+  padding: 12px;
+  background: var(--sage);
+  color: #fff;
+  border: none;
+  border-radius: 10px;
+  font-family: var(--font);
+  font-size: 0.9rem;
+  font-weight: 700;
+  cursor: pointer;
+  transition: background 0.18s;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 8px;
+}
+.download-btn:hover { background: var(--sage-dark); }
+.download-btn:disabled { background: #ccc; cursor: not-allowed; }
+
+/* ── RIGHT PANEL (PREVIEW) ───────────────────────────────── */
+.preview-panel {
+  background: #e8e8e5;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  padding: 32px 24px;
+  min-height: 100vh;
+}
+
+.preview-label {
+  font-size: 0.68rem;
+  font-weight: 700;
+  letter-spacing: 0.12em;
+  text-transform: uppercase;
+  color: #999;
+  margin-bottom: 20px;
+  align-self: flex-start;
+}
+
+/* CV Paper */
+.cv-paper {
+  width: 210mm;
+  min-height: 297mm;
+  background: #fff;
+  box-shadow: 0 8px 48px rgba(0,0,0,0.18);
+  border-radius: 2px;
+  overflow: hidden;
+  position: relative;
+}
+
+/* ══════════════════════════════════════════════
+   TEMPLATE 1 — MINIMALIST
+   Clean, white, editorial typography
+══════════════════════════════════════════════ */
+.tpl-minimalist .cv-header {
+  padding: 48px 56px 32px;
+  border-bottom: 2px solid #111;
+}
+.tpl-minimalist .cv-name {
+  font-family: 'DM Serif Display', serif;
+  font-size: 42px;
+  font-weight: 400;
+  line-height: 1.1;
+  color: #111;
+  letter-spacing: -0.5px;
+}
+.tpl-minimalist .cv-title {
+  font-size: 13px;
+  font-weight: 500;
+  letter-spacing: 0.18em;
+  text-transform: uppercase;
+  color: #777;
+  margin-top: 6px;
+}
+.tpl-minimalist .cv-contact {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 16px;
+  margin-top: 16px;
+  font-size: 11.5px;
+  color: #555;
+}
+.tpl-minimalist .cv-body {
+  padding: 32px 56px 48px;
+  display: grid;
+  grid-template-columns: 1fr 200px;
+  gap: 40px;
+}
+.tpl-minimalist .cv-main {}
+.tpl-minimalist .cv-sidebar {}
+.tpl-minimalist .cv-section { margin-bottom: 28px; }
+.tpl-minimalist .cv-section-title {
+  font-size: 9px;
+  font-weight: 700;
+  letter-spacing: 0.22em;
+  text-transform: uppercase;
+  color: #999;
+  margin-bottom: 14px;
+  padding-bottom: 6px;
+  border-bottom: 1px solid #eee;
+}
+.tpl-minimalist .cv-entry { margin-bottom: 16px; }
+.tpl-minimalist .cv-entry-header { display: flex; justify-content: space-between; align-items: baseline; }
+.tpl-minimalist .cv-entry-title { font-size: 13px; font-weight: 700; color: #111; }
+.tpl-minimalist .cv-entry-date { font-size: 10.5px; color: #999; font-family: 'Space Mono', monospace; }
+.tpl-minimalist .cv-entry-sub { font-size: 11.5px; color: #777; margin-top: 2px; font-style: italic; }
+.tpl-minimalist .cv-entry-desc { font-size: 11.5px; color: #444; margin-top: 6px; line-height: 1.65; }
+.tpl-minimalist .cv-skill-item { font-size: 11.5px; color: #444; padding: 3px 0; }
+.tpl-minimalist .cv-summary { font-size: 12px; color: #444; line-height: 1.7; }
+
+/* ══════════════════════════════════════════════
+   TEMPLATE 2 — CORPORATE
+   Two-column, sage sidebar, professional
+══════════════════════════════════════════════ */
+.tpl-corporate .cv-header {
+  background: #1e3a2f;
+  padding: 40px 48px;
+  display: grid;
+  grid-template-columns: 1fr auto;
+  gap: 24px;
+  align-items: center;
+}
+.tpl-corporate .cv-name {
+  font-family: 'Plus Jakarta Sans', sans-serif;
+  font-size: 32px;
+  font-weight: 700;
+  color: #fff;
+  letter-spacing: -0.3px;
+}
+.tpl-corporate .cv-title {
+  font-size: 12px;
+  font-weight: 500;
+  color: #6fa882;
+  margin-top: 4px;
+  letter-spacing: 0.08em;
+}
+.tpl-corporate .cv-contact {
+  display: flex;
+  flex-direction: column;
+  gap: 5px;
+  font-size: 11px;
+  color: rgba(255,255,255,0.7);
+  text-align: right;
+}
+.tpl-corporate .cv-body {
+  display: grid;
+  grid-template-columns: 200px 1fr;
+  min-height: calc(297mm - 130px);
+}
+.tpl-corporate .cv-sidebar {
+  background: #f4f8f5;
+  padding: 28px 20px;
+  border-right: 1px solid #ddeee3;
+}
+.tpl-corporate .cv-main {
+  padding: 28px 36px;
+}
+.tpl-corporate .cv-section { margin-bottom: 24px; }
+.tpl-corporate .cv-section-title {
+  font-size: 9px;
+  font-weight: 700;
+  letter-spacing: 0.2em;
+  text-transform: uppercase;
+  color: #4a7c59;
+  margin-bottom: 12px;
+  display: flex;
+  align-items: center;
+  gap: 6px;
+}
+.tpl-corporate .cv-section-title::after {
+  content: '';
+  flex: 1;
+  height: 1px;
+  background: #ddeee3;
+}
+.tpl-corporate .cv-entry { margin-bottom: 16px; }
+.tpl-corporate .cv-entry-header { display: flex; justify-content: space-between; align-items: baseline; }
+.tpl-corporate .cv-entry-title { font-size: 12.5px; font-weight: 700; color: #111; }
+.tpl-corporate .cv-entry-date {
+  font-size: 10px;
+  color: #fff;
+  background: #4a7c59;
+  padding: 2px 7px;
+  border-radius: 3px;
+  font-weight: 600;
+}
+.tpl-corporate .cv-entry-sub { font-size: 11px; color: #4a7c59; margin-top: 2px; font-weight: 600; }
+.tpl-corporate .cv-entry-desc { font-size: 11px; color: #555; margin-top: 5px; line-height: 1.6; }
+.tpl-corporate .cv-skill-item {
+  font-size: 10.5px;
+  padding: 4px 10px;
+  background: #fff;
+  border: 1px solid #ddeee3;
+  border-radius: 4px;
+  color: #2f5c3e;
+  font-weight: 600;
+  margin-bottom: 5px;
+  display: block;
+}
+.tpl-corporate .cv-summary { font-size: 11.5px; color: #444; line-height: 1.7; }
+
+/* ══════════════════════════════════════════════
+   TEMPLATE 3 — CREATIVE
+   Bold header, accent color, modern layout
+══════════════════════════════════════════════ */
+.tpl-creative .cv-header {
+  padding: 0;
+  position: relative;
+  overflow: hidden;
+}
+.tpl-creative .cv-header-bg {
+  background: linear-gradient(135deg, #111 0%, #1e3a2f 100%);
+  padding: 44px 52px 36px;
+  position: relative;
+}
+.tpl-creative .cv-header-bg::before {
+  content: '';
+  position: absolute;
+  top: -60px; right: -60px;
+  width: 220px; height: 220px;
+  border-radius: 50%;
+  background: rgba(74,124,89,0.25);
+}
+.tpl-creative .cv-header-bg::after {
+  content: '';
+  position: absolute;
+  bottom: -40px; right: 80px;
+  width: 120px; height: 120px;
+  border-radius: 50%;
+  background: rgba(74,124,89,0.15);
+}
+.tpl-creative .cv-name {
+  font-family: 'DM Serif Display', serif;
+  font-size: 46px;
+  font-weight: 400;
+  color: #fff;
+  line-height: 1;
+  letter-spacing: -0.5px;
+  position: relative;
+  z-index: 1;
+}
+.tpl-creative .cv-title {
+  font-size: 11px;
+  font-weight: 700;
+  letter-spacing: 0.22em;
+  text-transform: uppercase;
+  color: #6fa882;
+  margin-top: 8px;
+  position: relative;
+  z-index: 1;
+}
+.tpl-creative .cv-contact {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 14px;
+  margin-top: 20px;
+  font-size: 10.5px;
+  color: rgba(255,255,255,0.65);
+  position: relative;
+  z-index: 1;
+}
+.tpl-creative .cv-accent-bar {
+  height: 5px;
+  background: linear-gradient(90deg, #4a7c59, #6fa882, #4a7c59);
+}
+.tpl-creative .cv-body {
+  padding: 32px 52px 48px;
+  display: grid;
+  grid-template-columns: 1fr 180px;
+  gap: 36px;
+}
+.tpl-creative .cv-section { margin-bottom: 26px; }
+.tpl-creative .cv-section-title {
+  font-size: 9px;
+  font-weight: 700;
+  letter-spacing: 0.25em;
+  text-transform: uppercase;
+  color: #4a7c59;
+  margin-bottom: 12px;
+  display: flex;
+  align-items: center;
+  gap: 8px;
+}
+.tpl-creative .cv-section-title::before {
+  content: '';
+  width: 16px;
+  height: 2px;
+  background: #4a7c59;
+  border-radius: 1px;
+  flex-shrink: 0;
+}
+.tpl-creative .cv-entry { margin-bottom: 16px; padding-left: 12px; border-left: 2px solid #ddeee3; }
+.tpl-creative .cv-entry-header { display: flex; justify-content: space-between; align-items: baseline; }
+.tpl-creative .cv-entry-title { font-size: 12.5px; font-weight: 700; color: #111; }
+.tpl-creative .cv-entry-date { font-size: 10px; color: #999; font-family: 'Space Mono', monospace; }
+.tpl-creative .cv-entry-sub { font-size: 11px; color: #4a7c59; margin-top: 2px; font-weight: 600; }
+.tpl-creative .cv-entry-desc { font-size: 11px; color: #555; margin-top: 5px; line-height: 1.65; }
+.tpl-creative .cv-skill-item {
+  display: inline-block;
+  font-size: 10px;
+  padding: 3px 9px;
+  background: #f4f8f5;
+  border-radius: 20px;
+  color: #2f5c3e;
+  font-weight: 700;
+  margin: 2px;
+}
+.tpl-creative .cv-summary { font-size: 11.5px; color: #444; line-height: 1.7; }
+
+/* Sidebar shared */
+.tpl-minimalist .cv-sidebar .cv-section,
+.tpl-creative .cv-sidebar .cv-section { margin-bottom: 24px; }
+
+/* ── SCROLLBAR ─────────────────────────────────────────── */
+.editor-body::-webkit-scrollbar { width: 4px; }
+.editor-body::-webkit-scrollbar-track { background: transparent; }
+.editor-body::-webkit-scrollbar-thumb { background: #ddd; border-radius: 2px; }
+
+/* section title in editor */
+.form-section-title {
+  font-size: 0.78rem;
+  font-weight: 700;
+  color: var(--black);
+  margin-bottom: 14px;
+  padding-bottom: 8px;
+  border-bottom: 1.5px solid var(--border);
+}
+
+/* responsive */
+@media (max-width: 900px) {
+  .app { grid-template-columns: 1fr; }
+  .editor { height: auto; position: relative; }
+  .cv-paper { width: 100%; min-height: auto; }
+}
+</style>
+</head>
+<body>
+<div class="app">
+
+  <!-- ══════════════════════════════════════
+       LEFT: EDITOR PANEL
+  ══════════════════════════════════════ -->
+  <div class="editor">
+
+    <!-- Header -->
+    <div class="editor-header">
+      <h1>CV <span>Builder</span></h1>
+
+      <!-- Template selector -->
+      <div class="template-row">
+        <button class="tpl-btn active" onclick="setTemplate('minimalist')" id="tpl-minimalist">
+          <div class="tpl-dot" style="background:linear-gradient(135deg,#fff 50%,#f0f0f0 50%);border:1.5px solid #ddd"></div>
+          Minimalist
+        </button>
+        <button class="tpl-btn" onclick="setTemplate('corporate')" id="tpl-corporate">
+          <div class="tpl-dot" style="background:linear-gradient(135deg,#1e3a2f 50%,#f4f8f5 50%)"></div>
+          Corporate
+        </button>
+        <button class="tpl-btn" onclick="setTemplate('creative')" id="tpl-creative">
+          <div class="tpl-dot" style="background:linear-gradient(135deg,#111 40%,#4a7c59 100%)"></div>
+          Creative
+        </button>
+      </div>
+    </div>
+
+    <!-- Section tabs -->
+    <div class="tabs">
+      <button class="tab active" onclick="showTab('info')" id="tab-info">Info</button>
+      <button class="tab" onclick="showTab('summary')" id="tab-summary">Summary</button>
+      <button class="tab" onclick="showTab('experience')" id="tab-experience">Experience</button>
+      <button class="tab" onclick="showTab('education')" id="tab-education">Education</button>
+      <button class="tab" onclick="showTab('skills')" id="tab-skills">Skills</button>
+    </div>
+
+    <!-- Form body -->
+    <div class="editor-body">
+
+      <!-- INFO -->
+      <div class="section-block active" id="section-info">
+        <div class="form-section-title">Personal Information</div>
+        <div class="field-row">
+          <div class="field-group">
+            <label>First Name</label>
+            <input type="text" id="fn" placeholder="Văn A" oninput="render()"/>
+          </div>
+          <div class="field-group">
+            <label>Last Name</label>
+            <input type="text" id="ln" placeholder="Nguyễn" oninput="render()"/>
+          </div>
+        </div>
+        <div class="field-group">
+          <label>Job Title</label>
+          <input type="text" id="title" placeholder="Product Designer" oninput="render()"/>
+        </div>
+        <div class="field-group">
+          <label>Email</label>
+          <input type="email" id="email" placeholder="you@email.com" oninput="render()"/>
+        </div>
+        <div class="field-group">
+          <label>Phone</label>
+          <input type="tel" id="phone" placeholder="+84 xxx xxx xxx" oninput="render()"/>
+        </div>
+        <div class="field-group">
+          <label>Location</label>
+          <input type="text" id="location" placeholder="Ho Chi Minh City, Vietnam" oninput="render()"/>
+        </div>
+        <div class="field-group">
+          <label>LinkedIn / Website</label>
+          <input type="text" id="link" placeholder="linkedin.com/in/yourname" oninput="render()"/>
+        </div>
+      </div>
+
+      <!-- SUMMARY -->
+      <div class="section-block" id="section-summary">
+        <div class="form-section-title">Professional Summary</div>
+        <div class="field-group">
+          <label>About you</label>
+          <textarea id="summary" rows="6" placeholder="Briefly describe your background, strengths, and what you're looking for. Keep it to 2–4 sentences." oninput="render()"></textarea>
+        </div>
+      </div>
+
+      <!-- EXPERIENCE -->
+      <div class="section-block" id="section-experience">
+        <div class="form-section-title">Work Experience</div>
+        <div id="exp-list"></div>
+        <button class="add-btn" onclick="addEntry('exp')">+ Add Experience</button>
+      </div>
+
+      <!-- EDUCATION -->
+      <div class="section-block" id="section-education">
+        <div class="form-section-title">Education</div>
+        <div id="edu-list"></div>
+        <button class="add-btn" onclick="addEntry('edu')">+ Add Education</button>
+      </div>
+
+      <!-- SKILLS -->
+      <div class="section-block" id="section-skills">
+        <div class="form-section-title">Skills</div>
+        <div class="skill-input-row">
+          <input type="text" id="skill-input" placeholder="e.g. Figma, Python, Leadership..." onkeydown="if(event.key==='Enter')addSkill()"/>
+          <button onclick="addSkill()">Add</button>
+        </div>
+        <div class="skill-tags" id="skill-tags"></div>
+      </div>
+
+    </div>
+
+    <!-- Footer -->
+    <div class="editor-footer">
+      <button class="download-btn" onclick="downloadPDF()" id="dl-btn">
+        ↓ Download PDF
+      </button>
+    </div>
+  </div>
+
+  <!-- ══════════════════════════════════════
+       RIGHT: PREVIEW PANEL
+  ══════════════════════════════════════ -->
+  <div class="preview-panel">
+    <div class="preview-label">Live Preview</div>
+    <div class="cv-paper tpl-minimalist" id="cv-paper">
+      <!-- Rendered by JS -->
+    </div>
+  </div>
+</div>
+
+<script>
+// ============================================================
+// STATE
+// ============================================================
+let currentTemplate = 'minimalist';
+
+let state = {
+  fn: '', ln: '', title: '', email: '', phone: '', location: '', link: '',
+  summary: '',
+  experiences: [],
+  educations: [],
+  skills: [],
+};
+
+// ============================================================
+// TEMPLATE SWITCHER
+// ============================================================
+function setTemplate(tpl) {
+  currentTemplate = tpl;
+  document.querySelectorAll('.tpl-btn').forEach(b => b.classList.remove('active'));
+  document.getElementById('tpl-' + tpl).classList.add('active');
+  render();
+}
+
+// ============================================================
+// TAB SWITCHER
+// ============================================================
+function showTab(tab) {
+  document.querySelectorAll('.tab').forEach(t => t.classList.remove('active'));
+  document.querySelectorAll('.section-block').forEach(s => s.classList.remove('active'));
+  document.getElementById('tab-' + tab).classList.add('active');
+  document.getElementById('section-' + tab).classList.add('active');
+}
+
+// ============================================================
+// ENTRIES (Experience / Education)
+// ============================================================
+let expCounter = 0, eduCounter = 0;
+
+function addEntry(type) {
+  const listEl = document.getElementById(type === 'exp' ? 'exp-list' : 'edu-list');
+  const id = type === 'exp' ? expCounter++ : eduCounter++;
+  const card = document.createElement('div');
+  card.className = 'entry-card';
+  card.id = type + '-card-' + id;
+
+  if (type === 'exp') {
+    card.innerHTML = `
+      <button class="entry-remove" onclick="removeEntry('exp', ${id})">✕</button>
+      <div class="field-group"><label>Job Title</label><input type="text" id="exp-jobtitle-${id}" placeholder="Software Engineer" oninput="render()"/></div>
+      <div class="field-group"><label>Company</label><input type="text" id="exp-company-${id}" placeholder="Google" oninput="render()"/></div>
+      <div class="field-row">
+        <div class="field-group"><label>Start</label><input type="text" id="exp-start-${id}" placeholder="Jan 2022" oninput="render()"/></div>
+        <div class="field-group"><label>End</label><input type="text" id="exp-end-${id}" placeholder="Present" oninput="render()"/></div>
+      </div>
+      <div class="field-group"><label>Description</label><textarea id="exp-desc-${id}" placeholder="Key responsibilities and achievements..." oninput="render()"></textarea></div>
+    `;
+    state.experiences.push({ id });
+  } else {
+    card.innerHTML = `
+      <button class="entry-remove" onclick="removeEntry('edu', ${id})">✕</button>
+      <div class="field-group"><label>Degree</label><input type="text" id="edu-degree-${id}" placeholder="Bachelor of Computer Science" oninput="render()"/></div>
+      <div class="field-group"><label>School</label><input type="text" id="edu-school-${id}" placeholder="University of Technology" oninput="render()"/></div>
+      <div class="field-row">
+        <div class="field-group"><label>Start</label><input type="text" id="edu-start-${id}" placeholder="2018" oninput="render()"/></div>
+        <div class="field-group"><label>End</label><input type="text" id="edu-end-${id}" placeholder="2022" oninput="render()"/></div>
+      </div>
+      <div class="field-group"><label>Note (optional)</label><input type="text" id="edu-note-${id}" placeholder="GPA 3.8 · Dean's List" oninput="render()"/></div>
+    `;
+    state.educations.push({ id });
+  }
+
+  listEl.appendChild(card);
+}
+
+function removeEntry(type, id) {
+  document.getElementById(type + '-card-' + id)?.remove();
+  if (type === 'exp') state.experiences = state.experiences.filter(e => e.id !== id);
+  else state.educations = state.educations.filter(e => e.id !== id);
+  render();
+}
+
+// ============================================================
+// SKILLS
+// ============================================================
+function addSkill() {
+  const input = document.getElementById('skill-input');
+  const val = input.value.trim();
+  if (!val || state.skills.includes(val)) { input.value = ''; return; }
+  state.skills.push(val);
+  input.value = '';
+  renderSkillTags();
+  render();
+}
+
+function removeSkill(skill) {
+  state.skills = state.skills.filter(s => s !== skill);
+  renderSkillTags();
+  render();
+}
+
+function renderSkillTags() {
+  const container = document.getElementById('skill-tags');
+  container.innerHTML = state.skills.map(s => `
+    <div class="skill-tag">${s} <button onclick="removeSkill('${s}')">✕</button></div>
+  `).join('');
+}
+
+// ============================================================
+// COLLECT STATE FROM INPUTS
+// ============================================================
+function collectState() {
+  state.fn = v('fn'); state.ln = v('ln'); state.title = v('title');
+  state.email = v('email'); state.phone = v('phone');
+  state.location = v('location'); state.link = v('link');
+  state.summary = v('summary');
+
+  state.experiences = state.experiences.map(e => ({
+    ...e,
+    jobtitle: v(`exp-jobtitle-${e.id}`),
+    company:  v(`exp-company-${e.id}`),
+    start:    v(`exp-start-${e.id}`),
+    end:      v(`exp-end-${e.id}`),
+    desc:     v(`exp-desc-${e.id}`),
+  }));
+
+  state.educations = state.educations.map(e => ({
+    ...e,
+    degree: v(`edu-degree-${e.id}`),
+    school: v(`edu-school-${e.id}`),
+    start:  v(`edu-start-${e.id}`),
+    end:    v(`edu-end-${e.id}`),
+    note:   v(`edu-note-${e.id}`),
+  }));
+}
+
+function v(id) {
+  return document.getElementById(id)?.value?.trim() || '';
+}
+
+// ============================================================
+// RENDER
+// ============================================================
+function render() {
+  collectState();
+  const paper = document.getElementById('cv-paper');
+  paper.className = 'cv-paper tpl-' + currentTemplate;
+
+  const name = [state.fn, state.ln].filter(Boolean).join(' ') || 'Your Name';
+  const title = state.title || 'Your Title';
+
+  const contactItems = [state.email, state.phone, state.location, state.link].filter(Boolean);
+
+  let html = '';
+
+  if (currentTemplate === 'minimalist') {
+    html = renderMinimalist(name, title, contactItems);
+  } else if (currentTemplate === 'corporate') {
+    html = renderCorporate(name, title, contactItems);
+  } else {
+    html = renderCreative(name, title, contactItems);
+  }
+
+  paper.innerHTML = html;
+}
+
+// ── MINIMALIST ──────────────────────────────────────────────
+function renderMinimalist(name, title, contacts) {
+  return `
+    <div class="cv-header">
+      <div class="cv-name">${name}</div>
+      <div class="cv-title">${title}</div>
+      <div class="cv-contact">${contacts.map(c => `<span>${c}</span>`).join('')}</div>
+    </div>
+    <div class="cv-body">
+      <div class="cv-main">
+        ${state.summary ? `
+        <div class="cv-section">
+          <div class="cv-section-title">Profile</div>
+          <div class="cv-summary">${state.summary}</div>
+        </div>` : ''}
+        ${state.experiences.length ? `
+        <div class="cv-section">
+          <div class="cv-section-title">Experience</div>
+          ${state.experiences.map(e => `
+            <div class="cv-entry">
+              <div class="cv-entry-header">
+                <div class="cv-entry-title">${e.jobtitle || 'Job Title'}</div>
+                <div class="cv-entry-date">${[e.start, e.end].filter(Boolean).join(' – ')}</div>
+              </div>
+              <div class="cv-entry-sub">${e.company || ''}</div>
+              ${e.desc ? `<div class="cv-entry-desc">${e.desc}</div>` : ''}
+            </div>
+          `).join('')}
+        </div>` : ''}
+        ${state.educations.length ? `
+        <div class="cv-section">
+          <div class="cv-section-title">Education</div>
+          ${state.educations.map(e => `
+            <div class="cv-entry">
+              <div class="cv-entry-header">
+                <div class="cv-entry-title">${e.degree || 'Degree'}</div>
+                <div class="cv-entry-date">${[e.start, e.end].filter(Boolean).join(' – ')}</div>
+              </div>
+              <div class="cv-entry-sub">${e.school || ''}</div>
+              ${e.note ? `<div class="cv-entry-desc">${e.note}</div>` : ''}
+            </div>
+          `).join('')}
+        </div>` : ''}
+      </div>
+      <div class="cv-sidebar">
+        ${state.skills.length ? `
+        <div class="cv-section">
+          <div class="cv-section-title">Skills</div>
+          ${state.skills.map(s => `<div class="cv-skill-item">${s}</div>`).join('')}
+        </div>` : ''}
+      </div>
+    </div>
+  `;
+}
+
+// ── CORPORATE ────────────────────────────────────────────────
+function renderCorporate(name, title, contacts) {
+  return `
+    <div class="cv-header">
+      <div>
+        <div class="cv-name">${name}</div>
+        <div class="cv-title">${title}</div>
+      </div>
+      <div class="cv-contact">${contacts.map(c => `<span>${c}</span>`).join('')}</div>
+    </div>
+    <div class="cv-body">
+      <div class="cv-sidebar">
+        ${state.skills.length ? `
+        <div class="cv-section">
+          <div class="cv-section-title">Skills</div>
+          ${state.skills.map(s => `<span class="cv-skill-item">${s}</span>`).join('')}
+        </div>` : ''}
+        ${state.educations.length ? `
+        <div class="cv-section">
+          <div class="cv-section-title">Education</div>
+          ${state.educations.map(e => `
+            <div class="cv-entry" style="margin-bottom:12px">
+              <div class="cv-entry-title" style="font-size:11px">${e.degree || 'Degree'}</div>
+              <div class="cv-entry-sub">${e.school || ''}</div>
+              <div class="cv-entry-date" style="font-size:10px;color:#999;background:none;color:#999;padding:0;margin-top:2px">${[e.start, e.end].filter(Boolean).join(' – ')}</div>
+              ${e.note ? `<div class="cv-entry-desc">${e.note}</div>` : ''}
+            </div>
+          `).join('')}
+        </div>` : ''}
+      </div>
+      <div class="cv-main">
+        ${state.summary ? `
+        <div class="cv-section">
+          <div class="cv-section-title">Profile</div>
+          <div class="cv-summary">${state.summary}</div>
+        </div>` : ''}
+        ${state.experiences.length ? `
+        <div class="cv-section">
+          <div class="cv-section-title">Experience</div>
+          ${state.experiences.map(e => `
+            <div class="cv-entry">
+              <div class="cv-entry-header">
+                <div class="cv-entry-title">${e.jobtitle || 'Job Title'}</div>
+                <div class="cv-entry-date">${[e.start, e.end].filter(Boolean).join(' – ')}</div>
+              </div>
+              <div class="cv-entry-sub">${e.company || ''}</div>
+              ${e.desc ? `<div class="cv-entry-desc">${e.desc}</div>` : ''}
+            </div>
+          `).join('')}
+        </div>` : ''}
+      </div>
+    </div>
+  `;
+}
+
+// ── CREATIVE ─────────────────────────────────────────────────
+function renderCreative(name, title, contacts) {
+  return `
+    <div class="cv-header">
+      <div class="cv-header-bg">
+        <div class="cv-name">${name}</div>
+        <div class="cv-title">${title}</div>
+        <div class="cv-contact">${contacts.map(c => `<span>${c}</span>`).join('')}</div>
+      </div>
+      <div class="cv-accent-bar"></div>
+    </div>
+    <div class="cv-body">
+      <div class="cv-main">
+        ${state.summary ? `
+        <div class="cv-section">
+          <div class="cv-section-title">Profile</div>
+          <div class="cv-summary">${state.summary}</div>
+        </div>` : ''}
+        ${state.experiences.length ? `
+        <div class="cv-section">
+          <div class="cv-section-title">Experience</div>
+          ${state.experiences.map(e => `
+            <div class="cv-entry">
+              <div class="cv-entry-header">
+                <div class="cv-entry-title">${e.jobtitle || 'Job Title'}</div>
+                <div class="cv-entry-date">${[e.start, e.end].filter(Boolean).join(' – ')}</div>
+              </div>
+              <div class="cv-entry-sub">${e.company || ''}</div>
+              ${e.desc ? `<div class="cv-entry-desc">${e.desc}</div>` : ''}
+            </div>
+          `).join('')}
+        </div>` : ''}
+        ${state.educations.length ? `
+        <div class="cv-section">
+          <div class="cv-section-title">Education</div>
+          ${state.educations.map(e => `
+            <div class="cv-entry">
+              <div class="cv-entry-header">
+                <div class="cv-entry-title">${e.degree || 'Degree'}</div>
+                <div class="cv-entry-date">${[e.start, e.end].filter(Boolean).join(' – ')}</div>
+              </div>
+              <div class="cv-entry-sub">${e.school || ''}</div>
+              ${e.note ? `<div class="cv-entry-desc">${e.note}</div>` : ''}
+            </div>
+          `).join('')}
+        </div>` : ''}
+      </div>
+      <div class="cv-sidebar">
+        ${state.skills.length ? `
+        <div class="cv-section">
+          <div class="cv-section-title">Skills</div>
+          <div>${state.skills.map(s => `<span class="cv-skill-item">${s}</span>`).join('')}</div>
+        </div>` : ''}
+      </div>
+    </div>
+  `;
+}
+
+// ============================================================
+// PDF DOWNLOAD
+// ============================================================
+async function downloadPDF() {
+  const btn = document.getElementById('dl-btn');
+  btn.disabled = true;
+  btn.textContent = 'Generating...';
+
+  const el = document.getElementById('cv-paper');
+  const name = [state.fn, state.ln].filter(Boolean).join('_') || 'CV';
+
+  const opt = {
+    margin: 0,
+    filename: `${name}_CV.pdf`,
+    image: { type: 'jpeg', quality: 0.98 },
+    html2canvas: { scale: 2, useCORS: true, logging: false },
+    jsPDF: { unit: 'mm', format: 'a4', orientation: 'portrait' },
+  };
+
+  try {
+    await html2pdf().set(opt).from(el).save();
+  } finally {
+    btn.disabled = false;
+    btn.innerHTML = '↓ Download PDF';
+  }
+}
+
+// Init
+render();
+</script>
+</body>
+</html>

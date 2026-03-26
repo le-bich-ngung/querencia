@@ -1,0 +1,554 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8"/>
+<meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+<title>Notes — Querencia</title>
+<link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700&family=Newsreader:ital,wght@0,400;0,500;1,400&display=swap" rel="stylesheet"/>
+<style>
+*, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+:root {
+  --bg: #111110;
+  --sidebar: #161614;
+  --panel: #1c1b19;
+  --border: #2a2926;
+  --white: #edeae4;
+  --cream: #d4cfc6;
+  --gray: #706b62;
+  --gray-light: #3a3834;
+  --accent: #4a7c59;
+  --accent-pale: rgba(74,124,89,0.12);
+  --amber: #c49a3c;
+  --font: 'Plus Jakarta Sans', sans-serif;
+  --serif: 'Newsreader', serif;
+}
+
+body {
+  font-family: var(--font);
+  background: var(--bg);
+  color: var(--white);
+  height: 100vh;
+  display: grid;
+  grid-template-columns: 240px 1fr;
+  overflow: hidden;
+}
+
+/* ── SIDEBAR ────────────────────────────────────── */
+.sidebar {
+  background: var(--sidebar);
+  border-right: 1px solid var(--border);
+  display: flex;
+  flex-direction: column;
+  overflow: hidden;
+}
+
+.sidebar-header {
+  padding: 16px 16px 12px;
+  border-bottom: 1px solid var(--border);
+  flex-shrink: 0;
+}
+.sidebar-logo { font-size: 0.88rem; font-weight: 700; margin-bottom: 10px; }
+.sidebar-logo span { color: var(--amber); }
+
+.new-note-btn {
+  width: 100%;
+  padding: 9px;
+  background: var(--accent);
+  border: none;
+  border-radius: 8px;
+  color: #fff;
+  font-family: var(--font);
+  font-size: 0.78rem;
+  font-weight: 700;
+  cursor: pointer;
+  transition: background 0.15s;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 6px;
+}
+.new-note-btn:hover { background: #3d6b4a; }
+
+/* Search */
+.search-wrap {
+  padding: 10px 12px;
+  border-bottom: 1px solid var(--border);
+  flex-shrink: 0;
+}
+.search-input {
+  width: 100%;
+  padding: 7px 10px;
+  background: var(--panel);
+  border: 1px solid var(--border);
+  border-radius: 7px;
+  color: var(--white);
+  font-family: var(--font);
+  font-size: 0.75rem;
+  outline: none;
+  transition: border-color 0.14s;
+}
+.search-input:focus { border-color: var(--accent); }
+.search-input::placeholder { color: var(--gray); }
+
+/* Notes list */
+.notes-list {
+  flex: 1;
+  overflow-y: auto;
+  padding: 6px;
+}
+.notes-list::-webkit-scrollbar { width: 3px; }
+.notes-list::-webkit-scrollbar-thumb { background: var(--border); }
+
+.note-item {
+  padding: 10px 10px;
+  border-radius: 8px;
+  cursor: pointer;
+  transition: background 0.12s;
+  margin-bottom: 2px;
+  position: relative;
+}
+.note-item:hover { background: var(--panel); }
+.note-item.active { background: var(--accent-pale); }
+.note-item-title {
+  font-size: 0.8rem;
+  font-weight: 600;
+  color: var(--white);
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  margin-bottom: 3px;
+}
+.note-item.active .note-item-title { color: #a8d5b5; }
+.note-item-preview {
+  font-size: 0.68rem;
+  color: var(--gray);
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  line-height: 1.5;
+}
+.note-item-date {
+  font-size: 0.6rem;
+  color: var(--gray-light);
+  margin-top: 4px;
+}
+.note-delete {
+  position: absolute;
+  top: 8px; right: 8px;
+  background: none;
+  border: none;
+  color: var(--gray-light);
+  cursor: pointer;
+  font-size: 0.75rem;
+  opacity: 0;
+  padding: 2px 5px;
+  border-radius: 4px;
+  transition: all 0.12s;
+}
+.note-item:hover .note-delete { opacity: 1; }
+.note-delete:hover { color: #e05252; background: rgba(224,82,82,0.12); }
+
+.note-count {
+  padding: 8px 12px 6px;
+  font-size: 0.62rem;
+  color: var(--gray);
+  font-weight: 600;
+  letter-spacing: 0.06em;
+}
+
+/* ── EDITOR AREA ────────────────────────────────── */
+.editor-area {
+  display: flex;
+  flex-direction: column;
+  overflow: hidden;
+  background: var(--bg);
+}
+
+.editor-topbar {
+  padding: 10px 24px;
+  border-bottom: 1px solid var(--border);
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  background: var(--panel);
+  flex-shrink: 0;
+}
+
+.note-title-input {
+  flex: 1;
+  background: none;
+  border: none;
+  outline: none;
+  font-family: var(--font);
+  font-size: 0.95rem;
+  font-weight: 700;
+  color: var(--white);
+  min-width: 0;
+}
+.note-title-input::placeholder { color: var(--gray); }
+
+.editor-meta {
+  font-size: 0.68rem;
+  color: var(--gray);
+  flex-shrink: 0;
+}
+
+.tag-input-wrap {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  padding: 6px 24px;
+  border-bottom: 1px solid var(--border);
+  background: var(--panel);
+  flex-shrink: 0;
+  flex-wrap: wrap;
+}
+.tag {
+  padding: 2px 8px;
+  background: var(--accent-pale);
+  border: 1px solid rgba(74,124,89,0.3);
+  border-radius: 20px;
+  font-size: 0.65rem;
+  font-weight: 600;
+  color: #a8d5b5;
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+  gap: 4px;
+}
+.tag-del { opacity: 0.6; font-size: 0.8rem; }
+.tag:hover .tag-del { opacity: 1; }
+.tag-input {
+  background: none;
+  border: none;
+  outline: none;
+  font-family: var(--font);
+  font-size: 0.7rem;
+  color: var(--gray);
+  width: 80px;
+}
+.tag-input::placeholder { color: var(--gray-light); }
+
+#noteBody {
+  flex: 1;
+  padding: 32px 48px;
+  background: transparent;
+  border: none;
+  outline: none;
+  font-family: var(--serif);
+  font-size: 1rem;
+  line-height: 1.9;
+  color: var(--cream);
+  resize: none;
+  overflow-y: auto;
+}
+#noteBody::-webkit-scrollbar { width: 4px; }
+#noteBody::-webkit-scrollbar-thumb { background: var(--border); border-radius: 2px; }
+#noteBody::placeholder { color: var(--gray); font-style: italic; }
+
+/* Empty state */
+.empty-state {
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  gap: 12px;
+  color: var(--gray);
+}
+.empty-icon { font-size: 2.5rem; opacity: 0.3; }
+.empty-state p { font-size: 0.82rem; }
+
+/* Bottom bar */
+.bottom-bar {
+  padding: 8px 24px;
+  border-top: 1px solid var(--border);
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  font-size: 0.68rem;
+  color: var(--gray);
+  flex-shrink: 0;
+}
+.bottom-btn {
+  background: none;
+  border: none;
+  cursor: pointer;
+  font-size: 0.68rem;
+  font-family: var(--font);
+  color: var(--gray);
+  padding: 3px 8px;
+  border-radius: 5px;
+  transition: all 0.12s;
+}
+.bottom-btn:hover { color: var(--white); background: var(--panel); }
+
+/* Pinned indicator */
+.pin-btn {
+  padding: 4px 8px;
+  background: none;
+  border: 1px solid var(--border);
+  border-radius: 6px;
+  color: var(--gray);
+  font-size: 0.72rem;
+  cursor: pointer;
+  transition: all 0.12s;
+}
+.pin-btn.pinned { color: var(--amber); border-color: var(--amber); background: rgba(196,154,60,0.1); }
+.pin-btn:hover { border-color: var(--amber); color: var(--amber); }
+</style>
+</head>
+<body>
+
+<!-- SIDEBAR -->
+<div class="sidebar">
+  <div class="sidebar-header">
+    <div class="sidebar-logo">Notes <span>✦</span></div>
+    <button class="new-note-btn" onclick="newNote()">+ New Note</button>
+  </div>
+  <div class="search-wrap">
+    <input type="text" class="search-input" id="searchInput" placeholder="Search notes…" oninput="renderList()"/>
+  </div>
+  <div class="note-count" id="noteCount"></div>
+  <div class="notes-list" id="notesList"></div>
+</div>
+
+<!-- EDITOR -->
+<div class="editor-area" id="editorArea">
+  <div class="empty-state" id="emptyState">
+    <div class="empty-icon">📝</div>
+    <p>Select a note or create a new one</p>
+  </div>
+
+  <div id="editorContent" style="display:none;flex-direction:column;flex:1;overflow:hidden;display:none">
+    <div class="editor-topbar">
+      <input type="text" class="note-title-input" id="noteTitle" placeholder="Untitled" oninput="saveNote()"/>
+      <button class="pin-btn" id="pinBtn" onclick="togglePin()">📌 Pin</button>
+      <span class="editor-meta" id="editorMeta"></span>
+    </div>
+    <div class="tag-input-wrap" id="tagWrap">
+      <div id="tagList"></div>
+      <input type="text" class="tag-input" id="tagInput" placeholder="Add tag…" onkeydown="onTagKey(event)"/>
+    </div>
+    <textarea id="noteBody" placeholder="Start writing…" oninput="saveNote()"></textarea>
+    <div class="bottom-bar">
+      <span id="bottomStats"></span>
+      <div style="margin-left:auto;display:flex;gap:4px">
+        <button class="bottom-btn" onclick="copyNote()">⎘ Copy</button>
+        <button class="bottom-btn" onclick="downloadNote()">↓ Save</button>
+      </div>
+    </div>
+  </div>
+</div>
+
+<script>
+// ============================================================
+// DATA
+// ============================================================
+let notes = JSON.parse(localStorage.getItem('qnotes') || '[]');
+let activeId = null;
+
+function save() { localStorage.setItem('qnotes', JSON.stringify(notes)); }
+
+// ============================================================
+// INIT
+// ============================================================
+window.addEventListener('DOMContentLoaded', () => {
+  if (!notes.length) newNote();
+  else { renderList(); openNote(notes[0].id); }
+});
+
+// ============================================================
+// CRUD
+// ============================================================
+function newNote() {
+  const note = {
+    id: Date.now().toString(),
+    title: '',
+    body: '',
+    tags: [],
+    pinned: false,
+    created: Date.now(),
+    updated: Date.now(),
+  };
+  notes.unshift(note);
+  save();
+  renderList();
+  openNote(note.id);
+  setTimeout(() => document.getElementById('noteTitle').focus(), 50);
+}
+
+function openNote(id) {
+  activeId = id;
+  const note = notes.find(n => n.id === id);
+  if (!note) return;
+
+  document.getElementById('emptyState').style.display = 'none';
+  const ec = document.getElementById('editorContent');
+  ec.style.display = 'flex';
+  ec.style.flexDirection = 'column';
+  ec.style.flex = '1';
+  ec.style.overflow = 'hidden';
+
+  document.getElementById('noteTitle').value = note.title;
+  document.getElementById('noteBody').value = note.body;
+  document.getElementById('pinBtn').className = 'pin-btn' + (note.pinned ? ' pinned' : '');
+  document.getElementById('pinBtn').textContent = note.pinned ? '📌 Pinned' : '📌 Pin';
+  renderTags(note.tags);
+  updateMeta(note);
+  updateBottomStats();
+  renderList();
+}
+
+function saveNote() {
+  const note = notes.find(n => n.id === activeId);
+  if (!note) return;
+  note.title = document.getElementById('noteTitle').value;
+  note.body  = document.getElementById('noteBody').value;
+  note.updated = Date.now();
+  save();
+  updateMeta(note);
+  updateBottomStats();
+  renderList();
+}
+
+function deleteNote(id, e) {
+  e.stopPropagation();
+  if (notes.length === 1) { notes[0].title=''; notes[0].body=''; save(); openNote(notes[0].id); return; }
+  const idx = notes.findIndex(n => n.id === id);
+  notes.splice(idx, 1);
+  save();
+  renderList();
+  if (activeId === id) {
+    if (notes.length) openNote(notes[0].id);
+    else { activeId = null; document.getElementById('emptyState').style.display='flex'; document.getElementById('editorContent').style.display='none'; }
+  }
+}
+
+function togglePin() {
+  const note = notes.find(n => n.id === activeId);
+  if (!note) return;
+  note.pinned = !note.pinned;
+  document.getElementById('pinBtn').className = 'pin-btn' + (note.pinned ? ' pinned' : '');
+  document.getElementById('pinBtn').textContent = note.pinned ? '📌 Pinned' : '📌 Pin';
+  save(); renderList();
+}
+
+// ============================================================
+// TAGS
+// ============================================================
+function renderTags(tags) {
+  const list = document.getElementById('tagList');
+  list.innerHTML = (tags || []).map((t,i) => `
+    <span class="tag" onclick="removeTag(${i})">
+      ${t} <span class="tag-del">×</span>
+    </span>
+  `).join('');
+}
+
+function onTagKey(e) {
+  if (e.key === 'Enter' || e.key === ',') {
+    e.preventDefault();
+    const val = e.target.value.trim().replace(/,/g,'');
+    if (!val) return;
+    const note = notes.find(n => n.id === activeId);
+    if (note && !note.tags.includes(val)) {
+      note.tags.push(val);
+      save();
+      renderTags(note.tags);
+    }
+    e.target.value = '';
+  }
+}
+
+function removeTag(i) {
+  const note = notes.find(n => n.id === activeId);
+  if (!note) return;
+  note.tags.splice(i, 1);
+  save(); renderTags(note.tags);
+}
+
+// ============================================================
+// RENDER LIST
+// ============================================================
+function renderList() {
+  const q = document.getElementById('searchInput').value.toLowerCase();
+  const list = document.getElementById('notesList');
+
+  let filtered = notes.filter(n =>
+    !q || n.title.toLowerCase().includes(q) || n.body.toLowerCase().includes(q)
+  );
+
+  // Pinned first
+  filtered.sort((a,b) => (b.pinned ? 1:0) - (a.pinned ? 1:0) || b.updated - a.updated);
+
+  document.getElementById('noteCount').textContent =
+    filtered.length + ' note' + (filtered.length !== 1 ? 's' : '');
+
+  list.innerHTML = filtered.map(n => `
+    <div class="note-item ${n.id === activeId ? 'active' : ''}" onclick="openNote('${n.id}')">
+      ${n.pinned ? '<span style="font-size:0.65rem;position:absolute;top:8px;right:28px;opacity:0.5">📌</span>' : ''}
+      <div class="note-item-title">${escHtml(n.title || 'Untitled')}</div>
+      <div class="note-item-preview">${escHtml(n.body.substring(0,60) || 'Empty note')}</div>
+      <div class="note-item-date">${relTime(n.updated)}</div>
+      <button class="note-delete" onclick="deleteNote('${n.id}', event)">×</button>
+    </div>
+  `).join('');
+}
+
+// ============================================================
+// META + STATS
+// ============================================================
+function updateMeta(note) {
+  document.getElementById('editorMeta').textContent = relTime(note.updated);
+}
+
+function updateBottomStats() {
+  const body = document.getElementById('noteBody').value;
+  const words = body.trim() ? body.trim().split(/\s+/).length : 0;
+  const chars = body.length;
+  document.getElementById('bottomStats').textContent = `${words} words · ${chars} chars`;
+}
+
+// ============================================================
+// EXPORT
+// ============================================================
+function copyNote() {
+  const note = notes.find(n => n.id === activeId);
+  if (!note) return;
+  const text = (note.title ? note.title + '\n\n' : '') + note.body;
+  navigator.clipboard.writeText(text).then(() => {
+    const btn = event.target;
+    btn.textContent = '✓ Copied';
+    setTimeout(() => btn.textContent = '⎘ Copy', 2000);
+  });
+}
+
+function downloadNote() {
+  const note = notes.find(n => n.id === activeId);
+  if (!note) return;
+  const text = (note.title ? note.title + '\n\n' : '') + note.body;
+  const a = document.createElement('a');
+  a.href = URL.createObjectURL(new Blob([text], {type:'text/plain'}));
+  a.download = (note.title || 'note') + '.txt';
+  a.click();
+}
+
+// ============================================================
+// UTILS
+// ============================================================
+function escHtml(s) {
+  return s.replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;');
+}
+
+function relTime(ts) {
+  const d = Date.now() - ts;
+  if (d < 60000) return 'Just now';
+  if (d < 3600000) return Math.floor(d/60000) + 'm ago';
+  if (d < 86400000) return Math.floor(d/3600000) + 'h ago';
+  return new Date(ts).toLocaleDateString();
+}
+</script>
+</body>
+</html>

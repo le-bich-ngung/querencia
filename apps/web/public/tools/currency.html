@@ -1,0 +1,212 @@
+<!DOCTYPE html>
+<html lang="vi">
+<head>
+<meta charset="UTF-8"/>
+<meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+<title>Currency Converter · Querencia Tools</title>
+<style>
+  @import url('https://fonts.googleapis.com/css2?family=Syne:wght@400;700;800&family=JetBrains+Mono:wght@400;600&display=swap');
+  *{box-sizing:border-box;margin:0;padding:0}
+  :root{
+    --bg:#fafdf8;--card:#fff;--border:#e2ebe4;
+    --sage:#4a7c59;--sage-dark:#2f5c3e;--sage-pale:#ddeee3;
+    --black:#0d1a0f;--gray:#5a7060;--gray-light:#a8bfac;
+    --display:'Syne',sans-serif;--mono:'JetBrains Mono',monospace;
+  }
+  body{background:var(--bg);color:var(--black);font-family:var(--display);min-height:100vh;padding:0 0 60px}
+
+  .header{background:linear-gradient(135deg,var(--sage-dark),var(--sage));padding:36px 32px 28px;color:#fff}
+  .header h1{font-size:1.9rem;font-weight:800;letter-spacing:-0.5px;margin-bottom:4px}
+  .header p{font-size:0.85rem;opacity:0.8}
+
+  /* CONVERTER */
+  .converter-wrap{max-width:560px;margin:0 auto;padding:28px 20px}
+
+  .amount-section{background:var(--card);border:1.5px solid var(--border);border-radius:16px;padding:20px;margin-bottom:12px}
+  .amount-label{font-size:0.72rem;font-weight:700;color:var(--gray-light);text-transform:uppercase;letter-spacing:0.5px;margin-bottom:8px}
+  .amount-row{display:flex;gap:10px;align-items:center}
+  .amount-input{flex:1;font-family:var(--mono);font-size:1.8rem;font-weight:600;color:var(--black);border:none;background:none;outline:none;width:100%}
+  .amount-input::placeholder{color:var(--gray-light)}
+  .currency-select{padding:8px 12px;background:var(--sage-pale);border:none;border-radius:10px;font-family:var(--display);font-size:0.88rem;font-weight:700;color:var(--sage-dark);outline:none;cursor:pointer;min-width:100px}
+
+  .swap-btn{width:40px;height:40px;border-radius:50%;background:var(--sage);color:#fff;border:none;cursor:pointer;font-size:1.1rem;display:flex;align-items:center;justify-content:center;margin:0 auto 12px;transition:transform 0.3s,background 0.2s;box-shadow:0 4px 12px rgba(74,124,89,0.3)}
+  .swap-btn:hover{background:var(--sage-dark);transform:rotate(180deg)}
+
+  .result-section{background:linear-gradient(135deg,#f0f7f2,var(--sage-pale));border:1.5px solid var(--sage);border-radius:16px;padding:20px;margin-bottom:20px}
+  .result-amount{font-family:var(--mono);font-size:2.2rem;font-weight:600;color:var(--sage-dark);margin-bottom:4px}
+  .result-rate{font-size:0.78rem;color:var(--gray);margin-bottom:2px}
+  .result-updated{font-size:0.7rem;color:var(--gray-light)}
+
+  /* MULTI CONVERT */
+  .multi-title{font-size:0.75rem;font-weight:700;color:var(--gray-light);text-transform:uppercase;letter-spacing:0.5px;margin-bottom:12px}
+  .multi-grid{display:grid;grid-template-columns:1fr 1fr;gap:8px;margin-bottom:24px}
+  .multi-item{background:var(--card);border:1px solid var(--border);border-radius:10px;padding:12px 14px}
+  .multi-item-flag{font-size:1.1rem;margin-bottom:4px}
+  .multi-item-code{font-size:0.72rem;font-weight:700;color:var(--gray-light);margin-bottom:3px}
+  .multi-item-val{font-family:var(--mono);font-size:1rem;font-weight:600;color:var(--black)}
+
+  /* RATE TABLE */
+  .rate-btn{width:100%;padding:10px;background:none;border:1.5px solid var(--border);border-radius:10px;font-family:var(--display);font-size:0.85rem;color:var(--gray);cursor:pointer;transition:all 0.2s;margin-bottom:16px}
+  .rate-btn:hover{border-color:var(--sage);color:var(--sage)}
+  .rate-table{display:none}
+  .rate-table.open{display:block}
+  .rate-row{display:flex;justify-content:space-between;padding:8px 0;border-bottom:1px solid var(--border);font-size:0.85rem}
+  .rate-row:last-child{border:none}
+  .rate-cur{color:var(--gray)}
+  .rate-val{font-family:var(--mono);font-weight:600;color:var(--black)}
+
+  .loading{text-align:center;padding:40px;color:var(--gray-light)}
+</style>
+</head>
+<body>
+
+<div class="header">
+  <h1>💱 Currency Converter</h1>
+  <p>Tỷ giá realtime từ ExchangeRate-API</p>
+</div>
+
+<div class="converter-wrap">
+  <!-- FROM -->
+  <div class="amount-section">
+    <div class="amount-label">Số tiền</div>
+    <div class="amount-row">
+      <input id="amountInput" class="amount-input" type="number" placeholder="0" value="1" oninput="convert()"/>
+      <select id="fromCur" class="currency-select" onchange="convert()"></select>
+    </div>
+  </div>
+
+  <button class="swap-btn" onclick="swapCurrencies()">⇅</button>
+
+  <!-- RESULT -->
+  <div class="result-section">
+    <div class="amount-label">Kết quả</div>
+    <div class="amount-row">
+      <div class="result-amount" id="resultAmount">—</div>
+      <select id="toCur" class="currency-select" onchange="convert()"></select>
+    </div>
+    <div class="result-rate" id="resultRate"></div>
+    <div class="result-updated" id="resultUpdated"></div>
+  </div>
+
+  <!-- MULTI -->
+  <div class="multi-title">Quy đổi sang nhiều tiền tệ</div>
+  <div class="multi-grid" id="multiGrid"></div>
+
+  <button class="rate-btn" onclick="toggleRates()">📊 Xem bảng tỷ giá đầy đủ</button>
+  <div class="rate-table" id="rateTable"></div>
+</div>
+
+<script>
+const CURRENCIES = [
+  {code:'USD',name:'US Dollar',flag:'🇺🇸'},
+  {code:'EUR',name:'Euro',flag:'🇪🇺'},
+  {code:'VND',name:'Việt Nam Đồng',flag:'🇻🇳'},
+  {code:'JPY',name:'Japanese Yen',flag:'🇯🇵'},
+  {code:'GBP',name:'British Pound',flag:'🇬🇧'},
+  {code:'KRW',name:'Korean Won',flag:'🇰🇷'},
+  {code:'CNY',name:'Chinese Yuan',flag:'🇨🇳'},
+  {code:'AUD',name:'Australian Dollar',flag:'🇦🇺'},
+  {code:'CAD',name:'Canadian Dollar',flag:'🇨🇦'},
+  {code:'SGD',name:'Singapore Dollar',flag:'🇸🇬'},
+  {code:'THB',name:'Thai Baht',flag:'🇹🇭'},
+  {code:'HKD',name:'Hong Kong Dollar',flag:'🇭🇰'},
+  {code:'INR',name:'Indian Rupee',flag:'🇮🇳'},
+  {code:'MYR',name:'Malaysian Ringgit',flag:'🇲🇾'},
+  {code:'CHF',name:'Swiss Franc',flag:'🇨🇭'},
+  {code:'IDR',name:'Indonesian Rupiah',flag:'🇮🇩'},
+  {code:'PHP',name:'Philippine Peso',flag:'🇵🇭'},
+  {code:'TWD',name:'Taiwan Dollar',flag:'🇹🇼'},
+];
+
+const MULTI_TARGETS = ['USD','EUR','JPY','KRW','CNY','SGD','THB','GBP'];
+let rates = {}; let lastBase = ''; let ratesOpen = false;
+
+// Populate selects
+['fromCur','toCur'].forEach(id => {
+  const sel = document.getElementById(id);
+  CURRENCIES.forEach(c => {
+    const opt = document.createElement('option');
+    opt.value = c.code;
+    opt.textContent = `${c.flag} ${c.code}`;
+    sel.appendChild(opt);
+  });
+});
+document.getElementById('fromCur').value = 'USD';
+document.getElementById('toCur').value = 'VND';
+
+async function fetchRates(base) {
+  if (rates[base] && lastBase === base) return;
+  try {
+    const res = await fetch(`https://api.exchangerate-api.com/v4/latest/${base}`);
+    const data = await res.json();
+    rates[base] = data.rates;
+    rates[base]._updated = new Date().toLocaleString('vi-VN');
+    lastBase = base;
+  } catch {
+    // Fallback rates (approximate)
+    rates[base] = {USD:1,VND:25000,EUR:0.92,JPY:149,GBP:0.79,KRW:1320,CNY:7.2,AUD:1.52,CAD:1.35,SGD:1.34,THB:35,HKD:7.82,INR:83,MYR:4.7,CHF:0.89,IDR:15500,PHP:56,TWD:31};
+    rates[base]._updated = 'Offline (dữ liệu xấp xỉ)';
+  }
+}
+
+async function convert() {
+  const amount = parseFloat(document.getElementById('amountInput').value) || 0;
+  const from = document.getElementById('fromCur').value;
+  const to = document.getElementById('toCur').value;
+
+  await fetchRates(from);
+  const r = rates[from];
+  if (!r) return;
+
+  const result = amount * (r[to] || 1);
+  const rate = r[to] || 1;
+
+  document.getElementById('resultAmount').textContent = formatNum(result, to);
+  document.getElementById('resultRate').textContent = `1 ${from} = ${formatNum(rate, to)} ${to}`;
+  document.getElementById('resultUpdated').textContent = `Cập nhật: ${r._updated || '—'}`;
+
+  // Multi
+  const grid = document.getElementById('multiGrid');
+  grid.innerHTML = MULTI_TARGETS.filter(c => c !== from).slice(0,8).map(code => {
+    const info = CURRENCIES.find(c=>c.code===code) || {flag:'💱',code};
+    const val = amount * (r[code] || 1);
+    return `<div class="multi-item">
+      <div class="multi-item-flag">${info.flag}</div>
+      <div class="multi-item-code">${code}</div>
+      <div class="multi-item-val">${formatNum(val, code)}</div>
+    </div>`;
+  }).join('');
+
+  // Rate table
+  if (ratesOpen) renderRateTable(from, amount);
+}
+
+function formatNum(n, code) {
+  if (['VND','IDR','KRW','JPY'].includes(code)) return Math.round(n).toLocaleString('vi-VN');
+  return n.toLocaleString('en-US', {minimumFractionDigits:2, maximumFractionDigits:2});
+}
+
+function swapCurrencies() {
+  const f = document.getElementById('fromCur'), t = document.getElementById('toCur');
+  [f.value, t.value] = [t.value, f.value];
+  convert();
+}
+
+function toggleRates() {
+  ratesOpen = !ratesOpen;
+  document.getElementById('rateTable').classList.toggle('open', ratesOpen);
+  if (ratesOpen) renderRateTable(document.getElementById('fromCur').value, parseFloat(document.getElementById('amountInput').value)||1);
+}
+
+function renderRateTable(base, amount) {
+  const r = rates[base] || {};
+  document.getElementById('rateTable').innerHTML = CURRENCIES.map(c => {
+    const val = amount * (r[c.code] || 0);
+    return `<div class="rate-row"><span class="rate-cur">${c.flag} ${c.code} — ${c.name}</span><span class="rate-val">${formatNum(val, c.code)}</span></div>`;
+  }).join('');
+}
+
+convert();
+</script>
+</body>
+</html>

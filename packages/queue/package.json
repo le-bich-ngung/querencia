@@ -1,0 +1,11 @@
+{
+    "name":  "@querencia/queue",
+    "version":  "0.1.0",
+    "private":  true,
+    "main":  "./dist/index.js",
+    "dependencies":  {
+                         "bullmq":  "^5.0.0",
+                         "ioredis":  "^5.0.0",
+                         "resend":  "^3.2.0"
+                     }
+}

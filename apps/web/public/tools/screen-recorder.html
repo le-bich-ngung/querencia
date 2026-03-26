@@ -1,0 +1,616 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8"/>
+<meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+<title>Screen Recorder — Querencia</title>
+<link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@300;400;500;600;700&family=DM+Mono:wght@400;500&display=swap" rel="stylesheet"/>
+<style>
+*, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+:root {
+  --bg: #0c0c0c;
+  --panel: #141414;
+  --panel2: #1b1b1b;
+  --border: #252525;
+  --white: #f0eeec;
+  --gray: #777;
+  --gray-light: #444;
+  --accent: #4a7c59;
+  --accent-light: #6fa882;
+  --red: #e05252;
+  --red-pale: rgba(224,82,82,0.12);
+  --font: 'Plus Jakarta Sans', sans-serif;
+  --mono: 'DM Mono', monospace;
+}
+
+body {
+  font-family: var(--font);
+  background: var(--bg);
+  color: var(--white);
+  min-height: 100vh;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  padding: 32px 24px;
+}
+
+.wrapper { width: 100%; max-width: 640px; display: flex; flex-direction: column; gap: 20px; }
+
+/* Header */
+.header { text-align: center; }
+.header h1 { font-size: 1.5rem; font-weight: 700; letter-spacing: -0.4px; }
+.header h1 span { color: var(--accent-light); }
+.header p { font-size: 0.78rem; color: var(--gray); margin-top: 4px; }
+
+/* Preview */
+.preview-card {
+  background: var(--panel);
+  border: 1.5px solid var(--border);
+  border-radius: 16px;
+  overflow: hidden;
+  aspect-ratio: 16/9;
+  position: relative;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+#preview {
+  width: 100%; height: 100%;
+  object-fit: contain;
+  display: none;
+}
+.preview-placeholder {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 10px;
+  color: var(--gray);
+}
+.preview-placeholder-icon { font-size: 2.5rem; opacity: 0.3; }
+.preview-placeholder p { font-size: 0.78rem; }
+
+/* Recording indicator */
+.rec-indicator {
+  position: absolute;
+  top: 14px; left: 14px;
+  display: none;
+  align-items: center;
+  gap: 6px;
+  background: rgba(0,0,0,0.7);
+  backdrop-filter: blur(8px);
+  border-radius: 20px;
+  padding: 5px 12px;
+  font-size: 0.72rem;
+  font-weight: 700;
+}
+.rec-dot {
+  width: 8px; height: 8px;
+  border-radius: 50%;
+  background: var(--red);
+  animation: blink 1s ease-in-out infinite;
+}
+@keyframes blink { 0%,100%{opacity:1} 50%{opacity:0.2} }
+
+.timer-display {
+  position: absolute;
+  top: 14px; right: 14px;
+  background: rgba(0,0,0,0.7);
+  backdrop-filter: blur(8px);
+  border-radius: 8px;
+  padding: 5px 12px;
+  font-family: var(--mono);
+  font-size: 0.82rem;
+  display: none;
+}
+
+/* Controls */
+.controls-card {
+  background: var(--panel);
+  border: 1.5px solid var(--border);
+  border-radius: 16px;
+  padding: 20px;
+}
+
+.options-grid {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 10px;
+  margin-bottom: 16px;
+}
+
+.option-toggle {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 12px 14px;
+  background: var(--panel2);
+  border: 1.5px solid var(--border);
+  border-radius: 10px;
+  cursor: pointer;
+  transition: border-color 0.15s;
+}
+.option-toggle:hover { border-color: var(--accent); }
+.option-toggle.active { border-color: var(--accent); background: rgba(74,124,89,0.08); }
+.option-label {
+  font-size: 0.78rem;
+  font-weight: 600;
+}
+.option-sub { font-size: 0.65rem; color: var(--gray); margin-top: 2px; }
+
+/* Toggle switch */
+.toggle-sw {
+  width: 32px; height: 18px;
+  border-radius: 9px;
+  background: var(--border);
+  position: relative;
+  flex-shrink: 0;
+  transition: background 0.2s;
+}
+.toggle-sw::after {
+  content: '';
+  position: absolute;
+  top: 2px; left: 2px;
+  width: 14px; height: 14px;
+  border-radius: 50%;
+  background: var(--gray);
+  transition: all 0.2s;
+}
+.option-toggle.active .toggle-sw { background: var(--accent); }
+.option-toggle.active .toggle-sw::after { left: 16px; background: #fff; }
+
+/* Quality select */
+.quality-row {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  margin-bottom: 16px;
+}
+.quality-label { font-size: 0.75rem; font-weight: 600; color: var(--gray); flex-shrink: 0; }
+.quality-btns { display: flex; gap: 5px; }
+.quality-btn {
+  padding: 5px 12px;
+  border-radius: 6px;
+  border: 1.5px solid var(--border);
+  background: none;
+  color: var(--gray);
+  font-family: var(--font);
+  font-size: 0.72rem;
+  font-weight: 700;
+  cursor: pointer;
+  transition: all 0.14s;
+}
+.quality-btn:hover { border-color: var(--accent); color: var(--accent-light); }
+.quality-btn.active { background: var(--accent); border-color: var(--accent); color: #fff; }
+
+/* Main button */
+.main-btn {
+  width: 100%;
+  padding: 14px;
+  border-radius: 12px;
+  border: none;
+  font-family: var(--font);
+  font-size: 0.9rem;
+  font-weight: 700;
+  cursor: pointer;
+  transition: all 0.18s;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 8px;
+}
+.main-btn.start { background: var(--accent); color: #fff; }
+.main-btn.start:hover { background: #3d6b4a; }
+.main-btn.stop  { background: var(--red); color: #fff; }
+.main-btn.stop:hover { background: #c04444; }
+.main-btn.pause { background: var(--panel2); border: 1.5px solid var(--border); color: var(--white); }
+.main-btn.pause:hover { border-color: var(--accent); }
+
+.btn-row { display: flex; gap: 8px; }
+.btn-row .main-btn { flex: 1; padding: 12px; font-size: 0.82rem; }
+
+/* Recordings list */
+.recordings-card {
+  background: var(--panel);
+  border: 1.5px solid var(--border);
+  border-radius: 16px;
+  overflow: hidden;
+}
+.recordings-header {
+  padding: 14px 16px;
+  border-bottom: 1px solid var(--border);
+  font-size: 0.65rem;
+  font-weight: 700;
+  letter-spacing: 0.12em;
+  text-transform: uppercase;
+  color: var(--gray);
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+}
+.recordings-list { max-height: 200px; overflow-y: auto; }
+.recordings-list::-webkit-scrollbar { width: 3px; }
+.recordings-list::-webkit-scrollbar-thumb { background: var(--border); }
+
+.recording-item {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  padding: 12px 16px;
+  border-bottom: 1px solid var(--border);
+  transition: background 0.12s;
+}
+.recording-item:last-child { border-bottom: none; }
+.recording-item:hover { background: var(--panel2); }
+.recording-thumb {
+  width: 48px; height: 28px;
+  border-radius: 5px;
+  background: var(--panel2);
+  overflow: hidden;
+  flex-shrink: 0;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 1rem;
+  color: var(--gray-light);
+}
+.recording-info { flex: 1; min-width: 0; }
+.recording-name { font-size: 0.78rem; font-weight: 600; color: var(--white); }
+.recording-meta { font-size: 0.65rem; color: var(--gray); margin-top: 2px; }
+.rec-actions { display: flex; gap: 5px; }
+.rec-action {
+  padding: 4px 8px;
+  border-radius: 5px;
+  border: 1px solid var(--border);
+  background: none;
+  color: var(--gray);
+  font-size: 0.7rem;
+  cursor: pointer;
+  font-family: var(--font);
+  font-weight: 600;
+  transition: all 0.12s;
+}
+.rec-action:hover { border-color: var(--accent); color: var(--accent-light); }
+.rec-action.danger:hover { border-color: var(--red); color: var(--red); }
+
+.empty-recordings {
+  padding: 20px;
+  text-align: center;
+  font-size: 0.75rem;
+  color: var(--gray-light);
+}
+</style>
+</head>
+<body>
+
+<div class="wrapper">
+
+  <div class="header">
+    <h1>Screen <span>Recorder</span></h1>
+    <p>Record your screen directly in the browser. Saved as WebM.</p>
+  </div>
+
+  <!-- Preview -->
+  <div class="preview-card">
+    <video id="preview" autoplay muted playsinline></video>
+    <div class="preview-placeholder" id="placeholder">
+      <div class="preview-placeholder-icon">🖥</div>
+      <p>Preview will appear here after you start recording</p>
+    </div>
+    <div class="rec-indicator" id="recIndicator">
+      <div class="rec-dot"></div>
+      REC
+    </div>
+    <div class="timer-display" id="timerDisplay">00:00</div>
+  </div>
+
+  <!-- Controls -->
+  <div class="controls-card">
+
+    <div class="options-grid">
+      <div class="option-toggle active" id="opt-mic" onclick="toggleOpt('mic')">
+        <div>
+          <div class="option-label">Microphone</div>
+          <div class="option-sub">Record audio</div>
+        </div>
+        <div class="toggle-sw"></div>
+      </div>
+      <div class="option-toggle" id="opt-camera" onclick="toggleOpt('camera')">
+        <div>
+          <div class="option-label">Webcam</div>
+          <div class="option-sub">Picture-in-picture</div>
+        </div>
+        <div class="toggle-sw"></div>
+      </div>
+      <div class="option-toggle active" id="opt-cursor" onclick="toggleOpt('cursor')">
+        <div>
+          <div class="option-label">Show Cursor</div>
+          <div class="option-sub">Highlight mouse</div>
+        </div>
+        <div class="toggle-sw"></div>
+      </div>
+      <div class="option-toggle active" id="opt-countdown" onclick="toggleOpt('countdown')">
+        <div>
+          <div class="option-label">Countdown</div>
+          <div class="option-sub">3-second delay</div>
+        </div>
+        <div class="toggle-sw"></div>
+      </div>
+    </div>
+
+    <div class="quality-row">
+      <span class="quality-label">Quality</span>
+      <div class="quality-btns">
+        <button class="quality-btn" id="q-720" onclick="setQuality('720')">720p</button>
+        <button class="quality-btn active" id="q-1080" onclick="setQuality('1080')">1080p</button>
+        <button class="quality-btn" id="q-max" onclick="setQuality('max')">Max</button>
+      </div>
+    </div>
+
+    <div id="startSection">
+      <button class="main-btn start" onclick="startRecording()">⬤ Start Recording</button>
+    </div>
+
+    <div id="recordingSection" style="display:none">
+      <div class="btn-row">
+        <button class="main-btn pause" id="pauseBtn" onclick="togglePause()">⏸ Pause</button>
+        <button class="main-btn stop" onclick="stopRecording()">■ Stop & Save</button>
+      </div>
+    </div>
+
+  </div>
+
+  <!-- Recordings -->
+  <div class="recordings-card">
+    <div class="recordings-header">
+      Recordings
+      <span id="recCount" style="font-weight:400;color:var(--gray-light);letter-spacing:0">0</span>
+    </div>
+    <div class="recordings-list" id="recordingsList">
+      <div class="empty-recordings">No recordings yet</div>
+    </div>
+  </div>
+
+</div>
+
+<!-- Countdown overlay -->
+<div id="countdownOverlay" style="display:none;position:fixed;inset:0;background:rgba(0,0,0,0.85);z-index:999;display:none;align-items:center;justify-content:center;flex-direction:column;gap:12px">
+  <div id="countdownNum" style="font-family:var(--mono);font-size:8rem;font-weight:500;color:var(--white);line-height:1;animation:scaleIn 0.3s ease"></div>
+  <div style="font-size:0.88rem;color:var(--gray)">Recording starts in…</div>
+</div>
+<style>
+@keyframes scaleIn { from{transform:scale(1.4);opacity:0} to{transform:scale(1);opacity:1} }
+</style>
+
+<script>
+// ============================================================
+// STATE
+// ============================================================
+let mediaRecorder = null;
+let recordedChunks = [];
+let stream = null;
+let timerInterval = null;
+let seconds = 0;
+let isPaused = false;
+let recordings = [];
+let opts = { mic: true, camera: false, cursor: true, countdown: true };
+let quality = '1080';
+
+// ============================================================
+// OPTIONS
+// ============================================================
+function toggleOpt(key) {
+  opts[key] = !opts[key];
+  document.getElementById('opt-' + key).classList.toggle('active', opts[key]);
+}
+
+function setQuality(q) {
+  quality = q;
+  document.querySelectorAll('.quality-btn').forEach(b => b.classList.remove('active'));
+  document.getElementById('q-' + q).classList.add('active');
+}
+
+// ============================================================
+// RECORDING
+// ============================================================
+async function startRecording() {
+  try {
+    // Get screen stream
+    const displayConstraints = {
+      video: {
+        cursor: opts.cursor ? 'always' : 'never',
+        ...(quality === '720'  ? { height: { ideal: 720 } }  : {}),
+        ...(quality === '1080' ? { height: { ideal: 1080 } } : {}),
+      },
+      audio: opts.mic,
+    };
+
+    stream = await navigator.mediaDevices.getDisplayMedia(displayConstraints);
+
+    // Add mic if needed and not already in screen audio
+    if (opts.mic) {
+      try {
+        const micStream = await navigator.mediaDevices.getUserMedia({ audio: true, video: false });
+        micStream.getAudioTracks().forEach(t => stream.addTrack(t));
+      } catch(e) { /* mic denied, continue */ }
+    }
+
+    // Countdown
+    if (opts.countdown) {
+      await countdown(3);
+    }
+
+    // Show preview
+    const preview = document.getElementById('preview');
+    preview.srcObject = stream;
+    preview.style.display = 'block';
+    document.getElementById('placeholder').style.display = 'none';
+    document.getElementById('recIndicator').style.display = 'flex';
+    document.getElementById('timerDisplay').style.display = 'block';
+
+    // MediaRecorder
+    recordedChunks = [];
+    const mimeType = getSupportedMime();
+    mediaRecorder = new MediaRecorder(stream, { mimeType });
+    mediaRecorder.ondataavailable = e => { if (e.data.size > 0) recordedChunks.push(e.data); };
+    mediaRecorder.onstop = onRecordingStop;
+    mediaRecorder.start(1000);
+
+    // UI
+    document.getElementById('startSection').style.display = 'none';
+    document.getElementById('recordingSection').style.display = 'block';
+
+    // Timer
+    seconds = 0;
+    timerInterval = setInterval(() => {
+      if (!isPaused) { seconds++; updateTimer(); }
+    }, 1000);
+
+    // Auto-stop when screen share ends
+    stream.getVideoTracks()[0].addEventListener('ended', () => stopRecording());
+
+  } catch(e) {
+    if (e.name !== 'NotAllowedError') alert('Could not start recording: ' + e.message);
+  }
+}
+
+function getSupportedMime() {
+  const types = [
+    'video/webm;codecs=vp9,opus',
+    'video/webm;codecs=vp8,opus',
+    'video/webm',
+    'video/mp4',
+  ];
+  return types.find(t => MediaRecorder.isTypeSupported(t)) || '';
+}
+
+function stopRecording() {
+  if (mediaRecorder && mediaRecorder.state !== 'inactive') mediaRecorder.stop();
+  if (stream) { stream.getTracks().forEach(t => t.stop()); stream = null; }
+  clearInterval(timerInterval);
+
+  document.getElementById('recIndicator').style.display = 'none';
+  document.getElementById('timerDisplay').style.display = 'none';
+  document.getElementById('startSection').style.display = 'block';
+  document.getElementById('recordingSection').style.display = 'none';
+  document.getElementById('preview').style.display = 'none';
+  document.getElementById('placeholder').style.display = 'flex';
+  isPaused = false;
+}
+
+function onRecordingStop() {
+  if (!recordedChunks.length) return;
+  const blob = new Blob(recordedChunks, { type: 'video/webm' });
+  const url  = URL.createObjectURL(blob);
+  const name = 'recording-' + new Date().toISOString().slice(0,19).replace(/[T:]/g,'-');
+  const size  = (blob.size / 1024 / 1024).toFixed(1) + ' MB';
+  const dur   = formatTime(seconds);
+
+  recordings.unshift({ name, url, size, dur, ts: Date.now() });
+  renderRecordings();
+}
+
+function togglePause() {
+  if (!mediaRecorder) return;
+  if (isPaused) {
+    mediaRecorder.resume();
+    isPaused = false;
+    document.getElementById('pauseBtn').textContent = '⏸ Pause';
+    document.getElementById('recIndicator').style.display = 'flex';
+  } else {
+    mediaRecorder.pause();
+    isPaused = true;
+    document.getElementById('pauseBtn').textContent = '▶ Resume';
+    document.getElementById('recIndicator').style.display = 'none';
+  }
+}
+
+// ============================================================
+// COUNTDOWN
+// ============================================================
+function countdown(n) {
+  return new Promise(resolve => {
+    const overlay = document.getElementById('countdownOverlay');
+    const num = document.getElementById('countdownNum');
+    overlay.style.display = 'flex';
+    let i = n;
+    const tick = () => {
+      if (i <= 0) { overlay.style.display = 'none'; resolve(); return; }
+      num.textContent = i;
+      num.style.animation = 'none';
+      void num.offsetWidth;
+      num.style.animation = 'scaleIn 0.3s ease';
+      i--;
+      setTimeout(tick, 900);
+    };
+    tick();
+  });
+}
+
+// ============================================================
+// TIMER
+// ============================================================
+function updateTimer() {
+  document.getElementById('timerDisplay').textContent = formatTime(seconds);
+}
+function formatTime(s) {
+  const m = Math.floor(s / 60), sec = s % 60;
+  return String(m).padStart(2,'0') + ':' + String(sec).padStart(2,'0');
+}
+
+// ============================================================
+// RECORDINGS LIST
+// ============================================================
+function renderRecordings() {
+  const list = document.getElementById('recordingsList');
+  document.getElementById('recCount').textContent = recordings.length;
+
+  if (!recordings.length) {
+    list.innerHTML = '<div class="empty-recordings">No recordings yet</div>';
+    return;
+  }
+
+  list.innerHTML = recordings.map((r, i) => `
+    <div class="recording-item">
+      <div class="recording-thumb">🎬</div>
+      <div class="recording-info">
+        <div class="recording-name">${r.name}.webm</div>
+        <div class="recording-meta">${r.dur} · ${r.size}</div>
+      </div>
+      <div class="rec-actions">
+        <button class="rec-action" onclick="playRecording(${i})">▶</button>
+        <button class="rec-action" onclick="downloadRecording(${i})">↓</button>
+        <button class="rec-action danger" onclick="deleteRecording(${i})">×</button>
+      </div>
+    </div>
+  `).join('');
+}
+
+function playRecording(i) {
+  const r = recordings[i];
+  const preview = document.getElementById('preview');
+  preview.srcObject = null;
+  preview.src = r.url;
+  preview.style.display = 'block';
+  preview.controls = true;
+  document.getElementById('placeholder').style.display = 'none';
+  preview.play();
+}
+
+function downloadRecording(i) {
+  const r = recordings[i];
+  const a = document.createElement('a');
+  a.href = r.url;
+  a.download = r.name + '.webm';
+  a.click();
+}
+
+function deleteRecording(i) {
+  URL.revokeObjectURL(recordings[i].url);
+  recordings.splice(i, 1);
+  renderRecordings();
+}
+</script>
+</body>
+</html>

@@ -1,0 +1,13 @@
+# Robots.txt for Querencia
+User-agent: *
+Allow: /
+Allow: /index.html
+Allow: /privacy.html
+Allow: /terms.html
+Allow: /security.html
+
+# Bảo vệ các thư mục backend và tài liệu nội bộ
+Disallow: /api/
+Disallow: /config/
+
+Sitemap: https://querencia.com.vn/sitemap.xml

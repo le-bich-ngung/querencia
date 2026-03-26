@@ -1,0 +1,101 @@
+/* Querencia Design System */
+@import url('https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:ital,wght@0,300;0,400;0,500;0,600;0,700;0,800;1,400;1,700&display=swap');
+
+:root {
+  /* Brand */
+  --sage:           #4a7c59;
+  --sage-dark:      #2f5c3e;
+  --sage-light:     #6fa882;
+  --sage-pale:      #ddeee3;
+
+  /* Backgrounds */
+  --bg:             #ffffff;
+  --bg-warm:        #f7f9f7;
+  --bg-surface:     #f4f4f2;
+
+  /* Text */
+  --text:           #1a1a18;
+  --text-secondary: #5a5a56;
+  --gray:           #888882;
+
+  /* Border */
+  --border:         #e4e4e0;
+
+  /* Font */
+  --font:           'Plus Jakarta Sans', sans-serif;
+
+  /* Radius */
+  --radius:         12px;
+
+  /* Shadow */
+  --shadow-sm:      0 1px 4px rgba(0,0,0,0.06);
+  --shadow-md:      0 4px 16px rgba(0,0,0,0.08);
+  --shadow-lg:      0 8px 32px rgba(0,0,0,0.12);
+}
+
+/* Dark mode */
+@media (prefers-color-scheme: dark) {
+  :root {
+    --bg:             #111110;
+    --bg-warm:        #141412;
+    --bg-surface:     #1c1b19;
+    --text:           #f0efeb;
+    --text-secondary: #9a9992;
+    --gray:           #6a6a64;
+    --border:         #2a2926;
+  }
+}
+
+*, *::before, *::after {
+  box-sizing: border-box;
+  margin: 0;
+  padding: 0;
+}
+
+html {
+  scroll-behavior: smooth;
+  -webkit-text-size-adjust: 100%;
+}
+
+body {
+  font-family: var(--font);
+  color: var(--text);
+  background: var(--bg);
+  line-height: 1.5;
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
+}
+
+/* Scrollbar */
+::-webkit-scrollbar       { width: 6px; height: 6px; }
+::-webkit-scrollbar-track { background: transparent; }
+::-webkit-scrollbar-thumb { background: var(--border); border-radius: 3px; }
+::-webkit-scrollbar-thumb:hover { background: var(--gray); }
+
+/* Selection */
+::selection {
+  background: var(--sage-pale);
+  color: var(--sage-dark);
+}
+
+/* Focus visible — keyboard nav */
+:focus-visible {
+  outline: 2px solid var(--sage);
+  outline-offset: 2px;
+}
+
+/* Remove default focus for mouse users */
+:focus:not(:focus-visible) { outline: none; }
+
+/* Lumen Mode — cursor glow lives behind everything */
+body > [aria-hidden="true"] { pointer-events: none; }
+
+/* Reduce motion */
+@media (prefers-reduced-motion: reduce) {
+  *, *::before, *::after {
+    animation-duration: 0.01ms !important;
+    animation-iteration-count: 1 !important;
+    transition-duration: 0.01ms !important;
+    scroll-behavior: auto !important;
+  }
+}

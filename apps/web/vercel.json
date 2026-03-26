@@ -1,0 +1,19 @@
+{
+  "buildCommand": "cd ../.. && pnpm install --frozen-lockfile && pnpm build --filter=@querencia/web",
+  "installCommand": "cd ../.. && pnpm install --frozen-lockfile",
+  "framework": "nextjs",
+  "rewrites": [
+    { "source": "/api/v1/:path*", "destination": "https://querencia-api.fly.dev/api/v1/:path*" },
+    { "source": "/ai/:path*",    "destination": "https://querencia-ai.fly.dev/:path*" }
+  ],
+  "headers": [
+    {
+      "source": "/(.*)",
+      "headers": [
+        { "key": "X-Frame-Options",          "value": "SAMEORIGIN" },
+        { "key": "X-Content-Type-Options",   "value": "nosniff" },
+        { "key": "Referrer-Policy",          "value": "strict-origin-when-cross-origin" }
+      ]
+    }
+  ]
+}

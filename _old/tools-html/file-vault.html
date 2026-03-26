@@ -1,0 +1,595 @@
+<!DOCTYPE html>
+<html lang="vi">
+<head>
+  <meta charset="UTF-8"/>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>File Vault — Querencia</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com"/>
+  <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700;800&display=swap" rel="stylesheet"/>
+  <style>
+    :root {
+      --sage:#4a7c59;--sage-pale:#ddeee3;--sage-dark:#2f5c3e;--sage-mid:#3d6b4a;
+      --black:#111;--gray:#555;--gray-light:#999;--border:#e0e0e0;
+      --font:'Plus Jakarta Sans',sans-serif;
+      --gold:#c9a84c;--gold-pale:#fdf6e3;
+    }
+    *,*::before,*::after{box-sizing:border-box;margin:0;padding:0}
+    body{font-family:var(--font);color:var(--black);background:#f5f7f5;min-height:100vh}
+
+    /* ── NAV ── */
+    nav{display:flex;align-items:center;justify-content:space-between;padding:0 32px;height:56px;background:rgba(255,255,255,0.95);backdrop-filter:blur(8px);border-bottom:1px solid var(--border);position:sticky;top:0;z-index:100}
+    .nav-left{display:flex;align-items:center;gap:10px;text-decoration:none;color:inherit}
+    .nav-logo{width:28px;height:28px}
+    .nav-title{font-weight:800;font-size:0.95rem;letter-spacing:-0.3px}
+    .nav-back{font-size:0.82rem;color:var(--gray);text-decoration:none;padding:6px 12px;border-radius:8px;transition:background 0.15s}
+    .nav-back:hover{background:var(--sage-pale);color:var(--sage)}
+
+    /* ── HERO ── */
+    .hero{text-align:center;padding:52px 24px 40px;position:relative}
+    .hero-icon{font-size:3.5rem;margin-bottom:16px;display:block;filter:drop-shadow(0 4px 12px rgba(74,124,89,0.2))}
+    .hero-title{font-size:2rem;font-weight:800;letter-spacing:-0.8px;margin-bottom:8px}
+    .hero-title span{color:var(--sage)}
+    .hero-sub{font-size:0.88rem;color:var(--gray-light);max-width:480px;margin:0 auto 20px;line-height:1.6}
+    .hero-badge{display:inline-flex;align-items:center;gap:6px;background:var(--gold-pale);border:1px solid #e8d5a3;color:#7a5c1e;font-size:0.75rem;font-weight:700;padding:5px 12px;border-radius:99px}
+
+    /* ── CONTAINER ── */
+    .container{max-width:760px;margin:0 auto;padding:0 24px 60px}
+
+    /* ── TABS ── */
+    .tabs{display:flex;gap:4px;background:#e8ede9;padding:4px;border-radius:12px;margin-bottom:28px}
+    .tab{flex:1;padding:9px;border:none;background:none;border-radius:9px;font-family:var(--font);font-size:0.85rem;font-weight:700;cursor:pointer;color:var(--gray);transition:all 0.18s;text-align:center}
+    .tab.active{background:#fff;color:var(--black);box-shadow:0 1px 4px rgba(0,0,0,0.1)}
+
+    /* ── CARD ── */
+    .card{background:#fff;border:1.5px solid var(--border);border-radius:16px;padding:28px;margin-bottom:16px}
+    .card-title{font-size:0.8rem;font-weight:700;text-transform:uppercase;letter-spacing:0.5px;color:var(--gray-light);margin-bottom:16px}
+
+    /* ── DROP ZONE ── */
+    .drop-zone{border:2px dashed var(--border);border-radius:12px;padding:40px 24px;text-align:center;cursor:pointer;transition:all 0.2s;position:relative;background:#fafafa}
+    .drop-zone:hover,.drop-zone.over{border-color:var(--sage);background:var(--sage-pale)}
+    .drop-zone input{position:absolute;inset:0;opacity:0;cursor:pointer;width:100%;height:100%}
+    .drop-icon{font-size:2rem;margin-bottom:10px;display:block}
+    .drop-title{font-weight:700;font-size:0.95rem;margin-bottom:3px}
+    .drop-sub{font-size:0.78rem;color:var(--gray-light)}
+
+    /* ── FILE ITEM ── */
+    .file-item{display:none;align-items:center;gap:12px;background:#fafafa;border:1.5px solid var(--border);border-radius:10px;padding:12px 16px;margin-top:12px}
+    .file-item.visible{display:flex}
+    .file-item-icon{font-size:1.6rem;flex-shrink:0}
+    .file-item-info{flex:1;min-width:0}
+    .file-item-name{font-weight:600;font-size:0.88rem;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+    .file-item-size{font-size:0.75rem;color:var(--gray-light);margin-top:2px}
+    .file-item-clear{background:none;border:none;cursor:pointer;color:var(--gray-light);font-size:1rem;padding:4px;flex-shrink:0}
+    .file-item-clear:hover{color:#e74c3c}
+
+    /* ── PASSWORD INPUT ── */
+    .pass-wrap{position:relative;margin-top:16px}
+    .pass-label{font-size:0.78rem;font-weight:700;text-transform:uppercase;letter-spacing:0.5px;color:var(--gray-light);margin-bottom:6px;display:block}
+    .pass-input{width:100%;padding:11px 44px 11px 14px;border:1.5px solid var(--border);border-radius:9px;font-family:var(--font);font-size:0.92rem;outline:none;transition:border-color 0.2s;background:#fff}
+    .pass-input:focus{border-color:var(--sage)}
+    .pass-toggle{position:absolute;right:12px;bottom:10px;background:none;border:none;cursor:pointer;font-size:1.1rem;color:var(--gray-light)}
+    .pass-strength{height:3px;border-radius:99px;margin-top:6px;background:var(--border);overflow:hidden}
+    .pass-strength-fill{height:100%;border-radius:99px;transition:all 0.3s;width:0%}
+
+    /* ── BTN ── */
+    .btn-main{width:100%;margin-top:20px;padding:13px;background:var(--sage);color:#fff;border:none;border-radius:10px;font-family:var(--font);font-size:0.95rem;font-weight:700;cursor:pointer;transition:all 0.2s;display:flex;align-items:center;justify-content:center;gap:8px}
+    .btn-main:hover{background:var(--sage-dark)}
+    .btn-main:active{transform:scale(0.98)}
+    .btn-main:disabled{opacity:0.5;cursor:not-allowed;transform:none}
+
+    /* ── PROGRESS ── */
+    .prog-wrap{display:none;margin-top:16px}
+    .prog-wrap.visible{display:block}
+    .prog-bar{height:5px;background:var(--border);border-radius:99px;overflow:hidden}
+    .prog-fill{height:100%;background:var(--sage);border-radius:99px;transition:width 0.3s;width:0%}
+    .prog-label{font-size:0.78rem;color:var(--gray-light);margin-top:6px}
+
+    /* ── RESULT ── */
+    .result{display:none;margin-top:16px;background:var(--sage-pale);border:1.5px solid #b7dfca;border-radius:10px;padding:16px;text-align:center}
+    .result.visible{display:block;animation:pop 0.3s ease}
+    .result-icon{font-size:2rem;margin-bottom:8px}
+    .result-title{font-weight:700;font-size:0.95rem;margin-bottom:4px}
+    .result-sub{font-size:0.78rem;color:var(--gray);margin-bottom:14px}
+    .btn-dl{display:inline-flex;align-items:center;gap:6px;background:var(--sage);color:#fff;border:none;padding:10px 22px;border-radius:9px;font-family:var(--font);font-size:0.88rem;font-weight:600;cursor:pointer;text-decoration:none}
+    .btn-dl:hover{background:var(--sage-dark)}
+    .btn-reset{display:inline-block;margin-top:10px;font-size:0.78rem;color:var(--gray-light);cursor:pointer;text-decoration:underline}
+
+    /* ── ERROR ── */
+    .err{display:none;margin-top:12px;background:#fff5f5;border:1.5px solid #fca5a5;border-radius:9px;padding:12px 16px;font-size:0.83rem;color:#c0392b;font-weight:500}
+    .err.visible{display:block}
+
+    /* ── INFO BOXES ── */
+    .info-grid{display:grid;grid-template-columns:1fr 1fr 1fr;gap:12px;margin-bottom:24px}
+    .info-box{background:#fff;border:1.5px solid var(--border);border-radius:12px;padding:16px;text-align:center}
+    .info-box-icon{font-size:1.5rem;margin-bottom:6px}
+    .info-box-title{font-size:0.78rem;font-weight:700;margin-bottom:3px}
+    .info-box-sub{font-size:0.72rem;color:var(--gray-light);line-height:1.4}
+
+    /* ── DARK MODE ── */
+    body.dark{background:#0d0d0d;color:#eee}
+    body.dark nav{background:rgba(13,13,13,0.95);border-bottom-color:#222}
+    body.dark .card{background:#161616;border-color:#252525}
+    body.dark .tabs{background:#1a1a1a}
+    body.dark .tab.active{background:#2a2a2a;color:#eee}
+    body.dark .drop-zone{background:#111;border-color:#2a2a2a}
+    body.dark .drop-zone:hover,.dark .drop-zone.over{background:#1a3328}
+    body.dark .file-item{background:#111;border-color:#252525}
+    body.dark .pass-input{background:#111;border-color:#2a2a2a;color:#eee}
+    body.dark .info-box{background:#161616;border-color:#252525}
+
+    @keyframes pop{from{opacity:0;transform:scale(0.96)}to{opacity:1;transform:scale(1)}}
+    @media(max-width:600px){
+      nav{padding:0 16px}
+      .info-grid{grid-template-columns:1fr}
+      .hero-title{font-size:1.5rem}
+    }
+  </style>
+</head>
+<body>
+
+<nav>
+  <a class="nav-left" href="/">
+    <svg class="nav-logo" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 120 120">
+      <circle cx="55" cy="55" r="38" fill="none" stroke="#4a7c59" stroke-width="7" stroke-linecap="round"/>
+      <line x1="81" y1="79" x2="98" y2="98" stroke="#4a7c59" stroke-width="7" stroke-linecap="round"/>
+    </svg>
+    <span class="nav-title">File Vault</span>
+  </a>
+  <a class="nav-back" href="/">← Querencia</a>
+</nav>
+
+<!-- HERO -->
+<div class="hero">
+  <span class="hero-icon">🔐</span>
+  <h1 class="hero-title">Két sắt <span>mã hóa</span></h1>
+  <p class="hero-sub">Mã hóa file bằng AES-256-GCM ngay trên máy bạn. Server không bao giờ thấy nội dung — kể cả chúng tôi cũng không mở được.</p>
+  <span class="hero-badge">🛡️ Zero-knowledge · Mã hóa chuẩn quân đội</span>
+</div>
+
+<div class="container">
+
+  <!-- INFO GRID -->
+  <div class="info-grid">
+    <div class="info-box">
+      <div class="info-box-icon">🔒</div>
+      <div class="info-box-title">AES-256-GCM</div>
+      <div class="info-box-sub">Chuẩn mã hóa quân đội, không thể crack bằng brute force</div>
+    </div>
+    <div class="info-box">
+      <div class="info-box-icon">💻</div>
+      <div class="info-box-title">Xử lý trên máy bạn</div>
+      <div class="info-box-sub">File không bao giờ rời khỏi thiết bị của bạn</div>
+    </div>
+    <div class="info-box">
+      <div class="info-box-icon">🗝️</div>
+      <div class="info-box-title">Chỉ bạn có khóa</div>
+      <div class="info-box-sub">Không có mật khẩu = không mở được, kể cả chúng tôi</div>
+    </div>
+  </div>
+
+  <!-- TABS -->
+  <div class="tabs">
+    <button class="tab active" onclick="switchTab('encrypt')">🔒 Mã hóa file</button>
+    <button class="tab" onclick="switchTab('decrypt')">🔓 Giải mã file</button>
+  </div>
+
+  <!-- ══ MÃ HÓA ══ -->
+  <div id="tabEncrypt">
+    <div class="card">
+      <div class="card-title">Chọn file cần mã hóa</div>
+      <div class="drop-zone" id="encDropZone">
+        <input type="file" id="encFileInput" onchange="handleEncFile(this.files[0])"/>
+        <span class="drop-icon">📁</span>
+        <div class="drop-title">Kéo thả file vào đây</div>
+        <div class="drop-sub">Mọi loại file · Không giới hạn dung lượng</div>
+      </div>
+      <div class="file-item" id="encFileItem">
+        <span class="file-item-icon" id="encFileIcon">📄</span>
+        <div class="file-item-info">
+          <div class="file-item-name" id="encFileName"></div>
+          <div class="file-item-size" id="encFileSize"></div>
+        </div>
+        <button class="file-item-clear" onclick="clearEncFile()">✕</button>
+      </div>
+
+      <div class="pass-wrap">
+        <span class="pass-label">Mật khẩu mã hóa</span>
+        <input type="password" class="pass-input" id="encPass" placeholder="Nhập mật khẩu mạnh..." oninput="checkStrength()"/>
+        <button class="pass-toggle" onclick="togglePass('encPass',this)" type="button">👁</button>
+        <div class="pass-strength"><div class="pass-strength-fill" id="strengthFill"></div></div>
+      </div>
+
+      <button class="btn-main" id="encBtn" onclick="encryptFile()" disabled>🔒 Mã hóa & Tải về</button>
+
+      <div class="prog-wrap" id="encProg">
+        <div class="prog-bar"><div class="prog-fill" id="encProgFill"></div></div>
+        <div class="prog-label" id="encProgLabel">Đang mã hóa...</div>
+      </div>
+
+      <div class="result visible" id="encResult" style="display:none">
+        <div class="result-icon">✅</div>
+        <div class="result-title">Mã hóa thành công!</div>
+        <div class="result-sub" id="encResultSub"></div>
+        <a class="btn-dl" id="encDlBtn" href="#" download>⬇ Tải file đã mã hóa (.vault)</a>
+        <br/><span class="btn-reset" onclick="resetEnc()">Mã hóa file khác</span>
+      </div>
+
+      <div class="err" id="encErr"></div>
+    </div>
+
+    <div class="card" style="background:#fffbeb;border-color:#fde68a">
+      <div class="card-title" style="color:#92400e">⚠️ Quan trọng</div>
+      <p style="font-size:0.82rem;color:#78350f;line-height:1.7">
+        Nếu quên mật khẩu, <strong>không có cách nào khôi phục file</strong>. Hãy lưu mật khẩu ở nơi an toàn. File được mã hóa có đuôi <code>.vault</code> và chỉ mở được bằng công cụ này với đúng mật khẩu.
+      </p>
+    </div>
+  </div>
+
+  <!-- ══ GIẢI MÃ ══ -->
+  <div id="tabDecrypt" style="display:none">
+    <div class="card">
+      <div class="card-title">Chọn file .vault cần giải mã</div>
+      <div class="drop-zone" id="decDropZone">
+        <input type="file" id="decFileInput" accept=".vault" onchange="handleDecFile(this.files[0])"/>
+        <span class="drop-icon">🔐</span>
+        <div class="drop-title">Kéo thả file .vault vào đây</div>
+        <div class="drop-sub">Chỉ nhận file .vault đã được mã hóa bởi File Vault</div>
+      </div>
+      <div class="file-item" id="decFileItem">
+        <span class="file-item-icon">🔐</span>
+        <div class="file-item-info">
+          <div class="file-item-name" id="decFileName"></div>
+          <div class="file-item-size" id="decFileSize"></div>
+        </div>
+        <button class="file-item-clear" onclick="clearDecFile()">✕</button>
+      </div>
+
+      <div class="pass-wrap">
+        <span class="pass-label">Mật khẩu giải mã</span>
+        <input type="password" class="pass-input" id="decPass" placeholder="Nhập mật khẩu đã dùng khi mã hóa..."/>
+        <button class="pass-toggle" onclick="togglePass('decPass',this)" type="button">👁</button>
+      </div>
+
+      <button class="btn-main" id="decBtn" onclick="decryptFile()" disabled>🔓 Giải mã & Tải về</button>
+
+      <div class="prog-wrap" id="decProg">
+        <div class="prog-bar"><div class="prog-fill" id="decProgFill"></div></div>
+        <div class="prog-label" id="decProgLabel">Đang giải mã...</div>
+      </div>
+
+      <div class="result" id="decResult" style="display:none">
+        <div class="result-icon">✅</div>
+        <div class="result-title">Giải mã thành công!</div>
+        <div class="result-sub" id="decResultSub"></div>
+        <a class="btn-dl" id="decDlBtn" href="#" download>⬇ Tải file gốc</a>
+        <br/><span class="btn-reset" onclick="resetDec()">Giải mã file khác</span>
+      </div>
+
+      <div class="err" id="decErr"></div>
+    </div>
+  </div>
+
+</div>
+
+<script>
+// ══════════════════════════════════════════════
+// TABS
+// ══════════════════════════════════════════════
+function switchTab(tab) {
+  document.getElementById('tabEncrypt').style.display = tab === 'encrypt' ? 'block' : 'none';
+  document.getElementById('tabDecrypt').style.display = tab === 'decrypt' ? 'block' : 'none';
+  document.querySelectorAll('.tab').forEach((el,i) => el.classList.toggle('active', ['encrypt','decrypt'][i] === tab));
+}
+
+// ══════════════════════════════════════════════
+// UTILS
+// ══════════════════════════════════════════════
+function formatSize(b) {
+  if (b < 1024) return b + ' B';
+  if (b < 1024*1024) return (b/1024).toFixed(1) + ' KB';
+  return (b/1024/1024).toFixed(2) + ' MB';
+}
+
+function getFileIcon(name) {
+  const ext = name.split('.').pop().toLowerCase();
+  const m = {pdf:'📄',doc:'📝',docx:'📝',xls:'📊',xlsx:'📊',jpg:'🖼️',jpeg:'🖼️',png:'🖼️',mp4:'🎬',mp3:'🎵',zip:'📦',txt:'📃'};
+  return m[ext] || '📁';
+}
+
+function togglePass(id, btn) {
+  const inp = document.getElementById(id);
+  const show = inp.type === 'password';
+  inp.type = show ? 'text' : 'password';
+  btn.textContent = show ? '🙈' : '👁';
+}
+
+function showErr(id, msg) {
+  const el = document.getElementById(id);
+  el.textContent = '⚠️ ' + msg;
+  el.classList.add('visible');
+}
+function hideErr(id) { document.getElementById(id).classList.remove('visible'); }
+
+// ══════════════════════════════════════════════
+// PASSWORD STRENGTH
+// ══════════════════════════════════════════════
+function checkStrength() {
+  const pass = document.getElementById('encPass').value;
+  const fill = document.getElementById('strengthFill');
+  let score = 0;
+  if (pass.length >= 8)  score++;
+  if (pass.length >= 12) score++;
+  if (/[A-Z]/.test(pass)) score++;
+  if (/[0-9]/.test(pass)) score++;
+  if (/[^A-Za-z0-9]/.test(pass)) score++;
+
+  const colors = ['#e74c3c','#e67e22','#f1c40f','#2ecc71','#27ae60'];
+  const widths  = ['20%','40%','60%','80%','100%'];
+  fill.style.width      = pass ? widths[Math.min(score-1,4)] : '0%';
+  fill.style.background = pass ? colors[Math.min(score-1,4)] : 'transparent';
+
+  updateEncBtn();
+}
+
+// ══════════════════════════════════════════════
+// ENCRYPT — FILES
+// ══════════════════════════════════════════════
+let encFile = null;
+let decFile = null;
+
+function handleEncFile(file) {
+  if (!file) return;
+  encFile = file;
+  document.getElementById('encFileIcon').textContent = getFileIcon(file.name);
+  document.getElementById('encFileName').textContent = file.name;
+  document.getElementById('encFileSize').textContent = formatSize(file.size);
+  document.getElementById('encFileItem').classList.add('visible');
+  hideErr('encErr');
+  updateEncBtn();
+}
+
+function clearEncFile() {
+  encFile = null;
+  document.getElementById('encFileInput').value = '';
+  document.getElementById('encFileItem').classList.remove('visible');
+  updateEncBtn();
+}
+
+function updateEncBtn() {
+  const hasFile = !!encFile;
+  const hasPass = document.getElementById('encPass').value.length >= 6;
+  document.getElementById('encBtn').disabled = !(hasFile && hasPass);
+}
+
+document.getElementById('encPass').addEventListener('input', updateEncBtn);
+
+function handleDecFile(file) {
+  if (!file) return;
+  if (!file.name.endsWith('.vault')) {
+    showErr('decErr', 'Vui lòng chọn file .vault');
+    return;
+  }
+  decFile = file;
+  document.getElementById('decFileName').textContent = file.name;
+  document.getElementById('decFileSize').textContent = formatSize(file.size);
+  document.getElementById('decFileItem').classList.add('visible');
+  hideErr('decErr');
+  updateDecBtn();
+}
+
+function clearDecFile() {
+  decFile = null;
+  document.getElementById('decFileInput').value = '';
+  document.getElementById('decFileItem').classList.remove('visible');
+  updateDecBtn();
+}
+
+function updateDecBtn() {
+  const hasFile = !!decFile;
+  const hasPass = document.getElementById('decPass').value.length >= 1;
+  document.getElementById('decBtn').disabled = !(hasFile && hasPass);
+}
+document.getElementById('decPass').addEventListener('input', updateDecBtn);
+
+// ══════════════════════════════════════════════
+// CRYPTO — Web Crypto API (AES-256-GCM)
+// ══════════════════════════════════════════════
+
+async function deriveKey(password, salt) {
+  const enc = new TextEncoder();
+  const keyMaterial = await crypto.subtle.importKey(
+    'raw', enc.encode(password), 'PBKDF2', false, ['deriveKey']
+  );
+  return crypto.subtle.deriveKey(
+    { name: 'PBKDF2', salt, iterations: 200000, hash: 'SHA-256' },
+    keyMaterial,
+    { name: 'AES-GCM', length: 256 },
+    false,
+    ['encrypt', 'decrypt']
+  );
+}
+
+// Format file .vault:
+// [4 bytes: magic "QVLT"] [16 bytes: salt] [12 bytes: iv]
+// [4 bytes: filename length] [N bytes: filename (UTF-8)]
+// [rest: encrypted data]
+const MAGIC = new Uint8Array([0x51, 0x56, 0x4C, 0x54]); // "QVLT"
+
+async function encryptFile() {
+  if (!encFile) return;
+  const pass = document.getElementById('encPass').value;
+  if (pass.length < 6) { showErr('encErr', 'Mật khẩu ít nhất 6 ký tự'); return; }
+
+  const btn = document.getElementById('encBtn');
+  btn.disabled = true;
+  btn.textContent = '⏳ Đang mã hóa...';
+  setProgress('enc', 10, 'Đang đọc file...');
+  document.getElementById('encProg').classList.add('visible');
+  document.getElementById('encResult').style.display = 'none';
+  hideErr('encErr');
+
+  try {
+    const fileData = await readFileAsArrayBuffer(encFile);
+    setProgress('enc', 30, 'Đang tạo khóa...');
+
+    const salt = crypto.getRandomValues(new Uint8Array(16));
+    const iv   = crypto.getRandomValues(new Uint8Array(12));
+    const key  = await deriveKey(pass, salt);
+
+    setProgress('enc', 60, 'Đang mã hóa...');
+    const encrypted = await crypto.subtle.encrypt({ name: 'AES-GCM', iv }, key, fileData);
+
+    setProgress('enc', 85, 'Đang tạo file...');
+
+    // Ghép header + data
+    const fileNameBytes = new TextEncoder().encode(encFile.name);
+    const fnLen = new Uint32Array([fileNameBytes.length]);
+
+    const blob = new Blob([
+      MAGIC,
+      salt,
+      iv,
+      new Uint8Array(fnLen.buffer),
+      fileNameBytes,
+      encrypted
+    ]);
+
+    setProgress('enc', 100, 'Hoàn tất!');
+
+    const url = URL.createObjectURL(blob);
+    const outName = encFile.name + '.vault';
+    document.getElementById('encDlBtn').href     = url;
+    document.getElementById('encDlBtn').download = outName;
+    document.getElementById('encResultSub').textContent = `${outName} · ${formatSize(blob.size)}`;
+
+    setTimeout(() => {
+      document.getElementById('encProg').classList.remove('visible');
+      const r = document.getElementById('encResult');
+      r.style.display = 'block';
+      r.classList.add('visible');
+    }, 500);
+
+  } catch(e) {
+    showErr('encErr', 'Mã hóa thất bại: ' + e.message);
+  } finally {
+    btn.disabled = false;
+    btn.textContent = '🔒 Mã hóa & Tải về';
+  }
+}
+
+async function decryptFile() {
+  if (!decFile) return;
+  const pass = document.getElementById('decPass').value;
+  if (!pass) { showErr('decErr', 'Vui lòng nhập mật khẩu'); return; }
+
+  const btn = document.getElementById('decBtn');
+  btn.disabled = true;
+  btn.textContent = '⏳ Đang giải mã...';
+  setProgress('dec', 10, 'Đang đọc file...');
+  document.getElementById('decProg').classList.add('visible');
+  document.getElementById('decResult').style.display = 'none';
+  hideErr('decErr');
+
+  try {
+    const buf = await readFileAsArrayBuffer(decFile);
+    const data = new Uint8Array(buf);
+
+    // Kiểm tra magic
+    for (let i = 0; i < 4; i++) {
+      if (data[i] !== MAGIC[i]) throw new Error('File không phải định dạng .vault hợp lệ');
+    }
+
+    let offset = 4;
+    const salt = data.slice(offset, offset + 16); offset += 16;
+    const iv   = data.slice(offset, offset + 12); offset += 12;
+    const fnLen = new DataView(buf, offset, 4).getUint32(0, true); offset += 4;
+    const fileNameBytes = data.slice(offset, offset + fnLen); offset += fnLen;
+    const origName = new TextDecoder().decode(fileNameBytes);
+    const encData  = data.slice(offset);
+
+    setProgress('dec', 40, 'Đang tạo khóa...');
+    const key = await deriveKey(pass, salt);
+
+    setProgress('dec', 70, 'Đang giải mã...');
+    let decrypted;
+    try {
+      decrypted = await crypto.subtle.decrypt({ name: 'AES-GCM', iv }, key, encData);
+    } catch {
+      throw new Error('Sai mật khẩu hoặc file bị hỏng');
+    }
+
+    setProgress('dec', 100, 'Hoàn tất!');
+
+    const blob = new Blob([decrypted]);
+    const url  = URL.createObjectURL(blob);
+    document.getElementById('decDlBtn').href     = url;
+    document.getElementById('decDlBtn').download = origName;
+    document.getElementById('decResultSub').textContent = `${origName} · ${formatSize(blob.size)}`;
+
+    setTimeout(() => {
+      document.getElementById('decProg').classList.remove('visible');
+      const r = document.getElementById('decResult');
+      r.style.display = 'block';
+      r.classList.add('visible');
+    }, 500);
+
+  } catch(e) {
+    showErr('decErr', e.message);
+  } finally {
+    btn.disabled = false;
+    btn.textContent = '🔓 Giải mã & Tải về';
+  }
+}
+
+function setProgress(prefix, pct, label) {
+  document.getElementById(prefix + 'ProgFill').style.width = pct + '%';
+  document.getElementById(prefix + 'ProgLabel').textContent = label;
+}
+
+function readFileAsArrayBuffer(file) {
+  return new Promise((res, rej) => {
+    const r = new FileReader();
+    r.onload  = e => res(e.target.result);
+    r.onerror = () => rej(new Error('Không đọc được file'));
+    r.readAsArrayBuffer(file);
+  });
+}
+
+// RESET
+function resetEnc() {
+  clearEncFile();
+  document.getElementById('encPass').value = '';
+  document.getElementById('strengthFill').style.width = '0%';
+  document.getElementById('encResult').style.display = 'none';
+  document.getElementById('encProg').classList.remove('visible');
+  hideErr('encErr');
+  updateEncBtn();
+}
+function resetDec() {
+  clearDecFile();
+  document.getElementById('decPass').value = '';
+  document.getElementById('decResult').style.display = 'none';
+  document.getElementById('decProg').classList.remove('visible');
+  hideErr('decErr');
+  updateDecBtn();
+}
+
+// DRAG & DROP
+function setupDrop(zoneId, handler) {
+  const zone = document.getElementById(zoneId);
+  zone.addEventListener('dragover', e => { e.preventDefault(); zone.classList.add('over'); });
+  zone.addEventListener('dragleave', () => zone.classList.remove('over'));
+  zone.addEventListener('drop', e => {
+    e.preventDefault();
+    zone.classList.remove('over');
+    const f = e.dataTransfer.files[0];
+    if (f) handler(f);
+  });
+}
+setupDrop('encDropZone', handleEncFile);
+setupDrop('decDropZone', handleDecFile);
+
+if (localStorage.getItem('darkMode') === 'true') document.body.classList.add('dark');
+</script>
+</body>
+</html>

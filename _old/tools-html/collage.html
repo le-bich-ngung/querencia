@@ -1,0 +1,1219 @@
+<!DOCTYPE html>
+<html lang="vi">
+<head>
+<meta charset="UTF-8"/>
+<meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+<title>Collage · Querencia Tools</title>
+<link rel="shortcut icon" type="image/svg+xml" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 120 120'><circle cx='55' cy='55' r='38' fill='none' stroke='%234a7c59' stroke-width='7' stroke-linecap='round'/><line x1='81' y1='79' x2='98' y2='98' stroke='%234a7c59' stroke-width='7' stroke-linecap='round'/></svg>"/>
+<link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@300;400;500;600;700&family=Instrument+Serif:ital@0;1&display=swap" rel="stylesheet"/>
+<style>
+:root {
+  --sage:#4a7c59;--sage-pale:#ddeee3;--sage-dark:#2f5c3e;--sage-mid:#5d9470;
+  --black:#0e0e0e;--white:#fff;--gray:#666;--gray-light:#aaa;--border:#e5e5e3;
+  --canvas-bg:#1a1a1a;
+  --font:'Plus Jakarta Sans',sans-serif;
+  --serif:'Instrument Serif',serif;
+}
+*,*::before,*::after{box-sizing:border-box;margin:0;padding:0}
+html,body{height:100%;overflow:hidden}
+body{font-family:var(--font);background:#f7f6f3;color:var(--black);display:flex;flex-direction:column}
+@keyframes fadeIn{from{opacity:0;transform:translateY(6px)}to{opacity:1;transform:none}}
+@keyframes pop{0%{transform:scale(0.9);opacity:0}70%{transform:scale(1.03)}100%{transform:scale(1);opacity:1}}
+@keyframes spin{to{transform:rotate(360deg)}}
+@keyframes pulse{0%,100%{opacity:1}50%{opacity:0.5}}
+
+/* ─── TOPBAR ─────────────────────────────── */
+.topbar{
+  height:52px;background:var(--white);border-bottom:1px solid var(--border);
+  display:flex;align-items:center;padding:0 16px;gap:12px;flex-shrink:0;z-index:100;
+}
+.logo-link{display:flex;align-items:center;gap:6px;text-decoration:none;margin-right:8px}
+.logo-text{font-weight:700;font-size:1rem}
+.topbar-title{font-family:var(--serif);font-size:1.1rem;font-style:italic;color:var(--gray);flex:1}
+.tb-sep{width:1px;height:24px;background:var(--border)}
+.tb-btn{background:none;border:none;cursor:pointer;font-family:var(--font);font-size:0.78rem;font-weight:500;color:var(--gray);padding:6px 12px;border-radius:6px;transition:all 0.15s;white-space:nowrap;display:flex;align-items:center;gap:5px}
+.tb-btn:hover{background:#f0f0ee;color:var(--black)}
+.tb-btn.primary{background:var(--sage);color:#fff;font-weight:600}
+.tb-btn.primary:hover{background:var(--sage-dark)}
+.tb-btn.danger{color:#c0392b}
+.tb-btn.danger:hover{background:#fdecea}
+
+/* ─── MAIN LAYOUT ─────────────────────────── */
+.app-body{display:flex;flex:1;overflow:hidden}
+
+/* ─── LEFT SIDEBAR ────────────────────────── */
+.sidebar-left{
+  width:220px;border-right:1px solid var(--border);background:var(--white);
+  display:flex;flex-direction:column;overflow:hidden;flex-shrink:0;
+}
+.sb-section{padding:12px}
+.sb-title{font-size:0.62rem;letter-spacing:0.14em;text-transform:uppercase;color:var(--gray-light);font-weight:600;margin-bottom:10px}
+.sb-sep{height:1px;background:var(--border);margin:4px 0}
+
+/* Photo list */
+.photo-list{flex:1;overflow-y:auto;padding:8px;display:flex;flex-direction:column;gap:4px}
+.photo-list::-webkit-scrollbar{width:3px}
+.photo-list::-webkit-scrollbar-thumb{background:var(--border)}
+.photo-item{display:flex;align-items:center;gap:8px;padding:6px 8px;border-radius:8px;cursor:pointer;transition:background 0.15s;border:1.5px solid transparent}
+.photo-item:hover{background:#f7f6f3}
+.photo-item.selected{background:var(--sage-pale);border-color:var(--sage)}
+.photo-item img{width:36px;height:36px;object-fit:cover;border-radius:5px;flex-shrink:0}
+.photo-item-name{font-size:0.72rem;color:var(--black);white-space:nowrap;overflow:hidden;text-overflow:ellipsis;flex:1}
+.photo-item-del{background:none;border:none;cursor:pointer;color:var(--gray-light);font-size:0.75rem;padding:2px 4px;border-radius:4px;opacity:0;transition:opacity 0.15s}
+.photo-item:hover .photo-item-del{opacity:1}
+.photo-item-del:hover{color:#c0392b;background:#fdecea}
+
+.add-photo-btn{
+  margin:8px;padding:10px;border:2px dashed var(--border);border-radius:10px;
+  cursor:pointer;text-align:center;font-size:0.78rem;color:var(--gray-light);
+  transition:all 0.2s;position:relative;overflow:hidden;background:none;font-family:var(--font);
+}
+.add-photo-btn:hover{border-color:var(--sage);color:var(--sage);background:var(--sage-pale)}
+.add-photo-btn input{position:absolute;inset:0;opacity:0;cursor:pointer}
+
+.empty-photos{padding:24px 12px;text-align:center;color:var(--gray-light);font-size:0.78rem;line-height:1.6}
+.empty-photos-icon{font-size:2rem;margin-bottom:8px;opacity:0.3;display:block}
+
+/* ─── CENTER CANVAS ───────────────────────── */
+.canvas-wrap{
+  flex:1;background:var(--canvas-bg);display:flex;flex-direction:column;
+  align-items:center;justify-content:flex-start;overflow:auto;position:relative;
+}
+.canvas-wrap::-webkit-scrollbar{width:6px;height:6px}
+.canvas-wrap::-webkit-scrollbar-thumb{background:#333;border-radius:3px}
+
+.canvas-area{
+  position:relative;margin:32px auto;
+  box-shadow:0 8px 48px rgba(0,0,0,0.5);
+  background:#fff;
+}
+#mainCanvas{display:block}
+
+/* Canvas overlay for freeform */
+.canvas-overlay{
+  position:absolute;inset:0;pointer-events:none;
+}
+.freeform-item{
+  position:absolute;cursor:move;
+  border:2px solid transparent;transition:border-color 0.15s;
+  overflow:hidden;
+}
+.freeform-item.selected{border-color:var(--sage);box-shadow:0 0 0 3px rgba(74,124,89,0.25)}
+.freeform-item img{width:100%;height:100%;object-fit:cover;display:block;pointer-events:none}
+.freeform-handle{
+  position:absolute;bottom:-4px;right:-4px;
+  width:12px;height:12px;background:var(--sage);border-radius:2px;cursor:se-resize;
+  pointer-events:all;z-index:10;
+}
+.freeform-rotate{
+  position:absolute;top:-20px;left:50%;transform:translateX(-50%);
+  background:var(--sage);color:#fff;border:none;border-radius:50%;
+  width:18px;height:18px;cursor:grab;font-size:0.7rem;display:flex;align-items:center;justify-content:center;
+  pointer-events:all;z-index:10;
+}
+
+/* Text overlays */
+.text-overlay{
+  position:absolute;cursor:move;
+  border:1.5px dashed transparent;padding:4px 6px;
+  min-width:60px;
+  transition:border-color 0.15s;
+}
+.text-overlay.selected{border-color:var(--sage)}
+.text-overlay span{
+  display:block;white-space:pre;
+  outline:none;
+}
+.text-resize-handle{
+  position:absolute;bottom:-4px;right:-4px;
+  width:10px;height:10px;background:var(--sage);border-radius:2px;cursor:se-resize;
+  pointer-events:all;
+}
+
+/* Placeholder */
+.canvas-placeholder{
+  position:absolute;inset:0;display:flex;flex-direction:column;align-items:center;justify-content:center;
+  pointer-events:none;
+}
+.canvas-placeholder-icon{font-size:3rem;opacity:0.15;margin-bottom:12px}
+.canvas-placeholder p{font-size:0.85rem;color:#666;opacity:0.5;text-align:center;line-height:1.7}
+
+/* ─── RIGHT SIDEBAR ───────────────────────── */
+.sidebar-right{
+  width:240px;border-left:1px solid var(--border);background:var(--white);
+  display:flex;flex-direction:column;overflow-y:auto;flex-shrink:0;
+}
+.sidebar-right::-webkit-scrollbar{width:3px}
+.sidebar-right::-webkit-scrollbar-thumb{background:var(--border)}
+
+.panel{border-bottom:1px solid var(--border)}
+.panel-header{
+  padding:12px 14px;cursor:pointer;display:flex;align-items:center;justify-content:space-between;
+  font-size:0.72rem;font-weight:600;letter-spacing:0.1em;text-transform:uppercase;color:var(--gray);
+  user-select:none;transition:background 0.15s;
+}
+.panel-header:hover{background:#fafaf9}
+.panel-header .chevron{font-size:0.65rem;transition:transform 0.2s;color:var(--gray-light)}
+.panel-header.open .chevron{transform:rotate(180deg)}
+.panel-body{padding:12px 14px;display:none;flex-direction:column;gap:10px}
+.panel-body.open{display:flex}
+
+/* Controls */
+.ctrl-label{font-size:0.68rem;color:var(--gray-light);margin-bottom:4px;display:block}
+.ctrl-row{display:flex;gap:6px;align-items:center}
+input[type=range]{flex:1;accent-color:var(--sage);height:3px}
+.ctrl-val{font-size:0.72rem;font-weight:600;color:var(--sage);min-width:32px;text-align:right}
+.ctrl-input{width:100%;padding:7px 10px;border:1.5px solid var(--border);border-radius:7px;font-family:var(--font);font-size:0.82rem;outline:none;transition:border-color 0.2s;background:var(--white);color:var(--black)}
+.ctrl-input:focus{border-color:var(--sage)}
+.ctrl-select{width:100%;padding:7px 10px;border:1.5px solid var(--border);border-radius:7px;font-family:var(--font);font-size:0.82rem;outline:none;background:var(--white);color:var(--black);cursor:pointer}
+.ctrl-select:focus{border-color:var(--sage)}
+
+/* Color swatches */
+.swatch-row{display:flex;gap:5px;flex-wrap:wrap}
+.swatch{width:24px;height:24px;border-radius:50%;cursor:pointer;border:2px solid transparent;transition:all 0.15s;flex-shrink:0}
+.swatch:hover,.swatch.active{border-color:var(--black);transform:scale(1.15)}
+.swatch.custom{background:conic-gradient(red,yellow,lime,cyan,blue,magenta,red);position:relative}
+input[type=color].hidden-color{position:absolute;inset:0;opacity:0;cursor:pointer;width:100%;height:100%;border:none;padding:0}
+
+/* Layout thumbnails */
+.layout-grid{display:grid;grid-template-columns:repeat(3,1fr);gap:6px}
+.layout-thumb{
+  border:2px solid var(--border);border-radius:8px;padding:6px;cursor:pointer;
+  transition:all 0.15s;aspect-ratio:1;display:flex;flex-direction:column;gap:2px;
+  align-items:stretch;
+}
+.layout-thumb:hover{border-color:var(--sage-mid)}
+.layout-thumb.active{border-color:var(--sage);background:var(--sage-pale)}
+.layout-thumb svg{width:100%;flex:1}
+
+/* Filter row */
+.filter-row{display:flex;gap:5px;flex-wrap:wrap}
+.filter-btn{padding:4px 9px;border:1.5px solid var(--border);border-radius:14px;font-size:0.7rem;cursor:pointer;background:none;font-family:var(--font);transition:all 0.15s;color:var(--gray)}
+.filter-btn:hover{border-color:var(--sage);color:var(--sage)}
+.filter-btn.active{background:var(--sage);color:#fff;border-color:var(--sage)}
+
+/* Text controls */
+.font-row{display:flex;gap:5px}
+.style-btn{width:28px;height:28px;border:1.5px solid var(--border);border-radius:6px;font-size:0.8rem;cursor:pointer;background:none;display:flex;align-items:center;justify-content:center;transition:all 0.15s}
+.style-btn:hover,.style-btn.active{background:var(--sage-pale);border-color:var(--sage)}
+.align-btn{flex:1;height:28px;border:1.5px solid var(--border);border-radius:6px;font-size:0.75rem;cursor:pointer;background:none;transition:all 0.15s}
+.align-btn:hover,.align-btn.active{background:var(--sage-pale);border-color:var(--sage)}
+
+/* Action buttons */
+.action-btn{width:100%;padding:8px;border-radius:8px;font-family:var(--font);font-size:0.8rem;font-weight:500;cursor:pointer;transition:all 0.15s;border:1.5px solid var(--border);background:none;color:var(--black);display:flex;align-items:center;justify-content:center;gap:6px}
+.action-btn:hover{border-color:var(--sage);color:var(--sage);background:var(--sage-pale)}
+.action-btn.primary{background:var(--sage);color:#fff;border-color:var(--sage)}
+.action-btn.primary:hover{background:var(--sage-dark)}
+
+/* Toast */
+.toast{display:none;position:fixed;bottom:24px;left:50%;transform:translateX(-50%);background:var(--black);color:#fff;padding:9px 20px;border-radius:30px;font-size:0.8rem;font-weight:500;z-index:9999;animation:fadeIn 0.3s both;white-space:nowrap}
+
+/* Spinner overlay */
+.export-overlay{display:none;position:fixed;inset:0;background:rgba(0,0,0,0.6);z-index:9998;align-items:center;justify-content:center;flex-direction:column;gap:14px}
+.export-overlay.show{display:flex}
+.spinner{width:40px;height:40px;border:3px solid rgba(255,255,255,0.2);border-top-color:#fff;border-radius:50%;animation:spin 0.8s linear infinite}
+.export-overlay p{color:#fff;font-size:0.88rem}
+
+/* Dark mode */
+body.dark{background:#111}
+body.dark .topbar,.dark .sidebar-left,.dark .sidebar-right{background:#1a1a1a;border-color:#2a2a2a}
+body.dark .sb-sep,.dark .panel,.dark .panel-header{border-color:#2a2a2a}
+body.dark .panel-header:hover{background:#222}
+body.dark .ctrl-input,.dark .ctrl-select{background:#222;border-color:#333;color:#eee}
+body.dark .layout-thumb{border-color:#333}
+body.dark .layout-thumb.active{background:#1a3328;border-color:var(--sage)}
+body.dark .filter-btn,.dark .style-btn,.dark .align-btn,.dark .action-btn{border-color:#333;color:#ccc}
+body.dark .add-photo-btn{border-color:#333;color:#666}
+body.dark .photo-item:hover{background:#222}
+body.dark .photo-item.selected{background:#1a3328}
+body.dark .logo-text span:first-child{color:#eee}
+</style>
+</head>
+<body>
+
+<!-- TOPBAR -->
+<div class="topbar">
+  <a class="logo-link" href="https://querencia.com.vn">
+    <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 120 120" width="24" height="24" style="position:relative;top:2px;margin-right:-2px">
+      <defs><clipPath id="qc"><circle cx="55" cy="55" r="32"/></clipPath></defs>
+      <circle cx="55" cy="55" r="38" fill="none" stroke="#4a7c59" stroke-width="7" stroke-linecap="round"/>
+      <line x1="81" y1="79" x2="98" y2="98" stroke="#4a7c59" stroke-width="7" stroke-linecap="round"/>
+      <polyline points="20,55 28,38 35,68 43,32 51,60 58,43 66,70 74,48 90,55" fill="none" stroke="#4a7c59" stroke-width="3" stroke-linecap="round" stroke-linejoin="round" clip-path="url(#qc)"/>
+    </svg>
+    <span class="logo-text"><span style="color:#111">ueren</span><span style="color:#4a7c59">cia</span></span>
+  </a>
+  <div class="tb-sep"></div>
+  <span class="topbar-title">Photo Collage</span>
+
+  <button class="tb-btn" onclick="undoAction()" title="Undo">↩ Undo</button>
+  <button class="tb-btn" onclick="clearCanvas()" title="Xóa tất cả">🗑 Xóa</button>
+  <div class="tb-sep"></div>
+  <button class="tb-btn" onclick="addTextOverlay()">✎ Thêm chữ</button>
+  <div class="tb-sep"></div>
+  <button class="tb-btn" onclick="exportCollage('jpeg')">⬇ JPG</button>
+  <button class="tb-btn primary" onclick="exportCollage('png')">⬇ PNG</button>
+  <div class="tb-sep"></div>
+  <button class="tb-btn" onclick="toggleDark()" style="font-size:1rem">◐</button>
+</div>
+
+<!-- APP BODY -->
+<div class="app-body">
+
+<!-- LEFT: PHOTOS -->
+<div class="sidebar-left">
+  <div class="sb-section">
+    <div class="sb-title">Ảnh của bạn</div>
+  </div>
+
+  <button class="add-photo-btn" id="addPhotoBtn">
+    <input type="file" accept="image/*" multiple onchange="addPhotos(this.files)"/>
+    <div style="font-size:1.4rem;margin-bottom:4px">＋</div>
+    Thêm ảnh
+  </button>
+
+  <div class="photo-list" id="photoList">
+    <div class="empty-photos" id="emptyPhotos">
+      <span class="empty-photos-icon">🖼️</span>
+      Chưa có ảnh nào.<br/>Nhấn nút trên để thêm.
+    </div>
+  </div>
+</div>
+
+<!-- CENTER: CANVAS -->
+<div class="canvas-wrap" id="canvasWrap">
+  <div class="canvas-area" id="canvasArea" style="width:800px;height:600px">
+    <canvas id="mainCanvas" width="800" height="600"></canvas>
+    <div class="canvas-overlay" id="canvasOverlay" style="pointer-events:all"></div>
+    <div class="canvas-placeholder" id="canvasPlaceholder">
+      <div class="canvas-placeholder-icon">🎨</div>
+      <p>Thêm ảnh rồi chọn layout<br/>để bắt đầu ghép</p>
+    </div>
+  </div>
+</div>
+
+<!-- RIGHT: CONTROLS -->
+<div class="sidebar-right">
+
+  <!-- CANVAS SIZE -->
+  <div class="panel">
+    <div class="panel-header open" onclick="togglePanel(this)">
+      Kích thước canvas <span class="chevron">▾</span>
+    </div>
+    <div class="panel-body open">
+      <div>
+        <span class="ctrl-label">Tỉ lệ</span>
+        <select class="ctrl-select" onchange="setCanvasRatio(this.value)">
+          <option value="4:3">4:3 (800×600)</option>
+          <option value="16:9">16:9 (960×540)</option>
+          <option value="1:1">1:1 (700×700)</option>
+          <option value="3:4">3:4 (600×800)</option>
+          <option value="A4">A4 dọc (595×842)</option>
+          <option value="custom">Tùy chỉnh</option>
+        </select>
+      </div>
+      <div id="customSizeWrap" style="display:none">
+        <div class="ctrl-row" style="gap:8px">
+          <input class="ctrl-input" type="number" id="customW" value="800" placeholder="Rộng" style="width:50%"/>
+          <input class="ctrl-input" type="number" id="customH" value="600" placeholder="Cao" style="width:50%"/>
+        </div>
+        <button class="action-btn" style="margin-top:6px" onclick="applyCustomSize()">Áp dụng</button>
+      </div>
+    </div>
+  </div>
+
+  <!-- LAYOUT -->
+  <div class="panel">
+    <div class="panel-header open" onclick="togglePanel(this)">
+      Layout <span class="chevron">▾</span>
+    </div>
+    <div class="panel-body open">
+      <div class="layout-grid" id="layoutGrid">
+        <!-- Rendered by JS -->
+      </div>
+      <div>
+        <span class="ctrl-label">Viền giữa ảnh</span>
+        <div class="ctrl-row">
+          <input type="range" min="0" max="40" value="6" id="gapSlider" oninput="setGap(this.value)"/>
+          <span class="ctrl-val" id="gapVal">6px</span>
+        </div>
+      </div>
+      <div>
+        <span class="ctrl-label">Bo góc ảnh</span>
+        <div class="ctrl-row">
+          <input type="range" min="0" max="50" value="0" id="radiusSlider" oninput="setRadius(this.value)"/>
+          <span class="ctrl-val" id="radiusVal">0px</span>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- NỀN -->
+  <div class="panel">
+    <div class="panel-header" onclick="togglePanel(this)">
+      Màu nền <span class="chevron">▾</span>
+    </div>
+    <div class="panel-body">
+      <div>
+        <span class="ctrl-label">Màu nền</span>
+        <div class="swatch-row" id="bgSwatches">
+          <div class="swatch active" style="background:#fff" onclick="setBg('#fff',this)" title="Trắng"></div>
+          <div class="swatch" style="background:#0e0e0e" onclick="setBg('#0e0e0e',this)" title="Đen"></div>
+          <div class="swatch" style="background:#f5f0e8" onclick="setBg('#f5f0e8',this)" title="Kem"></div>
+          <div class="swatch" style="background:#ddeee3" onclick="setBg('#ddeee3',this)" title="Xanh lá nhạt"></div>
+          <div class="swatch" style="background:#e8f0ff" onclick="setBg('#e8f0ff',this)" title="Xanh dương nhạt"></div>
+          <div class="swatch" style="background:#ffe8f0" onclick="setBg('#ffe8f0',this)" title="Hồng nhạt"></div>
+          <div class="swatch" style="background:#fff8e1" onclick="setBg('#fff8e1',this)" title="Vàng nhạt"></div>
+          <div class="swatch custom" title="Màu tùy chỉnh">
+            <input type="color" class="hidden-color" id="bgColorPicker" oninput="setBg(this.value,null)"/>
+          </div>
+        </div>
+      </div>
+      <div>
+        <span class="ctrl-label">Độ dày viền ngoài</span>
+        <div class="ctrl-row">
+          <input type="range" min="0" max="60" value="0" id="paddingSlider" oninput="setPadding(this.value)"/>
+          <span class="ctrl-val" id="paddingVal">0px</span>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- FILTER -->
+  <div class="panel">
+    <div class="panel-header" onclick="togglePanel(this)">
+      Bộ lọc màu <span class="chevron">▾</span>
+    </div>
+    <div class="panel-body">
+      <span class="ctrl-label">Áp dụng cho ảnh đang chọn</span>
+      <div class="filter-row">
+        <button class="filter-btn active" onclick="setFilter('none',this)">Gốc</button>
+        <button class="filter-btn" onclick="setFilter('grayscale(100%)',this)">B&W</button>
+        <button class="filter-btn" onclick="setFilter('sepia(80%)',this)">Sepia</button>
+        <button class="filter-btn" onclick="setFilter('saturate(200%)',this)">Vivid</button>
+        <button class="filter-btn" onclick="setFilter('hue-rotate(180deg)',this)">Invert hue</button>
+        <button class="filter-btn" onclick="setFilter('brightness(1.3) contrast(1.1)',this)">Bright</button>
+        <button class="filter-btn" onclick="setFilter('brightness(0.8) contrast(1.2)',this)">Dark</button>
+        <button class="filter-btn" onclick="setFilter('blur(2px)',this)">Blur</button>
+      </div>
+      <div>
+        <span class="ctrl-label">Độ sáng</span>
+        <div class="ctrl-row">
+          <input type="range" min="50" max="150" value="100" id="brightnessSlider" oninput="setImgAdj('brightness',this.value)"/>
+          <span class="ctrl-val" id="brightnessVal">100%</span>
+        </div>
+      </div>
+      <div>
+        <span class="ctrl-label">Tương phản</span>
+        <div class="ctrl-row">
+          <input type="range" min="50" max="200" value="100" id="contrastSlider" oninput="setImgAdj('contrast',this.value)"/>
+          <span class="ctrl-val" id="contrastVal">100%</span>
+        </div>
+      </div>
+      <div>
+        <span class="ctrl-label">Bão hòa</span>
+        <div class="ctrl-row">
+          <input type="range" min="0" max="300" value="100" id="saturateSlider" oninput="setImgAdj('saturate',this.value)"/>
+          <span class="ctrl-val" id="saturateVal">100%</span>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- TEXT -->
+  <div class="panel">
+    <div class="panel-header" onclick="togglePanel(this)">
+      Chữ <span class="chevron">▾</span>
+    </div>
+    <div class="panel-body" id="textPanel">
+      <span class="ctrl-label" style="color:var(--gray-light);font-size:0.7rem">Chọn text trên canvas để chỉnh</span>
+      <div>
+        <span class="ctrl-label">Font</span>
+        <select class="ctrl-select" id="fontFamily" onchange="updateSelectedText()">
+          <option value="Plus Jakarta Sans">Plus Jakarta Sans</option>
+          <option value="Instrument Serif">Instrument Serif</option>
+          <option value="Georgia">Georgia</option>
+          <option value="Arial">Arial</option>
+          <option value="monospace">Monospace</option>
+          <option value="cursive">Cursive</option>
+        </select>
+      </div>
+      <div>
+        <span class="ctrl-label">Cỡ chữ</span>
+        <div class="ctrl-row">
+          <input type="range" min="10" max="120" value="28" id="fontSizeSlider" oninput="updateSelectedText()"/>
+          <span class="ctrl-val" id="fontSizeVal">28px</span>
+        </div>
+      </div>
+      <div>
+        <span class="ctrl-label">Màu chữ</span>
+        <div class="swatch-row" id="textSwatches">
+          <div class="swatch active" style="background:#fff" onclick="setTextColor('#fff',this)"></div>
+          <div class="swatch" style="background:#0e0e0e" onclick="setTextColor('#0e0e0e',this)"></div>
+          <div class="swatch" style="background:#4a7c59" onclick="setTextColor('#4a7c59',this)"></div>
+          <div class="swatch" style="background:#e74c3c" onclick="setTextColor('#e74c3c',this)"></div>
+          <div class="swatch" style="background:#f39c12" onclick="setTextColor('#f39c12',this)"></div>
+          <div class="swatch custom" title="Màu tùy chỉnh">
+            <input type="color" class="hidden-color" id="textColorPicker" oninput="setTextColor(this.value,null)"/>
+          </div>
+        </div>
+      </div>
+      <div class="font-row">
+        <button class="style-btn" id="btnBold" onclick="toggleTextStyle('bold')" title="Bold"><b>B</b></button>
+        <button class="style-btn" id="btnItalic" onclick="toggleTextStyle('italic')" title="Italic"><i>I</i></button>
+        <button class="style-btn" id="btnShadow" onclick="toggleTextStyle('shadow')" title="Bóng đổ">☁</button>
+        <button class="style-btn" id="btnStroke" onclick="toggleTextStyle('stroke')" title="Viền chữ">◻</button>
+      </div>
+      <div class="font-row">
+        <button class="align-btn" onclick="setTextAlign('left')">⬅</button>
+        <button class="align-btn" onclick="setTextAlign('center')">↔</button>
+        <button class="align-btn" onclick="setTextAlign('right')">➡</button>
+      </div>
+      <div>
+        <span class="ctrl-label">Độ trong suốt</span>
+        <div class="ctrl-row">
+          <input type="range" min="10" max="100" value="100" id="textOpacity" oninput="updateSelectedText()"/>
+          <span class="ctrl-val" id="textOpacityVal">100%</span>
+        </div>
+      </div>
+      <button class="action-btn" onclick="deleteSelectedText()" style="color:#c0392b;border-color:#f5c6c6">🗑 Xóa text đang chọn</button>
+    </div>
+  </div>
+
+  <!-- SELECTED IMAGE -->
+  <div class="panel">
+    <div class="panel-header" onclick="togglePanel(this)">
+      Ảnh đang chọn <span class="chevron">▾</span>
+    </div>
+    <div class="panel-body">
+      <div>
+        <span class="ctrl-label">Xoay</span>
+        <div class="ctrl-row">
+          <input type="range" min="-180" max="180" value="0" id="rotateSlider" oninput="rotateSelected(this.value)"/>
+          <span class="ctrl-val" id="rotateVal">0°</span>
+        </div>
+      </div>
+      <div>
+        <span class="ctrl-label">Zoom ảnh trong khung</span>
+        <div class="ctrl-row">
+          <input type="range" min="50" max="200" value="100" id="zoomSlider" oninput="zoomSelected(this.value)"/>
+          <span class="ctrl-val" id="zoomVal">100%</span>
+        </div>
+      </div>
+      <div style="display:flex;gap:6px">
+        <button class="action-btn" onclick="moveSelectedUp()" style="flex:1">↑ Lên trên</button>
+        <button class="action-btn" onclick="moveSelectedDown()" style="flex:1">↓ Xuống dưới</button>
+      </div>
+      <button class="action-btn" onclick="removeSelectedPhoto()" style="color:#c0392b;border-color:#f5c6c6">🗑 Xóa ảnh này</button>
+    </div>
+  </div>
+
+</div>
+</div>
+
+<!-- EXPORT OVERLAY -->
+<div class="export-overlay" id="exportOverlay">
+  <div class="spinner"></div>
+  <p>Đang xuất ảnh...</p>
+</div>
+<div class="toast" id="toast"></div>
+
+<script>
+// ═══════════════════════════════════════════════
+// STATE
+// ═══════════════════════════════════════════════
+const state = {
+  photos: [],          // { id, name, img, filter, brightness, contrast, saturate, rotate, zoom }
+  texts: [],           // { id, text, x, y, font, size, color, bold, italic, shadow, stroke, align, opacity }
+  layout: 'grid-2x2',
+  gap: 6,
+  radius: 0,
+  padding: 0,
+  bg: '#fff',
+  canvasW: 800,
+  canvasH: 600,
+  selectedPhotoId: null,
+  selectedTextId: null,
+  history: [],
+};
+
+let nextId = 1;
+const canvas = document.getElementById('mainCanvas');
+const ctx = canvas.getContext('2d');
+const overlay = document.getElementById('canvasOverlay');
+
+// ─── DARK MODE ───────────────────────────────
+if (localStorage.getItem('darkMode')==='1') document.body.classList.add('dark');
+function toggleDark(){
+  document.body.classList.toggle('dark');
+  localStorage.setItem('darkMode', document.body.classList.contains('dark')?'1':'0');
+}
+
+function toast(msg,dur=2200){
+  const t=document.getElementById('toast');
+  t.textContent=msg;t.style.display='block';
+  clearTimeout(t._t);t._t=setTimeout(()=>t.style.display='none',dur);
+}
+
+// ─── PANEL TOGGLE ────────────────────────────
+function togglePanel(header){
+  header.classList.toggle('open');
+  const body = header.nextElementSibling;
+  body.classList.toggle('open');
+}
+
+// ─── LAYOUT DEFINITIONS ──────────────────────
+const LAYOUTS = [
+  { id:'freeform',    label:'Tự do',   icon:freeformIcon() },
+  { id:'grid-1x1',   label:'1 ảnh',   icon:gridIcon([[1,1]]) },
+  { id:'grid-2x1',   label:'2 ngang', icon:gridIcon([[1,2]]) },
+  { id:'grid-1x2',   label:'2 dọc',   icon:gridIcon([[2,1]]) },
+  { id:'grid-2x2',   label:'2×2',     icon:gridIcon([[2,2]]) },
+  { id:'grid-3x1',   label:'3 ngang', icon:gridIcon([[1,3]]) },
+  { id:'grid-1x3',   label:'3 dọc',   icon:gridIcon([[3,1]]) },
+  { id:'grid-3x2',   label:'3×2',     icon:gridIcon([[2,3]]) },
+  { id:'tpl-L',      label:'L-shape', icon:lShapeIcon() },
+  { id:'tpl-T',      label:'T-shape', icon:tShapeIcon() },
+  { id:'tpl-bigL',   label:'Big+Sm',  icon:bigSmallIcon() },
+  { id:'mosaic',     label:'Mosaic',  icon:mosaicIcon() },
+];
+
+function gridIcon(dims){
+  const [rows,cols]=dims;
+  const w=36,h=32,g=2;
+  const cw=(w-g*(cols-1))/cols,ch=(h-g*(rows-1))/rows;
+  let rects='';
+  for(let r=0;r<rows;r++) for(let c=0;c<cols;c++)
+    rects+=`<rect x="${c*(cw+g)}" y="${r*(ch+g)}" width="${cw}" height="${ch}" rx="1" fill="#ccc"/>`;
+  return `<svg viewBox="0 0 ${w} ${h}">${rects}</svg>`;
+}
+function freeformIcon(){
+  return `<svg viewBox="0 0 36 32"><rect x="2" y="2" width="16" height="18" rx="2" fill="#ccc"/><rect x="20" y="2" width="14" height="12" rx="2" fill="#ccc"/><rect x="20" y="16" width="14" height="14" rx="2" fill="#ccc"/><rect x="2" y="22" width="16" height="8" rx="2" fill="#ccc"/></svg>`;
+}
+function lShapeIcon(){
+  return `<svg viewBox="0 0 36 32"><rect x="2" y="2" width="16" height="28" rx="1" fill="#ccc"/><rect x="20" y="2" width="14" height="13" rx="1" fill="#ccc"/><rect x="20" y="17" width="14" height="13" rx="1" fill="#ccc"/></svg>`;
+}
+function tShapeIcon(){
+  return `<svg viewBox="0 0 36 32"><rect x="2" y="2" width="32" height="14" rx="1" fill="#ccc"/><rect x="2" y="18" width="15" height="12" rx="1" fill="#ccc"/><rect x="19" y="18" width="15" height="12" rx="1" fill="#ccc"/></svg>`;
+}
+function bigSmallIcon(){
+  return `<svg viewBox="0 0 36 32"><rect x="2" y="2" width="20" height="28" rx="1" fill="#ccc"/><rect x="24" y="2" width="10" height="13" rx="1" fill="#ccc"/><rect x="24" y="17" width="10" height="13" rx="1" fill="#ccc"/></svg>`;
+}
+function mosaicIcon(){
+  return `<svg viewBox="0 0 36 32"><rect x="2" y="2" width="10" height="10" rx="1" fill="#ccc"/><rect x="14" y="2" width="20" height="10" rx="1" fill="#ccc"/><rect x="2" y="14" width="20" height="16" rx="1" fill="#ccc"/><rect x="24" y="14" width="10" height="7" rx="1" fill="#ccc"/><rect x="24" y="23" width="10" height="7" rx="1" fill="#ccc"/></svg>`;
+}
+
+function renderLayoutGrid(){
+  const grid = document.getElementById('layoutGrid');
+  grid.innerHTML = LAYOUTS.map(l=>`
+    <div class="layout-thumb ${l.id===state.layout?'active':''}"
+      onclick="setLayout('${l.id}',this)" title="${l.label}">
+      ${l.icon}
+      <div style="font-size:0.55rem;text-align:center;color:var(--gray-light);margin-top:2px">${l.label}</div>
+    </div>
+  `).join('');
+}
+renderLayoutGrid();
+
+function setLayout(id, el){
+  state.layout = id;
+  document.querySelectorAll('.layout-thumb').forEach(t=>t.classList.remove('active'));
+  el.classList.add('active');
+  if(id==='freeform') initFreeform();
+  else renderCollage();
+}
+
+// ─── CANVAS SIZE ─────────────────────────────
+function setCanvasRatio(val){
+  const map={'4:3':[800,600],'16:9':[960,540],'1:1':[700,700],'3:4':[600,800],'A4':[595,842]};
+  document.getElementById('customSizeWrap').style.display = val==='custom'?'flex':'none';
+  document.getElementById('customSizeWrap').style.flexDirection='column';
+  if(map[val]){
+    state.canvasW=map[val][0]; state.canvasH=map[val][1];
+    resizeCanvas();
+  }
+}
+function applyCustomSize(){
+  state.canvasW = parseInt(document.getElementById('customW').value)||800;
+  state.canvasH = parseInt(document.getElementById('customH').value)||600;
+  resizeCanvas();
+}
+function resizeCanvas(){
+  canvas.width=state.canvasW; canvas.height=state.canvasH;
+  document.getElementById('canvasArea').style.width=state.canvasW+'px';
+  document.getElementById('canvasArea').style.height=state.canvasH+'px';
+  overlay.style.width=state.canvasW+'px';
+  overlay.style.height=state.canvasH+'px';
+  renderCollage();
+}
+
+// ─── ADD PHOTOS ──────────────────────────────
+function addPhotos(files){
+  document.getElementById('canvasPlaceholder').style.display='none';
+  const promises = [...files].map(f=>new Promise(res=>{
+    const img=new Image();
+    img.onload=()=>{
+      state.photos.push({
+        id:nextId++, name:f.name.replace(/\.[^.]+$/,''), img,
+        filter:'none', brightness:100, contrast:100, saturate:100,
+        rotate:0, zoom:100,
+        x:20, y:20, w:200, h:200,
+      });
+      res();
+    };
+    img.src=URL.createObjectURL(f);
+  }));
+  Promise.all(promises).then(()=>{
+    renderPhotoList();
+    if(state.layout==='freeform') initFreeform();
+    else renderCollage();
+  });
+}
+
+function renderPhotoList(){
+  const list=document.getElementById('photoList');
+  const empty=document.getElementById('emptyPhotos');
+  empty.style.display=state.photos.length?'none':'block';
+  const existing=list.querySelectorAll('.photo-item');
+  existing.forEach(e=>e.remove());
+  state.photos.forEach(p=>{
+    const el=document.createElement('div');
+    el.className='photo-item'+(state.selectedPhotoId===p.id?' selected':'');
+    el.innerHTML=`
+      <img src="${p.img.src}" alt="${p.name}"/>
+      <span class="photo-item-name">${p.name}</span>
+      <button class="photo-item-del" onclick="event.stopPropagation();removePhoto(${p.id})">✕</button>
+    `;
+    el.onclick=()=>selectPhoto(p.id);
+    list.appendChild(el);
+  });
+}
+
+function selectPhoto(id){
+  state.selectedPhotoId=id;
+  renderPhotoList();
+  const p=state.photos.find(x=>x.id===id);
+  if(!p) return;
+  document.getElementById('rotateSlider').value=p.rotate;
+  document.getElementById('rotateVal').textContent=p.rotate+'°';
+  document.getElementById('zoomSlider').value=p.zoom;
+  document.getElementById('zoomVal').textContent=p.zoom+'%';
+  document.getElementById('brightnessSlider').value=p.brightness;
+  document.getElementById('brightnessVal').textContent=p.brightness+'%';
+  document.getElementById('contrastSlider').value=p.contrast;
+  document.getElementById('contrastVal').textContent=p.contrast+'%';
+  document.getElementById('saturateSlider').value=p.saturate;
+  document.getElementById('saturateVal').textContent=p.saturate+'%';
+  if(state.layout==='freeform') highlightFreeformItem(id);
+}
+
+function removePhoto(id){
+  state.photos=state.photos.filter(p=>p.id!==id);
+  if(state.selectedPhotoId===id) state.selectedPhotoId=null;
+  renderPhotoList();
+  if(state.layout==='freeform') initFreeform();
+  else renderCollage();
+}
+
+function removeSelectedPhoto(){
+  if(state.selectedPhotoId) removePhoto(state.selectedPhotoId);
+}
+
+// ─── RENDER COLLAGE (canvas) ─────────────────
+function renderCollage(){
+  if(state.layout==='freeform'){initFreeform();return;}
+  overlay.innerHTML='';
+  renderTextsOnOverlay();
+  const W=state.canvasW,H=state.canvasH;
+  const g=state.gap,pad=state.padding,r=state.radius;
+  ctx.clearRect(0,0,W,H);
+  // Background
+  ctx.fillStyle=state.bg;
+  ctx.fillRect(0,0,W,H);
+
+  if(!state.photos.length) return;
+
+  const slots = getLayoutSlots(W,H,g,pad);
+  slots.forEach((slot,i)=>{
+    const p=state.photos[i%state.photos.length];
+    if(!p) return;
+    drawPhotoInSlot(p,slot,r);
+  });
+}
+
+function getLayoutSlots(W,H,g,pad){
+  const id=state.layout;
+  const x0=pad,y0=pad,w=W-pad*2,h=H-pad*2;
+
+  if(id==='grid-1x1') return [{x:x0,y:y0,w,h}];
+  if(id==='grid-2x1'){ const hw=(w-g)/2; return [{x:x0,y:y0,w:hw,h},{x:x0+hw+g,y:y0,w:hw,h}]; }
+  if(id==='grid-1x2'){ const hh=(h-g)/2; return [{x:x0,y:y0,w,h:hh},{x:x0,y:y0+hh+g,w,h:hh}]; }
+  if(id==='grid-2x2'){ const hw=(w-g)/2,hh=(h-g)/2; return [
+    {x:x0,y:y0,w:hw,h:hh},{x:x0+hw+g,y:y0,w:hw,h:hh},
+    {x:x0,y:y0+hh+g,w:hw,h:hh},{x:x0+hw+g,y:y0+hh+g,w:hw,h:hh}]; }
+  if(id==='grid-3x1'){ const cw=(w-g*2)/3; return [0,1,2].map(i=>({x:x0+i*(cw+g),y:y0,w:cw,h})); }
+  if(id==='grid-1x3'){ const ch=(h-g*2)/3; return [0,1,2].map(i=>({x:x0,y:y0+i*(ch+g),w,h:ch})); }
+  if(id==='grid-3x2'){
+    const cw=(w-g*2)/3,ch=(h-g)/2;
+    return [0,1,2,3,4,5].map(i=>({x:x0+(i%3)*(cw+g),y:y0+Math.floor(i/3)*(ch+g),w:cw,h:ch}));
+  }
+  if(id==='tpl-L'){
+    const lw=(w-g)*0.55,rw=w-lw-g,ch=(h-g)/2;
+    return [{x:x0,y:y0,w:lw,h},{x:x0+lw+g,y:y0,w:rw,h:ch},{x:x0+lw+g,y:y0+ch+g,w:rw,h:ch}];
+  }
+  if(id==='tpl-T'){
+    const th=h*0.55,bh=h-th-g,bw=(w-g)/2;
+    return [{x:x0,y:y0,w,h:th},{x:x0,y:y0+th+g,w:bw,h:bh},{x:x0+bw+g,y:y0+th+g,w:bw,h:bh}];
+  }
+  if(id==='tpl-bigL'){
+    const bw=w*0.6,sw=w-bw-g,sh=(h-g)/2;
+    return [{x:x0,y:y0,w:bw,h},{x:x0+bw+g,y:y0,w:sw,h:sh},{x:x0+bw+g,y:y0+sh+g,w:sw,h:sh}];
+  }
+  if(id==='mosaic'){
+    const c1w=w*0.35,c2w=w*0.4,c3w=w-c1w-c2w-g*2;
+    const r1h=h*0.4,r2h=h-r1h-g;
+    return [
+      {x:x0,y:y0,w:c1w,h:r1h},
+      {x:x0+c1w+g,y:y0,w:c2w+c3w+g,h:r1h},
+      {x:x0,y:y0+r1h+g,w:c1w+c2w+g,h:r2h},
+      {x:x0+c1w+c2w+g*2,y:y0+r1h+g,w:c3w,h:r2h*0.5-g/2},
+      {x:x0+c1w+c2w+g*2,y:y0+r1h+g+r2h*0.5+g/2,w:c3w,h:r2h*0.5-g/2},
+    ];
+  }
+  return [{x:x0,y:y0,w,h}];
+}
+
+function drawPhotoInSlot(p,slot,r){
+  const {x,y,w,h}=slot;
+  ctx.save();
+  // Clip rounded rect
+  roundRect(ctx,x,y,w,h,r);
+  ctx.clip();
+  // Draw image with zoom + rotate
+  const zoom=p.zoom/100;
+  const iw=p.img.naturalWidth||p.img.width;
+  const ih=p.img.naturalHeight||p.img.height;
+  const scale=Math.max(w/iw,h/ih)*zoom;
+  const dw=iw*scale,dh=ih*scale;
+  const ox=x+(w-dw)/2,oy=y+(h-dh)/2;
+  // Filter
+  ctx.filter=buildFilter(p);
+  // Rotate around slot center
+  ctx.translate(x+w/2,y+h/2);
+  ctx.rotate(p.rotate*Math.PI/180);
+  ctx.drawImage(p.img,-(w/2+(dw-w)/2-(ox-x)),-(h/2+(dh-h)/2-(oy-y)),dw,dh);
+  ctx.restore();
+}
+
+function buildFilter(p){
+  let f='';
+  if(p.filter!=='none') f+=p.filter+' ';
+  f+=`brightness(${p.brightness}%) contrast(${p.contrast}%) saturate(${p.saturate}%)`;
+  return f;
+}
+
+function roundRect(ctx,x,y,w,h,r){
+  ctx.beginPath();
+  if(!r){ctx.rect(x,y,w,h);return;}
+  ctx.moveTo(x+r,y);
+  ctx.lineTo(x+w-r,y);ctx.quadraticCurveTo(x+w,y,x+w,y+r);
+  ctx.lineTo(x+w,y+h-r);ctx.quadraticCurveTo(x+w,y+h,x+w-r,y+h);
+  ctx.lineTo(x+r,y+h);ctx.quadraticCurveTo(x,y+h,x,y+h-r);
+  ctx.lineTo(x,y+r);ctx.quadraticCurveTo(x,y,x+r,y);
+  ctx.closePath();
+}
+
+// ─── FREEFORM ────────────────────────────────
+function initFreeform(){
+  overlay.innerHTML='';
+  state.photos.forEach(p=>{
+    if(!p.fw){p.fw=180;p.fh=140;p.fx=Math.random()*(state.canvasW-200);p.fy=Math.random()*(state.canvasH-160);}
+    createFreeformItem(p);
+  });
+  // clear canvas and draw bg
+  ctx.fillStyle=state.bg; ctx.fillRect(0,0,state.canvasW,state.canvasH);
+  renderTextsOnOverlay();
+}
+
+function createFreeformItem(p){
+  const el=document.createElement('div');
+  el.className='freeform-item';
+  el.dataset.id=p.id;
+  el.style.cssText=`left:${p.fx}px;top:${p.fy}px;width:${p.fw}px;height:${p.fh}px;transform:rotate(${p.rotate||0}deg)`;
+  el.innerHTML=`<img src="${p.img.src}" style="filter:${buildFilter(p)}"/>
+    <div class="freeform-handle" data-id="${p.id}"></div>
+    <button class="freeform-rotate" data-id="${p.id}" title="Xoay">↻</button>`;
+  makeDraggable(el,p);
+  makeResizable(el.querySelector('.freeform-handle'),el,p);
+  makeRotatable(el.querySelector('.freeform-rotate'),el,p);
+  el.addEventListener('click',()=>selectPhoto(p.id));
+  overlay.appendChild(el);
+}
+
+function highlightFreeformItem(id){
+  overlay.querySelectorAll('.freeform-item').forEach(el=>{
+    el.classList.toggle('selected',parseInt(el.dataset.id)===id);
+  });
+}
+
+function makeDraggable(el,p){
+  let sx,sy,ox,oy;
+  el.addEventListener('mousedown',e=>{
+    if(e.target.classList.contains('freeform-handle')||e.target.classList.contains('freeform-rotate')) return;
+    e.preventDefault();
+    sx=e.clientX;sy=e.clientY;ox=p.fx;oy=p.fy;
+    const mv=e2=>{
+      p.fx=ox+(e2.clientX-sx); p.fy=oy+(e2.clientY-sy);
+      el.style.left=p.fx+'px'; el.style.top=p.fy+'px';
+    };
+    const up=()=>{document.removeEventListener('mousemove',mv);document.removeEventListener('mouseup',up)};
+    document.addEventListener('mousemove',mv);
+    document.addEventListener('mouseup',up);
+  });
+}
+
+function makeResizable(handle,el,p){
+  handle.addEventListener('mousedown',e=>{
+    e.stopPropagation();e.preventDefault();
+    const sx=e.clientX,sy=e.clientY,ow=p.fw,oh=p.fh;
+    const mv=e2=>{
+      p.fw=Math.max(60,ow+(e2.clientX-sx));
+      p.fh=Math.max(50,oh+(e2.clientY-sy));
+      el.style.width=p.fw+'px'; el.style.height=p.fh+'px';
+    };
+    const up=()=>{document.removeEventListener('mousemove',mv);document.removeEventListener('mouseup',up)};
+    document.addEventListener('mousemove',mv);
+    document.addEventListener('mouseup',up);
+  });
+}
+
+function makeRotatable(btn,el,p){
+  btn.addEventListener('mousedown',e=>{
+    e.stopPropagation();e.preventDefault();
+    const rect=el.getBoundingClientRect();
+    const cx=rect.left+rect.width/2,cy=rect.top+rect.height/2;
+    const startAngle=Math.atan2(e.clientY-cy,e.clientX-cx)*180/Math.PI;
+    const startRot=p.rotate||0;
+    const mv=e2=>{
+      const a=Math.atan2(e2.clientY-cy,e2.clientX-cx)*180/Math.PI;
+      p.rotate=startRot+(a-startAngle);
+      el.style.transform=`rotate(${p.rotate}deg)`;
+      document.getElementById('rotateSlider').value=Math.round(p.rotate);
+      document.getElementById('rotateVal').textContent=Math.round(p.rotate)+'°';
+    };
+    const up=()=>{document.removeEventListener('mousemove',mv);document.removeEventListener('mouseup',up)};
+    document.addEventListener('mousemove',mv);
+    document.addEventListener('mouseup',up);
+  });
+}
+
+// ─── SETTINGS ────────────────────────────────
+function setGap(v){state.gap=parseInt(v);document.getElementById('gapVal').textContent=v+'px';renderCollage();}
+function setRadius(v){state.radius=parseInt(v);document.getElementById('radiusVal').textContent=v+'px';renderCollage();}
+function setPadding(v){state.padding=parseInt(v);document.getElementById('paddingVal').textContent=v+'px';renderCollage();}
+
+function setBg(color,swatch){
+  state.bg=color;
+  if(swatch){
+    document.querySelectorAll('#bgSwatches .swatch').forEach(s=>s.classList.remove('active'));
+    swatch.classList.add('active');
+  }
+  if(state.layout==='freeform'){ctx.fillStyle=color;ctx.fillRect(0,0,state.canvasW,state.canvasH);}
+  else renderCollage();
+}
+
+function setFilter(filter,btn){
+  document.querySelectorAll('.filter-btn').forEach(b=>b.classList.remove('active'));
+  btn.classList.add('active');
+  const p=state.photos.find(x=>x.id===state.selectedPhotoId);
+  if(!p){toast('Chọn ảnh trước!');return;}
+  p.filter=filter;
+  updateFreeformImage(p);
+  if(state.layout!=='freeform') renderCollage();
+}
+
+function setImgAdj(type,val){
+  document.getElementById(type+'Val').textContent=val+'%';
+  const p=state.photos.find(x=>x.id===state.selectedPhotoId);
+  if(!p) return;
+  p[type]=parseInt(val);
+  updateFreeformImage(p);
+  if(state.layout!=='freeform') renderCollage();
+}
+
+function updateFreeformImage(p){
+  const el=overlay.querySelector(`.freeform-item[data-id="${p.id}"] img`);
+  if(el) el.style.filter=buildFilter(p);
+}
+
+function rotateSelected(val){
+  document.getElementById('rotateVal').textContent=val+'°';
+  const p=state.photos.find(x=>x.id===state.selectedPhotoId);
+  if(!p) return;
+  p.rotate=parseInt(val);
+  if(state.layout==='freeform'){
+    const el=overlay.querySelector(`.freeform-item[data-id="${p.id}"]`);
+    if(el) el.style.transform=`rotate(${val}deg)`;
+  } else renderCollage();
+}
+
+function zoomSelected(val){
+  document.getElementById('zoomVal').textContent=val+'%';
+  const p=state.photos.find(x=>x.id===state.selectedPhotoId);
+  if(!p) return;
+  p.zoom=parseInt(val);
+  if(state.layout!=='freeform') renderCollage();
+}
+
+function moveSelectedUp(){
+  const idx=state.photos.findIndex(p=>p.id===state.selectedPhotoId);
+  if(idx>0){[state.photos[idx-1],state.photos[idx]]=[state.photos[idx],state.photos[idx-1]];renderCollage();}
+}
+function moveSelectedDown(){
+  const idx=state.photos.findIndex(p=>p.id===state.selectedPhotoId);
+  if(idx<state.photos.length-1){[state.photos[idx],state.photos[idx+1]]=[state.photos[idx+1],state.photos[idx]];renderCollage();}
+}
+
+// ─── TEXT OVERLAYS ────────────────────────────
+function addTextOverlay(){
+  const id=nextId++;
+  const t={id,text:'Nhập chữ tại đây',x:state.canvasW/2-80,y:state.canvasH/2-20,
+    font:'Plus Jakarta Sans',size:28,color:'#ffffff',
+    bold:false,italic:false,shadow:false,stroke:false,align:'left',opacity:100};
+  state.texts.push(t);
+  renderTextsOnOverlay();
+  selectTextById(id);
+  document.querySelectorAll('.stab').forEach(b=>b.classList.remove('active'));
+}
+
+function renderTextsOnOverlay(){
+  overlay.querySelectorAll('.text-overlay').forEach(e=>e.remove());
+  state.texts.forEach(t=>createTextEl(t));
+}
+
+function createTextEl(t){
+  const el=document.createElement('div');
+  el.className='text-overlay'+(state.selectedTextId===t.id?' selected':'');
+  el.dataset.id=t.id;
+  el.style.cssText=`left:${t.x}px;top:${t.y}px;opacity:${t.opacity/100}`;
+  const span=document.createElement('span');
+  span.contentEditable='true';
+  span.textContent=t.text;
+  span.style.cssText=`font-family:${t.font};font-size:${t.size}px;color:${t.color};
+    font-weight:${t.bold?'700':'400'};font-style:${t.italic?'italic':'normal'};
+    text-align:${t.align};
+    text-shadow:${t.shadow?'2px 2px 6px rgba(0,0,0,0.8)':'none'};
+    -webkit-text-stroke:${t.stroke?'1px rgba(0,0,0,0.5)':'0'};
+    display:block;min-width:40px;`;
+  span.oninput=()=>{t.text=span.textContent};
+  el.appendChild(span);
+  const rh=document.createElement('div');
+  rh.className='text-resize-handle';
+  el.appendChild(rh);
+  makeTextDraggable(el,t);
+  makeTextResizable(rh,el,t);
+  el.addEventListener('click',e=>{e.stopPropagation();selectTextById(t.id);});
+  overlay.appendChild(el);
+}
+
+function makeTextDraggable(el,t){
+  let sx,sy,ox,oy,dragging=false;
+  el.addEventListener('mousedown',e=>{
+    if(e.target.tagName==='SPAN') return;
+    if(e.target.classList.contains('text-resize-handle')) return;
+    e.preventDefault();
+    dragging=true;sx=e.clientX;sy=e.clientY;ox=t.x;oy=t.y;
+    const mv=e2=>{if(!dragging)return;t.x=ox+(e2.clientX-sx);t.y=oy+(e2.clientY-sy);el.style.left=t.x+'px';el.style.top=t.y+'px';};
+    const up=()=>{dragging=false;document.removeEventListener('mousemove',mv);document.removeEventListener('mouseup',up)};
+    document.addEventListener('mousemove',mv);document.addEventListener('mouseup',up);
+  });
+}
+
+function makeTextResizable(handle,el,t){
+  handle.addEventListener('mousedown',e=>{
+    e.stopPropagation();e.preventDefault();
+    const sx=e.clientX,os=t.size;
+    const mv=e2=>{t.size=Math.max(10,os+(e2.clientX-sx)/3);refreshTextEl(el,t);};
+    const up=()=>{document.removeEventListener('mousemove',mv);document.removeEventListener('mouseup',up)};
+    document.addEventListener('mousemove',mv);document.addEventListener('mouseup',up);
+  });
+}
+
+function refreshTextEl(el,t){
+  const span=el.querySelector('span');
+  if(!span) return;
+  span.style.fontFamily=t.font;
+  span.style.fontSize=t.size+'px';
+  span.style.color=t.color;
+  span.style.fontWeight=t.bold?'700':'400';
+  span.style.fontStyle=t.italic?'italic':'normal';
+  span.style.textAlign=t.align;
+  span.style.textShadow=t.shadow?'2px 2px 6px rgba(0,0,0,0.8)':'none';
+  span.style.webkitTextStroke=t.stroke?'1px rgba(0,0,0,0.5)':'0';
+  el.style.opacity=t.opacity/100;
+}
+
+function selectTextById(id){
+  state.selectedTextId=id;
+  state.selectedPhotoId=null;
+  overlay.querySelectorAll('.text-overlay').forEach(el=>el.classList.toggle('selected',parseInt(el.dataset.id)===id));
+  const t=state.texts.find(x=>x.id===id);
+  if(!t) return;
+  document.getElementById('fontFamily').value=t.font;
+  document.getElementById('fontSizeSlider').value=t.size;
+  document.getElementById('fontSizeVal').textContent=t.size+'px';
+  document.getElementById('textOpacity').value=t.opacity;
+  document.getElementById('textOpacityVal').textContent=t.opacity+'%';
+  document.getElementById('btnBold').classList.toggle('active',t.bold);
+  document.getElementById('btnItalic').classList.toggle('active',t.italic);
+  document.getElementById('btnShadow').classList.toggle('active',t.shadow);
+  document.getElementById('btnStroke').classList.toggle('active',t.stroke);
+}
+
+function updateSelectedText(){
+  const t=state.texts.find(x=>x.id===state.selectedTextId);
+  if(!t) return;
+  t.font=document.getElementById('fontFamily').value;
+  t.size=parseInt(document.getElementById('fontSizeSlider').value);
+  t.opacity=parseInt(document.getElementById('textOpacity').value);
+  document.getElementById('fontSizeVal').textContent=t.size+'px';
+  document.getElementById('textOpacityVal').textContent=t.opacity+'%';
+  const el=overlay.querySelector(`.text-overlay[data-id="${t.id}"]`);
+  if(el) refreshTextEl(el,t);
+}
+
+function setTextColor(color,swatch){
+  if(swatch){document.querySelectorAll('#textSwatches .swatch').forEach(s=>s.classList.remove('active'));swatch.classList.add('active');}
+  const t=state.texts.find(x=>x.id===state.selectedTextId);
+  if(!t) return;
+  t.color=color;
+  const el=overlay.querySelector(`.text-overlay[data-id="${t.id}"]`);
+  if(el) refreshTextEl(el,t);
+}
+
+function toggleTextStyle(prop){
+  const t=state.texts.find(x=>x.id===state.selectedTextId);
+  if(!t) return;
+  t[prop]=!t[prop];
+  document.getElementById('btn'+prop.charAt(0).toUpperCase()+prop.slice(1)).classList.toggle('active',t[prop]);
+  const el=overlay.querySelector(`.text-overlay[data-id="${t.id}"]`);
+  if(el) refreshTextEl(el,t);
+}
+
+function setTextAlign(align){
+  const t=state.texts.find(x=>x.id===state.selectedTextId);
+  if(!t) return;
+  t.align=align;
+  const el=overlay.querySelector(`.text-overlay[data-id="${t.id}"]`);
+  if(el) refreshTextEl(el,t);
+}
+
+function deleteSelectedText(){
+  state.texts=state.texts.filter(t=>t.id!==state.selectedTextId);
+  state.selectedTextId=null;
+  renderTextsOnOverlay();
+}
+
+// ─── EXPORT ──────────────────────────────────
+async function exportCollage(format){
+  if(!state.photos.length){toast('Thêm ảnh trước khi xuất!');return;}
+  const overlay2=document.getElementById('exportOverlay');
+  overlay2.classList.add('show');
+
+  // Render tất cả ra canvas trước
+  await renderToExportCanvas();
+
+  // Vẽ text lên canvas
+  renderTextsOnCanvas();
+
+  setTimeout(()=>{
+    const mime=format==='png'?'image/png':'image/jpeg';
+    const quality=format==='png'?1:0.94;
+    canvas.toBlob(blob=>{
+      const url=URL.createObjectURL(blob);
+      const a=document.createElement('a');
+      a.href=url; a.download=`querencia-collage.${format}`; a.click();
+      URL.revokeObjectURL(url);
+      overlay2.classList.remove('show');
+      toast('✓ Đã xuất ảnh!');
+      // Re-render để restore overlay
+      if(state.layout==='freeform') initFreeform();
+      else renderCollage();
+    }, mime, quality);
+  }, 100);
+}
+
+async function renderToExportCanvas(){
+  if(state.layout==='freeform'){
+    // Flatten freeform items to canvas
+    ctx.fillStyle=state.bg; ctx.fillRect(0,0,state.canvasW,state.canvasH);
+    const items=overlay.querySelectorAll('.freeform-item');
+    for(const el of items){
+      const id=parseInt(el.dataset.id);
+      const p=state.photos.find(x=>x.id===id);
+      if(!p) continue;
+      const x=parseFloat(el.style.left),y=parseFloat(el.style.top);
+      const w=p.fw,h=p.fh;
+      const rot=(p.rotate||0)*Math.PI/180;
+      ctx.save();
+      ctx.translate(x+w/2,y+h/2);
+      ctx.rotate(rot);
+      ctx.filter=buildFilter(p);
+      roundRect(ctx,-w/2,-h/2,w,h,state.radius);
+      ctx.clip();
+      const scale=Math.max(w/p.img.naturalWidth,h/p.img.naturalHeight)*(p.zoom/100);
+      const dw=p.img.naturalWidth*scale,dh=p.img.naturalHeight*scale;
+      ctx.drawImage(p.img,-dw/2,-dh/2,dw,dh);
+      ctx.restore();
+    }
+  } else {
+    renderCollage();
+  }
+}
+
+function renderTextsOnCanvas(){
+  state.texts.forEach(t=>{
+    ctx.save();
+    ctx.globalAlpha=t.opacity/100;
+    ctx.font=`${t.italic?'italic ':''} ${t.bold?'700':''} ${t.size}px "${t.font}"`;
+    ctx.fillStyle=t.color;
+    ctx.textAlign=t.align==='center'?'center':t.align==='right'?'right':'left';
+    if(t.shadow){
+      ctx.shadowColor='rgba(0,0,0,0.7)';
+      ctx.shadowBlur=8; ctx.shadowOffsetX=2; ctx.shadowOffsetY=2;
+    }
+    if(t.stroke){
+      ctx.strokeStyle='rgba(0,0,0,0.5)';
+      ctx.lineWidth=2;
+      t.text.split('\n').forEach((line,i)=>ctx.strokeText(line,t.x,t.y+t.size+i*(t.size*1.2)));
+    }
+    t.text.split('\n').forEach((line,i)=>ctx.fillText(line,t.x,t.y+t.size+i*(t.size*1.2)));
+    ctx.restore();
+  });
+}
+
+// ─── UTILS ───────────────────────────────────
+function clearCanvas(){
+  if(!confirm('Xóa tất cả?')) return;
+  state.photos=[];state.texts=[];state.selectedPhotoId=null;state.selectedTextId=null;
+  overlay.innerHTML='';
+  ctx.clearRect(0,0,state.canvasW,state.canvasH);
+  ctx.fillStyle=state.bg;ctx.fillRect(0,0,state.canvasW,state.canvasH);
+  document.getElementById('canvasPlaceholder').style.display='flex';
+  renderPhotoList();
+}
+
+function undoAction(){toast('Undo — tính năng đang phát triển 🔧');}
+
+// Click overlay → deselect text
+overlay.addEventListener('click',e=>{
+  if(!e.target.closest('.text-overlay')&&!e.target.closest('.freeform-item')){
+    state.selectedTextId=null;
+    overlay.querySelectorAll('.text-overlay').forEach(el=>el.classList.remove('selected'));
+  }
+});
+
+// Init
+ctx.fillStyle='#fff'; ctx.fillRect(0,0,state.canvasW,state.canvasH);
+</script>
+</body>
+</html>

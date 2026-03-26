@@ -1,0 +1,257 @@
+<!DOCTYPE html>
+<html lang="vi">
+<head>
+<meta charset="UTF-8"/>
+<meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+<title>CSS Gradient Generator · Querencia Tools</title>
+<style>
+  @import url('https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@400;600;700&family=Fira+Code:wght@400;500&display=swap');
+  *{box-sizing:border-box;margin:0;padding:0}
+  :root{
+    --bg:#111;--card:#1a1a1a;--border:#2a2a2a;
+    --sage:#4a7c59;--white:#f5f5f5;--gray:#888;--gray-dim:#333;
+    --sans:'Space Grotesk',sans-serif;--mono:'Fira Code',monospace;
+  }
+  body{background:var(--bg);color:var(--white);font-family:var(--sans);min-height:100vh;display:grid;grid-template-rows:auto 1fr auto}
+
+  .header{padding:24px 28px;border-bottom:1px solid var(--border);display:flex;align-items:center;justify-content:space-between}
+  .header h1{font-size:1.2rem;font-weight:700}
+  .header h1 span{color:var(--sage)}
+
+  /* PREVIEW */
+  #gradPreview{width:100%;height:200px;transition:background 0.3s;border-bottom:1px solid var(--border);position:relative;cursor:crosshair}
+  .preview-label{position:absolute;bottom:12px;right:16px;font-size:0.72rem;color:rgba(255,255,255,0.5)}
+
+  /* CONTROLS */
+  .controls{display:grid;grid-template-columns:260px 1fr;min-height:0}
+  @media(max-width:700px){.controls{grid-template-columns:1fr}}
+
+  .ctrl-panel{border-right:1px solid var(--border);padding:20px;display:flex;flex-direction:column;gap:16px;overflow-y:auto}
+
+  .ctrl-group{display:flex;flex-direction:column;gap:8px}
+  .ctrl-label{font-size:0.7rem;font-weight:600;color:var(--gray);text-transform:uppercase;letter-spacing:0.5px}
+
+  .type-btns{display:flex;gap:4px}
+  .type-btn{flex:1;padding:7px;background:none;border:1.5px solid var(--border);border-radius:7px;color:var(--gray);font-family:var(--sans);font-size:0.75rem;font-weight:600;cursor:pointer;transition:all 0.15s}
+  .type-btn.active{background:var(--sage);border-color:var(--sage);color:#fff}
+
+  .angle-wrap{display:flex;align-items:center;gap:10px}
+  .angle-dial{width:48px;height:48px;border-radius:50%;border:2px solid var(--border);cursor:pointer;position:relative;background:var(--card);flex-shrink:0}
+  .angle-needle{position:absolute;width:2px;height:40%;background:var(--sage);left:50%;top:10%;transform-origin:bottom center;border-radius:2px}
+  input[type=range]{-webkit-appearance:none;width:100%;height:4px;border-radius:2px;background:var(--border);outline:none;cursor:pointer}
+  input[type=range]::-webkit-slider-thumb{-webkit-appearance:none;width:14px;height:14px;border-radius:50%;background:var(--sage);cursor:pointer}
+
+  /* COLOR STOPS */
+  .stop-list{display:flex;flex-direction:column;gap:6px}
+  .stop-item{display:flex;align-items:center;gap:8px;background:var(--card);border:1px solid var(--border);border-radius:8px;padding:8px 10px}
+  .stop-swatch{width:28px;height:28px;border-radius:6px;border:2px solid var(--border);cursor:pointer;flex-shrink:0;position:relative;overflow:hidden}
+  .stop-swatch input[type=color]{position:absolute;inset:0;width:100%;height:100%;opacity:0;cursor:pointer}
+  .stop-pos{width:52px;padding:5px 6px;background:var(--bg);border:1px solid var(--border);border-radius:5px;color:var(--white);font-family:var(--mono);font-size:0.78rem;outline:none;text-align:center}
+  .stop-del{background:none;border:none;color:var(--gray);cursor:pointer;padding:2px 4px;font-size:0.85rem;transition:color 0.2s;margin-left:auto}
+  .stop-del:hover{color:#f85149}
+  .add-stop-btn{padding:7px;background:none;border:1.5px dashed var(--border);border-radius:7px;color:var(--gray);font-size:0.8rem;cursor:pointer;width:100%;transition:all 0.15s}
+  .add-stop-btn:hover{border-color:var(--sage);color:var(--sage)}
+
+  /* CSS OUTPUT */
+  .output-panel{padding:20px;display:flex;flex-direction:column;gap:12px;overflow-y:auto}
+  .css-output{background:var(--card);border:1px solid var(--border);border-radius:10px;padding:16px;font-family:var(--mono);font-size:0.82rem;line-height:1.8;color:#d4e8da;white-space:pre-wrap;word-break:break-all;min-height:80px}
+  .copy-btn{padding:8px 18px;background:var(--sage);border:none;border-radius:8px;color:#fff;font-family:var(--sans);font-size:0.82rem;font-weight:600;cursor:pointer;transition:opacity 0.2s;align-self:flex-start}
+  .copy-btn:hover{opacity:0.85}
+
+  /* PRESETS */
+  .presets-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(80px,1fr));gap:8px}
+  .preset-item{height:56px;border-radius:8px;cursor:pointer;border:2px solid transparent;transition:border-color 0.15s,transform 0.15s;position:relative}
+  .preset-item:hover{border-color:var(--white);transform:scale(1.04)}
+  .preset-label{position:absolute;bottom:3px;left:0;right:0;text-align:center;font-size:0.6rem;color:rgba(255,255,255,0.85);font-weight:600}
+</style>
+</head>
+<body>
+
+<div class="header">
+  <h1>CSS <span>Gradient</span> Generator</h1>
+  <button class="copy-btn" id="topCopyBtn" onclick="copyCss()">📋 Copy CSS</button>
+</div>
+
+<!-- PREVIEW -->
+<div id="gradPreview">
+  <div class="preview-label">Click & drag để xem</div>
+</div>
+
+<!-- CONTROLS -->
+<div class="controls">
+  <!-- LEFT -->
+  <div class="ctrl-panel">
+    <!-- TYPE -->
+    <div class="ctrl-group">
+      <div class="ctrl-label">Loại gradient</div>
+      <div class="type-btns">
+        <button class="type-btn active" onclick="setType('linear',this)">Linear</button>
+        <button class="type-btn" onclick="setType('radial',this)">Radial</button>
+        <button class="type-btn" onclick="setType('conic',this)">Conic</button>
+      </div>
+    </div>
+
+    <!-- ANGLE -->
+    <div class="ctrl-group" id="angleGroup">
+      <div class="ctrl-label">Góc</div>
+      <div class="angle-wrap">
+        <div class="angle-dial" id="angleDial" onmousedown="startDialDrag(event)">
+          <div class="angle-needle" id="angleNeedle"></div>
+        </div>
+        <input type="range" id="angleRange" min="0" max="360" value="135" oninput="setAngle(this.value);update()"/>
+        <span id="angleVal" style="font-family:var(--mono);font-size:0.82rem;color:var(--sage);min-width:36px">135°</span>
+      </div>
+    </div>
+
+    <!-- COLOR STOPS -->
+    <div class="ctrl-group">
+      <div class="ctrl-label">Color stops</div>
+      <div class="stop-list" id="stopList"></div>
+      <button class="add-stop-btn" onclick="addStop()">+ Thêm màu</button>
+    </div>
+  </div>
+
+  <!-- RIGHT -->
+  <div class="output-panel">
+    <!-- PRESETS -->
+    <div class="ctrl-label">Presets</div>
+    <div class="presets-grid" id="presetsGrid"></div>
+
+    <!-- OUTPUT -->
+    <div class="ctrl-label" style="margin-top:4px">CSS Output</div>
+    <div class="css-output" id="cssOutput"></div>
+    <button class="copy-btn" onclick="copyCss()">📋 Copy CSS</button>
+  </div>
+</div>
+
+<script>
+const PRESETS = [
+  {name:'Sunset',stops:['#ff6b6b 0%','#feca57 50%','#ff9ff3 100%'],angle:135},
+  {name:'Ocean',stops:['#0f3460 0%','#16213e 50%','#0e4d92 100%'],angle:180},
+  {name:'Forest',stops:['#134e5e 0%','#71b280 100%'],angle:135},
+  {name:'Cherry',stops:['#eb3349 0%','#f45c43 100%'],angle:135},
+  {name:'Aurora',stops:['#00b4db 0%','#0083b0 50%','#6dd5ed 100%'],angle:120},
+  {name:'Gold',stops:['#f7971e 0%','#ffd200 100%'],angle:135},
+  {name:'Rose',stops:['#f953c6 0%','#b91d73 100%'],angle:135},
+  {name:'Sage',stops:['#ddeee3 0%','#4a7c59 100%'],angle:160},
+  {name:'Night',stops:['#0f0c29 0%','#302b63 50%','#24243e 100%'],angle:135},
+  {name:'Peach',stops:['#ffb347 0%','#ffcc33 100%'],angle:135},
+  {name:'Candy',stops:['#a18cd1 0%','#fbc2eb 100%'],angle:135},
+  {name:'Mint',stops:['#00b09b 0%','#96c93d 100%'],angle:135},
+];
+
+let state = {
+  type: 'linear',
+  angle: 135,
+  stops: [{color:'#4a7c59',pos:0},{color:'#ddeee3',pos:100}]
+};
+
+function init() {
+  renderPresets();
+  renderStops();
+  update();
+}
+
+function renderPresets() {
+  document.getElementById('presetsGrid').innerHTML = PRESETS.map((p,i) => {
+    const grad = `linear-gradient(${p.angle}deg, ${p.stops.join(', ')})`;
+    return `<div class="preset-item" style="background:${grad}" onclick="loadPreset(${i})" title="${p.name}"><div class="preset-label">${p.name}</div></div>`;
+  }).join('');
+}
+
+function loadPreset(i) {
+  const p = PRESETS[i];
+  state.angle = p.angle;
+  state.stops = p.stops.map(s => {
+    const m = s.match(/(#[a-fA-F0-9]+)\s+(\d+)%/);
+    return m ? {color: m[1], pos: parseInt(m[2])} : {color:'#fff',pos:0};
+  });
+  document.getElementById('angleRange').value = p.angle;
+  setAngle(p.angle);
+  renderStops();
+  update();
+}
+
+function renderStops() {
+  document.getElementById('stopList').innerHTML = state.stops.map((s,i) => `
+    <div class="stop-item">
+      <div class="stop-swatch" style="background:${s.color}">
+        <input type="color" value="${s.color}" oninput="state.stops[${i}].color=this.value;this.closest('.stop-swatch').style.background=this.value;update()"/>
+      </div>
+      <span style="font-family:var(--mono);font-size:0.78rem;color:var(--gray)">Color</span>
+      <input class="stop-pos" type="number" min="0" max="100" value="${s.pos}" oninput="state.stops[${i}].pos=parseInt(this.value)||0;update()"/>
+      <span style="font-family:var(--mono);font-size:0.72rem;color:var(--gray)">%</span>
+      ${state.stops.length > 2 ? `<button class="stop-del" onclick="removeStop(${i})">✕</button>` : ''}
+    </div>`).join('');
+}
+
+function addStop() {
+  const mid = Math.round((state.stops[state.stops.length-2]?.pos + state.stops[state.stops.length-1]?.pos) / 2) || 50;
+  state.stops.splice(state.stops.length-1, 0, {color:'#ffffff', pos:mid});
+  renderStops(); update();
+}
+
+function removeStop(i) {
+  state.stops.splice(i,1);
+  renderStops(); update();
+}
+
+function setType(t, btn) {
+  state.type = t;
+  document.querySelectorAll('.type-btn').forEach(b=>b.classList.remove('active'));
+  btn.classList.add('active');
+  document.getElementById('angleGroup').style.display = t==='radial' ? 'none' : '';
+  update();
+}
+
+function setAngle(v) {
+  state.angle = parseInt(v);
+  document.getElementById('angleVal').textContent = v + '°';
+  document.getElementById('angleRange').value = v;
+  document.getElementById('angleNeedle').style.transform = `rotate(${v}deg)`;
+}
+
+function update() {
+  const stops = [...state.stops].sort((a,b)=>a.pos-b.pos).map(s=>`${s.color} ${s.pos}%`).join(', ');
+  let grad;
+  if (state.type === 'linear') grad = `linear-gradient(${state.angle}deg, ${stops})`;
+  else if (state.type === 'radial') grad = `radial-gradient(circle, ${stops})`;
+  else grad = `conic-gradient(from ${state.angle}deg, ${stops})`;
+
+  document.getElementById('gradPreview').style.background = grad;
+
+  const css = `background: ${grad};\n/* Fallback */\nbackground-color: ${state.stops[0].color};`;
+  document.getElementById('cssOutput').textContent = css;
+}
+
+function copyCss() {
+  const css = document.getElementById('cssOutput').textContent;
+  navigator.clipboard.writeText(css).then(() => {
+    const btn = document.getElementById('topCopyBtn');
+    btn.textContent = '✅ Copied!';
+    setTimeout(()=>btn.textContent='📋 Copy CSS', 1500);
+  });
+}
+
+// Dial drag
+let isDragging = false;
+function startDialDrag(e) {
+  isDragging = true;
+  const dial = document.getElementById('angleDial');
+  const rect = dial.getBoundingClientRect();
+  const cx = rect.left + rect.width/2, cy = rect.top + rect.height/2;
+  function onMove(e) {
+    if (!isDragging) return;
+    const dx = e.clientX - cx, dy = e.clientY - cy;
+    let angle = Math.round(Math.atan2(dx, -dy) * 180 / Math.PI);
+    if (angle < 0) angle += 360;
+    setAngle(angle); update();
+  }
+  document.addEventListener('mousemove', onMove);
+  document.addEventListener('mouseup', () => { isDragging=false; document.removeEventListener('mousemove', onMove); }, {once:true});
+}
+
+init();
+</script>
+</body>
+</html>

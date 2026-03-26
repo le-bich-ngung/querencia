@@ -1,0 +1,367 @@
+<!DOCTYPE html>
+<!--
+  ============================================================
+  FILE: Q1.html
+  NHIỆM VỤ: Toàn bộ giao diện frontend của Querencia
+  Đây là file HTML duy nhất — chứa HTML + CSS + JavaScript
+  Deploy lên Netlify bằng cách kéo thả file này vào dashboard
+  URL production: https://querencia.com.vn
+  Backend API:    https://querencia.fly.dev
+  ============================================================
+-->
+<html lang="en">
+<head>
+  <!-- ── META CƠ BẢN ─────────────────────────────────────────
+       Các thẻ meta này ảnh hưởng đến SEO và hiển thị khi
+       share link lên mạng xã hội (og: = Open Graph)         -->
+  <meta charset="UTF-8"/>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <meta name="description" content="Querencia — Tech and more. Thoughtful tools, apps, and ideas for curious minds."/>
+  <meta name="keywords" content="Querencia, tools, LàNo, Nope, Cùi Bắp, tech"/>
+  <meta property="og:title" content="Querencia"/>
+  <meta property="og:description" content="Tech and more. Thoughtful tools, apps, and ideas for curious minds."/>
+  <meta property="og:type" content="website"/>
+  <meta property="og:url" content="https://querencia.com.vn"/>
+  <meta name="theme-color" content="#4a7c59"/>
+  <title>Querencia</title>
+
+  <!-- ── FAVICON (biểu tượng tab trình duyệt) ───────────────
+       Logo SVG nhúng thẳng vào URL để không cần file riêng
+       Đây là hình kính lúp với sóng ECG bên trong           -->
+  <link rel="shortcut icon" type="image/svg+xml" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 120 120'><circle cx='55' cy='55' r='38' fill='none' stroke='%234a7c59' stroke-width='7' stroke-linecap='round'/><line x1='81' y1='79' x2='98' y2='98' stroke='%234a7c59' stroke-width='7' stroke-linecap='round'/><polyline points='20,55 28,38 35,68 43,32 51,60 58,43 66,70 74,48 90,55' fill='none' stroke='%234a7c59' stroke-width='3' stroke-linecap='round' stroke-linejoin='round'/></svg>"/>
+  <!-- ── FONT CHỮ ────────────────────────────────────────────
+       Plus Jakarta Sans — font chính của toàn bộ website
+       Load từ Google Fonts, cần internet để hiển thị đúng   -->
+  <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:ital,wght@0,300;0,400;0,500;0,600;0,700;1,400&display=swap" rel="stylesheet"/>
+  <link rel="stylesheet" href="css/main.css"/>
+  <link rel="stylesheet" href="css/layout.css"/>
+  <link rel="stylesheet" href="css/components.css"/>
+</head>
+<body>
+
+<!-- ── LOADING SCREEN ──────────────────────────────────────────
+     Hiển thị logo xoay khi trang đang load
+     Sau khi load xong → fade out và ẩn đi                     -->
+<div id="loadingScreen" style="position:fixed;inset:0;background:#fff;display:flex;align-items:center;justify-content:center;z-index:9999;transition:opacity 0.4s ease">
+  <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 120 120" width="56" height="56" style="animation:spin 1.2s ease-in-out infinite">
+    <defs><clipPath id="qClipLoad"><circle cx="55" cy="55" r="32"/></clipPath></defs>
+    <circle cx="55" cy="55" r="38" fill="none" stroke="#4a7c59" stroke-width="7" stroke-linecap="round" stroke-dasharray="200" stroke-dashoffset="50"/>
+    <line x1="81" y1="79" x2="98" y2="98" stroke="#4a7c59" stroke-width="7" stroke-linecap="round"/>
+    <polyline points="20,55 28,38 35,68 43,32 51,60 58,43 66,70 74,48 90,55" fill="none" stroke="#4a7c59" stroke-width="3" stroke-linecap="round" stroke-linejoin="round" clip-path="url(#qClipLoad)"/>
+  </svg>
+</div>
+
+<!-- ── THANH ĐIỀU HƯỚNG ────────────────────────────────────────
+     Cấu trúc: [Logo + tagline] [Nav links] [Search] [Dark] [Lang]
+     Để thêm trang mới: copy 1 dòng <li><a onclick=...> và thêm
+     section HTML tương ứng ở dưới                              -->
+<nav id="mainNav">
+  <!-- Logo bên trái — click để về trang Home -->
+  <a class="nav-logo" onclick="location.reload()" style="cursor:pointer">
+    <div style="display:flex;align-items:center;gap:0">
+      <!-- SVG logo kính lúp ECG -->
+      <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 120 120" width="32" height="32" style="flex-shrink:0;position:relative;top:3px;margin-right:-4px">
+        <defs><clipPath id="qClip"><circle cx="55" cy="55" r="32"/></clipPath></defs>
+        <circle cx="55" cy="55" r="38" fill="none" stroke="#4a7c59" stroke-width="7" stroke-linecap="round"/>
+        <line x1="81" y1="79" x2="98" y2="98" stroke="#4a7c59" stroke-width="7" stroke-linecap="round"/>
+        <polyline points="20,55 28,38 35,68 43,32 51,60 58,43 66,70 74,48 90,55" fill="none" stroke="#4a7c59" stroke-width="3" stroke-linecap="round" stroke-linejoin="round" clip-path="url(#qClip)"/>
+      </svg>
+      <!-- Chữ "Querencia": Q (ẩn) + ueren (đen) + cia (xanh) -->
+      <span class="nav-logo-text" style="font-size:1.5rem"><span style="color:#111">ueren</span><span style="color:#4a7c59">cia</span></span>
+    </div>
+    <!-- Tagline nhỏ bên dưới logo, căn giữa -->
+    <small class="nav-tagline" data-i18n="slogan" style="font-size:0.68rem;font-weight:600;letter-spacing:0.06em">Tech and more</small>
+  </a>
+
+  <!-- Links điều hướng bên phải -->
+  <div class="nav-right">
+    <ul class="nav-links">
+      <li><button class="nav-search-btn" onclick="toggleSearch()" style="font-size:1.3rem;padding:4px 8px;transform:scaleX(-1)">⌕</button></li>
+      <li><a onclick="showSection('home')" data-section="home" data-i18n="nav_home">Home</a></li>
+      <li><a onclick="showSection('tools')" data-section="tools" class="tools-link" data-i18n="nav_tools">Tools</a></li>
+      <li><a onclick="showSection('learn')" data-section="learn" data-i18n="nav_learn">Learn</a></li>
+      <li><a onclick="showSection('read')" data-section="read" data-i18n="nav_read">Read</a></li>
+      <li><a onclick="showSection('nope')" data-section="nope">Nope</a></li>
+      <li><a onclick="showSection('lano')" data-section="lano">LàNo</a></li>
+      <li><a onclick="showSection('cuibap')" data-section="cuibap" data-i18n="nav_cuibap">Cùi Bắp</a></li>
+      <li><a onclick="showSection('message')" data-section="message" data-i18n="nav_message">Message</a></li>
+      <!-- Dropdown đăng nhập/đăng ký — sổ xuống khi click -->
+      <li>
+        <div class="auth-switcher" id="authSwitcher">
+          <button class="auth-btn" id="navAuthBtn" onclick="toggleAuthDropdown()" title="Tài khoản">
+            <svg xmlns="http://www.w3.org/2000/svg" width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="8" r="4"/><path d="M4 20c0-4 3.6-7 8-7s8 3 8 7"/></svg>
+            <span class="auth-chevron">▼</span>
+          </button>
+          <div class="auth-dropdown" id="authDropdown">
+            <button class="auth-option" onclick="openAuthModal('register')" data-i18n="nav_register">Đăng ký</button>
+            <button class="auth-option" onclick="openAuthModal('login')" data-i18n="nav_login">Đăng nhập</button>
+          </div>
+        </div>
+      </li>
+      <button class="nav-search-btn" onclick="toggleDark()" id="darkBtn" title="Toggle dark mode">◐</button>
+    </ul>
+
+    <!-- Dropdown chọn ngôn ngữ -->
+    <div class="lang-switcher" id="langSwitcher">
+      <button class="lang-globe-btn" onclick="toggleLangDropdown()">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+          <circle cx="12" cy="12" r="10"/><line x1="2" y1="12" x2="22" y2="12"/>
+          <path d="M12 2a15.3 15.3 0 0 1 4 10 15.3 15.3 0 0 1-4 10 15.3 15.3 0 0 1-4-10 15.3 15.3 0 0 1 4-10z"/>
+        </svg>
+        <span id="langCurrentLabel">EN</span>
+        <span class="lang-chevron">▼</span>
+      </button>
+      <div class="lang-dropdown">
+        <!-- Muốn thêm ngôn ngữ mới: thêm button ở đây + thêm object trong const T bên dưới -->
+        <button class="lang-option active" onclick="setLang('en')" id="lang-en"><span class="lang-flag">🇬🇧</span> English</button>
+        <button class="lang-option" onclick="setLang('vi')" id="lang-vi"><span class="lang-flag">🇻🇳</span> Tiếng Việt</button>
+        <button class="lang-option" onclick="setLang('ja')" id="lang-ja"><span class="lang-flag">🇯🇵</span> 日本語</button>
+        <button class="lang-option" onclick="setLang('es')" id="lang-es"><span class="lang-flag">🇪🇸</span> Español</button>
+      </div>
+    </div>
+  </div>
+</nav>
+
+<!-- ── TRANG 404 ────────────────────────────────────────────────
+     Hiển thị khi URL không khớp với section nào               -->
+<section class="section" id="notfound">
+  <div style="display:flex;flex-direction:column;align-items:center;justify-content:center;min-height:80vh;text-align:center;padding:24px">
+    <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 120 120" width="80" height="80" style="margin-bottom:24px">
+      <defs><clipPath id="qClip404"><circle cx="55" cy="55" r="32"/></clipPath></defs>
+      <circle cx="55" cy="55" r="38" fill="none" stroke="#4a7c59" stroke-width="7" stroke-linecap="round"/>
+      <line x1="81" y1="79" x2="98" y2="98" stroke="#4a7c59" stroke-width="7" stroke-linecap="round"/>
+      <polyline points="20,55 28,38 35,68 43,32 51,60 58,43 66,70 74,48 90,55" fill="none" stroke="#4a7c59" stroke-width="3" stroke-linecap="round" stroke-linejoin="round" clip-path="url(#qClip404)"/>
+    </svg>
+    <h1 style="font-family:var(--font-display);font-size:2rem;font-weight:700;margin-bottom:12px" data-i18n="notfound_title">Page not found.</h1>
+    <p style="color:var(--gray);font-size:0.9rem;margin-bottom:32px" data-i18n="notfound_desc">This page doesn't exist or has moved.</p>
+    <button class="btn-primary" onclick="showSection('home')" data-i18n="notfound_btn">Back to Home</button>
+  </div>
+</section>
+
+<!-- ── SEARCH OVERLAY ──────────────────────────────────────────
+     Phủ toàn màn hình khi nhấn ⌕
+     Hiện tại: chỉ là UI, chưa có logic tìm kiếm thật
+     Muốn thêm tìm kiếm: lắng nghe sự kiện input và lọc sections -->
+<div class="search-overlay" id="searchOverlay">
+  <div class="search-overlay-inner">
+    <div class="search-overlay-bar">
+      <input type="text" id="overlaySearchInput" data-i18n-placeholder="search_placeholder"/>
+      <button class="search-overlay-close" onclick="toggleSearch()">✕</button>
+    </div>
+    <p class="search-hint" data-i18n="search_hint"></p>
+    <div id="searchResults" style="margin-top:8px;min-height:40px"></div>
+  </div>
+</div>
+
+<!-- ── TRANG HOME ──────────────────────────────────────────────
+     Trang mặc định khi vào website (class "active")
+     Gồm: Hero (logo lớn + quote) + What's new + Footer         -->
+
+<!-- ── CONTENT AREA ────────────────────────────────────────────
+     Mỗi page được load vào đây qua fetch() khi click nav
+     Không cần đụng vào file này để sửa nội dung từng trang
+     → Sửa thẳng file trong thư mục pages/                      -->
+<div id="pageContent">
+  <!-- Nội dung sẽ được load vào đây -->
+</div>
+
+<footer style="display:flex!important;flex-direction:column!important;gap:0;padding:6px 32px;align-items:stretch">
+  <div style="display:flex;align-items:center;justify-content:space-between;width:100%">
+    <div class="footer-logo">
+      <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 120 120" width="18" height="18" style="position:relative;top:1px;margin-right:-1px">
+        <circle cx="55" cy="55" r="38" fill="none" stroke="#4a7c59" stroke-width="7" stroke-linecap="round"/>
+        <line x1="81" y1="79" x2="98" y2="98" stroke="#4a7c59" stroke-width="7" stroke-linecap="round"/>
+        <polyline points="20,55 28,38 35,68 43,32 51,60 58,43 66,70 74,48 90,55" fill="none" stroke="#4a7c59" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"/>
+      </svg>
+      <span style="font-family:var(--font-display);font-weight:700;font-size:0.88rem"><span style="color:#111">ueren</span><span style="color:#4a7c59">cia</span></span>
+    </div>
+    <p style="font-size:0.75rem;color:var(--gray-light)" data-i18n="footer_copy">© 2026 Querencia · All rights reserved</p>
+    <p style="font-size:0.75rem"><a href="privacy.html" style="color:var(--sage);text-decoration:none">Privacy</a> · <a href="security.html" style="color:var(--sage);text-decoration:none">Security</a> · <a href="terms.html" style="color:var(--sage);text-decoration:none">Terms</a></p>
+  </div>
+  <p data-i18n="footer_tagline" style="font-size:0.7rem;color:var(--gray-light);text-align:center;border-top:1px solid var(--border);padding-top:5px;margin-top:4px;width:100%">Querencia is ad-free and never sells your data. We're funded solely by our paid tools.</p>
+</footer>
+
+<!-- ── AUTH MODAL (ĐĂNG NHẬP / ĐĂNG KÝ) ──────────────────────
+     Popup xuất hiện khi click "Đăng nhập" trên nav
+     Gồm 2 tab: Đăng nhập và Đăng ký
+     Kết nối với backend:
+       POST /auth/login    → đăng nhập, nhận JWT token
+       POST /auth/register → tạo tài khoản mới
+     Token được lưu vào localStorage để giữ đăng nhập          -->
+<!-- ── AUTH MODAL ─────────────────────────────────────────
+     Hiện khi click icon người trên nav
+     Mỗi tab (login/register) là form riêng biệt, không hiện cùng lúc
+     Fix 1: icon người dùng chung cho mọi ngôn ngữ (trong nav, không ở đây)
+     Fix 2: mỗi tab chỉ hiện form của nó
+     Fix 3: tách họ và tên
+     Fix 4: xác nhận mật khẩu + toggle hiện/ẩn
+     Fix 5: link chuyển qua lại giữa 2 form                -->
+<div id="authModal" style="display:none;position:fixed;inset:0;z-index:500;background:rgba(0,0,0,0.5);backdrop-filter:blur(4px);align-items:center;justify-content:center;overflow-y:auto;padding:16px 0">
+  <div style="background:#fff;border-radius:16px;padding:40px;width:100%;max-width:420px;position:relative;margin:auto">
+    <button onclick="closeAuth()" style="position:absolute;top:16px;right:16px;background:none;border:none;font-size:1.2rem;cursor:pointer;color:#999;line-height:1">✕</button>
+
+    <div id="authMsg" style="display:none;padding:10px 14px;border-radius:8px;font-size:0.83rem;margin-bottom:16px"></div>
+
+    <!-- ── FORM ĐĂNG NHẬP ── -->
+    <div id="formLogin">
+      <h2 style="font-family:var(--font-display);font-size:1.5rem;font-weight:700;margin-bottom:6px" data-i18n="auth_login_title">Đăng nhập</h2>
+      <p style="font-size:0.83rem;color:#999;margin-bottom:24px">
+        <span data-i18n="auth_no_account">Chưa có tài khoản?</span>
+        <a onclick="switchTab('register')" style="color:#4a7c59;font-weight:600;cursor:pointer;margin-left:4px" data-i18n="auth_register">Đăng ký</a>
+      </p>
+      <div class="form-group">
+        <label data-i18n="form_email">Email</label>
+        <input type="email" id="loginEmail" placeholder="you@email.com" data-i18n-placeholder="form_email_ph"/>
+      </div>
+      <div class="form-group">
+        <label data-i18n="auth_password">Mật khẩu</label>
+        <div style="position:relative">
+          <input type="password" id="loginPass" placeholder="••••••••" style="width:100%;padding:12px 44px 12px 16px;border:1.5px solid #e0e0e0;border-radius:8px;font-family:inherit;font-size:0.9rem;outline:none;transition:border-color 0.2s" onfocus="this.style.borderColor='#4a7c59'" onblur="this.style.borderColor='#e0e0e0'"/>
+          <button type="button" onclick="togglePass('loginPass',this)" style="position:absolute;right:12px;top:50%;transform:translateY(-50%);background:none;border:none;cursor:pointer;color:#999;font-size:1rem;padding:0">👁</button>
+        </div>
+      </div>
+      <div style="text-align:right;margin-top:6px;margin-bottom:-4px">
+        <a onclick="switchTab('forgot')" style="font-size:0.78rem;color:#999;cursor:pointer;text-decoration:underline" data-i18n="auth_forgot">Quên mật khẩu?</a>
+      </div>
+      <button class="btn-primary" style="width:100%;margin-top:8px" onclick="doLogin()" data-i18n="auth_login">Đăng nhập</button>
+      <div style="display:flex;align-items:center;gap:12px;margin:16px 0"><div style="flex:1;height:1px;background:#e0e0e0"></div><span style="font-size:0.75rem;color:#999">hoặc</span><div style="flex:1;height:1px;background:#e0e0e0"></div></div>
+      <a href="https://querencia.fly.dev/auth/google" style="display:flex;align-items:center;justify-content:center;gap:10px;width:100%;padding:12px;border:1.5px solid #e0e0e0;border-radius:8px;font-size:0.88rem;font-weight:500;color:#333;text-decoration:none;transition:background 0.2s" onmouseover="this.style.background='#f5f5f5'" onmouseout="this.style.background=''"><svg width="18" height="18" viewBox="0 0 48 48"><path fill="#EA4335" d="M24 9.5c3.54 0 6.71 1.22 9.21 3.6l6.85-6.85C35.9 2.38 30.47 0 24 0 14.62 0 6.51 5.38 2.56 13.22l7.98 6.19C12.43 13.72 17.74 9.5 24 9.5z"/><path fill="#4285F4" d="M46.98 24.55c0-1.57-.15-3.09-.38-4.55H24v9.02h12.94c-.58 2.96-2.26 5.48-4.78 7.18l7.73 6c4.51-4.18 7.09-10.36 7.09-17.65z"/><path fill="#FBBC05" d="M10.53 28.59c-.48-1.45-.76-2.99-.76-4.59s.27-3.14.76-4.59l-7.98-6.19C.92 16.46 0 20.12 0 24c0 3.88.92 7.54 2.56 10.78l7.97-6.19z"/><path fill="#34A853" d="M24 48c6.48 0 11.93-2.13 15.89-5.81l-7.73-6c-2.18 1.48-4.97 2.31-8.16 2.31-6.26 0-11.57-4.22-13.47-9.91l-7.98 6.19C6.51 42.62 14.62 48 24 48z"/></svg> Tiếp tục với Google</a>
+    </div>
+
+    <!-- ── FORM QUÊN MẬT KHẨU ── -->
+    <div id="formForgot" style="display:none">
+      <h2 style="font-family:var(--font-display);font-size:1.5rem;font-weight:700;margin-bottom:6px" data-i18n="auth_forgot_title">Quên mật khẩu</h2>
+      <p style="font-size:0.83rem;color:#999;margin-bottom:24px">
+        <a onclick="switchTab('login')" style="color:#4a7c59;font-weight:600;cursor:pointer" data-i18n="auth_back_login">← Quay lại đăng nhập</a>
+      </p>
+      <div class="form-group">
+        <label data-i18n="form_email">Email</label>
+        <input type="email" id="forgotEmail" placeholder="you@email.com"/>
+      </div>
+      <button class="btn-primary" style="width:100%;margin-top:8px" onclick="doForgotPassword()" data-i18n="auth_send_reset">Gửi link đặt lại mật khẩu</button>
+    </div>
+
+    <div id="formRegister" style="display:none">
+      <h2 style="font-family:var(--font-display);font-size:1.5rem;font-weight:700;margin-bottom:6px" data-i18n="auth_register_title">Tạo tài khoản</h2>
+      <p style="font-size:0.83rem;color:#999;margin-bottom:24px">
+        <span data-i18n="auth_has_account">Đã có tài khoản?</span>
+        <a onclick="switchTab('login')" style="color:#4a7c59;font-weight:600;cursor:pointer;margin-left:4px" data-i18n="auth_login">Đăng nhập</a>
+      </p>
+      <div style="display:grid;grid-template-columns:1fr 1fr;gap:12px">
+        <div class="form-group" style="margin-bottom:0">
+          <label data-i18n="auth_given_name">Tên lót và tên</label>
+          <input type="text" id="regGivenName" data-i18n-placeholder="auth_given_name_ph" placeholder="Văn A"/>
+        </div>
+        <div class="form-group" style="margin-bottom:0">
+          <label data-i18n="auth_last_name">Họ</label>
+          <input type="text" id="regLastName" data-i18n-placeholder="auth_last_name_ph" placeholder="Nguyễn"/>
+        </div>
+      </div>
+      <div class="form-group" style="margin-top:16px">
+        <label data-i18n="form_email">Email</label>
+        <input type="email" id="regEmail" placeholder="you@email.com" data-i18n-placeholder="form_email_ph"/>
+      </div>
+      <div class="form-group">
+        <label data-i18n="auth_password">Mật khẩu</label>
+        <div style="position:relative">
+          <input type="password" id="regPass" placeholder="••••••••" style="width:100%;padding:12px 44px 12px 16px;border:1.5px solid #e0e0e0;border-radius:8px;font-family:inherit;font-size:0.9rem;outline:none;transition:border-color 0.2s" onfocus="this.style.borderColor='#4a7c59'" onblur="this.style.borderColor='#e0e0e0'"/>
+          <button type="button" onclick="togglePass('regPass',this)" style="position:absolute;right:12px;top:50%;transform:translateY(-50%);background:none;border:none;cursor:pointer;color:#999;font-size:1rem;padding:0">👁</button>
+        </div>
+      </div>
+      <div class="form-group">
+        <label data-i18n="auth_confirm_password">Xác nhận mật khẩu</label>
+        <div style="position:relative">
+          <input type="password" id="regPassConfirm" placeholder="••••••••" style="width:100%;padding:12px 44px 12px 16px;border:1.5px solid #e0e0e0;border-radius:8px;font-family:inherit;font-size:0.9rem;outline:none;transition:border-color 0.2s" onfocus="this.style.borderColor='#4a7c59'" onblur="this.style.borderColor='#e0e0e0'"/>
+          <button type="button" onclick="togglePass('regPassConfirm',this)" style="position:absolute;right:12px;top:50%;transform:translateY(-50%);background:none;border:none;cursor:pointer;color:#999;font-size:1rem;padding:0">👁</button>
+        </div>
+      </div>
+      <button class="btn-primary" style="width:100%;margin-top:8px" onclick="doRegister()" data-i18n="auth_create">Tạo tài khoản</button>
+      <div style="display:flex;align-items:center;gap:12px;margin:16px 0"><div style="flex:1;height:1px;background:#e0e0e0"></div><span style="font-size:0.75rem;color:#999">hoặc</span><div style="flex:1;height:1px;background:#e0e0e0"></div></div>
+      <a href="https://querencia.fly.dev/auth/google" style="display:flex;align-items:center;justify-content:center;gap:10px;width:100%;padding:12px;border:1.5px solid #e0e0e0;border-radius:8px;font-size:0.88rem;font-weight:500;color:#333;text-decoration:none;transition:background 0.2s" onmouseover="this.style.background='#f5f5f5'" onmouseout="this.style.background=''"><svg width="18" height="18" viewBox="0 0 48 48"><path fill="#EA4335" d="M24 9.5c3.54 0 6.71 1.22 9.21 3.6l6.85-6.85C35.9 2.38 30.47 0 24 0 14.62 0 6.51 5.38 2.56 13.22l7.98 6.19C12.43 13.72 17.74 9.5 24 9.5z"/><path fill="#4285F4" d="M46.98 24.55c0-1.57-.15-3.09-.38-4.55H24v9.02h12.94c-.58 2.96-2.26 5.48-4.78 7.18l7.73 6c4.51-4.18 7.09-10.36 7.09-17.65z"/><path fill="#FBBC05" d="M10.53 28.59c-.48-1.45-.76-2.99-.76-4.59s.27-3.14.76-4.59l-7.98-6.19C.92 16.46 0 20.12 0 24c0 3.88.92 7.54 2.56 10.78l7.97-6.19z"/><path fill="#34A853" d="M24 48c6.48 0 11.93-2.13 15.89-5.81l-7.73-6c-2.18 1.48-4.97 2.31-8.16 2.31-6.26 0-11.57-4.22-13.47-9.91l-7.98 6.19C6.51 42.62 14.62 48 24 48z"/></svg> Tiếp tục với Google</a>
+<script src="js/api.js"></script>
+<script src="js/ui.js"></script>
+<script src="js/app.js"></script>
+<script src="js/auth.js"></script>
+<script src="js/cuibap.js"></script>
+
+<script src="js/read-laws.js"></script>
+<script src="js/read-quotes.js"></script>
+<script src="js/read-controller.js"></script>
+
+<script>
+// ============================================================
+// PAGE LOADER — load từng page vào #pageContent qua fetch()
+// Để thêm page mới: thêm file vào pages/ và thêm nav link
+// ============================================================
+
+const PAGE_CACHE = {};  // Cache để không fetch lại mỗi lần
+
+async function showSection(id) {
+  // Update nav active state
+  document.querySelectorAll('.nav-links a[data-section]').forEach(a => {
+    a.classList.toggle('active', a.dataset.section === id);
+  });
+
+  // Update URL hash
+  history.pushState(null, '', '#' + id);
+
+  const container = document.getElementById('pageContent');
+
+  // Show loading state
+  container.style.opacity = '0.4';
+  container.style.transition = 'opacity 0.15s';
+
+  try {
+    // Check cache first
+    if (!PAGE_CACHE[id]) {
+      const res = await fetch(`pages/${id}.html`);
+      if (!res.ok) throw new Error('Not found');
+      PAGE_CACHE[id] = await res.text();
+    }
+
+    container.innerHTML = PAGE_CACHE[id];
+    container.querySelector('.section')?.classList.add('active');
+    container.style.opacity = '1';
+
+    // Re-run any inline scripts in loaded content (skip const/let to avoid redeclaration)
+    container.querySelectorAll('script').forEach(oldScript => {
+      try {
+        const newScript = document.createElement('script');
+        newScript.textContent = oldScript.textContent;
+        oldScript.parentNode.replaceChild(newScript, oldScript);
+      } catch(e) { /* ignore redeclaration errors */ }
+    });
+
+    // Scroll to top
+    window.scrollTo(0, 0);
+
+    // Re-apply i18n translations to new content
+    if (typeof applyTranslations === 'function') applyTranslations();
+
+    // Re-apply dark mode to new content
+    if (document.body.classList.contains('dark')) {
+      document.body.classList.add('dark');
+    }
+
+  } catch (e) {
+    container.innerHTML = document.getElementById('notfound').outerHTML;
+    container.style.opacity = '1';
+  }
+}
+
+// Load initial page from URL hash or default to home
+window.addEventListener('DOMContentLoaded', () => {
+  const hash = window.location.hash.replace('#', '') || 'home';
+  showSection(hash);
+});
+
+// Handle back/forward browser buttons
+window.addEventListener('popstate', () => {
+  const hash = window.location.hash.replace('#', '') || 'home';
+  showSection(hash);
+});
+</script>
+
+<script src="js/cookie-consent.js"></script>
+</body>
+</html>

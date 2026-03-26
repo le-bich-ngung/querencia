@@ -1,0 +1,318 @@
+<!DOCTYPE html>
+<html lang="vi">
+<head>
+<meta charset="UTF-8"/>
+<meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+<title>API Tester · Querencia Tools</title>
+<style>
+  @import url('https://fonts.googleapis.com/css2?family=IBM+Plex+Mono:wght@400;500;600&family=IBM+Plex+Sans:wght@400;600;700&display=swap');
+  *{box-sizing:border-box;margin:0;padding:0}
+  :root{
+    --bg:#0d1117;--sidebar:#161b22;--card:#1c2128;--border:#30363d;
+    --sage:#3fb950;--sage-dim:#238636;--sage-pale:#0d2318;
+    --blue:#58a6ff;--red:#f85149;--amber:#d29922;--purple:#bc8cff;
+    --white:#e6edf3;--gray:#8b949e;--gray-dim:#21262d;
+    --mono:'IBM Plex Mono',monospace;--sans:'IBM Plex Sans',sans-serif;
+  }
+  body{background:var(--bg);color:var(--white);font-family:var(--sans);min-height:100vh;display:flex;flex-direction:column}
+
+  /* TOP BAR */
+  .topbar{background:var(--sidebar);border-bottom:1px solid var(--border);padding:12px 20px;display:flex;align-items:center;gap:12px;flex-wrap:wrap}
+  .topbar h1{font-size:0.9rem;font-weight:700;color:var(--sage);font-family:var(--mono);margin-right:8px}
+
+  .method-select{padding:8px 12px;background:var(--card);border:1px solid var(--border);border-radius:6px;color:var(--white);font-family:var(--mono);font-size:0.85rem;font-weight:600;cursor:pointer;outline:none;min-width:90px}
+  .method-select option[value="GET"]{color:#58a6ff}
+  .method-select option[value="POST"]{color:#3fb950}
+  .method-select option[value="PUT"]{color:#d29922}
+  .method-select option[value="PATCH"]{color:#bc8cff}
+  .method-select option[value="DELETE"]{color:#f85149}
+
+  .url-input{flex:1;min-width:200px;padding:8px 14px;background:var(--card);border:1px solid var(--border);border-radius:6px;color:var(--white);font-family:var(--mono);font-size:0.85rem;outline:none;transition:border-color 0.2s}
+  .url-input:focus{border-color:var(--sage)}
+  .url-input::placeholder{color:var(--gray)}
+
+  .send-btn{padding:8px 20px;background:var(--sage-dim);color:#fff;border:none;border-radius:6px;font-family:var(--sans);font-size:0.85rem;font-weight:600;cursor:pointer;transition:background 0.2s;white-space:nowrap}
+  .send-btn:hover{background:var(--sage)}
+  .send-btn:disabled{opacity:0.5;cursor:not-allowed}
+
+  /* MAIN */
+  .main{flex:1;display:grid;grid-template-columns:1fr 1fr;min-height:0}
+  @media(max-width:768px){.main{grid-template-columns:1fr}}
+
+  /* PANELS */
+  .panel{display:flex;flex-direction:column;border-right:1px solid var(--border)}
+  .panel:last-child{border:none}
+  .panel-tabs{display:flex;border-bottom:1px solid var(--border);background:var(--sidebar)}
+  .tab-btn{padding:9px 16px;background:none;border:none;border-bottom:2px solid transparent;color:var(--gray);font-family:var(--sans);font-size:0.8rem;font-weight:600;cursor:pointer;transition:all 0.2s;white-space:nowrap}
+  .tab-btn.active{color:var(--white);border-bottom-color:var(--sage)}
+  .panel-content{flex:1;overflow:auto;padding:0}
+
+  /* HEADERS / PARAMS TABLE */
+  .kv-table{width:100%;border-collapse:collapse}
+  .kv-table th{font-size:0.7rem;font-weight:600;color:var(--gray);text-transform:uppercase;letter-spacing:0.5px;padding:8px 12px;border-bottom:1px solid var(--border);text-align:left;background:var(--sidebar)}
+  .kv-table td{padding:4px 8px;border-bottom:1px solid #21262d}
+  .kv-input{width:100%;background:none;border:none;color:var(--white);font-family:var(--mono);font-size:0.82rem;padding:5px 4px;outline:none}
+  .kv-input::placeholder{color:var(--gray)}
+  .kv-del{background:none;border:none;color:var(--gray);cursor:pointer;padding:4px 8px;transition:color 0.2s;font-size:0.9rem}
+  .kv-del:hover{color:var(--red)}
+  .add-row-btn{padding:7px 12px;background:none;border:none;color:var(--sage);font-family:var(--sans);font-size:0.8rem;cursor:pointer;margin:8px 12px}
+
+  /* BODY EDITOR */
+  .body-editor{width:100%;height:100%;background:var(--bg);border:none;color:var(--white);font-family:var(--mono);font-size:0.82rem;padding:14px;outline:none;resize:none;line-height:1.7;min-height:200px}
+
+  /* RESPONSE */
+  .response-meta{display:flex;align-items:center;gap:12px;padding:10px 16px;background:var(--sidebar);border-bottom:1px solid var(--border);font-size:0.78rem;font-family:var(--mono)}
+  .status-badge{padding:3px 10px;border-radius:6px;font-weight:600}
+  .status-2xx{background:rgba(63,185,80,0.15);color:var(--sage)}
+  .status-3xx{background:rgba(88,166,255,0.15);color:var(--blue)}
+  .status-4xx{background:rgba(248,81,73,0.15);color:var(--red)}
+  .status-5xx{background:rgba(248,81,73,0.15);color:var(--red)}
+  .time-badge{color:var(--gray)}
+  .size-badge{color:var(--gray)}
+
+  .response-body{font-family:var(--mono);font-size:0.82rem;padding:14px 16px;line-height:1.7;white-space:pre-wrap;word-break:break-all;overflow:auto;flex:1}
+  .json-key{color:var(--blue)}
+  .json-str{color:var(--sage)}
+  .json-num{color:var(--amber)}
+  .json-bool{color:var(--purple)}
+  .json-null{color:var(--red)}
+
+  .empty-response{text-align:center;padding:60px 20px;color:var(--gray)}
+  .empty-response .icon{font-size:2.5rem;margin-bottom:10px;opacity:0.4}
+
+  /* HISTORY */
+  .history-item{padding:10px 14px;border-bottom:1px solid var(--border);cursor:pointer;display:flex;align-items:center;gap:10px;transition:background 0.15s}
+  .history-item:hover{background:var(--gray-dim)}
+  .hist-method{font-family:var(--mono);font-size:0.72rem;font-weight:600;padding:2px 6px;border-radius:4px;flex-shrink:0}
+  .hist-url{font-family:var(--mono);font-size:0.75rem;color:var(--gray);overflow:hidden;text-overflow:ellipsis;white-space:nowrap;flex:1}
+  .hist-status{font-family:var(--mono);font-size:0.72rem;flex-shrink:0}
+
+  .copy-btn{padding:4px 10px;background:var(--gray-dim);border:1px solid var(--border);border-radius:5px;color:var(--gray);font-family:var(--sans);font-size:0.72rem;cursor:pointer;transition:all 0.2s;margin-left:auto}
+  .copy-btn:hover{background:var(--card);color:var(--white)}
+
+  .spinner{display:inline-block;width:14px;height:14px;border:2px solid var(--border);border-top-color:var(--sage);border-radius:50%;animation:spin 0.6s linear infinite}
+  @keyframes spin{to{transform:rotate(360deg)}}
+</style>
+</head>
+<body>
+
+<!-- TOP BAR -->
+<div class="topbar">
+  <h1>⚡ API Tester</h1>
+  <select id="methodSel" class="method-select">
+    <option value="GET" style="color:#58a6ff">GET</option>
+    <option value="POST" style="color:#3fb950">POST</option>
+    <option value="PUT" style="color:#d29922">PUT</option>
+    <option value="PATCH" style="color:#bc8cff">PATCH</option>
+    <option value="DELETE" style="color:#f85149">DELETE</option>
+    <option value="HEAD">HEAD</option>
+    <option value="OPTIONS">OPTIONS</option>
+  </select>
+  <input id="urlInput" class="url-input" placeholder="https://api.example.com/endpoint" value="https://jsonplaceholder.typicode.com/posts/1"/>
+  <button id="sendBtn" class="send-btn" onclick="sendRequest()">▶ Send</button>
+</div>
+
+<!-- MAIN -->
+<div class="main">
+  <!-- REQUEST PANEL -->
+  <div class="panel">
+    <div class="panel-tabs">
+      <button class="tab-btn active" onclick="switchReqTab('params',this)">Params</button>
+      <button class="tab-btn" onclick="switchReqTab('headers',this)">Headers</button>
+      <button class="tab-btn" onclick="switchReqTab('body',this)">Body</button>
+      <button class="tab-btn" onclick="switchReqTab('history',this)">History</button>
+    </div>
+    <div class="panel-content">
+      <!-- PARAMS -->
+      <div id="tab-params">
+        <table class="kv-table"><thead><tr><th>Key</th><th>Value</th><th></th></tr></thead>
+        <tbody id="paramsBody"></tbody></table>
+        <button class="add-row-btn" onclick="addRow('paramsBody')">+ Thêm param</button>
+      </div>
+      <!-- HEADERS -->
+      <div id="tab-headers" style="display:none">
+        <table class="kv-table"><thead><tr><th>Key</th><th>Value</th><th></th></tr></thead>
+        <tbody id="headersBody"></tbody></table>
+        <button class="add-row-btn" onclick="addRow('headersBody')">+ Thêm header</button>
+      </div>
+      <!-- BODY -->
+      <div id="tab-body" style="display:none;flex-direction:column;height:100%">
+        <div style="padding:8px 12px;background:var(--sidebar);border-bottom:1px solid var(--border);display:flex;gap:8px;align-items:center">
+          <select id="bodyType" style="background:var(--card);border:1px solid var(--border);color:var(--white);font-family:var(--mono);font-size:0.78rem;padding:4px 8px;border-radius:4px;outline:none">
+            <option value="json">JSON</option>
+            <option value="form">Form URL-encoded</option>
+            <option value="text">Plain Text</option>
+          </select>
+          <button onclick="formatJson()" style="background:none;border:1px solid var(--border);color:var(--gray);font-size:0.75rem;padding:3px 8px;border-radius:4px;cursor:pointer;font-family:var(--sans)">Format JSON</button>
+        </div>
+        <textarea id="bodyInput" class="body-editor" placeholder='{"key": "value"}'></textarea>
+      </div>
+      <!-- HISTORY -->
+      <div id="tab-history" style="display:none" id="historyList"></div>
+    </div>
+  </div>
+
+  <!-- RESPONSE PANEL -->
+  <div class="panel">
+    <div class="panel-tabs">
+      <button class="tab-btn active" onclick="switchResTab('body',this)">Response</button>
+      <button class="tab-btn" onclick="switchResTab('headers',this)">Headers</button>
+      <div style="margin-left:auto;padding:6px 8px" id="resMeta"></div>
+    </div>
+    <div class="panel-content" style="display:flex;flex-direction:column">
+      <div id="res-body">
+        <div class="empty-response"><div class="icon">📡</div><div>Gửi request để xem response</div></div>
+      </div>
+      <div id="res-headers" style="display:none">
+        <div class="empty-response"><div class="icon">📋</div><div>Gửi request để xem headers</div></div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<script>
+let history = JSON.parse(localStorage.getItem('api_history') || '[]');
+
+// Init rows
+addRow('paramsBody');
+addRow('headersBody');
+renderHistory();
+
+function addRow(tbodyId) {
+  const tbody = document.getElementById(tbodyId);
+  const tr = document.createElement('tr');
+  tr.innerHTML = `<td><input class="kv-input" placeholder="key"/></td><td><input class="kv-input" placeholder="value"/></td><td><button class="kv-del" onclick="this.closest('tr').remove()">✕</button></td>`;
+  tbody.appendChild(tr);
+}
+
+function getKvPairs(tbodyId) {
+  const rows = document.querySelectorAll(`#${tbodyId} tr`);
+  const obj = {};
+  rows.forEach(r => {
+    const inputs = r.querySelectorAll('input');
+    const k = inputs[0]?.value.trim(); const v = inputs[1]?.value.trim();
+    if (k) obj[k] = v;
+  });
+  return obj;
+}
+
+function switchReqTab(name, btn) {
+  ['params','headers','body','history'].forEach(t => document.getElementById('tab-'+t).style.display='none');
+  document.getElementById('tab-'+name).style.display = name==='body' ? 'flex' : 'block';
+  if (name==='history') { document.getElementById('tab-history').innerHTML=''; renderHistoryInto(document.getElementById('tab-history')); }
+  document.querySelectorAll('.panel:first-child .tab-btn').forEach(b => b.classList.remove('active'));
+  btn.classList.add('active');
+}
+
+function switchResTab(name, btn) {
+  ['body','headers'].forEach(t => document.getElementById('res-'+t).style.display='none');
+  document.getElementById('res-'+name).style.display='block';
+  document.querySelectorAll('.panel:last-child .tab-btn').forEach(b => b.classList.remove('active'));
+  btn.classList.add('active');
+}
+
+async function sendRequest() {
+  let url = document.getElementById('urlInput').value.trim();
+  if (!url) return;
+  const method = document.getElementById('methodSel').value;
+  const params = getKvPairs('paramsBody');
+  const headers = getKvPairs('headersBody');
+  const bodyType = document.getElementById('bodyType').value;
+  const bodyText = document.getElementById('bodyInput').value.trim();
+
+  // Build URL with params
+  if (Object.keys(params).length) {
+    const qs = new URLSearchParams(params).toString();
+    url += (url.includes('?') ? '&' : '?') + qs;
+  }
+
+  const btn = document.getElementById('sendBtn');
+  btn.disabled = true;
+  btn.innerHTML = '<span class="spinner"></span> Sending...';
+  document.getElementById('res-body').innerHTML = '<div class="empty-response"><div class="spinner" style="width:24px;height:24px;margin:40px auto"></div></div>';
+
+  const start = Date.now();
+  try {
+    const opts = { method, headers: {'Content-Type': bodyType==='json'?'application/json':'application/x-www-form-urlencoded', ...headers} };
+    if (!['GET','HEAD'].includes(method) && bodyText) opts.body = bodyText;
+
+    const res = await fetch(url, opts);
+    const elapsed = Date.now() - start;
+    const resText = await res.text();
+    const resHeaders = {};
+    res.headers.forEach((v,k) => resHeaders[k]=v);
+
+    // Status
+    const cls = res.status < 300 ? 'status-2xx' : res.status < 400 ? 'status-3xx' : res.status < 500 ? 'status-4xx' : 'status-5xx';
+    document.getElementById('resMeta').innerHTML = `<span class="status-badge ${cls}">${res.status} ${res.statusText}</span> <span class="time-badge">${elapsed}ms</span> <span class="size-badge">${(resText.length/1024).toFixed(1)}kb</span>`;
+
+    // Try JSON format
+    let displayBody = resText;
+    try { displayBody = JSON.stringify(JSON.parse(resText), null, 2); } catch {}
+    const highlighted = syntaxHL(displayBody);
+
+    document.getElementById('res-body').innerHTML = `
+      <div style="display:flex;padding:6px 16px;border-bottom:1px solid var(--border);background:var(--sidebar)">
+        <button class="copy-btn" onclick="navigator.clipboard.writeText(${JSON.stringify(resText)})">📋 Copy</button>
+      </div>
+      <div class="response-body">${highlighted}</div>`;
+
+    document.getElementById('res-headers').innerHTML = `<div class="response-body">${Object.entries(resHeaders).map(([k,v])=>`<span class="json-key">${k}</span>: <span class="json-str">${v}</span>`).join('\n')}</div>`;
+
+    // Save history
+    history.unshift({method, url: document.getElementById('urlInput').value, status: res.status, time: elapsed, ts: new Date().toLocaleTimeString()});
+    history = history.slice(0, 20);
+    localStorage.setItem('api_history', JSON.stringify(history));
+
+  } catch (e) {
+    document.getElementById('res-body').innerHTML = `<div class="response-body" style="color:var(--red)">Error: ${e.message}\n\nNote: CORS policy may block this request from browser. Try enabling CORS on your server or use a CORS proxy.</div>`;
+    document.getElementById('resMeta').innerHTML = `<span class="status-badge status-4xx">Error</span>`;
+  }
+
+  btn.disabled = false;
+  btn.innerHTML = '▶ Send';
+}
+
+function syntaxHL(str) {
+  return str.replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;')
+    .replace(/"([^"]+)":/g,'<span class="json-key">"$1"</span>:')
+    .replace(/: "([^"]*)"/g,': <span class="json-str">"$1"</span>')
+    .replace(/: (-?\d+\.?\d*)/g,': <span class="json-num">$1</span>')
+    .replace(/: (true|false)/g,': <span class="json-bool">$1</span>')
+    .replace(/: null/g,': <span class="json-null">null</span>');
+}
+
+function formatJson() {
+  try {
+    const val = document.getElementById('bodyInput').value;
+    document.getElementById('bodyInput').value = JSON.stringify(JSON.parse(val), null, 2);
+  } catch {}
+}
+
+function renderHistory() {}
+function renderHistoryInto(el) {
+  if (!history.length) { el.innerHTML = '<div class="empty-response"><div class="icon" style="font-size:1.5rem;opacity:0.4">📭</div><div>Chưa có request nào</div></div>'; return; }
+  el.innerHTML = history.map((h,i) => {
+    const mc = h.method==='GET'?'color:var(--blue)':h.method==='POST'?'color:var(--sage)':h.method==='DELETE'?'color:var(--red)':'color:var(--amber)';
+    const sc = h.status < 300 ? 'color:var(--sage)' : h.status < 500 ? 'color:var(--amber)' : 'color:var(--red)';
+    return `<div class="history-item" onclick="loadHistory(${i})">
+      <span class="hist-method" style="${mc}">${h.method}</span>
+      <span class="hist-url">${h.url}</span>
+      <span class="hist-status" style="${sc}">${h.status}</span>
+      <span style="font-size:0.7rem;color:var(--gray)">${h.ts}</span>
+    </div>`;
+  }).join('');
+}
+
+function loadHistory(i) {
+  const h = history[i];
+  document.getElementById('urlInput').value = h.url;
+  document.getElementById('methodSel').value = h.method;
+}
+
+document.addEventListener('keydown', e => {
+  if ((e.ctrlKey || e.metaKey) && e.key === 'Enter') sendRequest();
+});
+</script>
+</body>
+</html>

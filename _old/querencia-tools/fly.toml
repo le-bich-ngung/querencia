@@ -1,0 +1,30 @@
+# ============================================================
+# fly.toml — cấu hình deploy Fly.io cho querencia-tools
+# Deploy: flyctl deploy --no-cache
+#
+# Lần đầu deploy (nếu chưa có volume):
+#   fly volumes create vault_data --size 1 -a querencia-tools
+# ============================================================
+
+app = "querencia-tools"
+primary_region = "sin"
+
+[build]
+
+[http_service]
+  internal_port = 8000
+  force_https = true
+  auto_stop_machines = true
+  auto_start_machines = true
+  min_machines_running = 0
+
+[[vm]]
+  memory = "256mb"
+  cpu_kind = "shared"
+  cpus = 1
+
+# Volume persistent để lưu file vault (không mất khi redeploy)
+# Tạo lần đầu: fly volumes create vault_data --size 1 -a querencia-tools
+[mounts]
+  source = "vault_data"
+  destination = "/app/vault_files"

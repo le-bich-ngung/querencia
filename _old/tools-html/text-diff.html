@@ -1,0 +1,661 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8"/>
+<meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+<title>Text Diff — Querencia</title>
+<link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700&family=DM+Mono:wght@400;500&display=swap" rel="stylesheet"/>
+<style>
+*, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+:root {
+  --bg: #f8f7f4;
+  --white: #ffffff;
+  --panel: #f2f0eb;
+  --border: #e2ddd6;
+  --black: #1a1a1a;
+  --gray: #6b6460;
+  --gray-light: #b0aaa4;
+  --sage: #4a7c59;
+  --sage-pale: #e8f2ec;
+  --sage-light: #6fa882;
+  --add-bg: #e8f5ec;
+  --add-text: #1e6b3a;
+  --add-border: #a8d5b5;
+  --del-bg: #fdecea;
+  --del-text: #8b1a14;
+  --del-border: #f0a9a5;
+  --mod-bg: #fff8e6;
+  --mod-border: #f0d080;
+  --font: 'Plus Jakarta Sans', sans-serif;
+  --mono: 'DM Mono', monospace;
+}
+
+body {
+  font-family: var(--font);
+  background: var(--bg);
+  color: var(--black);
+  height: 100vh;
+  display: grid;
+  grid-template-rows: 52px 1fr;
+  overflow: hidden;
+}
+
+/* ── TOPBAR ─────────────────────────────────────── */
+.topbar {
+  background: var(--white);
+  border-bottom: 1.5px solid var(--border);
+  display: flex;
+  align-items: center;
+  padding: 0 20px;
+  gap: 12px;
+  flex-shrink: 0;
+}
+.topbar-logo { font-size: 0.88rem; font-weight: 700; color: var(--black); margin-right: 4px; }
+.topbar-logo span { color: var(--sage); }
+.topbar-sep { width: 1px; height: 22px; background: var(--border); }
+
+.top-btn {
+  padding: 6px 14px;
+  border-radius: 7px;
+  border: 1.5px solid var(--border);
+  background: none;
+  color: var(--gray);
+  font-family: var(--font);
+  font-size: 0.75rem;
+  font-weight: 600;
+  cursor: pointer;
+  transition: all 0.15s;
+  display: flex; align-items: center; gap: 5px;
+}
+.top-btn:hover { border-color: var(--sage); color: var(--sage); }
+.top-btn.primary { background: var(--sage); border-color: var(--sage); color: #fff; }
+.top-btn.primary:hover { background: #3d6b4a; }
+
+.topbar-right { margin-left: auto; display: flex; align-items: center; gap: 8px; }
+
+/* View mode toggle */
+.view-toggle {
+  display: flex;
+  background: var(--panel);
+  border-radius: 8px;
+  padding: 3px;
+  gap: 2px;
+}
+.view-btn {
+  padding: 5px 12px;
+  border: none;
+  border-radius: 5px;
+  background: none;
+  font-family: var(--font);
+  font-size: 0.72rem;
+  font-weight: 600;
+  color: var(--gray-light);
+  cursor: pointer;
+  transition: all 0.15s;
+}
+.view-btn.active { background: var(--white); color: var(--black); box-shadow: 0 1px 4px rgba(0,0,0,0.08); }
+
+/* Stats bar */
+.stats-bar {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+}
+.stat-badge {
+  padding: 3px 8px;
+  border-radius: 5px;
+  font-size: 0.68rem;
+  font-weight: 700;
+  letter-spacing: 0.04em;
+}
+.stat-badge.added   { background: var(--add-bg); color: var(--add-text); }
+.stat-badge.removed { background: var(--del-bg); color: var(--del-text); }
+.stat-badge.same    { background: var(--panel); color: var(--gray); }
+
+/* ── MAIN ───────────────────────────────────────── */
+.main {
+  display: flex;
+  flex-direction: column;
+  overflow: hidden;
+  height: calc(100vh - 52px);
+}
+
+/* ── INPUT AREA ─────────────────────────────────── */
+.input-area {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 0;
+  border-bottom: 1.5px solid var(--border);
+  height: 200px;
+  flex-shrink: 0;
+  background: var(--white);
+}
+
+.input-pane {
+  display: flex;
+  flex-direction: column;
+  overflow: hidden;
+}
+.input-pane:first-child { border-right: 1.5px solid var(--border); }
+
+.input-header {
+  padding: 10px 16px 8px;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  border-bottom: 1px solid var(--border);
+  flex-shrink: 0;
+}
+.input-label {
+  font-size: 0.68rem;
+  font-weight: 700;
+  letter-spacing: 0.12em;
+  text-transform: uppercase;
+  color: var(--gray-light);
+  display: flex;
+  align-items: center;
+  gap: 6px;
+}
+.input-label .dot {
+  width: 8px; height: 8px;
+  border-radius: 50%;
+}
+.dot-a { background: var(--del-border); }
+.dot-b { background: var(--add-border); }
+
+.clear-btn {
+  background: none;
+  border: none;
+  cursor: pointer;
+  font-size: 0.72rem;
+  color: var(--gray-light);
+  padding: 2px 6px;
+  border-radius: 4px;
+  transition: all 0.12s;
+}
+.clear-btn:hover { color: var(--gray); background: var(--panel); }
+
+.input-pane textarea {
+  flex: 1;
+  padding: 12px 16px;
+  border: none;
+  outline: none;
+  font-family: var(--mono);
+  font-size: 0.82rem;
+  line-height: 1.7;
+  color: var(--black);
+  background: var(--white);
+  resize: none;
+  overflow-y: auto;
+}
+.input-pane textarea::placeholder { color: var(--gray-light); }
+
+/* ── DIFF OUTPUT ────────────────────────────────── */
+.diff-area {
+  flex: 1;
+  overflow: hidden;
+  display: flex;
+  flex-direction: column;
+}
+
+.diff-toolbar {
+  padding: 8px 16px;
+  background: var(--panel);
+  border-bottom: 1px solid var(--border);
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  flex-shrink: 0;
+}
+.diff-toolbar-label {
+  font-size: 0.68rem;
+  font-weight: 700;
+  letter-spacing: 0.1em;
+  text-transform: uppercase;
+  color: var(--gray-light);
+}
+
+.diff-output {
+  flex: 1;
+  overflow-y: auto;
+  padding: 0;
+  font-family: var(--mono);
+  font-size: 0.82rem;
+  line-height: 1.75;
+}
+.diff-output::-webkit-scrollbar { width: 5px; }
+.diff-output::-webkit-scrollbar-thumb { background: var(--border); border-radius: 3px; }
+
+/* ── SPLIT VIEW ─────────────────────────────────── */
+.split-view {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  height: 100%;
+}
+.split-pane {
+  overflow-y: auto;
+  border-right: 1.5px solid var(--border);
+}
+.split-pane:last-child { border-right: none; }
+.split-pane::-webkit-scrollbar { width: 4px; }
+.split-pane::-webkit-scrollbar-thumb { background: var(--border); }
+
+/* ── UNIFIED VIEW ───────────────────────────────── */
+.unified-view {
+  padding: 0;
+}
+
+/* Diff line styles */
+.diff-line {
+  display: flex;
+  align-items: stretch;
+  min-height: 28px;
+  border-bottom: 1px solid rgba(0,0,0,0.03);
+}
+.diff-line:last-child { border-bottom: none; }
+
+.line-num {
+  width: 44px;
+  min-width: 44px;
+  padding: 4px 8px;
+  font-size: 0.68rem;
+  color: var(--gray-light);
+  text-align: right;
+  user-select: none;
+  flex-shrink: 0;
+  border-right: 1px solid rgba(0,0,0,0.06);
+}
+
+.line-sign {
+  width: 22px;
+  min-width: 22px;
+  padding: 4px 4px;
+  text-align: center;
+  font-weight: 700;
+  font-size: 0.75rem;
+  flex-shrink: 0;
+}
+
+.line-content {
+  flex: 1;
+  padding: 4px 12px;
+  white-space: pre-wrap;
+  word-break: break-all;
+}
+
+/* Line type colors */
+.line-added   { background: var(--add-bg); }
+.line-added .line-num  { background: #d4edda; color: var(--add-text); }
+.line-added .line-sign { color: var(--add-text); }
+.line-added .line-content { color: var(--add-text); }
+
+.line-removed { background: var(--del-bg); }
+.line-removed .line-num  { background: #fcd9d7; color: var(--del-text); }
+.line-removed .line-sign { color: var(--del-text); }
+.line-removed .line-content { color: var(--del-text); }
+
+.line-equal   { background: var(--white); }
+.line-equal .line-content { color: var(--gray); }
+
+.line-section-header {
+  background: #f0f4ff;
+  padding: 4px 16px;
+  font-size: 0.7rem;
+  font-weight: 600;
+  color: #6677aa;
+  font-style: italic;
+  border-bottom: 1px solid #dde4f0;
+}
+
+/* Inline char diff */
+.char-add { background: #a8d5b5; border-radius: 2px; }
+.char-del { background: #f0a9a5; border-radius: 2px; text-decoration: line-through; }
+
+/* Empty state */
+.empty-diff {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  height: 100%;
+  gap: 12px;
+  color: var(--gray-light);
+  text-align: center;
+}
+.empty-diff-icon { font-size: 2.5rem; opacity: 0.4; }
+.empty-diff p { font-size: 0.82rem; max-width: 260px; line-height: 1.6; }
+
+/* Identical banner */
+.identical-banner {
+  margin: 24px;
+  padding: 20px 24px;
+  background: var(--sage-pale);
+  border: 1.5px solid var(--add-border);
+  border-radius: 12px;
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  font-size: 0.88rem;
+  font-weight: 600;
+  color: var(--sage);
+}
+</style>
+</head>
+<body>
+
+<!-- TOPBAR -->
+<div class="topbar">
+  <div class="topbar-logo">Text <span>Diff</span></div>
+  <div class="topbar-sep"></div>
+  <button class="top-btn" onclick="loadSample()">Load Sample</button>
+  <button class="top-btn" onclick="swapTexts()">⇄ Swap</button>
+  <button class="top-btn" onclick="copyDiff()">⎘ Copy Diff</button>
+
+  <div class="topbar-right">
+    <div class="stats-bar" id="statsBar" style="display:none">
+      <span class="stat-badge added"   id="statAdded"></span>
+      <span class="stat-badge removed" id="statRemoved"></span>
+      <span class="stat-badge same"    id="statSame"></span>
+    </div>
+    <div class="topbar-sep"></div>
+    <div class="view-toggle">
+      <button class="view-btn active" id="vbtn-unified" onclick="setView('unified')">Unified</button>
+      <button class="view-btn" id="vbtn-split" onclick="setView('split')">Split</button>
+    </div>
+  </div>
+</div>
+
+<div class="main">
+
+  <!-- INPUT -->
+  <div class="input-area">
+    <div class="input-pane">
+      <div class="input-header">
+        <div class="input-label">
+          <div class="dot dot-a"></div>
+          Original
+        </div>
+        <button class="clear-btn" onclick="clearPane('a')">Clear</button>
+      </div>
+      <textarea id="textA" placeholder="Paste original text here..." oninput="runDiff()"></textarea>
+    </div>
+    <div class="input-pane">
+      <div class="input-header">
+        <div class="input-label">
+          <div class="dot dot-b"></div>
+          Modified
+        </div>
+        <button class="clear-btn" onclick="clearPane('b')">Clear</button>
+      </div>
+      <textarea id="textB" placeholder="Paste modified text here..." oninput="runDiff()"></textarea>
+    </div>
+  </div>
+
+  <!-- DIFF OUTPUT -->
+  <div class="diff-area">
+    <div class="diff-toolbar">
+      <span class="diff-toolbar-label">Diff Result</span>
+    </div>
+    <div class="diff-output" id="diffOutput">
+      <div class="empty-diff">
+        <div class="empty-diff-icon">⇄</div>
+        <p>Paste text in both panels above to see the differences highlighted here.</p>
+      </div>
+    </div>
+  </div>
+
+</div>
+
+<script>
+// ============================================================
+// STATE
+// ============================================================
+let currentView = 'unified';
+let lastDiff = [];
+
+// ============================================================
+// DIFF ALGORITHM (Myers LCS-based line diff)
+// ============================================================
+function lcs(a, b) {
+  const m = a.length, n = b.length;
+  const dp = Array.from({length: m+1}, () => new Array(n+1).fill(0));
+  for (let i = 1; i <= m; i++)
+    for (let j = 1; j <= n; j++)
+      dp[i][j] = a[i-1] === b[j-1] ? dp[i-1][j-1]+1 : Math.max(dp[i-1][j], dp[i][j-1]);
+
+  const result = [];
+  let i = m, j = n;
+  while (i > 0 && j > 0) {
+    if (a[i-1] === b[j-1]) { result.unshift({type:'equal', val:a[i-1]}); i--; j--; }
+    else if (dp[i-1][j] >= dp[i][j-1]) { result.unshift({type:'removed', val:a[i-1]}); i--; }
+    else { result.unshift({type:'added', val:b[j-1]}); j--; }
+  }
+  while (i > 0) { result.unshift({type:'removed', val:a[i-1]}); i--; }
+  while (j > 0) { result.unshift({type:'added', val:b[j-1]}); j--; }
+  return result;
+}
+
+// Character-level diff for inline highlighting
+function charDiff(a, b) {
+  const diff = lcs(a.split(''), b.split(''));
+  return diff;
+}
+
+function runDiff() {
+  const a = document.getElementById('textA').value;
+  const b = document.getElementById('textB').value;
+
+  if (!a && !b) {
+    document.getElementById('diffOutput').innerHTML = `
+      <div class="empty-diff">
+        <div class="empty-diff-icon">⇄</div>
+        <p>Paste text in both panels above to see the differences highlighted here.</p>
+      </div>`;
+    document.getElementById('statsBar').style.display = 'none';
+    return;
+  }
+
+  const linesA = a.split('\n');
+  const linesB = b.split('\n');
+  lastDiff = lcs(linesA, linesB);
+
+  // Stats
+  const added   = lastDiff.filter(d => d.type === 'added').length;
+  const removed = lastDiff.filter(d => d.type === 'removed').length;
+  const equal   = lastDiff.filter(d => d.type === 'equal').length;
+
+  document.getElementById('statsBar').style.display = 'flex';
+  document.getElementById('statAdded').textContent   = `+${added} added`;
+  document.getElementById('statRemoved').textContent = `−${removed} removed`;
+  document.getElementById('statSame').textContent    = `${equal} unchanged`;
+
+  if (added === 0 && removed === 0) {
+    document.getElementById('diffOutput').innerHTML = `
+      <div class="identical-banner">
+        ✓ Texts are identical — no differences found.
+      </div>`;
+    return;
+  }
+
+  renderDiff();
+}
+
+// ============================================================
+// RENDER
+// ============================================================
+function setView(v) {
+  currentView = v;
+  document.querySelectorAll('.view-btn').forEach(b => b.classList.remove('active'));
+  document.getElementById('vbtn-' + v).classList.add('active');
+  renderDiff();
+}
+
+function renderDiff() {
+  if (!lastDiff.length) return;
+  if (currentView === 'unified') renderUnified();
+  else renderSplit();
+}
+
+function renderUnified() {
+  const out = document.getElementById('diffOutput');
+  let html = '<div class="unified-view">';
+  let lineNumA = 1, lineNumB = 1;
+
+  // Group consecutive equal lines — collapse if > 3
+  const groups = [];
+  let cur = null;
+  for (const d of lastDiff) {
+    if (!cur || cur.type !== d.type) { cur = {type:d.type, lines:[]}; groups.push(cur); }
+    cur.lines.push(d.val);
+  }
+
+  for (const g of groups) {
+    if (g.type === 'equal') {
+      if (g.lines.length > 6) {
+        // Show first 3
+        for (let i = 0; i < 3; i++) {
+          html += lineHtml('equal', lineNumA++, lineNumB++, ' ', escHtml(g.lines[i]));
+        }
+        html += `<div class="line-section-header">··· ${g.lines.length - 6} unchanged lines ···</div>`;
+        // Show last 3
+        for (let i = g.lines.length - 3; i < g.lines.length; i++) {
+          html += lineHtml('equal', lineNumA++, lineNumB++, ' ', escHtml(g.lines[i]));
+        }
+      } else {
+        for (const l of g.lines) {
+          html += lineHtml('equal', lineNumA++, lineNumB++, ' ', escHtml(l));
+        }
+      }
+    } else if (g.type === 'removed') {
+      for (const l of g.lines) {
+        html += lineHtml('removed', lineNumA++, '', '−', escHtml(l));
+      }
+    } else {
+      for (const l of g.lines) {
+        html += lineHtml('added', '', lineNumB++, '+', escHtml(l));
+      }
+    }
+  }
+
+  html += '</div>';
+  out.innerHTML = html;
+  out.scrollTop = 0;
+}
+
+function lineHtml(type, numA, numB, sign, content) {
+  const numDisplay = type === 'equal'
+    ? `${numA}`
+    : type === 'removed' ? `${numA}` : `${numB}`;
+  return `<div class="diff-line line-${type}">
+    <span class="line-num">${numDisplay}</span>
+    <span class="line-sign">${sign}</span>
+    <span class="line-content">${content || ' '}</span>
+  </div>`;
+}
+
+function renderSplit() {
+  const out = document.getElementById('diffOutput');
+
+  const linesA = [], linesB = [];
+  for (const d of lastDiff) {
+    if (d.type === 'equal')   { linesA.push({type:'equal',val:d.val});   linesB.push({type:'equal',val:d.val}); }
+    if (d.type === 'removed') { linesA.push({type:'removed',val:d.val}); linesB.push({type:'empty',val:''}); }
+    if (d.type === 'added')   { linesA.push({type:'empty',val:''});       linesB.push({type:'added',val:d.val}); }
+  }
+
+  let htmlA = '', htmlB = '', numA = 1, numB = 1;
+  for (let i = 0; i < linesA.length; i++) {
+    const a = linesA[i], b = linesB[i];
+    if (a.type === 'empty') {
+      htmlA += `<div class="diff-line line-equal"><span class="line-num"></span><span class="line-sign"></span><span class="line-content"> </span></div>`;
+    } else {
+      htmlA += lineHtml(a.type, a.type!=='empty'?numA:'', '', a.type==='removed'?'−':' ', escHtml(a.val));
+      if (a.type !== 'empty') numA++;
+    }
+    if (b.type === 'empty') {
+      htmlB += `<div class="diff-line line-equal"><span class="line-num"></span><span class="line-sign"></span><span class="line-content"> </span></div>`;
+    } else {
+      htmlB += lineHtml(b.type, '', b.type!=='empty'?numB:'', b.type==='added'?'+':' ', escHtml(b.val));
+      if (b.type !== 'empty') numB++;
+    }
+  }
+
+  out.innerHTML = `<div class="split-view">
+    <div class="split-pane">${htmlA}</div>
+    <div class="split-pane">${htmlB}</div>
+  </div>`;
+
+  // Sync scroll
+  const panes = out.querySelectorAll('.split-pane');
+  panes[0].addEventListener('scroll', () => panes[1].scrollTop = panes[0].scrollTop);
+  panes[1].addEventListener('scroll', () => panes[0].scrollTop = panes[1].scrollTop);
+  out.scrollTop = 0;
+}
+
+// ============================================================
+// HELPERS
+// ============================================================
+function escHtml(s) {
+  return s.replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;');
+}
+
+function clearPane(p) {
+  document.getElementById('text' + p.toUpperCase()).value = '';
+  runDiff();
+}
+
+function swapTexts() {
+  const a = document.getElementById('textA');
+  const b = document.getElementById('textB');
+  [a.value, b.value] = [b.value, a.value];
+  runDiff();
+}
+
+function copyDiff() {
+  if (!lastDiff.length) return;
+  const text = lastDiff.map(d => {
+    const sign = d.type === 'added' ? '+ ' : d.type === 'removed' ? '- ' : '  ';
+    return sign + d.val;
+  }).join('\n');
+  navigator.clipboard.writeText(text).then(() => showToast('Diff copied!'));
+}
+
+function loadSample() {
+  document.getElementById('textA').value =
+`The quick brown fox jumps over the lazy dog.
+This is the original version of the document.
+It contains several lines of text.
+Some lines will be changed.
+This line stays the same.
+Old feature description goes here.
+The end of the document.`;
+
+  document.getElementById('textB').value =
+`The quick brown fox jumps over the lazy cat.
+This is the modified version of the document.
+It contains several lines of text.
+Some lines have been changed.
+This line stays the same.
+New feature description goes here.
+Additional line added in the new version.
+The end of the document.`;
+
+  runDiff();
+}
+
+// Toast
+let toastEl;
+function showToast(msg) {
+  if (!toastEl) {
+    toastEl = document.createElement('div');
+    toastEl.style.cssText = 'position:fixed;bottom:24px;left:50%;transform:translateX(-50%) translateY(60px);background:#1a1a1a;color:#fff;padding:10px 18px;border-radius:9px;font-size:0.78rem;font-weight:600;transition:transform 0.22s;z-index:999';
+    document.body.appendChild(toastEl);
+  }
+  toastEl.textContent = msg;
+  toastEl.style.transform = 'translateX(-50%) translateY(0)';
+  setTimeout(() => toastEl.style.transform = 'translateX(-50%) translateY(60px)', 2000);
+}
+</script>
+</body>
+</html>

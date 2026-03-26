@@ -1,0 +1,42 @@
+# Dependencies
+node_modules/
+.pnpm-store/
+__pycache__/
+*.pyc
+.venv/
+venv/
+
+# Build outputs
+.next/
+dist/
+build/
+*.egg-info/
+
+# ENV — KHÔNG bao giờ commit
+.env
+.env.local
+.env.*.local
+.env.production
+
+# Turbo cache
+.turbo/
+
+# OS
+.DS_Store
+Thumbs.db
+
+# IDE
+.vscode/settings.json
+.idea/
+
+# Logs
+*.log
+logs/
+
+# Testing
+coverage/
+.pytest_cache/
+
+# Uploads (local dev)
+uploads/
+vault_files/

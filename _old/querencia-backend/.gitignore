@@ -1,0 +1,14 @@
+# ============================================================
+# FILE NÀY NÓI VỚI GIT: "Đừng upload những file này lên!"
+# ============================================================
+
+# File bí mật - TUYỆT ĐỐI không được upload lên GitHub
+.env
+
+# Thư mục môi trường Python ảo
+venv/
+__pycache__/
+*.pyc
+
+# File hệ thống Mac
+.DS_Store

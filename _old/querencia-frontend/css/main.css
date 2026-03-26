@@ -1,0 +1,252 @@
+/* ── BIẾN MÀU SẮC TOÀN CỤC ──────────────────────────────
+       Thay đổi màu ở đây sẽ ảnh hưởng toàn bộ website
+       --sage: Màu xanh lá chủ đạo của Querencia
+       Muốn đổi brand color → chỉ cần sửa --sage            */
+    :root {
+      --sage:#4a7c59;        /* Xanh lá chính */
+      --sage-light:#6fa882;  /* Xanh lá nhạt hơn */
+      --sage-pale:#ddeee3;   /* Xanh lá rất nhạt (dùng cho hover, badge) */
+      --sage-dark:#2f5c3e;   /* Xanh lá đậm hơn (dùng cho hover đậm) */
+      --black:#111;          /* Màu chữ chính */
+      --gray:#555;           /* Màu chữ phụ */
+      --gray-light:#999;     /* Màu chữ mờ (footer, placeholder) */
+      --border:#e0e0e0;      /* Màu đường kẻ */
+      --white:#fff;          /* Nền trắng */
+      --font-display:'Plus Jakarta Sans',sans-serif;
+      --font-body:'Plus Jakarta Sans',sans-serif;
+      /* Cùi Bắp chat variables */
+      --cb-bg:#f5f5f5;
+      --cb-sidebar:#ffffff;
+      --cb-border:#e8e8e8;
+      --cb-hover:#f0f0f0;
+      --cb-input:#f5f5f5;
+      --cb-bubble-out:#4a7c59;
+      --cb-bubble-in:#ffffff;
+    }
+/* ── RESET CSS ───────────────────────────────────────────
+       Xóa margin/padding mặc định của browser               */
+    *,*::before,*::after{box-sizing:border-box;margin:0;padding:0}
+    html,body{height:100%;scroll-behavior:smooth}
+    body{font-family:var(--font-body);color:var(--black);background:var(--white);overflow:hidden}
+/* ── DARK MODE ───────────────────────────────────────────
+       Khi body có class "dark" → các màu được ghi đè
+       Màu xanh trong dark mode dùng #7ecf9a (sáng hơn) thay
+       vì #4a7c59 vì nền đen cần màu sáng hơn để nổi bật
+       Toggle bằng nút ◐ trên nav → lưu vào localStorage     */
+    body.dark{background:#0f0f0f;color:#eee}
+    body.dark nav{background:rgba(15,15,15,0.94);border-bottom-color:#222}
+    body.dark .nav-links a{color:#aaa}
+    body.dark .nav-links a:hover{background:#1a1a1a;color:#eee}
+    body.dark .nav-links a.tools-link{background:var(--sage)}
+    body.dark .page-header,.dark .whats-new-section,.dark .laano-feat,.dark .home-card{background:#0f0f0f}
+    body.dark .section{background:#0f0f0f}
+    body.dark footer{border-top-color:#222;background:#0f0f0f}
+    body.dark .form-group input,.dark .form-group textarea{background:#1a1a1a;border-color:#333;color:#eee}
+    body.dark .app-frame{background:#1a1a1a;border-color:#333}
+    body.dark .lang-globe-btn{border-color:#333;color:#aaa}
+    body.dark .lang-dropdown{background:#1a1a1a;border-color:#333}
+    body.dark .lang-option{color:#aaa}
+    body.dark .lang-option:hover{background:#222;color:#eee}
+    body.dark .search-overlay{background:rgba(15,15,15,0.97)}
+    body.dark .search-overlay-bar{border-bottom-color:#eee}
+    body.dark .search-overlay-bar input{color:#eee}
+    body.dark .nav-logo-text,.dark .footer-logo span{color:#eee}
+    body.dark span[style*='color:#111']{color:#eee !important}
+    body.dark .ueren-text{color:#eee !important}
+    body.dark .whats-new-label{color:#aaa}
+    body.dark .page-title,.dark h1,.dark h2,.dark h3{color:#eee}
+    /* Màu xanh sáng hơn cho dark mode — dễ đọc trên nền đen */
+    body.dark .hero-quote{color:#7ecf9a}
+    body.dark .nav-tagline{color:#7ecf9a}
+    body.dark .page-label{color:#7ecf9a}
+    body.dark .card-arrow{color:#7ecf9a}
+    body.dark .tool-badge.badge-free{background:#1a3328;color:#7ecf9a}
+    body.dark .home-card{border-color:#222}
+    body.dark .tools-grid{background:#222}
+    body.dark .tool-card{background:#0f0f0f}
+    body.dark .tool-card:hover{background:#1a3328}
+    body.dark .home-card:hover{background:#1a3328}
+    body.dark .btn-primary{background:#3d8c5c}
+    body.dark .btn-outline{border-color:#444;color:#eee}
+    body.dark .btn-outline:hover{border-color:#7ecf9a}
+    body.dark .laano-name-story{background:#1a3328;border-left-color:#7ecf9a}
+    body.dark .laano-name-story p{color:#ccc}
+    body.dark .laano-name-story strong{color:#7ecf9a}
+    body.dark .pricing-features li{border-bottom-color:#222;color:#aaa}
+    body.dark .pricing-features li::before{color:#7ecf9a}
+/* ── ANIMATION ───────────────────────────────────────────
+       fadeUp: Elements trượt lên từ dưới + fade in
+       Dùng cho hero, home cards khi trang load lần đầu       */
+    @keyframes fadeUp{from{opacity:0;transform:translateY(16px)}to{opacity:1;transform:translateY(0)}}
+/* ── RESPONSIVE (TABLET ≤ 900px) ────────────────────────── */
+@media(max-width:900px){
+  nav{padding:0 14px}
+  .nav-links a{padding:4px 6px;font-size:0.7rem}
+  .hero{padding:40px 24px 32px}
+  .home-grid{grid-template-columns:1fr}
+  .home-card{border-right:none;border-bottom:1px solid var(--border)}
+  .page-header{padding:48px 24px 32px}
+  .message-wrap{grid-template-columns:1fr}
+  .message-left{border-right:none;border-bottom:1px solid var(--border);padding:40px 24px}
+  .message-right{padding:40px 24px}
+  .pricing-strip{flex-direction:column}
+  .pricing-box{border-right:none;border-bottom:1px solid var(--border)}
+  .laano-hero{grid-template-columns:1fr;padding:48px 24px 40px;gap:40px}
+  .laano-features{grid-template-columns:1fr}
+  footer{flex-direction:column;gap:12px;text-align:center;padding:32px 24px}
+  .apps-section{padding:40px 24px}
+  .form-row{grid-template-columns:1fr}
+  .content-placeholder{padding:60px 24px}
+
+  /* Cùi Bắp tablet */
+  #cbSidebar{width:240px;min-width:240px}
+}
+
+/* ── RESPONSIVE (MOBILE ≤ 600px) ────────────────────────── */
+@media(max-width:600px){
+
+  /* ── NAV MOBILE ── */
+  nav{padding:0 12px;height:56px}
+  .nav-tagline{display:none}
+  .nav-links a{padding:3px 5px;font-size:0.65rem}
+  .nav-links a.tools-link{padding:3px 8px}
+  /* Ẩn bớt nav links ít quan trọng trên mobile */
+  .nav-links li:has(a[data-section="learn"]),
+  .nav-links li:has(a[data-section="read"]),
+  .nav-links li:has(a[data-section="nope"]),
+  .nav-links li:has(a[data-section="lafno"]),
+  .nav-links li:has(a[data-section="message"]){display:none}
+  .lang-globe-btn{padding:4px 8px 4px 6px;font-size:0.65rem}
+  #langCurrentLabel{display:none}
+  .auth-btn{padding:4px 8px}
+
+  /* ── SECTIONS MOBILE ── */
+  .section{padding-top:56px}
+  .hero{padding:60px 16px 40px}
+  .hero-quote{font-size:0.82rem;white-space:normal !important}
+  .home-grid{grid-template-columns:1fr}
+  .home-card{padding:32px 24px}
+  .page-header{padding:36px 16px 24px}
+  .page-title{font-size:1.8rem}
+  .whats-new-section{padding:20px 16px}
+  footer{padding:24px 16px;gap:8px;font-size:0.72rem}
+
+  /* ── TOOLS MOBILE ── */
+  .tools-grid{grid-template-columns:1fr}
+  .tool-card{padding:24px 20px}
+
+  /* ── LAANO MOBILE ── */
+  .laano-hero{padding:36px 16px 32px;gap:28px}
+  .laano-features{grid-template-columns:1fr}
+  .laano-feat{padding:24px 20px}
+
+  /* ── MESSAGE MOBILE ── */
+  .message-left{padding:32px 16px}
+  .message-right{padding:32px 16px}
+
+  /* ── CÙI BẮP MOBILE ── */
+  #cuibap{padding-top:56px !important}
+  #cbApp{height:calc(100vh - 56px);flex-direction:column}
+
+  /* Sidebar ẩn mặc định, hiện khi không có chat */
+  #cbSidebar{
+    width:100%;
+    min-width:0;
+    border-right:none;
+    border-bottom:1px solid var(--cb-border);
+    max-height:calc(100vh - 56px);
+    transition:all 0.3s;
+  }
+  /* Khi đang chat → ẩn sidebar, chỉ hiện nút back */
+  #cbApp.cb-chatting #cbSidebar{display:none}
+  #cbApp.cb-chatting #cbMain{display:flex}
+  #cbMain{display:none}
+
+  /* Nút back trên header khi mobile */
+  #cbBackBtn{
+    display:none;
+    background:none;
+    border:none;
+    cursor:pointer;
+    padding:4px 8px 4px 0;
+    font-size:1.3rem;
+    color:var(--sage);
+    flex-shrink:0;
+  }
+  #cbApp.cb-chatting #cbBackBtn{display:flex;align-items:center}
+
+  /* Chat bubbles trên mobile */
+  .cb-msg{max-width:85%}
+  #cbMessages{padding:12px 12px}
+
+  /* Input area mobile */
+  #cbChatWindow > div:last-child{padding:8px 10px}
+}
+
+@keyframes spin{0%{transform:rotate(0deg)}100%{transform:rotate(360deg)}}
+/* Hiển thị modal khi có class "open" */
+  #authModal.open{display:flex}
+  /* Dark mode cho modal */
+  body.dark #authModal > div{background:#1a1a1a;color:#eee}
+  body.dark #authModal input{background:#222;border-color:#333;color:#eee}
+  body.dark #authModal label{color:#aaa}
+/* ── DARK MODE cho Cùi Bắp ──────────────────────────────── */
+body.dark { --cb-bg:#0f0f0f; --cb-sidebar:#1a1a1a; --cb-border:#2a2a2a; --cb-hover:#222; --cb-input:#222; --cb-bubble-in:#2a2a2a; }
+
+/* ── CÙI BẮP CHAT STYLES ────────────────────────────────── */
+#cuibap { padding: 0 !important; }
+#cuibap.active { display: flex !important; flex-direction: column; }
+
+/* Message bubbles */
+.cb-msg { display: flex; flex-direction: column; max-width: 70%; margin-bottom: 2px; animation: fadeUp 0.2s ease; }
+.cb-msg.out { align-self: flex-end; align-items: flex-end; }
+.cb-msg.in  { align-self: flex-start; align-items: flex-start; }
+.cb-bubble { padding: 9px 14px; border-radius: 18px; font-size: 0.88rem; line-height: 1.5; word-break: break-word; position: relative; }
+.cb-msg.out .cb-bubble { background: var(--cb-bubble-out); color: #fff; border-bottom-right-radius: 4px; }
+.cb-msg.in  .cb-bubble { background: var(--cb-bubble-in); color: inherit; border-bottom-left-radius: 4px; box-shadow: 0 1px 2px rgba(0,0,0,0.06); }
+.cb-msg-time { font-size: 0.68rem; color: var(--gray-light); margin: 2px 4px; }
+.cb-msg-edited { font-size: 0.68rem; color: var(--gray-light); font-style: italic; }
+
+/* Consecutive messages (same sender) */
+.cb-msg.out + .cb-msg.out .cb-bubble { border-top-right-radius: 4px; }
+.cb-msg.in  + .cb-msg.in  .cb-bubble { border-top-left-radius: 4px; }
+
+/* Date separator */
+.cb-date-sep { text-align: center; font-size: 0.72rem; color: var(--gray-light); margin: 12px 0; position: relative; }
+.cb-date-sep::before, .cb-date-sep::after { content:''; position:absolute; top:50%; width:40%; height:1px; background:var(--cb-border); }
+.cb-date-sep::before { left:0; }
+.cb-date-sep::after { right:0; }
+
+/* Reaction pills */
+.cb-reactions { display: flex; flex-wrap: wrap; gap: 3px; margin-top: 3px; }
+.cb-reaction-pill { background: var(--cb-hover); border: 1px solid var(--cb-border); border-radius: 20px; padding: 2px 7px; font-size: 0.75rem; cursor: pointer; transition: background 0.2s; }
+.cb-reaction-pill:hover { background: var(--sage-pale); }
+
+/* Conversation list item */
+.cb-conv-item { display: flex; align-items: center; gap: 10px; padding: 10px 8px; border-radius: 10px; cursor: pointer; transition: background 0.15s; }
+.cb-conv-item:hover { background: var(--cb-hover); }
+.cb-conv-item.active { background: var(--sage-pale); }
+body.dark .cb-conv-item.active { background: #1a3328; }
+.cb-conv-avatar { width: 42px; height: 42px; border-radius: 50%; background: var(--sage); display: flex; align-items: center; justify-content: center; color: #fff; font-weight: 700; font-size: 1rem; flex-shrink: 0; position: relative; }
+.cb-online-dot { position: absolute; bottom: 1px; right: 1px; width: 10px; height: 10px; background: #2ecc71; border-radius: 50%; border: 2px solid var(--cb-sidebar); }
+.cb-conv-info { flex: 1; min-width: 0; }
+.cb-conv-name { font-weight: 600; font-size: 0.88rem; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
+.cb-conv-preview { font-size: 0.77rem; color: var(--gray-light); white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
+
+/* Scrollbar trong chat */
+#cbMessages::-webkit-scrollbar { width: 4px; }
+#cbMessages::-webkit-scrollbar-track { background: transparent; }
+#cbMessages::-webkit-scrollbar-thumb { background: var(--cb-border); border-radius: 4px; }
+#cbConvList::-webkit-scrollbar { width: 4px; }
+#cbConvList::-webkit-scrollbar-thumb { background: var(--cb-border); border-radius: 4px; }
+
+/* Reply preview */
+.cb-reply-bar { background: var(--cb-hover); border-left: 3px solid var(--sage); padding: 6px 12px; border-radius: 0 6px 6px 0; font-size: 0.8rem; color: var(--gray); margin: 0 0 4px 0; }
+
+#pageContent{height:calc(100vh - 64px);overflow:hidden;display:flex;flex-direction:column;}
+
+/* Fix subpixel gap */
+html { background: var(--white); }
+body { background: var(--white); }
+/* Khi tools active, body background match */
+body:has(#tools.active) { background: #f7f9f8; }

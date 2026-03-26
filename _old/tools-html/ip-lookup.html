@@ -1,0 +1,195 @@
+<!DOCTYPE html>
+<html lang="vi">
+<head>
+<meta charset="UTF-8"/>
+<meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+<title>IP & DNS Lookup — Querencia Tools</title>
+<link href="https://fonts.googleapis.com/css2?family=DM+Mono:wght@400;500&family=Syne:wght@400;600;700;800&display=swap" rel="stylesheet"/>
+<style>
+  :root{--sage:#4a7c59;--sage-light:#6fa882;--sage-pale:#ddeee3;--sage-dark:#2f5c3e;--bg:#f7faf8;--card:#fff;--border:#e0ece5;--text:#1a2e22;--muted:#6b8a74;--font-display:'Syne',sans-serif;--font-mono:'DM Mono',monospace}
+  *{box-sizing:border-box;margin:0;padding:0}
+  body{font-family:var(--font-mono);background:var(--bg);color:var(--text);min-height:100vh;padding:32px 16px}
+  .container{max-width:700px;margin:0 auto}
+  .header{text-align:center;margin-bottom:36px}
+  .header h1{font-family:var(--font-display);font-size:2rem;font-weight:800;color:var(--sage-dark);letter-spacing:-0.02em}
+  .header p{font-size:0.82rem;color:var(--muted);margin-top:6px}
+  .search-bar{display:flex;gap:10px;margin-bottom:24px}
+  .search-bar input{flex:1;padding:13px 18px;border:1.5px solid var(--border);border-radius:10px;font-family:var(--font-mono);font-size:0.9rem;outline:none;background:#fff;transition:border-color 0.2s;color:var(--text)}
+  .search-bar input:focus{border-color:var(--sage)}
+  .search-bar button{padding:13px 22px;background:var(--sage);color:#fff;border:none;border-radius:10px;font-family:var(--font-display);font-size:0.9rem;font-weight:700;cursor:pointer;transition:background 0.18s;white-space:nowrap}
+  .search-bar button:hover{background:var(--sage-dark)}
+  .tabs{display:flex;gap:4px;margin-bottom:20px;background:#fff;padding:4px;border-radius:10px;border:1.5px solid var(--border)}
+  .tab{flex:1;padding:9px;text-align:center;font-size:0.8rem;font-family:var(--font-display);font-weight:600;cursor:pointer;border-radius:7px;transition:all 0.18s;color:var(--muted)}
+  .tab.active{background:var(--sage);color:#fff}
+  .card{background:var(--card);border:1.5px solid var(--border);border-radius:14px;overflow:hidden;margin-bottom:16px}
+  .card-title{padding:14px 20px;border-bottom:1px solid var(--border);font-family:var(--font-display);font-size:0.85rem;font-weight:700;color:var(--sage-dark);display:flex;align-items:center;gap:8px}
+  .row{display:flex;padding:12px 20px;border-bottom:1px solid var(--border);gap:16px}
+  .row:last-child{border-bottom:none}
+  .row-key{font-size:0.78rem;color:var(--muted);width:140px;flex-shrink:0;padding-top:1px}
+  .row-val{font-size:0.85rem;color:var(--text);font-weight:500;word-break:break-all;flex:1}
+  .tag{display:inline-block;background:var(--sage-pale);color:var(--sage-dark);font-size:0.72rem;padding:2px 8px;border-radius:12px;margin:2px;font-weight:500}
+  .map-placeholder{height:180px;background:var(--sage-pale);display:flex;align-items:center;justify-content:center;color:var(--sage-dark);font-size:0.85rem;border-radius:0 0 12px 12px}
+  .loading{text-align:center;padding:48px;color:var(--muted);font-size:0.88rem}
+  .spinner{display:inline-block;width:24px;height:24px;border:2px solid var(--border);border-top-color:var(--sage);border-radius:50%;animation:spin 0.8s linear infinite;margin-bottom:10px}
+  @keyframes spin{to{transform:rotate(360deg)}}
+  .dns-record{background:var(--bg);border-radius:8px;padding:10px 14px;margin:4px 0;font-size:0.82rem;display:flex;gap:12px;align-items:flex-start}
+  .dns-type{background:var(--sage);color:#fff;font-size:0.68rem;padding:2px 8px;border-radius:4px;flex-shrink:0;margin-top:1px}
+  .dns-val{color:var(--text);word-break:break-all;flex:1}
+  .dns-ttl{color:var(--muted);font-size:0.72rem;flex-shrink:0}
+  #results{display:none}
+  .my-ip-btn{display:block;text-align:center;margin:0 auto 20px;background:transparent;border:1.5px solid var(--border);color:var(--sage);padding:10px 20px;border-radius:10px;font-family:var(--font-mono);font-size:0.82rem;cursor:pointer;transition:all 0.18s;width:100%}
+  .my-ip-btn:hover{border-color:var(--sage);background:var(--sage-pale)}
+</style>
+</head>
+<body>
+<div class="container">
+  <div class="header">
+    <h1>🌐 IP & DNS Lookup</h1>
+    <p>Xem thông tin IP, vị trí, ISP, và DNS records của bất kỳ domain hoặc IP nào.</p>
+  </div>
+
+  <div class="search-bar">
+    <input type="text" id="queryInput" placeholder="Nhập IP hoặc domain... (vd: 8.8.8.8 hoặc google.com)" onkeydown="if(event.key==='Enter')lookup()"/>
+    <button onclick="lookup()">Tra cứu</button>
+  </div>
+
+  <button class="my-ip-btn" onclick="lookupMyIP()">📍 Xem thông tin IP của tôi</button>
+
+  <div id="results">
+    <div class="tabs">
+      <div class="tab active" onclick="switchTab('ip',this)">📍 IP Info</div>
+      <div class="tab" onclick="switchTab('dns',this)">🔍 DNS Records</div>
+    </div>
+
+    <div id="ipPanel">
+      <div class="loading" id="ipLoading"><div class="spinner"></div><br/>Đang tra cứu...</div>
+      <div id="ipContent" style="display:none"></div>
+    </div>
+
+    <div id="dnsPanel" style="display:none">
+      <div class="loading" id="dnsLoading"><div class="spinner"></div><br/>Đang tra cứu DNS...</div>
+      <div id="dnsContent" style="display:none"></div>
+    </div>
+  </div>
+</div>
+
+<script>
+let currentQuery = '';
+
+async function lookupMyIP() {
+  document.getElementById('queryInput').value = '';
+  currentQuery = '';
+  showResults();
+  await fetchIPInfo('');
+}
+
+async function lookup() {
+  const q = document.getElementById('queryInput').value.trim();
+  if (!q) { lookupMyIP(); return; }
+  currentQuery = q;
+  showResults();
+  await Promise.all([fetchIPInfo(q), fetchDNS(q)]);
+}
+
+function showResults() {
+  document.getElementById('results').style.display = 'block';
+  document.getElementById('ipLoading').style.display = 'block';
+  document.getElementById('ipContent').style.display = 'none';
+  document.getElementById('dnsLoading').style.display = 'block';
+  document.getElementById('dnsContent').style.display = 'none';
+}
+
+async function fetchIPInfo(query) {
+  try {
+    const url = query ? `https://ipapi.co/${query}/json/` : `https://ipapi.co/json/`;
+    const res = await fetch(url);
+    const d = await res.json();
+    if (d.error) { renderIPError(d.reason || 'Không tìm thấy'); return; }
+
+    document.getElementById('ipContent').innerHTML = `
+      <div class="card">
+        <div class="card-title">📍 Thông tin IP</div>
+        ${row('Địa chỉ IP', d.ip)}
+        ${row('Phiên bản', d.version || 'IPv4')}
+        ${row('Hostname', d.hostname || '—')}
+        ${row('Quốc gia', `${d.country_name} ${d.country_code ? '('+d.country_code+')' : ''}`)}
+        ${row('Thành phố', [d.city, d.region].filter(Boolean).join(', ') || '—')}
+        ${row('Múi giờ', d.timezone || '—')}
+        ${row('ISP / Tổ chức', d.org || '—')}
+        ${row('ASN', d.asn || '—')}
+        ${row('Toạ độ', d.latitude && d.longitude ? `${d.latitude}, ${d.longitude}` : '—')}
+      </div>
+      ${d.latitude && d.longitude ? `
+      <div class="card">
+        <div class="card-title">🗺 Bản đồ (xấp xỉ)</div>
+        <div class="map-placeholder">
+          <a href="https://maps.google.com?q=${d.latitude},${d.longitude}" target="_blank" style="color:var(--sage-dark);text-decoration:none">
+            📌 Xem trên Google Maps → ${d.city || ''} ${d.country_name || ''}
+          </a>
+        </div>
+      </div>` : ''}
+    `;
+    document.getElementById('ipLoading').style.display = 'none';
+    document.getElementById('ipContent').style.display = 'block';
+  } catch(e) { renderIPError('Lỗi kết nối'); }
+}
+
+function renderIPError(msg) {
+  document.getElementById('ipContent').innerHTML = `<div class="loading" style="color:#c0392b">${msg}</div>`;
+  document.getElementById('ipLoading').style.display = 'none';
+  document.getElementById('ipContent').style.display = 'block';
+}
+
+async function fetchDNS(domain) {
+  // Chỉ lookup DNS nếu là domain, không phải IP
+  const isIP = /^[\d.]+$|^[0-9a-f:]+$/i.test(domain);
+  if (isIP || !domain) {
+    document.getElementById('dnsLoading').style.display = 'none';
+    document.getElementById('dnsContent').innerHTML = '<div class="loading" style="color:var(--muted);font-size:0.82rem">DNS lookup chỉ khả dụng với domain name</div>';
+    document.getElementById('dnsContent').style.display = 'block';
+    return;
+  }
+
+  const types = ['A','AAAA','MX','NS','TXT','CNAME'];
+  let allRecords = [];
+
+  await Promise.all(types.map(async t => {
+    try {
+      const res = await fetch(`https://dns.google/resolve?name=${domain}&type=${t}`);
+      const d = await res.json();
+      if (d.Answer) d.Answer.forEach(r => allRecords.push({type:t, data:r.data, ttl:r.TTL}));
+    } catch(e) {}
+  }));
+
+  document.getElementById('dnsContent').innerHTML = allRecords.length ? `
+    <div class="card">
+      <div class="card-title">🔍 DNS Records — ${domain}</div>
+      <div style="padding:12px 16px">
+        ${allRecords.map(r => `
+          <div class="dns-record">
+            <span class="dns-type">${r.type}</span>
+            <span class="dns-val">${r.data}</span>
+            <span class="dns-ttl">TTL ${r.ttl}</span>
+          </div>
+        `).join('')}
+      </div>
+    </div>
+  ` : `<div class="loading" style="color:var(--muted)">Không tìm thấy DNS record nào</div>`;
+
+  document.getElementById('dnsLoading').style.display = 'none';
+  document.getElementById('dnsContent').style.display = 'block';
+}
+
+function row(k, v) {
+  return `<div class="row"><span class="row-key">${k}</span><span class="row-val">${v||'—'}</span></div>`;
+}
+
+function switchTab(tab, el) {
+  document.querySelectorAll('.tab').forEach(t => t.classList.remove('active'));
+  el.classList.add('active');
+  document.getElementById('ipPanel').style.display = tab === 'ip' ? 'block' : 'none';
+  document.getElementById('dnsPanel').style.display = tab === 'dns' ? 'block' : 'none';
+}
+</script>
+</body>
+</html>

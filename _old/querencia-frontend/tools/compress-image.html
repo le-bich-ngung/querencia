@@ -1,0 +1,234 @@
+<!-- pages/compress-image.html -->
+<meta name="description" content="Compress JPG, PNG, WebP images online for free. Reduce file size up to 80% without quality loss. 100% client-side, no upload to server."/>
+<meta name="keywords" content="compress image online, reduce image size, jpg compressor, png compressor, webp compress, no upload image compressor"/>
+<meta property="og:title" content="<span data-i18n="t_title">Compress Image Online</span> Free — No Upload | Querencia"/>
+<meta property="og:description" content="Compress JPG, PNG, WebP images online for free. Reduce file size up to 80% without quality loss. 100% client-side, no upload to server."/>
+<meta property="og:type" content="website"/>
+<meta property="og:url" content="https://querencia.com.vn/#tools"/>
+<meta name="twitter:card" content="summary"/>
+<meta name="twitter:title" content="Compress Image Online Free — No Upload | Querencia"/>
+<link rel="canonical" href="https://querencia.com.vn/#tools"/>
+<script type="application/ld+json">
+{
+  "@context": "https://schema.org",
+  "@type": "WebApplication",
+  "name": "Compress Image Online Free",
+  "url": "https://querencia.com.vn/#tools",
+  "description": "Compress JPG, PNG, WebP images online for free. Reduce file size up to 80% without quality loss. 100% client-side, no upload to server.",
+  "applicationCategory": "MultimediaApplication",
+  "operatingSystem": "Any",
+  "offers": { "@type": "Offer", "price": "0", "priceCurrency": "USD" },
+  "provider": { "@type": "Organization", "name": "Querencia", "url": "https://querencia.com.vn" }
+}
+</script>
+
+<section class="section active" id="compress-image-page">
+<meta name="description" content="Compress images online free — reduce file size up to 80% without visible quality loss. JPG, PNG, WebP. 100% client-side."/>
+<style>
+.ci-wrap{max-width:720px;margin:0 auto;padding:40px 20px;font-family:var(--font-body)}
+.ci-hero{text-align:center;margin-bottom:40px}
+.ci-badge{display:inline-flex;padding:3px 10px;border-radius:20px;font-size:11px;background:var(--sage-pale);color:#2f5c3e;font-weight:600;margin-bottom:14px}
+.ci-hero h1{font-size:clamp(1.6rem,3vw,2.2rem);font-weight:700;color:var(--black);margin-bottom:8px;line-height:1.2}
+.ci-hero p{font-size:14px;color:var(--gray);max-width:460px;margin:0 auto}
+.ci-upload{border:1.5px dashed var(--border);border-radius:14px;padding:48px 24px;text-align:center;cursor:pointer;transition:all 0.2s;background:var(--white);margin-bottom:24px}
+.ci-upload:hover,.ci-upload.over{border-color:#4a7c59;background:var(--sage-pale)18}
+.ci-upload-icon{width:56px;height:56px;border-radius:14px;background:#f5f5f5;border:0.5px solid var(--border);display:flex;align-items:center;justify-content:center;margin:0 auto 14px}
+.ci-upload h2{font-size:15px;font-weight:600;color:var(--black);margin-bottom:6px}
+.ci-upload p{font-size:12px;color:var(--gray-light)}
+.ci-controls{background:#f5f5f5;border:0.5px solid var(--border);border-radius:10px;padding:18px;margin-bottom:20px;display:none}
+.ci-controls.active{display:block}
+.ci-quality-row{display:flex;align-items:center;gap:12px;margin-bottom:14px}
+.ci-quality-label{font-size:13px;color:var(--gray);min-width:70px}
+.ci-quality-val{font-size:14px;font-weight:600;color:#4a7c59;min-width:40px;text-align:right}
+.ci-range{flex:1;height:4px;accent-color:#4a7c59}
+.ci-preview{display:none;gap:16px;margin-bottom:20px}
+.ci-preview.active{display:grid;grid-template-columns:1fr 1fr}
+.ci-box{border:0.5px solid var(--border);border-radius:10px;overflow:hidden;background:var(--white)}
+.ci-box-label{padding:10px 14px;font-size:11px;font-weight:600;color:var(--gray);border-bottom:0.5px solid var(--border);display:flex;justify-content:space-between;align-items:center;text-transform:uppercase;letter-spacing:0.06em}
+.ci-box-size{font-size:12px;color:var(--black);font-weight:600}
+.ci-img-wrap{aspect-ratio:1;display:flex;align-items:center;justify-content:center;overflow:hidden;background:#F1EFE8}
+.ci-img-wrap img{width:100%;height:100%;object-fit:contain}
+.ci-saving{text-align:center;padding:14px;font-size:13px;color:var(--gray)}
+.ci-saving b{color:#4a7c59;font-size:16px}
+.ci-actions{display:flex;gap:10px;justify-content:center;flex-wrap:wrap}
+.ci-btn{padding:10px 24px;border-radius:8px;font-size:13px;font-weight:600;cursor:pointer;transition:all 0.15s;font-family:var(--font-body);border:none}
+.ci-btn.primary{background:#4a7c59;color:#fff}
+.ci-btn.primary:hover{background:#2f5c3e}
+.ci-btn.ghost{background:none;border:0.5px solid var(--border);color:var(--gray)}
+.ci-btn.ghost:hover{background:#f5f5f5}
+.ci-privacy{display:flex;align-items:center;justify-content:center;gap:6px;font-size:11px;color:var(--gray-light);margin-top:20px}
+.ci-hint{text-align:center;font-size:12px;color:var(--gray-light);margin-top:10px}
+@media(max-width:540px){.ci-preview.active{grid-template-columns:1fr}}
+</style>
+<input type="file" id="ci-file" accept="image/*" style="display:none" onchange="ciLoad(this)"/>
+
+<div class="ci-wrap">
+  <div class="ci-hero">
+    <div class="ci-badge">100% Free · Client-side</div>
+    <h1>Compress Image Online</h1>
+    <p data-i18n="t_desc">Reduce image file size up to 80% without visible quality loss. No upload to server — everything happens in your browser.</p>
+  </div>
+
+  <div class="ci-upload" id="ci-drop"
+    onclick="document.getElementById('ci-file').click()"
+    ondragover="event.preventDefault();this.classList.add('over')"
+    ondragleave="this.classList.remove('over')"
+    ondrop="ciDrop(event)">
+    <div class="ci-upload-icon">
+      <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="#4a7c59" stroke-width="1.5"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/><polyline points="17 8 12 3 7 8"/><line x1="12" y1="3" x2="12" y2="15"/></svg>
+    </div>
+    <h2 data-i18n="t_drop">Click or drop image here</h2>
+    <p data-i18n="t_drop_sub">JPG · PNG · WebP · GIF · up to 50MB</p>
+  </div>
+
+  <div class="ci-controls" id="ci-controls">
+    <div class="ci-quality-row">
+      <span class="ci-quality-label" data-i18n="t_quality">Quality</span>
+      <input type="range" class="ci-range" id="ci-quality" min="5" max="95" value="75" oninput="ciCompress()"/>
+      <span class="ci-quality-val" id="ci-qval">75%</span>
+    </div>
+    <div style="display:flex;gap:8px;flex-wrap:wrap">
+      <label style="font-size:12px;color:var(--gray)" data-i18n="t_format">Format:</label>
+      <label style="font-size:12px;cursor:pointer"><input type="radio" name="ci-fmt" value="jpg" checked onchange="ciCompress()"> JPG</label>
+      <label style="font-size:12px;cursor:pointer"><input type="radio" name="ci-fmt" value="png" onchange="ciCompress()"> PNG</label>
+      <label style="font-size:12px;cursor:pointer"><input type="radio" name="ci-fmt" value="webp" onchange="ciCompress()"> WebP</label>
+    </div>
+  </div>
+
+  <div class="ci-preview" id="ci-preview">
+    <div class="ci-box">
+      <div class="ci-box-label" data-i18n="t_original">Original <span class="ci-box-size" id="ci-orig-size">—</span></div>
+      <div class="ci-img-wrap"><img id="ci-orig-img" src="" alt="Original"/></div>
+    </div>
+    <div class="ci-box">
+      <div class="ci-box-label" data-i18n="t_compressed">Compressed <span class="ci-box-size" id="ci-comp-size" style="color:#4a7c59">—</span></div>
+      <div class="ci-img-wrap"><img id="ci-comp-img" src="" alt="Compressed"/></div>
+    </div>
+  </div>
+
+  <div class="ci-saving" id="ci-saving" style="display:none">
+    Saved <b id="ci-pct">—</b> — <span id="ci-bytes-saved">—</span> smaller
+  </div>
+
+  <div class="ci-actions" id="ci-actions" style="display:none">
+    <button class="ci-btn primary" onclick="ciDownload()">⬇ Download compressed</button>
+    <button class="ci-btn ghost" onclick="ciReset()" data-i18n="t_try_other">Try another image</button>
+  </div>
+
+  <div class="ci-privacy">🔒 Your images never leave your device</div>
+  <div class="ci-hint" data-i18n="t_tip">Tip: For photos, JPG at 70–80% gives best size/quality ratio. For graphics with transparency, use WebP.</div>
+</div>
+
+<script>
+(function(){
+const S = { original: null, filename: '', origSize: 0 };
+function fmtBytes(b){ return b>1e6?(b/1e6).toFixed(2)+' MB':b>1e3?(b/1e3).toFixed(0)+' KB':b+' B'; }
+
+window.ciLoad = function(input){
+  const file = input.files[0]; if(!file) return;
+  S.filename = file.name.replace(/\.[^.]+$/,'');
+  S.origSize = file.size;
+  const reader = new FileReader();
+  reader.onload = function(e){
+    const img = new Image();
+    img.onload = function(){
+      const c = document.createElement('canvas');
+      c.width = img.width; c.height = img.height;
+      c.getContext('2d').drawImage(img, 0, 0);
+      S.original = c;
+      document.getElementById('ci-orig-img').src = e.target.result;
+      document.getElementById('ci-orig-size').textContent = fmtBytes(file.size);
+      document.getElementById('ci-controls').classList.add('active');
+      document.getElementById('ci-preview').classList.add('active');
+      document.getElementById('ci-actions').style.display = 'flex';
+      ciCompress();
+    };
+    img.src = e.target.result;
+  };
+  reader.readAsDataURL(file);
+};
+
+window.ciDrop = function(e){
+  e.preventDefault();
+  document.getElementById('ci-drop').classList.remove('over');
+  const file = e.dataTransfer.files[0];
+  if(file && file.type.startsWith('image/')){
+    const dt = new DataTransfer(); dt.items.add(file);
+    document.getElementById('ci-file').files = dt.files;
+    ciLoad(document.getElementById('ci-file'));
+  }
+};
+
+window.ciCompress = function(){
+  if(!S.original) return;
+  const q = +document.getElementById('ci-quality').value / 100;
+  document.getElementById('ci-qval').textContent = Math.round(q*100)+'%';
+  const fmt = document.querySelector('input[name="ci-fmt"]:checked').value;
+  const mime = fmt==='png'?'image/png':fmt==='webp'?'image/webp':'image/jpeg';
+  const dataURL = S.original.toDataURL(mime, q);
+  document.getElementById('ci-comp-img').src = dataURL;
+  // estimate size
+  const base64 = dataURL.split(',')[1];
+  const compSize = Math.round(base64.length * 0.75);
+  document.getElementById('ci-comp-size').textContent = fmtBytes(compSize);
+  const pct = Math.round((1 - compSize/S.origSize)*100);
+  document.getElementById('ci-saving').style.display = 'block';
+  document.getElementById('ci-pct').textContent = Math.max(0,pct)+'%';
+  document.getElementById('ci-bytes-saved').textContent = fmtBytes(Math.max(0, S.origSize - compSize));
+  S._lastDataURL = dataURL;
+  S._fmt = fmt;
+};
+
+window.ciDownload = function(){
+  if(!S._lastDataURL) return;
+  const a = document.createElement('a');
+  a.href = S._lastDataURL;
+  a.download = S.filename + '-compressed.' + (S._fmt==='jpg'?'jpg':S._fmt);
+  a.click();
+};
+
+window.ciReset = function(){
+  S.original=null; S.origSize=0;
+  document.getElementById('ci-controls').classList.remove('active');
+  document.getElementById('ci-preview').classList.remove('active');
+  document.getElementById('ci-actions').style.display='none';
+  document.getElementById('ci-saving').style.display='none';
+  document.getElementById('ci-file').value='';
+};
+})();
+</script>
+
+<script>
+(function(){
+  const _T = {en:{t_title:'Compress Image Online',t_desc:'Reduce image file size up to 80% without visible quality loss. No upload to server — everything happens in your browser.',t_drop:'Click or drop image here',t_drop_sub:'JPG · PNG · WebP · GIF · up to 50MB',t_quality:'Quality',t_format:'Format:',t_original:'Original',t_compressed:'Compressed',t_saved:'saved',t_try_other:'Try another image',t_tip:'Tip: For photos, JPG at 70–80% gives best size/quality ratio. For graphics with transparency, use WebP.',t_download:'Download',t_privacy:'🔒 Images never leave your browser'},vi:{t_title:'Nén ảnh Online',t_desc:'Giảm dung lượng ảnh tới 80% mà không mất chất lượng rõ rệt. Không upload — xử lý ngay trong trình duyệt.',t_drop:'Nhấn hoặc kéo thả ảnh vào đây',t_drop_sub:'JPG · PNG · WebP · GIF · tối đa 50MB',t_quality:'Chất lượng',t_format:'Định dạng:',t_original:'Gốc',t_compressed:'Sau nén',t_saved:'tiết kiệm',t_try_other:'Chọn ảnh khác',t_tip:'Mẹo: Với ảnh chụp, JPG 70–80% cho tỷ lệ kích thước/chất lượng tốt nhất. Với đồ họa có nền trong suốt, dùng WebP.',t_download:'Tải xuống',t_privacy:'🔒 Ảnh không bao giờ rời trình duyệt'},ja:{t_title:'画像圧縮オンライン',t_desc:'画質を落とさずにファイルサイズを最大80%削減。サーバーへのアップロード不要 — すべてブラウザで処理。',t_drop:'クリックまたはドロップ',t_drop_sub:'JPG · PNG · WebP · GIF · 最大50MB',t_quality:'品質',t_format:'形式：',t_original:'元のサイズ',t_compressed:'圧縮後',t_saved:'削減',t_try_other:'別の画像を試す',t_tip:'ヒント：写真にはJPG 70〜80%が最適。透過が必要な場合はWebPを使用。',t_download:'ダウンロード',t_privacy:'🔒 画像はブラウザ外に出ません'},es:{t_title:'Comprimir Imagen Online',t_desc:'Reduce el tamaño del archivo hasta un 80% sin pérdida visible de calidad. Sin subida al servidor — todo ocurre en tu navegador.',t_drop:'Haz clic o arrastra una imagen',t_drop_sub:'JPG · PNG · WebP · GIF · hasta 50MB',t_quality:'Calidad',t_format:'Formato:',t_original:'Original',t_compressed:'Comprimido',t_saved:'ahorrado',t_try_other:'Probar otra imagen',t_tip:'Consejo: Para fotos, JPG al 70–80% ofrece la mejor relación tamaño/calidad. Para gráficos con transparencia, usa WebP.',t_download:'Descargar',t_privacy:'🔒 Las imágenes nunca salen de tu navegador'}};
+  function _apply(){
+    const lang = localStorage.getItem('querencia_lang')||'en';
+    const t = _T[lang]||_T.en;
+    // Merge into window.T for app.js setLang() to pick up
+    if(window.T){
+      if(!window.T[lang]) window.T[lang]={};
+      Object.assign(window.T[lang], t);
+    }
+    document.querySelectorAll('[data-i18n]').forEach(el=>{
+      const k=el.getAttribute('data-i18n');
+      if(t[k]!==undefined) el.innerHTML=t[k];
+    });
+    document.querySelectorAll('[data-i18n-ph]').forEach(el=>{
+      const k=el.getAttribute('data-i18n-ph');
+      if(t[k]!==undefined) el.placeholder=t[k];
+    });
+  }
+  // Run immediately and also hook into app.js setLang
+  _apply();
+  const _orig = window.setLang;
+  window.setLang = function(l){ if(_orig) _orig(l); _apply(); };
+  // Also re-apply when applyTranslations is called
+  const _origAT = window.applyTranslations;
+  window.applyTranslations = function(){ if(_origAT) _origAT(); _apply(); };
+  window._compress_image_t = function(k){
+    const lang=localStorage.getItem('querencia_lang')||'en';
+    return (_T[lang]||_T.en)[k]||_T.en[k]||k;
+  };
+})();
+</script>
+</section>

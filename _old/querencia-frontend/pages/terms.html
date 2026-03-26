@@ -1,0 +1,244 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8"/>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>Terms of Service · Querencia</title>
+  <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:ital,wght@0,300;0,400;0,500;0,600;0,700;1,400&display=swap" rel="stylesheet"/>
+  <style>
+    :root { --sage: #4a7c59; --sage-light: #e8f0eb; --text: #1a1a1a; --muted: #666; --border: #e8e8e8; }
+    * { box-sizing: border-box; margin: 0; padding: 0; }
+    body { font-family: 'Plus Jakarta Sans', sans-serif; color: var(--text); background: #fafafa; line-height: 1.7; }
+    nav { display: flex; align-items: center; justify-content: space-between; padding: 16px 40px; background: #fff; border-bottom: 1px solid var(--border); position: sticky; top: 0; z-index: 100; }
+    .nav-logo { display: flex; flex-direction: column; align-items: flex-start; text-decoration: none; cursor: pointer; }
+    .nav-logo-row { display: flex; align-items: center; gap: 4px; }
+    .nav-logo-text { font-size: 1.4rem; font-weight: 700; line-height: 1; }
+    .nav-tagline { font-size: 0.62rem; font-weight: 600; color: var(--muted); letter-spacing: 0.06em; }
+    .nav-back { display: flex; align-items: center; gap: 6px; font-size: 0.85rem; color: var(--sage); text-decoration: none; font-weight: 600; transition: opacity 0.2s; }
+    .nav-back:hover { opacity: 0.7; }
+    .lang-switcher { display: flex; gap: 6px; }
+    .lang-btn { padding: 4px 10px; border: 1.5px solid var(--border); border-radius: 20px; background: none; font-family: inherit; font-size: 0.78rem; font-weight: 600; color: var(--muted); cursor: pointer; transition: all 0.2s; }
+    .lang-btn.active, .lang-btn:hover { border-color: var(--sage); color: var(--sage); background: var(--sage-light); }
+    .hero { background: linear-gradient(135deg, #2a4a35 0%, var(--sage) 100%); color: #fff; padding: 64px 40px 48px; }
+    .hero-inner { max-width: 800px; margin: 0 auto; }
+    .hero-badge { display: inline-block; background: rgba(255,255,255,0.2); border: 1px solid rgba(255,255,255,0.3); border-radius: 20px; padding: 4px 14px; font-size: 0.75rem; font-weight: 600; letter-spacing: 0.08em; text-transform: uppercase; margin-bottom: 20px; }
+    .hero h1 { font-size: clamp(2rem, 4vw, 3rem); font-weight: 700; line-height: 1.2; margin-bottom: 12px; }
+    .hero-meta { font-size: 0.85rem; opacity: 0.75; }
+    .content { max-width: 800px; margin: 0 auto; padding: 48px 40px 80px; }
+    .section { margin-bottom: 40px; padding-bottom: 40px; border-bottom: 1px solid var(--border); }
+    .section:last-child { border-bottom: none; }
+    .section-num { display: inline-flex; align-items: center; justify-content: center; width: 28px; height: 28px; background: var(--sage); color: #fff; border-radius: 50%; font-size: 0.75rem; font-weight: 700; margin-bottom: 12px; }
+    .section h2 { font-size: 1.2rem; font-weight: 700; color: var(--text); margin-bottom: 10px; }
+    .section p { font-size: 0.92rem; color: #444; margin-bottom: 10px; }
+    .section ul { padding-left: 20px; margin-bottom: 10px; }
+    .section ul li { font-size: 0.92rem; color: #444; margin-bottom: 6px; }
+    .highlight-box { background: var(--sage-light); border-left: 3px solid var(--sage); border-radius: 0 8px 8px 0; padding: 16px 20px; margin: 16px 0; font-size: 0.88rem; color: #2d5a3d; }
+    .warning-box { background: #fff8e1; border-left: 3px solid #f5a623; border-radius: 0 8px 8px 0; padding: 16px 20px; margin: 16px 0; font-size: 0.88rem; color: #7a5000; }
+    footer { text-align: center; padding: 32px; background: #fff; border-top: 1px solid var(--border); font-size: 0.8rem; color: var(--muted); }
+    footer a { color: var(--sage); text-decoration: none; margin: 0 8px; }
+    [data-lang] { display: none; }
+    [data-lang].active { display: block; }
+    [data-lang-inline] { display: none; }
+    [data-lang-inline].active { display: inline; }
+    @media (max-width: 600px) { nav { padding: 14px 20px; } .hero { padding: 40px 20px 32px; } .content { padding: 32px 20px 60px; } }
+  </style>
+<script>
+function setLang(lang) {
+  document.querySelectorAll('[data-lang]').forEach(function(el) {
+    var val = el.getAttribute('data-lang').trim();
+    el.classList.toggle('active', val === lang);
+  });
+  document.querySelectorAll('[data-lang-inline]').forEach(function(el) {
+    var val = el.getAttribute('data-lang-inline').trim();
+    el.classList.toggle('active', val === lang);
+  });
+  document.querySelectorAll('.lang-btn').forEach(function(b) {
+    b.classList.toggle('active', b.getAttribute('data-lang-code') === lang);
+  });
+  try { localStorage.setItem('lang', lang); } catch(e) {}
+}
+var _lang = 'en';
+try { _lang = localStorage.getItem('lang') || 'en'; } catch(e) {}
+document.addEventListener('DOMContentLoaded', function() { setLang(_lang); });
+</script>
+</head>
+<body>
+
+<nav>
+  <a class="nav-logo" href="https://querencia.com.vn">
+    <div class="nav-logo-row">
+      <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 120 120" width="28" height="28" style="flex-shrink:0;position:relative;top:2px">
+        <circle cx="55" cy="55" r="38" fill="none" stroke="#4a7c59" stroke-width="7" stroke-linecap="round"/>
+        <line x1="81" y1="79" x2="98" y2="98" stroke="#4a7c59" stroke-width="7" stroke-linecap="round"/>
+        <defs><clipPath id="qc"><circle cx="55" cy="55" r="32"/></clipPath></defs>
+        <polyline points="20,55 28,38 35,68 43,32 51,60 58,43 66,70 74,48 90,55" fill="none" stroke="#4a7c59" stroke-width="3" stroke-linecap="round" stroke-linejoin="round" clip-path="url(#qc)"/>
+      </svg>
+      <span class="nav-logo-text"><span style="color:#111">ueren</span><span style="color:#4a7c59">cia</span></span>
+    </div>
+    <small class="nav-tagline">Tech and more</small>
+  </a>
+  <div style="display:flex;align-items:center;gap:20px">
+    <div class="lang-switcher">
+      <button class="lang-btn active" onclick="setLang('en')" data-lang-code="en">EN</button>
+      <button class="lang-btn" onclick="setLang('vi')" data-lang-code="vi">VI</button>
+      <button class="lang-btn" onclick="setLang('ja')" data-lang-code="ja">JA</button>
+      <button class="lang-btn" onclick="setLang('es')" data-lang-code="es">ES</button>
+    </div>
+    <a class="nav-back" href="https://querencia.com.vn">← <span data-lang-inline="en" class="active">Home</span><span data-lang-inline="vi">Trang chủ</span><span data-lang-inline="ja">ホーム</span><span data-lang-inline="es">Inicio</span></a>
+  </div>
+</nav>
+
+<div class="hero">
+  <div class="hero-inner">
+    <div class="hero-badge">Terms of Service</div>
+    <h1 data-lang="en" class="active">Terms of Service</h1>
+    <h1 data-lang="vi">Điều Khoản Dịch Vụ</h1>
+    <h1 data-lang="ja">利用規約</h1>
+    <h1 data-lang="es">Términos de Servicio</h1>
+    <p class="hero-meta" data-lang="en" class="active">Last updated: March 2026 · By using Querencia, you agree to these terms.</p>
+    <p class="hero-meta" data-lang="vi">Cập nhật lần cuối: Tháng 3/2026 · Bằng cách sử dụng Querencia, bạn đồng ý với các điều khoản này.</p>
+    <p class="hero-meta" data-lang="ja">最終更新：2026年3月 · Querenciaをご利用いただくことで、本規約に同意したものとみなします。</p>
+    <p class="hero-meta" data-lang="es">Última actualización: Marzo 2026 · Al usar Querencia, aceptas estos términos.</p>
+  </div>
+</div>
+
+<div class="content">
+
+  <div class="section">
+    <div class="section-num">1</div>
+    <h2 data-lang="en" class="active">Acceptance of Terms</h2>
+    <h2 data-lang="vi">Chấp Nhận Điều Khoản</h2>
+    <h2 data-lang="ja">利用規約への同意</h2>
+    <h2 data-lang="es">Aceptación de los Términos</h2>
+    <p data-lang="en" class="active">By accessing or using Querencia (querencia.com.vn) and its associated services, you agree to be bound by these Terms of Service. If you do not agree, please do not use our services.</p>
+    <p data-lang="vi">Bằng cách truy cập hoặc sử dụng Querencia (querencia.com.vn) và các dịch vụ liên quan, bạn đồng ý tuân theo Điều Khoản Dịch Vụ này. Nếu không đồng ý, vui lòng không sử dụng dịch vụ của chúng tôi.</p>
+    <p data-lang="ja">Querencia（querencia.com.vn）およびその関連サービスにアクセスまたは使用することにより、本利用規約に拘束されることに同意したものとみなします。同意しない場合は、サービスをご利用にならないでください。</p>
+    <p data-lang="es">Al acceder o usar Querencia (querencia.com.vn) y sus servicios asociados, aceptas estar sujeto a estos Términos de Servicio. Si no estás de acuerdo, no uses nuestros servicios.</p>
+  </div>
+
+  <div class="section">
+    <div class="section-num">2</div>
+    <h2 data-lang="en" class="active">Use of the Service</h2>
+    <h2 data-lang="vi">Sử Dụng Dịch Vụ</h2>
+    <h2 data-lang="ja">サービスの利用</h2>
+    <h2 data-lang="es">Uso del Servicio</h2>
+    <p data-lang="en" class="active">You agree to use Querencia only for lawful purposes. You may not:</p>
+    <p data-lang="vi">Bạn đồng ý chỉ sử dụng Querencia cho các mục đích hợp pháp. Bạn không được:</p>
+    <p data-lang="ja">Querenciaは合法的な目的のみに使用することに同意します。以下のことは禁止されています：</p>
+    <p data-lang="es">Aceptas usar Querencia solo para fines lícitos. No puedes:</p>
+    <ul data-lang="en" class="active">
+      <li>Attempt to gain unauthorized access to our systems or other users' accounts</li>
+      <li>Use the service to distribute malware, spam, or illegal content</li>
+      <li>Reverse engineer, scrape, or copy our services without permission</li>
+      <li>Create multiple accounts to abuse free tier limits</li>
+      <li>Use the service in any way that violates applicable laws</li>
+    </ul>
+    <ul data-lang="vi">
+      <li>Cố gắng truy cập trái phép vào hệ thống hoặc tài khoản của người dùng khác</li>
+      <li>Sử dụng dịch vụ để phát tán phần mềm độc hại, spam hoặc nội dung bất hợp pháp</li>
+      <li>Dịch ngược, thu thập dữ liệu hoặc sao chép dịch vụ mà không có sự cho phép</li>
+      <li>Tạo nhiều tài khoản để lạm dụng giới hạn gói miễn phí</li>
+      <li>Sử dụng dịch vụ theo cách vi phạm pháp luật hiện hành</li>
+    </ul>
+    <ul data-lang="ja">
+      <li>システムや他のユーザーのアカウントへの不正アクセスの試み</li>
+      <li>マルウェア、スパム、または違法コンテンツの配布</li>
+      <li>許可なくサービスをリバースエンジニアリング、スクレイピング、複製すること</li>
+      <li>無料枠の制限を悪用するための複数アカウントの作成</li>
+      <li>適用法に違反する方法でのサービス利用</li>
+    </ul>
+    <ul data-lang="es">
+      <li>Intentar obtener acceso no autorizado a nuestros sistemas o cuentas de otros usuarios</li>
+      <li>Usar el servicio para distribuir malware, spam o contenido ilegal</li>
+      <li>Realizar ingeniería inversa, raspado o copia de nuestros servicios sin permiso</li>
+      <li>Crear múltiples cuentas para abusar de los límites del nivel gratuito</li>
+      <li>Usar el servicio de cualquier manera que viole las leyes aplicables</li>
+    </ul>
+  </div>
+
+  <div class="section">
+    <div class="section-num">3</div>
+    <h2 data-lang="en" class="active">Account Responsibility</h2>
+    <h2 data-lang="vi">Trách Nhiệm Tài Khoản</h2>
+    <h2 data-lang="ja">アカウントの責任</h2>
+    <h2 data-lang="es">Responsabilidad de la Cuenta</h2>
+    <p data-lang="en" class="active">You are responsible for maintaining the security of your account credentials. Querencia is not liable for any loss or damage resulting from unauthorized access to your account due to your failure to secure your credentials.</p>
+    <p data-lang="vi">Bạn có trách nhiệm bảo mật thông tin đăng nhập của mình. Querencia không chịu trách nhiệm về bất kỳ tổn thất hoặc thiệt hại nào do truy cập trái phép vào tài khoản của bạn vì bạn không bảo mật thông tin đăng nhập.</p>
+    <p data-lang="ja">アカウント認証情報のセキュリティ維持はお客様の責任です。認証情報のセキュリティ不備によるアカウントへの不正アクセスから生じる損失や損害について、Querenciaは責任を負いません。</p>
+    <p data-lang="es">Eres responsable de mantener la seguridad de las credenciales de tu cuenta. Querencia no es responsable de ninguna pérdida o daño resultante del acceso no autorizado a tu cuenta debido a tu falta de seguridad en las credenciales.</p>
+  </div>
+
+  <div class="section">
+    <div class="section-num">4</div>
+    <h2 data-lang="en" class="active">Free & Pro Plans</h2>
+    <h2 data-lang="vi">Gói Miễn Phí & Pro</h2>
+    <h2 data-lang="ja">無料プランとProプラン</h2>
+    <h2 data-lang="es">Planes Gratuito y Pro</h2>
+    <p data-lang="en" class="active">Querencia offers both free and paid (Pro) tiers. We reserve the right to modify, limit, or discontinue any features of the free tier at any time with reasonable notice. Pro plan features and pricing are subject to change with 30 days' notice to active subscribers.</p>
+    <p data-lang="vi">Querencia cung cấp cả gói miễn phí và gói trả phí (Pro). Chúng tôi có quyền sửa đổi, giới hạn hoặc ngừng bất kỳ tính năng nào của gói miễn phí bất cứ lúc nào với thông báo hợp lý. Tính năng và giá gói Pro có thể thay đổi với thông báo 30 ngày cho người đăng ký hiện tại.</p>
+    <p data-lang="ja">Querenciaは無料プランと有料（Pro）プランの両方を提供しています。合理的な通知をもって、無料プランの機能をいつでも変更、制限、または廃止する権利を留保します。Proプランの機能と価格は、現在のサブスクライバーへの30日前の通知で変更される場合があります。</p>
+    <p data-lang="es">Querencia ofrece niveles gratuitos y de pago (Pro). Nos reservamos el derecho de modificar, limitar o discontinuar cualquier función del nivel gratuito en cualquier momento con aviso razonable. Las características y precios del plan Pro están sujetos a cambios con 30 días de aviso a los suscriptores activos.</p>
+  </div>
+
+  <div class="section">
+    <div class="section-num">5</div>
+    <h2 data-lang="en" class="active">Intellectual Property & Global Trademark</h2>
+    <h2 data-lang="vi">Sở Hữu Trí Tuệ & Nhãn Hiệu Toàn Cầu</h2>
+    <h2 data-lang="ja">知的財産およびグローバル商標</h2>
+    <h2 data-lang="es">Propiedad Intelectual y Marca Global</h2>
+    <p data-lang="en" class="active">All content, design, source code (18 core files), and branding, including the name "Querencia" and its logo, are the exclusive property of <strong>Querencia One Member Co., Ltd</strong>. We protect our brand globally through the Madrid System and applicable international treaties.</p>
+    <p data-lang="vi">Tất cả nội dung, thiết kế, mã nguồn (18 file lõi) và thương hiệu, bao gồm tên "Querencia" và logo, là tài sản độc quyền của <strong>Querencia</strong>. Chúng tôi bảo hộ thương hiệu toàn cầu thông qua Hệ thống Madrid và các điều ước quốc tế liên quan.</p>
+    <p data-lang="ja">「Querencia」という名称やロゴを含むすべてのコンテンツ、デザイン、ソースコード（18のコアファイル）、およびブランディングは、<strong>Querencia One Member Co., Ltd</strong>の独占的財産です。 当社は、マドリッド制度および関連する国際条約を通じて、グローバルにブランドを保護しています。</p>
+    <p data-lang="es">Todo el contenido, diseño, código fuente (18 archivos principales) y marca, incluido el nombre "Querencia" y su logotipo, son propiedad exclusiva de <strong>Querencia One Member Co., Ltd</strong>. Protegemos nuestra marca a nivel mundial a través del Sistema de Madrid y los tratados internacionales aplicables.</p>
+    <div class="highlight-box" data-lang="en" class="active">Any unauthorized use, reproduction, or redistribution of our trademarks and software is strictly prohibited and will be prosecuted under international IP laws.</div>
+    <div class="highlight-box" data-lang="vi">Mọi hành vi sử dụng, sao chép hoặc phân phối lại nhãn hiệu và phần mềm của chúng tôi khi chưa được phép đều bị nghiêm cấm và sẽ bị xử lý theo luật SHTT quốc tế.</div>
+    <div class="highlight-box" data-lang="ja">当社の商標およびソフトウェアの無断使用、複製、または再配布は厳格に禁止されており、国際的な知的財産法に基づいて処罰されます。</div>
+    <div class="highlight-box" data-lang="es">Cualquier uso, reproducción o redistribución no autorizada de nuestras marcas y software está estrictamente prohibida y será procesada bajo las leyes internacionales de PI.</div>
+  </div>
+
+  <div class="section">
+    <div class="section-num">6</div>
+    <h2 data-lang="en" class="active">Limitation of Liability</h2>
+    <h2 data-lang="vi">Giới Hạn Trách Nhiệm</h2>
+    <h2 data-lang="ja">責任の制限</h2>
+    <h2 data-lang="es">Limitación de Responsabilidad</h2>
+    <div class="warning-box" data-lang="en" class="active">Querencia is provided "as is" without warranties of any kind. We are not liable for any indirect, incidental, or consequential damages arising from your use of the service.</div>
+    <div class="warning-box" data-lang="vi">Querencia được cung cấp "nguyên trạng" không có bảo đảm dưới bất kỳ hình thức nào. Chúng tôi không chịu trách nhiệm về bất kỳ thiệt hại gián tiếp, ngẫu nhiên hoặc hậu quả nào phát sinh từ việc bạn sử dụng dịch vụ.</div>
+    <div class="warning-box" data-lang="ja">Querenciaはいかなる種類の保証もなく「現状のまま」提供されます。サービスの使用から生じる間接的、偶発的、または結果的損害について、当社は責任を負いません。</div>
+    <div class="warning-box" data-lang="es">Querencia se proporciona "tal cual" sin garantías de ningún tipo. No somos responsables de ningún daño indirecto, incidental o consecuente derivado de tu uso del servicio.</div>
+  </div>
+
+  <div class="section">
+    <div class="section-num">7</div>
+    <h2 data-lang="en" class="active">Termination</h2>
+    <h2 data-lang="vi">Chấm Dứt</h2>
+    <h2 data-lang="ja">終了</h2>
+    <h2 data-lang="es">Terminación</h2>
+    <p data-lang="en" class="active">We reserve the right to suspend or terminate accounts that violate these terms without prior notice. You may delete your account at any time by contacting us at <a href="mailto:contact@querencia.com.vn" style="color:var(--sage)">contact@querencia.com.vn</a>.</p>
+    <p data-lang="vi">Chúng tôi có quyền đình chỉ hoặc chấm dứt các tài khoản vi phạm điều khoản này mà không cần thông báo trước. Bạn có thể xóa tài khoản bất kỳ lúc nào bằng cách liên hệ tại <a href="mailto:contact@querencia.com.vn" style="color:var(--sage)">contact@querencia.com.vn</a>.</p>
+    <p data-lang="ja">本規約に違反するアカウントを予告なく停止または終了する権利を留保します。<a href="mailto:contact@querencia.com.vn" style="color:var(--sage)">contact@querencia.com.vn</a>までご連絡いただければ、いつでもアカウントを削除できます。</p>
+    <p data-lang="es">Nos reservamos el derecho de suspender o terminar cuentas que violen estos términos sin previo aviso. Puedes eliminar tu cuenta en cualquier momento contactándonos en <a href="mailto:contact@querencia.com.vn" style="color:var(--sage)">contact@querencia.com.vn</a>.</p>
+  </div>
+
+  <div class="section">
+    <div class="section-num">8</div>
+    <h2 data-lang="en" class="active">Governing Law</h2>
+    <h2 data-lang="vi">Luật Điều Chỉnh</h2>
+    <h2 data-lang="ja">準拠法</h2>
+    <h2 data-lang="es">Ley Aplicable</h2>
+    <p data-lang="en" class="active">These terms are governed by the laws of Vietnam. Any disputes shall be resolved in the courts of Vietnam.</p>
+    <p data-lang="vi">Các điều khoản này được điều chỉnh bởi pháp luật Việt Nam. Mọi tranh chấp sẽ được giải quyết tại tòa án Việt Nam.</p>
+    <p data-lang="ja">本規約はベトナムの法律に準拠します。紛争はベトナムの裁判所で解決されます。</p>
+    <p data-lang="es">Estos términos se rigen por las leyes de Vietnam. Cualquier disputa se resolverá en los tribunales de Vietnam.</p>
+  </div>
+
+  <div class="section">
+    <div class="section-num">9</div>
+    <h2 data-lang="en" class="active">Contact</h2>
+    <h2 data-lang="vi">Liên Hệ</h2>
+    <h2 data-lang="ja">お問い合わせ</h2>
+    <h2 data-lang="es">Contacto</h2>
+    <p data-lang="en" class="active">Questions about these terms? Contact us at <a href="mailto:contact@querencia.com.vn" style="color:var(--sage)">contact@querencia.com.vn</a>.</p>
+    <p data-lang="vi">Câu hỏi về điều khoản này? Liên hệ tại <a href="mailto:contact@querencia.com.vn" style="color:var(--sage)">contact@querencia.com.vn</a>.</p>
+    <p data-lang="ja">本規約についてご質問は <a href="mailto:contact@querencia.com.vn" style="color:var(--sage)">contact@querencia.com.vn</a> までご連絡ください。</p>
+    <p data-lang="es">¿Preguntas sobre estos tér

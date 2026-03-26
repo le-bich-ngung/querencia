@@ -1,0 +1,13 @@
+# ============================================================
+# querencia-tools — requirements.txt
+# ============================================================
+
+fastapi==0.115.0
+uvicorn==0.30.0
+python-dotenv==1.0.0
+sqlalchemy==2.0.30
+psycopg2-binary==2.9.9
+python-jose[cryptography]==3.3.0
+python-multipart==0.0.9
+aiofiles==23.2.1
+pdf2docx==0.5.8

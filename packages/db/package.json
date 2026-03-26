@@ -1,0 +1,22 @@
+{
+    "name":  "@querencia/db",
+    "version":  "0.1.0",
+    "private":  true,
+    "main":  "./dist/index.js",
+    "scripts":  {
+                    "db:generate":  "drizzle-kit generate",
+                    "db:migrate":  "drizzle-kit migrate",
+                    "db:push":  "drizzle-kit push",
+                    "db:studio":  "drizzle-kit studio"
+                },
+    "dependencies":  {
+                         "drizzle-orm":  "^0.30.0",
+                         "pg":  "^8.11.0",
+                         "pgvector":  "^0.2.1"
+                     },
+    "devDependencies":  {
+                            "@types/pg":  "^8.11.0",
+                            "drizzle-kit":  "^0.21.0",
+                            "typescript":  "^6.0.2"
+                        }
+}

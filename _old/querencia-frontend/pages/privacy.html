@@ -1,0 +1,330 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8"/>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>Privacy Policy · Querencia</title>
+  <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:ital,wght@0,300;0,400;0,500;0,600;0,700;1,400&display=swap" rel="stylesheet"/>
+  <style>
+    :root { --sage: #4a7c59; --sage-light: #e8f0eb; --text: #1a1a1a; --muted: #666; --border: #e8e8e8; }
+    * { box-sizing: border-box; margin: 0; padding: 0; }
+    body { font-family: 'Plus Jakarta Sans', sans-serif; color: var(--text); background: #fafafa; line-height: 1.7; }
+
+    /* NAV */
+    nav { display: flex; align-items: center; justify-content: space-between; padding: 16px 40px; background: #fff; border-bottom: 1px solid var(--border); position: sticky; top: 0; z-index: 100; }
+    .nav-logo { display: flex; flex-direction: column; align-items: flex-start; text-decoration: none; cursor: pointer; }
+    .nav-logo-row { display: flex; align-items: center; gap: 4px; }
+    .nav-logo-text { font-size: 1.4rem; font-weight: 700; line-height: 1; }
+    .nav-tagline { font-size: 0.62rem; font-weight: 600; color: var(--muted); letter-spacing: 0.06em; }
+    .nav-back { display: flex; align-items: center; gap: 6px; font-size: 0.85rem; color: var(--sage); text-decoration: none; font-weight: 600; transition: opacity 0.2s; }
+    .nav-back:hover { opacity: 0.7; }
+
+    /* LANG SWITCHER */
+    .lang-switcher { display: flex; gap: 6px; }
+    .lang-btn { padding: 4px 10px; border: 1.5px solid var(--border); border-radius: 20px; background: none; font-family: inherit; font-size: 0.78rem; font-weight: 600; color: var(--muted); cursor: pointer; transition: all 0.2s; }
+    .lang-btn.active, .lang-btn:hover { border-color: var(--sage); color: var(--sage); background: var(--sage-light); }
+
+    /* HERO */
+    .hero { background: linear-gradient(135deg, var(--sage) 0%, #2d5a3d 100%); color: #fff; padding: 64px 40px 48px; }
+    .hero-inner { max-width: 800px; margin: 0 auto; }
+    .hero-badge { display: inline-block; background: rgba(255,255,255,0.2); border: 1px solid rgba(255,255,255,0.3); border-radius: 20px; padding: 4px 14px; font-size: 0.75rem; font-weight: 600; letter-spacing: 0.08em; text-transform: uppercase; margin-bottom: 20px; }
+    .hero h1 { font-size: clamp(2rem, 4vw, 3rem); font-weight: 700; line-height: 1.2; margin-bottom: 12px; }
+    .hero-meta { font-size: 0.85rem; opacity: 0.75; }
+
+    /* CONTENT */
+    .content { max-width: 800px; margin: 0 auto; padding: 48px 40px 80px; }
+    .section { margin-bottom: 40px; padding-bottom: 40px; border-bottom: 1px solid var(--border); }
+    .section:last-child { border-bottom: none; }
+    .section-num { display: inline-flex; align-items: center; justify-content: center; width: 28px; height: 28px; background: var(--sage); color: #fff; border-radius: 50%; font-size: 0.75rem; font-weight: 700; margin-bottom: 12px; }
+    .section h2 { font-size: 1.2rem; font-weight: 700; color: var(--text); margin-bottom: 10px; }
+    .section p { font-size: 0.92rem; color: #444; margin-bottom: 10px; }
+    .section ul { padding-left: 20px; margin-bottom: 10px; }
+    .section ul li { font-size: 0.92rem; color: #444; margin-bottom: 6px; }
+    .highlight-box { background: var(--sage-light); border-left: 3px solid var(--sage); border-radius: 0 8px 8px 0; padding: 16px 20px; margin: 16px 0; font-size: 0.88rem; color: #2d5a3d; }
+
+    /* FOOTER */
+    footer { text-align: center; padding: 32px; background: #fff; border-top: 1px solid var(--border); font-size: 0.8rem; color: var(--muted); }
+    footer a { color: var(--sage); text-decoration: none; margin: 0 8px; }
+    footer a:hover { text-decoration: underline; }
+
+    /* LANG CONTENT */
+    [data-lang] { display: none; }
+    [data-lang].active { display: block; }
+    [data-lang-inline] { display: none; }
+    [data-lang-inline].active { display: inline; }
+
+    @media (max-width: 600px) {
+      nav { padding: 14px 20px; }
+      .hero { padding: 40px 20px 32px; }
+      .content { padding: 32px 20px 60px; }
+    }
+  </style>
+<script>
+function setLang(lang) {
+  document.querySelectorAll('[data-lang]').forEach(function(el) {
+    var val = el.getAttribute('data-lang').trim();
+    el.classList.toggle('active', val === lang);
+  });
+  document.querySelectorAll('[data-lang-inline]').forEach(function(el) {
+    var val = el.getAttribute('data-lang-inline').trim();
+    el.classList.toggle('active', val === lang);
+  });
+  document.querySelectorAll('.lang-btn').forEach(function(b) {
+    b.classList.toggle('active', b.getAttribute('data-lang-code') === lang);
+  });
+  try { localStorage.setItem('lang', lang); } catch(e) {}
+}
+var _lang = 'en';
+try { _lang = localStorage.getItem('lang') || 'en'; } catch(e) {}
+document.addEventListener('DOMContentLoaded', function() { setLang(_lang); });
+</script>
+</head>
+<body>
+
+<nav>
+  <a class="nav-logo" href="https://querencia.com.vn">
+    <div class="nav-logo-row">
+      <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 120 120" width="28" height="28" style="flex-shrink:0;position:relative;top:2px">
+        <circle cx="55" cy="55" r="38" fill="none" stroke="#4a7c59" stroke-width="7" stroke-linecap="round"/>
+        <line x1="81" y1="79" x2="98" y2="98" stroke="#4a7c59" stroke-width="7" stroke-linecap="round"/>
+        <defs><clipPath id="qc"><circle cx="55" cy="55" r="32"/></clipPath></defs>
+        <polyline points="20,55 28,38 35,68 43,32 51,60 58,43 66,70 74,48 90,55" fill="none" stroke="#4a7c59" stroke-width="3" stroke-linecap="round" stroke-linejoin="round" clip-path="url(#qc)"/>
+      </svg>
+      <span class="nav-logo-text"><span style="color:#111">ueren</span><span style="color:#4a7c59">cia</span></span>
+    </div>
+    <small class="nav-tagline">Tech and more</small>
+  </a>
+  <div style="display:flex;align-items:center;gap:20px">
+    <div class="lang-switcher">
+      <button class="lang-btn active" onclick="setLang('en')" data-lang-code="en">EN</button>
+      <button class="lang-btn" onclick="setLang('vi')" data-lang-code="vi">VI</button>
+      <button class="lang-btn" onclick="setLang('ja')" data-lang-code="ja">JA</button>
+      <button class="lang-btn" onclick="setLang('es')" data-lang-code="es">ES</button>
+    </div>
+    <a class="nav-back" href="https://querencia.com.vn">← <span data-lang-inline="en" class="active">Home</span><span data-lang-inline="vi">Trang chủ</span><span data-lang-inline="ja">ホーム</span><span data-lang-inline="es">Inicio</span></a>
+  </div>
+</nav>
+
+<div class="hero">
+  <div class="hero-inner">
+    <div class="hero-badge">Privacy Policy</div>
+    <h1 data-lang="en" class="active">Your Privacy Matters</h1>
+    <h1 data-lang="vi">Quyền Riêng Tư Của Bạn</h1>
+    <h1 data-lang="ja">あなたのプライバシーを大切に</h1>
+    <h1 data-lang="es">Tu Privacidad Importa</h1>
+    <p class="hero-meta" data-lang="en" class="active">Last updated: March 2026 · Effective immediately</p>
+    <p class="hero-meta" data-lang="vi">Cập nhật lần cuối: Tháng 3/2026 · Có hiệu lực ngay</p>
+    <p class="hero-meta" data-lang="ja">最終更新：2026年3月 · 即時有効</p>
+    <p class="hero-meta" data-lang="es">Última actualización: Marzo 2026 · Efectivo de inmediato</p>
+  </div>
+</div>
+
+<div class="content">
+
+  <!-- SECTION 1 -->
+  <div class="section">
+    <div class="section-num">1</div>
+    <h2 data-lang="en" class="active">Information We Collect</h2>
+    <h2 data-lang="vi">Thông Tin Chúng Tôi Thu Thập</h2>
+    <h2 data-lang="ja">収集する情報</h2>
+    <h2 data-lang="es">Información que Recopilamos</h2>
+
+    <p data-lang="en" class="active">We collect the following types of information when you use Querencia:</p>
+    <p data-lang="vi">Chúng tôi thu thập các loại thông tin sau khi bạn sử dụng Querencia:</p>
+    <p data-lang="ja">Querenciaをご利用の際、以下の情報を収集します：</p>
+    <p data-lang="es">Recopilamos los siguientes tipos de información cuando usas Querencia:</p>
+
+    <ul data-lang="en" class="active">
+      <li><strong>Account information:</strong> Name, email address, and hashed password when you register.</li>
+      <li><strong>Google OAuth data:</strong> If you sign in with Google, we receive your name, email, and Google ID.</li>
+      <li><strong>Usage data:</strong> Pages visited, features used, and timestamps for service improvement.</li>
+      <li><strong>Messages:</strong> Content you submit via the Message form.</li>
+    </ul>
+    <ul data-lang="vi">
+      <li><strong>Thông tin tài khoản:</strong> Tên, địa chỉ email và mật khẩu đã mã hóa khi bạn đăng ký.</li>
+      <li><strong>Dữ liệu Google OAuth:</strong> Nếu bạn đăng nhập bằng Google, chúng tôi nhận tên, email và Google ID của bạn.</li>
+      <li><strong>Dữ liệu sử dụng:</strong> Các trang đã truy cập, tính năng sử dụng và thời gian để cải thiện dịch vụ.</li>
+      <li><strong>Tin nhắn:</strong> Nội dung bạn gửi qua biểu mẫu Message.</li>
+    </ul>
+    <ul data-lang="ja">
+      <li><strong>アカウント情報：</strong>登録時の氏名、メールアドレス、ハッシュ化されたパスワード。</li>
+      <li><strong>Google OAuthデータ：</strong>Googleでログインした場合、氏名、メール、Google IDを受け取ります。</li>
+      <li><strong>利用データ：</strong>訪問ページ、使用機能、サービス改善のためのタイムスタンプ。</li>
+      <li><strong>メッセージ：</strong>メッセージフォームから送信されたコンテンツ。</li>
+    </ul>
+    <ul data-lang="es">
+      <li><strong>Información de cuenta:</strong> Nombre, correo electrónico y contraseña cifrada al registrarte.</li>
+      <li><strong>Datos de Google OAuth:</strong> Si inicias sesión con Google, recibimos tu nombre, correo y Google ID.</li>
+      <li><strong>Datos de uso:</strong> Páginas visitadas, funciones usadas y marcas de tiempo para mejorar el servicio.</li>
+      <li><strong>Mensajes:</strong> Contenido enviado a través del formulario de Mensaje.</li>
+    </ul>
+  </div>
+
+  <!-- SECTION 2 -->
+  <div class="section">
+    <div class="section-num">2</div>
+    <h2 data-lang="en" class="active">How We Use Your Information</h2>
+    <h2 data-lang="vi">Cách Chúng Tôi Sử Dụng Thông Tin</h2>
+    <h2 data-lang="ja">情報の利用方法</h2>
+    <h2 data-lang="es">Cómo Usamos tu Información</h2>
+
+    <ul data-lang="en" class="active">
+      <li>To create and manage your account</li>
+      <li>To authenticate you and keep your session secure</li>
+      <li>To send transactional emails (email verification, password reset)</li>
+      <li>To respond to messages you send us</li>
+      <li>To improve our services and fix issues</li>
+    </ul>
+    <ul data-lang="vi">
+      <li>Để tạo và quản lý tài khoản của bạn</li>
+      <li>Để xác thực và bảo mật phiên đăng nhập</li>
+      <li>Để gửi email giao dịch (xác minh email, đặt lại mật khẩu)</li>
+      <li>Để phản hồi tin nhắn bạn gửi</li>
+      <li>Để cải thiện dịch vụ và khắc phục sự cố</li>
+    </ul>
+    <ul data-lang="ja">
+      <li>アカウントの作成と管理</li>
+      <li>認証とセッションの安全な維持</li>
+      <li>トランザクションメールの送信（メール確認、パスワードリセット）</li>
+      <li>送信されたメッセージへの返信</li>
+      <li>サービスの改善と問題修正</li>
+    </ul>
+    <ul data-lang="es">
+      <li>Para crear y administrar tu cuenta</li>
+      <li>Para autenticarte y mantener tu sesión segura</li>
+      <li>Para enviar correos transaccionales (verificación, restablecimiento de contraseña)</li>
+      <li>Para responder a los mensajes que nos envías</li>
+      <li>Para mejorar nuestros servicios y resolver problemas</li>
+    </ul>
+
+    <div class="highlight-box" data-lang="en" class="active">We do not sell, rent, or trade your personal data to any third party. Ever.</div>
+    <div class="highlight-box" data-lang="vi">Chúng tôi không bán, cho thuê hoặc giao dịch dữ liệu cá nhân của bạn cho bên thứ ba. Không bao giờ.</div>
+    <div class="highlight-box" data-lang="ja">いかなる第三者にも、あなたの個人データを販売・貸出・取引することは一切ありません。</div>
+    <div class="highlight-box" data-lang="es">No vendemos, alquilamos ni comerciamos tus datos personales con terceros. Nunca.</div>
+  </div>
+
+  <!-- SECTION 3 -->
+  <div class="section">
+    <div class="section-num">3</div>
+    <h2 data-lang="en" class="active">Data Storage & Security</h2>
+    <h2 data-lang="vi">Lưu Trữ & Bảo Mật Dữ Liệu</h2>
+    <h2 data-lang="ja">データの保管とセキュリティ</h2>
+    <h2 data-lang="es">Almacenamiento y Seguridad de Datos</h2>
+
+    <p data-lang="en" class="active">Your data is stored in a PostgreSQL database hosted on Supabase (AWS ap-southeast-2). Passwords are hashed using bcrypt and are never stored in plain text. JWT tokens are used for session management and expire automatically.</p>
+    <p data-lang="vi">Dữ liệu của bạn được lưu trữ trong cơ sở dữ liệu PostgreSQL trên Supabase (AWS ap-southeast-2). Mật khẩu được mã hóa bằng bcrypt và không bao giờ lưu dưới dạng văn bản thuần. JWT token được dùng để quản lý phiên và tự động hết hạn.</p>
+    <p data-lang="ja">データはSupabase（AWS ap-southeast-2）上のPostgreSQLデータベースに保存されます。パスワードはbcryptでハッシュ化され、平文では保存されません。セッション管理にはJWTトークンを使用し、自動的に有効期限が切れます。</p>
+    <p data-lang="es">Tus datos se almacenan en una base de datos PostgreSQL alojada en Supabase (AWS ap-southeast-2). Las contraseñas se cifran con bcrypt y nunca se almacenan en texto plano. Los tokens JWT se usan para la gestión de sesiones y caducan automáticamente.</p>
+  </div>
+
+  <!-- SECTION 4 -->
+  <div class="section">
+    <div class="section-num">4</div>
+    <h2 data-lang="en" class="active">Your Rights</h2>
+    <h2 data-lang="vi">Quyền Của Bạn</h2>
+    <h2 data-lang="ja">あなたの権利</h2>
+    <h2 data-lang="es">Tus Derechos</h2>
+
+    <p data-lang="en" class="active">You have the right to:</p>
+    <p data-lang="vi">Bạn có quyền:</p>
+    <p data-lang="ja">あなたには以下の権利があります：</p>
+    <p data-lang="es">Tienes derecho a:</p>
+
+    <ul data-lang="en" class="active">
+      <li>Access the personal data we hold about you</li>
+      <li>Request correction of inaccurate data</li>
+      <li>Request deletion of your account and data</li>
+      <li>Withdraw consent at any time</li>
+    </ul>
+    <ul data-lang="vi">
+      <li>Truy cập dữ liệu cá nhân chúng tôi lưu về bạn</li>
+      <li>Yêu cầu chỉnh sửa dữ liệu không chính xác</li>
+      <li>Yêu cầu xóa tài khoản và dữ liệu</li>
+      <li>Rút lại sự đồng ý bất kỳ lúc nào</li>
+    </ul>
+    <ul data-lang="ja">
+      <li>当社が保有するあなたの個人データへのアクセス</li>
+      <li>不正確なデータの修正請求</li>
+      <li>アカウントとデータの削除請求</li>
+      <li>いつでも同意の撤回</li>
+    </ul>
+    <ul data-lang="es">
+      <li>Acceder a los datos personales que tenemos sobre ti</li>
+      <li>Solicitar la corrección de datos inexactos</li>
+      <li>Solicitar la eliminación de tu cuenta y datos</li>
+      <li>Retirar el consentimiento en cualquier momento</li>
+    </ul>
+
+    <p data-lang="en" class="active">To exercise these rights, contact us at <a href="mailto:contact@querencia.com.vn" style="color:var(--sage)">contact@querencia.com.vn</a>.</p>
+    <p data-lang="vi">Để thực hiện các quyền này, liên hệ chúng tôi tại <a href="mailto:contact@querencia.com.vn" style="color:var(--sage)">contact@querencia.com.vn</a>.</p>
+    <p data-lang="ja">これらの権利を行使するには、<a href="mailto:contact@querencia.com.vn" style="color:var(--sage)">contact@querencia.com.vn</a>までご連絡ください。</p>
+    <p data-lang="es">Para ejercer estos derechos, contáctanos en <a href="mailto:contact@querencia.com.vn" style="color:var(--sage)">contact@querencia.com.vn</a>.</p>
+  </div>
+
+  <!-- GDPR COMPLIANCE -->
+  <div class="section">
+    <div class="section-num">!</div>
+    <h2 data-lang="en" class="active">GDPR Compliance (EU Rights)</h2>
+    <h2 data-lang="vi">Tuân Thủ GDPR (Quyền Của Người Dùng EU)</h2>
+    <h2 data-lang="ja">GDPRへの準拠 (EUユーザーの権利)</h2>
+    <h2 data-lang="es">Cumplimiento de GDPR (Derechos de la UE)</h2>
+
+    <p data-lang="en" class="active">For users in the European Economic Area (EEA), we comply with the GDPR. In addition to standard rights, you have the right to data portability and to lodge a complaint with a supervisory authority.</p>
+    <p data-lang="vi">Đối với người dùng tại Khu vực Kinh tế Châu Âu (EEA), chúng tôi tuân thủ GDPR. Ngoài các quyền tiêu chuẩn, bạn có quyền chuyển đổi dữ liệu và khiếu nại với cơ quan giám sát.</p>
+    <p data-lang="ja">欧州経済領域（EEA）のユーザー様に対し、当社はGDPRを遵守します。標準的な権利に加え、データポータビリティの権利および監督当局への異議申し立ての権利があります。</p>
+    <p data-lang="es">Para los usuarios en el Espacio Económico Europeo (EEE), cumplimos con el GDPR. Además de los derechos estándar, tienes derecho a la portabilidad de datos y a presentar una reclamación ante una autoridad supervisora.</p>
+
+    <div class="highlight-box" data-lang="en" class="active">
+      <strong>Data Processing:</strong> We process your data based on your explicit consent or the necessity to provide the service you requested.
+    </div>
+    <div class="highlight-box" data-lang="vi">
+      <strong>Xử lý dữ liệu:</strong> Chúng tôi xử lý dữ liệu dựa trên sự đồng ý rõ ràng của bạn hoặc sự cần thiết để cung cấp dịch vụ bạn đã yêu cầu.
+    </div>
+    <div class="highlight-box" data-lang="ja">
+      <strong>データ処理：</strong>当社は、お客様の明示的な同意、または要求されたサービスを提供するための必要性に基づいてデータを処理します。
+    </div>
+    <div class="highlight-box" data-lang="es">
+      <strong>Procesamiento de datos:</strong> Procesamos tus datos según tu consentimiento explícito o la necesidad de proporcionar el servicio solicitado.
+    </div>
+  </div>
+
+  <!-- SECTION 5 -->
+  <div class="section">
+    <div class="section-num">5</div>
+    <h2 data-lang="en" class="active">Cookies</h2>
+    <h2 data-lang="vi">Cookie</h2>
+    <h2 data-lang="ja">クッキー</h2>
+    <h2 data-lang="es">Cookies</h2>
+
+    <p data-lang="en" class="active">We use localStorage to store your session and preferences (language, dark mode). We also use a minimal functional cookie to remember your cookie consent choice. No advertising or third-party tracking cookies are ever used.</p>
+    <p data-lang="vi">Chúng tôi sử dụng localStorage để lưu phiên và tùy chọn của bạn (ngôn ngữ, chế độ tối). Chúng tôi cũng dùng một cookie chức năng tối thiểu để ghi nhớ lựa chọn đồng ý cookie của bạn. Không bao giờ sử dụng cookie quảng cáo hay theo dõi của bên thứ ba.</p>
+    <p data-lang="ja">セッションや設定（言語・ダークモード）の保存にlocalStorageを使用しています。また、Cookieの同意選択を記憶するための最小限の機能的Cookieも使用しています。広告・サードパーティのトラッキングCookieは一切使用していません。</p>
+    <p data-lang="es">Usamos localStorage para guardar tu sesión y preferencias (idioma, modo oscuro). También usamos una cookie funcional mínima para recordar tu elección de consentimiento de cookies. Nunca se usan cookies publicitarias ni de rastreo de terceros.</p>
+  </div>
+
+  <!-- SECTION 6 -->
+  <div class="section">
+    <div class="section-num">6</div>
+    <h2 data-lang="en" class="active">Changes to This Policy</h2>
+    <h2 data-lang="vi">Thay Đổi Chính Sách</h2>
+    <h2 data-lang="ja">本ポリシーの変更</h2>
+    <h2 data-lang="es">Cambios en Esta Política</h2>
+
+    <p data-lang="en" class="active">We may update this policy periodically. Significant changes will be communicated via email or a notice on the website. Continued use of the service after changes constitutes acceptance.</p>
+    <p data-lang="vi">Chúng tôi có thể cập nhật chính sách này định kỳ. Các thay đổi quan trọng sẽ được thông báo qua email hoặc thông báo trên website. Việc tiếp tục sử dụng dịch vụ sau khi thay đổi có nghĩa là bạn chấp nhận.</p>
+    <p data-lang="ja">本ポリシーは定期的に更新される場合があります。重要な変更はメールまたはウェブサイト上の通知でお知らせします。変更後もサービスを継続して使用することは、変更への同意を意味します。</p>
+    <p data-lang="es">Podemos actualizar esta política periódicamente. Los cambios importantes se comunicarán por correo electrónico o mediante un aviso en el sitio web. El uso continuo del servicio tras los cambios constituye aceptación.</p>
+  </div>
+
+</div>
+
+<footer>
+  <p>© 2026 Querencia · querencia.com.vn</p>
+  <p style="margin-top:8px">
+    <a href="/privacy.html">Privacy</a> ·
+    <a href="/security.html">Security</a> ·
+    <a href="/terms.html">Terms</a> ·
+    <a href="https://querencia.com.vn">Home</a>
+  </p>
+</footer>
+

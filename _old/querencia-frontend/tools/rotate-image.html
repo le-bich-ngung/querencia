@@ -1,0 +1,759 @@
+<meta name="description" content="Rotate JPG, PNG, WebP images online for free. Rotate left/right, flip horizontal/vertical, set free angle. No upload needed."/>
+<meta name="keywords" content="rotate image online, flip image, rotate jpg, rotate png, free image rotation, image flipper online"/>
+<meta property="og:title" content="Rotate Image Online Free — Flip & Free Angle | Querencia"/>
+<meta property="og:description" content="Rotate JPG, PNG, WebP images online for free. Rotate left/right, flip horizontal/vertical, set free angle. No upload needed."/>
+<meta property="og:type" content="website"/>
+<meta property="og:url" content="https://querencia.com.vn/#tools"/>
+<meta name="twitter:card" content="summary"/>
+<meta name="twitter:title" content="Rotate Image Online Free — Flip & Free Angle | Querencia"/>
+<link rel="canonical" href="https://querencia.com.vn/#tools"/>
+<script type="application/ld+json">
+{
+  "@context": "https://schema.org",
+  "@type": "WebApplication",
+  "name": "Rotate Image Online Free",
+  "url": "https://querencia.com.vn/#tools",
+  "description": "Rotate JPG, PNG, WebP images online for free. Rotate left/right, flip horizontal/vertical, set free angle. No upload needed.",
+  "applicationCategory": "MultimediaApplication",
+  "operatingSystem": "Any",
+  "offers": { "@type": "Offer", "price": "0", "priceCurrency": "USD" },
+  "provider": { "@type": "Organization", "name": "Querencia", "url": "https://querencia.com.vn" }
+}
+</script>
+<!DOCTYPE html>
+<html lang="vi">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Rotate Image Free — Querencia</title>
+<meta name="description" content="Xoay ảnh trực tuyến <em data-i18n="t_subtitle">Free</em>. Rotate 90°, 180°, 270°, flip ngang/dọc, góc tự do. Không upload server, xử lý ngay trên trình duyệt.">
+
+
+
+<style>
+  
+
+  *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+  body {
+    background: var(--white);
+    color: var(--black);
+    font-family: var(--font-body);
+    font-weight: 300;
+    min-height: 100vh;
+    overflow-x: hidden;
+  }
+
+  /* ── NAV ── */
+  nav {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    padding: 20px 40px;
+    border-bottom: 1px solid var(--border);
+    position: sticky;
+    top: 0;
+    z-index: 100;
+    background: rgba(14,14,16,.92);
+    backdrop-filter: blur(12px);
+  }
+  .logo {
+    font-family: var(--font-body);
+    font-style: italic;
+    font-size: 1.4rem;
+    color: var(--black);
+    text-decoration: none;
+    letter-spacing: -.5px;
+  }
+  .logo span { color: var(--sage); }
+  nav a.back {
+    font-size: .8rem;
+    color: var(--gray-light);
+    text-decoration: none;
+    display: flex;
+    align-items: center;
+    gap: 6px;
+    transition: color .2s;
+  }
+  nav a.back:hover { color: var(--black); }
+
+  /* ── HERO ── */
+  .hero {
+    text-align: center;
+    padding: 64px 24px 40px;
+  }
+  .hero-badge {
+    display: inline-flex;
+    align-items: center;
+    gap: 8px;
+    background: rgba(200,240,96,.1);
+    border: 1px solid rgba(200,240,96,.25);
+    border-radius: 100px;
+    padding: 5px 14px;
+    font-size: .75rem;
+    color: var(--sage);
+    letter-spacing: .05em;
+    margin-bottom: 20px;
+  }
+  .hero h1 {
+    font-family: var(--font-body);
+    font-size: clamp(2rem, 5vw, 3.2rem);
+    font-weight: 400;
+    line-height: 1.1;
+    margin-bottom: 14px;
+  }
+  .hero h1 em { color: var(--sage); font-style: italic; }
+  .hero p {
+    color: var(--gray-light);
+    font-size: .95rem;
+    max-width: 460px;
+    margin: 0 auto;
+    line-height: 1.7;
+  }
+
+  /* ── MAIN LAYOUT ── */
+  .workspace {
+    max-width: 1060px;
+    margin: 0 auto;
+    padding: 0 24px 80px;
+    display: grid;
+    grid-template-columns: 1fr 320px;
+    gap: 24px;
+    align-items: start;
+  }
+  @media(max-width:768px){
+    .workspace { grid-template-columns: 1fr; }
+  }
+
+  /* ── DROP ZONE ── */
+  .drop-zone {
+    border: 2px dashed var(--border);
+    border-radius: var(--radius);
+    background: var(--white);
+    min-height: 420px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    flex-direction: column;
+    gap: 14px;
+    cursor: pointer;
+    transition: border-color .25s, background .25s;
+    position: relative;
+    overflow: hidden;
+  }
+  .drop-zone.over {
+    border-color: var(--sage);
+    background: rgba(200,240,96,.04);
+  }
+  .drop-zone.has-image { cursor: default; padding: 0; }
+
+  .drop-placeholder {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 12px;
+    padding: 40px;
+    text-align: center;
+  }
+  .drop-icon {
+    width: 64px;
+    height: 64px;
+    border-radius: 50%;
+    background: rgba(200,240,96,.1);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+  }
+  .drop-icon svg { color: var(--sage); }
+  .drop-placeholder h3 { font-size: 1rem; font-weight: 500; }
+  .drop-placeholder p { font-size: .8rem; color: var(--gray-light); }
+  .drop-placeholder .browse {
+    color: var(--sage);
+    text-decoration: underline;
+    cursor: pointer;
+  }
+
+  /* preview canvas */
+  #canvas-wrap {
+    width: 100%;
+    height: 100%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    padding: 20px;
+    min-height: 420px;
+  }
+  #preview-canvas {
+    max-width: 100%;
+    max-height: 460px;
+    border-radius: 8px;
+    display: block;
+    box-shadow: 0 8px 40px rgba(0,0,0,.5);
+    transition: transform .35s cubic-bezier(.25,.8,.25,1), opacity .2s;
+  }
+
+  /* ── PANEL ── */
+  .panel {
+    display: flex;
+    flex-direction: column;
+    gap: 16px;
+  }
+
+  .card {
+    background: var(--white);
+    border: 1px solid var(--border);
+    border-radius: var(--radius);
+    padding: 20px;
+  }
+  .card-title {
+    font-size: .7rem;
+    font-weight: 500;
+    letter-spacing: .12em;
+    color: var(--gray-light);
+    text-transform: uppercase;
+    margin-bottom: 14px;
+  }
+
+  /* Quick rotate buttons */
+  .rotate-grid {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 10px;
+  }
+  .btn-action {
+    background: #f5f5f5;
+    border: 1px solid var(--border);
+    border-radius: 8px;
+    color: var(--black);
+    font-family: var(--font-body);
+    font-size: .82rem;
+    font-weight: 400;
+    padding: 10px 8px;
+    cursor: pointer;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 7px;
+    transition: background .18s, border-color .18s, color .18s;
+    white-space: nowrap;
+  }
+  .btn-action:hover:not(:disabled) {
+    background: rgba(200,240,96,.1);
+    border-color: var(--sage);
+    color: var(--sage);
+  }
+  .btn-action:disabled { opacity: .35; cursor: not-allowed; }
+
+  /* Flip row */
+  .flip-row { display: grid; grid-template-columns: 1fr 1fr; gap: 10px; }
+
+  /* Free rotate slider */
+  .slider-label {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    font-size: .82rem;
+    margin-bottom: 8px;
+  }
+  .slider-label span { color: var(--gray-light); }
+  .slider-label strong { color: var(--sage); font-weight: 500; font-size: .9rem; }
+  input[type=range] {
+    -webkit-appearance: none;
+    width: 100%;
+    height: 4px;
+    background: var(--border);
+    border-radius: 2px;
+    outline: none;
+    cursor: pointer;
+  }
+  input[type=range]::-webkit-slider-thumb {
+    -webkit-appearance: none;
+    width: 18px; height: 18px;
+    background: var(--sage);
+    border-radius: 50%;
+    cursor: pointer;
+    box-shadow: 0 0 0 3px rgba(200,240,96,.2);
+  }
+  .slider-reset {
+    margin-top: 10px;
+    width: 100%;
+    background: transparent;
+    border: 1px solid var(--border);
+    border-radius: 6px;
+    color: var(--gray-light);
+    font-family: var(--font-body);
+    font-size: .78rem;
+    padding: 7px;
+    cursor: pointer;
+    transition: color .18s, border-color .18s;
+  }
+  .slider-reset:hover { color: var(--black); border-color: var(--gray-light); }
+
+  /* Info */
+  .info-row {
+    display: flex;
+    justify-content: space-between;
+    font-size: .78rem;
+    color: var(--gray-light);
+    padding: 4px 0;
+  }
+  .info-row span:last-child { color: var(--black); }
+
+  /* Download btn */
+  .btn-download {
+    width: 100%;
+    background: var(--sage);
+    color: #0e0e10;
+    border: none;
+    border-radius: 8px;
+    font-family: var(--font-body);
+    font-size: .9rem;
+    font-weight: 500;
+    padding: 14px;
+    cursor: pointer;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 8px;
+    transition: background .18s, transform .15s;
+  }
+  .btn-download:hover:not(:disabled) {
+    background: #d6fa70;
+    transform: translateY(-1px);
+  }
+  .btn-download:disabled { opacity: .35; cursor: not-allowed; }
+
+  .btn-reset-all {
+    width: 100%;
+    background: transparent;
+    border: 1px solid var(--border);
+    border-radius: 8px;
+    color: var(--gray-light);
+    font-family: var(--font-body);
+    font-size: .82rem;
+    padding: 10px;
+    cursor: pointer;
+    transition: color .18s, border-color .18s;
+  }
+  .btn-reset-all:hover:not(:disabled) { color: var(--danger); border-color: var(--danger); }
+  .btn-reset-all:disabled { opacity: .35; cursor: not-allowed; }
+
+  /* format select */
+  .format-row {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 8px;
+  }
+  .fmt-btn {
+    background: #f5f5f5;
+    border: 1px solid var(--border);
+    border-radius: 6px;
+    color: var(--gray-light);
+    font-family: var(--font-body);
+    font-size: .78rem;
+    padding: 8px;
+    cursor: pointer;
+    transition: all .18s;
+    text-align: center;
+  }
+  .fmt-btn.active {
+    background: rgba(200,240,96,.12);
+    border-color: var(--sage);
+    color: var(--sage);
+  }
+
+  /* toast */
+  .toast {
+    position: fixed;
+    bottom: 32px;
+    left: 50%;
+    transform: translateX(-50%) translateY(20px);
+    background: #f5f5f5;
+    border: 1px solid var(--border);
+    border-radius: 8px;
+    padding: 10px 20px;
+    font-size: .82rem;
+    color: var(--black);
+    opacity: 0;
+    transition: opacity .25s, transform .25s;
+    pointer-events: none;
+    z-index: 999;
+    white-space: nowrap;
+  }
+  .toast.show { opacity: 1; transform: translateX(-50%) translateY(0); }
+
+  input[type=file] { display: none; }
+
+  /* spinner anim on canvas */
+  .canvas-spin { animation: canvasSpin .3s ease-out; }
+  @keyframes canvasSpin {
+    from { opacity: .5; transform: scale(.97); }
+    to   { opacity: 1;  transform: scale(1); }
+  }
+</style>
+</head>
+<body>
+
+<!-- NAV -->
+
+
+<!-- HERO -->
+<div class="hero">
+  <div class="hero-badge">
+    <svg width="12" height="12" fill="currentColor" viewBox="0 0 24 24"><path d="M12 2a10 10 0 1 0 10 10A10 10 0 0 0 12 2zm0 18a8 8 0 1 1 8-8 8 8 0 0 1-8 8zm-1-5h2v2h-2zm0-8h2v6h-2z"/></svg>
+    100% trên trình duyệt · Không upload server
+  </div>
+  <h1 data-i18n="t_tool_title">Rotate Image <em>miễn phí</em></h1>
+  <p data-i18n="t_desc">Rotate, flip, free angle — tất cả ngay tại trình duyệt. Nhanh, an toàn, không giới hạn.</p>
+</div>
+
+<!-- WORKSPACE -->
+<div class="workspace">
+
+  <!-- LEFT: DROP ZONE -->
+  <div class="drop-zone" id="dropZone">
+    <div class="drop-placeholder" id="dropPlaceholder">
+      <div class="drop-icon">
+        <svg width="28" height="28" fill="none" stroke="currentColor" stroke-width="1.6" viewBox="0 0 24 24">
+          <rect x="3" y="3" width="18" height="18" rx="3"/>
+          <circle cx="8.5" cy="8.5" r="1.5"/>
+          <polyline points="21 15 16 10 5 21"/>
+        </svg>
+      </div>
+      <h3 data-i18n="t_drop">Drop image here</h3>
+      <p data-i18n="t_or">or <span class="browse" id="browseBtn" data-i18n="t_browse">choose from device</span></p>
+      <p data-i18n="t_drop_sub">PNG, JPG, WEBP, GIF — up to 30MB</p>
+    </div>
+    <div id="canvas-wrap" style="display:none">
+      <canvas id="preview-canvas"></canvas>
+    </div>
+  </div>
+  <input type="file" id="fileInput" accept="image/*">
+
+  <!-- RIGHT: PANEL -->
+  <div class="panel">
+
+    <!-- Quick Rotate -->
+    <div class="card">
+      <div class="card-title" data-i18n="t_quick_rotate">Quick Rotate</div>
+      <div class="rotate-grid">
+        <button class="btn-action" id="btn90" disabled onclick="rotateStep(90)">
+          <svg width="15" height="15" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path d="M21 2v6h-6"/><path d="M21 13a9 9 0 1 1-3-7.7L21 8"/></svg>
+          +90°
+        </button>
+        <button class="btn-action" id="btn180" disabled onclick="rotateStep(180)">
+          <svg width="15" height="15" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path d="M21 2v6h-6"/><path d="M21 13a9 9 0 1 1-3-7.7L21 8"/></svg>
+          180°
+        </button>
+        <button class="btn-action" id="btn270" disabled onclick="rotateStep(270)">
+          <svg width="15" height="15" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path d="M3 22v-6h6"/><path d="M3 11a9 9 0 1 1 3 7.7L3 16"/></svg>
+          −90°
+        </button>
+        <button class="btn-action" id="btn360" disabled onclick="rotateStep(0, true)">
+          <svg width="15" height="15" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><polyline points="1 4 1 10 7 10"/><polyline points="23 20 23 14 17 14"/><path d="M20.49 9A9 9 0 0 0 5.64 5.64L1 10m22 4l-4.64 4.36A9 9 0 0 1 3.51 15"/></svg>
+          Reset
+        </button>
+      </div>
+    </div>
+
+    <!-- Flip -->
+    <div class="card">
+      <div class="card-title" data-i18n="t_flip">Flip</div>
+      <div class="flip-row">
+        <button class="btn-action" id="btnFlipH" disabled onclick="flipImage('h')">
+          <svg width="15" height="15" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><line x1="12" y1="3" x2="12" y2="21"/><polyline points="8 7 3 12 8 17"/><polyline points="16 7 21 12 16 17"/></svg>
+          Lật ngang
+        </button>
+        <button class="btn-action" id="btnFlipV" disabled onclick="flipImage('v')">
+          <svg width="15" height="15" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><line x1="3" y1="12" x2="21" y2="12"/><polyline points="7 8 12 3 17 8"/><polyline points="7 16 12 21 17 16"/></svg>
+          Lật dọc
+        </button>
+      </div>
+    </div>
+
+    <!-- Free rotate -->
+    <div class="card">
+      <div class="card-title" data-i18n="t_free_angle">Free Angle</div>
+      <div class="slider-label">
+        <span data-i18n="t_angle_label">Angle</span>
+        <strong id="angleDisplay">0°</strong>
+      </div>
+      <input type="range" id="freeAngle" min="-180" max="180" value="0" disabled oninput="onSliderChange(this.value)">
+      <button class="slider-reset" id="btnSliderReset" disabled onclick="resetSlider()">↺ Về 0°</button>
+    </div>
+
+    <!-- Info -->
+    <div class="card">
+      <div class="card-title" data-i18n="t_info">Image Info</div>
+      <div class="info-row"><span data-i18n="t_orig_size">Original size</span><span id="infoSize">—</span></div>
+      <div class="info-row"><span data-i18n="t_curr_angle">Current angle</span><span id="infoAngle">0°</span></div>
+      <div class="info-row"><span>Flip</span><span id="infoFlip">—</span></div>
+      <div class="info-row"><span>Định dạng</span><span id="infoFormat">—</span></div>
+    </div>
+
+    <!-- Format -->
+    <div class="card">
+      <div class="card-title" data-i18n="t_format">Save format</div>
+      <div class="format-row">
+        <button class="fmt-btn active" data-fmt="image/jpeg" onclick="setFormat(this)">JPG</button>
+        <button class="fmt-btn" data-fmt="image/png" onclick="setFormat(this)">PNG</button>
+        <button class="fmt-btn" data-fmt="image/webp" onclick="setFormat(this)">WEBP</button>
+        <button class="fmt-btn" data-fmt="image/gif" onclick="setFormat(this)">GIF</button>
+      </div>
+    </div>
+
+    <!-- Actions -->
+    <button class="btn-download" id="btnDownload" disabled onclick="downloadImage()">
+      <svg width="16" height="16" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/><polyline points="7 10 12 15 17 10"/><line x1="12" y1="15" x2="12" y2="3"/></svg>
+      Tải ảnh xuống
+    </button>
+    <button class="btn-reset-all" id="btnResetAll" disabled onclick="resetAll()" data-i18n="t_try_other">Try another image</button>
+
+  </div>
+</div>
+
+<div class="toast" id="toast"></div>
+
+<script>
+  // ── State ──
+  let originalImage = null;   // HTMLImageElement
+  let totalRotation = 0;      // accumulated step rotation (degrees)
+  let freeAngle = 0;          // slider angle (degrees)
+  let flipH = false;
+  let flipV = false;
+  let outputFormat = 'image/jpeg';
+  let originalFilename = 'image';
+
+  // ── DOM ──
+  const dropZone       = document.getElementById('dropZone');
+  const dropPlaceholder= document.getElementById('dropPlaceholder');
+  const canvasWrap     = document.getElementById('canvas-wrap');
+  const canvas         = document.getElementById('preview-canvas');
+  const ctx            = canvas.getContext('2d');
+  const fileInput      = document.getElementById('fileInput');
+  const freeAngleInput = document.getElementById('freeAngle');
+  const angleDisplay   = document.getElementById('angleDisplay');
+
+  // ── Upload ──
+  document.getElementById('browseBtn').onclick = () => fileInput.click();
+  dropZone.onclick = (e) => {
+    if (!originalImage) fileInput.click();
+  };
+  fileInput.onchange = (e) => loadFile(e.target.files[0]);
+
+  dropZone.ondragover = (e) => { e.preventDefault(); dropZone.classList.add('over'); };
+  dropZone.ondragleave = () => dropZone.classList.remove('over');
+  dropZone.ondrop = (e) => {
+    e.preventDefault();
+    dropZone.classList.remove('over');
+    const file = e.dataTransfer.files[0];
+    if (file && file.type.startsWith('image/')) loadFile(file);
+  };
+
+  function loadFile(file) {
+    if (!file) return;
+    if (file.size > 30 * 1024 * 1024) { showToast('⚠️ File quá lớn (tối đa 30MB)'); return; }
+    originalFilename = file.name.replace(/\.[^.]+$/, '');
+    document.getElementById('infoFormat').textContent = file.type.split('/')[1].toUpperCase();
+    const reader = new FileReader();
+    reader.onload = (e) => {
+      const img = new Image();
+      img.onload = () => {
+        originalImage = img;
+        totalRotation = 0;
+        freeAngle = 0;
+        flipH = false;
+        flipV = false;
+        freeAngleInput.value = 0;
+        updateAngleDisplay(0);
+        document.getElementById('infoSize').textContent = `${img.naturalWidth} × ${img.naturalHeight}`;
+        enableControls(true);
+        dropPlaceholder.style.display = 'none';
+        canvasWrap.style.display = 'flex';
+        dropZone.classList.add('has-image');
+        render();
+      };
+      img.src = e.target.result;
+    };
+    reader.readAsDataURL(file);
+  }
+
+  function enableControls(on) {
+    ['btn90','btn180','btn270','btn360','btnFlipH','btnFlipV',
+     'freeAngle','btnSliderReset','btnDownload','btnResetAll'].forEach(id => {
+      const el = document.getElementById(id);
+      if (el) el.disabled = !on;
+    });
+  }
+
+  // ── Rotate steps ──
+  function rotateStep(deg, reset = false) {
+    if (!originalImage) return;
+    if (reset) { totalRotation = 0; freeAngle = 0; freeAngleInput.value = 0; updateAngleDisplay(0); }
+    else totalRotation = (totalRotation + deg) % 360;
+    render();
+  }
+
+  // ── Flip ──
+  function flipImage(axis) {
+    if (!originalImage) return;
+    if (axis === 'h') flipH = !flipH;
+    else flipV = !flipV;
+    updateFlipInfo();
+    render();
+  }
+
+  function updateFlipInfo() {
+    const parts = [];
+    if (flipH) parts.push('ngang');
+    if (flipV) parts.push('dọc');
+    document.getElementById('infoFlip').textContent = parts.length ? parts.join(' + ') : '—';
+  }
+
+  // ── Free angle ──
+  function onSliderChange(val) {
+    freeAngle = parseFloat(val);
+    updateAngleDisplay(freeAngle);
+    render();
+  }
+
+  function updateAngleDisplay(val) {
+    angleDisplay.textContent = `${val}°`;
+    document.getElementById('infoAngle').textContent = `${(totalRotation + freeAngle) % 360}°`;
+  }
+
+  function resetSlider() {
+    freeAngle = 0;
+    freeAngleInput.value = 0;
+    updateAngleDisplay(0);
+    render();
+  }
+
+  // ── Render ──
+  function render() {
+    if (!originalImage) return;
+    const totalDeg = totalRotation + freeAngle;
+    const rad = totalDeg * Math.PI / 180;
+    const sin = Math.abs(Math.sin(rad));
+    const cos = Math.abs(Math.cos(rad));
+    const w = originalImage.naturalWidth;
+    const h = originalImage.naturalHeight;
+    const newW = Math.round(w * cos + h * sin);
+    const newH = Math.round(w * sin + h * cos);
+
+    canvas.width  = newW;
+    canvas.height = newH;
+
+    ctx.clearRect(0, 0, newW, newH);
+    ctx.save();
+    ctx.translate(newW / 2, newH / 2);
+    ctx.rotate(rad);
+    ctx.scale(flipH ? -1 : 1, flipV ? -1 : 1);
+    ctx.drawImage(originalImage, -w / 2, -h / 2);
+    ctx.restore();
+
+    canvas.classList.remove('canvas-spin');
+    void canvas.offsetWidth;
+    canvas.classList.add('canvas-spin');
+
+    document.getElementById('infoAngle').textContent = `${totalDeg % 360}°`;
+  }
+
+  // ── Format ──
+  function setFormat(btn) {
+    document.querySelectorAll('.fmt-btn').forEach(b => b.classList.remove('active'));
+    btn.classList.add('active');
+    outputFormat = btn.dataset.fmt;
+  }
+
+  // ── Download ──
+  function downloadImage() {
+    if (!originalImage) return;
+    const ext = outputFormat.split('/')[1];
+    const quality = outputFormat === 'image/jpeg' ? 0.95 : undefined;
+    const dataURL = canvas.toDataURL(outputFormat, quality);
+    const a = document.createElement('a');
+    a.href = dataURL;
+    a.download = `${originalFilename}_rotated.${ext}`;
+    a.click();
+    showToast('✅ Đã tải ảnh xuống!');
+  }
+
+  // ── Reset all ──
+  function resetAll() {
+    originalImage = null;
+    totalRotation = 0;
+    freeAngle = 0;
+    flipH = false;
+    flipV = false;
+    freeAngleInput.value = 0;
+    updateAngleDisplay(0);
+    dropZone.classList.remove('has-image');
+    dropPlaceholder.style.display = 'flex';
+    canvasWrap.style.display = 'none';
+    enableControls(false);
+    ctx.clearRect(0, 0, canvas.width, canvas.height);
+    fileInput.value = '';
+    ['infoSize','infoAngle','infoFlip','infoFormat'].forEach(id => {
+      document.getElementById(id).textContent = id === 'infoAngle' ? '0°' : '—';
+    });
+  }
+
+  // ── Toast ──
+  function showToast(msg) {
+    const t = document.getElementById('toast');
+    t.textContent = msg;
+    t.classList.add('show');
+    clearTimeout(t._tid);
+    t._tid = setTimeout(() => t.classList.remove('show'), 2600);
+  }
+
+  // ── Paste from clipboard ──
+  document.addEventListener('paste', (e) => {
+    const items = e.clipboardData?.items;
+    if (!items) return;
+    for (const item of items) {
+      if (item.type.startsWith('image/')) {
+        loadFile(item.getAsFile());
+        showToast('📋 Đã dán ảnh từ clipboard');
+        break;
+      }
+    }
+  });
+</script>
+</body>
+</html>
+
+<script>
+(function(){
+  const _T = {en:{t_tool_title:'Rotate Image',t_subtitle:'<em>Free</em>',t_desc:'Rotate, flip, free angle — all right in your browser. Fast, safe, unlimited.',t_drop:'Drop image here',t_drop_sub:'PNG, JPG, WEBP, GIF — up to 30MB',t_or:'or',t_browse:'choose from device',t_quick_rotate:'Quick Rotate',t_flip:'Flip',t_free_angle:'Free Angle',t_angle_label:'Angle',t_info:'Image Info',t_orig_size:'Original size',t_curr_angle:'Current angle',t_format:'Save format',t_download:'Download',t_reset:'Reset',t_try_other:'Try another image',t_privacy:'🔒 Images never leave your browser'},vi:{t_tool_title:'Xoay ảnh',t_subtitle:'<em>miễn phí</em>',t_desc:'Xoay, lật, góc tự do — tất cả ngay tại trình duyệt. Nhanh, an toàn, không giới hạn.',t_drop:'Kéo thả ảnh vào đây',t_drop_sub:'PNG, JPG, WEBP, GIF — tối đa 30MB',t_or:'hoặc',t_browse:'chọn từ máy tính',t_quick_rotate:'Xoay nhanh',t_flip:'Lật ảnh',t_free_angle:'Góc tự do',t_angle_label:'Góc xoay',t_info:'Thông tin ảnh',t_orig_size:'Kích thước gốc',t_curr_angle:'Góc hiện tại',t_format:'Lưu định dạng',t_download:'Tải xuống',t_reset:'Đặt lại',t_try_other:'Chọn ảnh khác',t_privacy:'🔒 Ảnh không bao giờ rời trình duyệt'},ja:{t_tool_title:'画像回転',t_subtitle:'<em>無料</em>',t_desc:'回転、反転、自由角度 — すべてブラウザで。高速・安全・無制限。',t_drop:'画像をドロップ',t_drop_sub:'PNG, JPG, WEBP, GIF — 最大30MB',t_or:'または',t_browse:'デバイスから選択',t_quick_rotate:'クイック回転',t_flip:'反転',t_free_angle:'自由角度',t_angle_label:'角度',t_info:'画像情報',t_orig_size:'元のサイズ',t_curr_angle:'現在の角度',t_format:'保存形式',t_download:'ダウンロード',t_reset:'リセット',t_try_other:'別の画像を試す',t_privacy:'🔒 画像はブラウザ外に出ません'},es:{t_tool_title:'Rotar Imagen',t_subtitle:'<em>gratis</em>',t_desc:'Rotar, voltear, ángulo libre — todo en tu navegador. Rápido, seguro, sin límites.',t_drop:'Arrastra una imagen aquí',t_drop_sub:'PNG, JPG, WEBP, GIF — hasta 30MB',t_or:'o',t_browse:'elige desde el dispositivo',t_quick_rotate:'Rotación rápida',t_flip:'Voltear',t_free_angle:'Ángulo libre',t_angle_label:'Ángulo',t_info:'Info de imagen',t_orig_size:'Tamaño original',t_curr_angle:'Ángulo actual',t_format:'Formato de guardado',t_download:'Descargar',t_reset:'Restablecer',t_try_other:'Probar otra imagen',t_privacy:'🔒 Las imágenes nunca salen de tu navegador'}};
+  function _apply(){
+    const lang = localStorage.getItem('querencia_lang')||'en';
+    const t = _T[lang]||_T.en;
+    // Merge into window.T for app.js setLang() to pick up
+    if(window.T){
+      if(!window.T[lang]) window.T[lang]={};
+      Object.assign(window.T[lang], t);
+    }
+    document.querySelectorAll('[data-i18n]').forEach(el=>{
+      const k=el.getAttribute('data-i18n');
+      if(t[k]!==undefined) el.innerHTML=t[k];
+    });
+    document.querySelectorAll('[data-i18n-ph]').forEach(el=>{
+      const k=el.getAttribute('data-i18n-ph');
+      if(t[k]!==undefined) el.placeholder=t[k];
+    });
+  }
+  // Run immediately and also hook into app.js setLang
+  _apply();
+  const _orig = window.setLang;
+  window.setLang = function(l){ if(_orig) _orig(l); _apply(); };
+  // Also re-apply when applyTranslations is called
+  const _origAT = window.applyTranslations;
+  window.applyTranslations = function(){ if(_origAT) _origAT(); _apply(); };
+  window._rotate_image_t = function(k){
+    const lang=localStorage.getItem('querencia_lang')||'en';
+    return (_T[lang]||_T.en)[k]||_T.en[k]||k;
+  };
+})();
+</script>

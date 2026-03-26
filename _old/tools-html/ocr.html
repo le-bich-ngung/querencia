@@ -1,0 +1,641 @@
+<!DOCTYPE html>
+<html lang="vi">
+<head>
+  <meta charset="UTF-8"/>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <meta name="description" content="Querencia OCR — Trích xuất chữ từ ảnh bằng AI"/>
+  <title>OCR · Querencia Tools</title>
+
+  <link rel="shortcut icon" type="image/svg+xml" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 120 120'><circle cx='55' cy='55' r='38' fill='none' stroke='%234a7c59' stroke-width='7' stroke-linecap='round'/><line x1='81' y1='79' x2='98' y2='98' stroke='%234a7c59' stroke-width='7' stroke-linecap='round'/><polyline points='20,55 28,38 35,68 43,32 51,60 58,43 66,70 74,48 90,55' fill='none' stroke='%234a7c59' stroke-width='3' stroke-linecap='round' stroke-linejoin='round'/></svg>"/>
+  <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:ital,wght@0,300;0,400;0,500;0,600;0,700;1,400&display=swap" rel="stylesheet"/>
+
+  <!-- Tesseract.js v2 — API ổn định -->
+  <script src="https://unpkg.com/tesseract.js@2.1.5/dist/tesseract.min.js"></script>
+
+  <style>
+    :root {
+      --sage:#4a7c59;
+      --sage-light:#6fa882;
+      --sage-pale:#ddeee3;
+      --sage-dark:#2f5c3e;
+      --black:#111;
+      --gray:#555;
+      --gray-light:#999;
+      --border:#e0e0e0;
+      --white:#fff;
+      --font-display:'Plus Jakarta Sans',sans-serif;
+      --font-body:'Plus Jakarta Sans',sans-serif;
+    }
+
+    *,*::before,*::after{box-sizing:border-box;margin:0;padding:0}
+    html{scroll-behavior:smooth}
+    body{font-family:var(--font-body);color:var(--black);background:var(--white);min-height:100vh;overflow-x:hidden}
+
+    @keyframes fadeUp{from{opacity:0;transform:translateY(16px)}to{opacity:1;transform:translateY(0)}}
+    @keyframes spin{0%{transform:rotate(0deg)}100%{transform:rotate(360deg)}}
+    @keyframes pulse{0%,100%{opacity:1}50%{opacity:0.4}}
+
+    /* ── NAV ── */
+    nav {
+      position: sticky; top: 0; z-index: 100;
+      display: flex; align-items: center; justify-content: space-between;
+      padding: 0 32px; height: 64px;
+      background: rgba(255,255,255,0.94);
+      backdrop-filter: blur(12px);
+      border-bottom: 1px solid var(--border);
+    }
+    .nav-logo {
+      display: flex; flex-direction: column; align-items: flex-start;
+      text-decoration: none; cursor: pointer; gap: 1px;
+    }
+    .nav-logo-inner { display: flex; align-items: center; gap: 0; }
+    .nav-tagline { font-size: 0.65rem; font-weight: 600; letter-spacing: 0.06em; color: var(--sage); }
+    .nav-back {
+      display: flex; align-items: center; gap: 6px;
+      font-size: 0.82rem; color: var(--gray); text-decoration: none;
+      padding: 6px 14px; border: 1.5px solid var(--border); border-radius: 20px;
+      transition: all 0.2s; cursor: pointer;
+    }
+    .nav-back:hover { border-color: var(--sage); color: var(--sage); }
+
+    /* ── PAGE HEADER ── */
+    .page-header {
+      padding: 64px 64px 48px;
+      border-bottom: 1px solid var(--border);
+      animation: fadeUp 0.6s 0.1s both;
+    }
+    .page-label {
+      font-size: 0.7rem; letter-spacing: 0.2em; text-transform: uppercase;
+      color: var(--sage); font-weight: 500; margin-bottom: 12px;
+    }
+    .page-title {
+      font-family: var(--font-display);
+      font-size: clamp(2rem,4vw,3rem);
+      font-weight: 700; letter-spacing: -0.5px; line-height: 1.15;
+    }
+    .page-title em { font-style: italic; color: var(--sage); }
+    .page-desc {
+      margin-top: 14px; font-size: 0.92rem;
+      color: var(--gray); max-width: 500px; line-height: 1.7;
+    }
+    .badge-free {
+      display: inline-block; font-size: 0.65rem; font-weight: 600;
+      letter-spacing: 0.1em; text-transform: uppercase;
+      padding: 3px 8px; border-radius: 4px; margin-left: 12px;
+      background: var(--sage-pale); color: var(--sage-dark);
+      vertical-align: middle;
+    }
+
+    /* ── MAIN LAYOUT ── */
+    .tool-wrap {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      min-height: calc(100vh - 64px - 160px);
+    }
+
+    /* ── LEFT PANEL: UPLOAD ── */
+    .panel-left {
+      padding: 48px 48px 48px 64px;
+      border-right: 1px solid var(--border);
+      animation: fadeUp 0.6s 0.2s both;
+    }
+    .panel-title {
+      font-size: 0.7rem; letter-spacing: 0.15em; text-transform: uppercase;
+      color: var(--gray-light); font-weight: 500; margin-bottom: 20px;
+    }
+
+    /* Drop zone */
+    .drop-zone {
+      border: 2px dashed var(--border);
+      border-radius: 16px;
+      padding: 56px 32px;
+      text-align: center;
+      cursor: pointer;
+      transition: all 0.25s;
+      position: relative;
+      background: #fafaf9;
+    }
+    .drop-zone:hover, .drop-zone.drag-over {
+      border-color: var(--sage);
+      background: var(--sage-pale);
+    }
+    .drop-zone input[type="file"] {
+      position: absolute; inset: 0; opacity: 0; cursor: pointer; width: 100%; height: 100%;
+    }
+    .drop-icon {
+      font-size: 2.8rem; margin-bottom: 16px; opacity: 0.5;
+      transition: opacity 0.2s, transform 0.2s;
+    }
+    .drop-zone:hover .drop-icon { opacity: 0.8; transform: scale(1.05); }
+    .drop-zone h3 {
+      font-family: var(--font-display); font-size: 1.05rem;
+      font-weight: 600; margin-bottom: 8px;
+    }
+    .drop-zone p { font-size: 0.82rem; color: var(--gray-light); line-height: 1.6; }
+    .drop-zone .browse-link { color: var(--sage); text-decoration: underline; font-weight: 500; }
+
+    /* Image preview */
+    .img-preview-wrap {
+      display: none;
+      border: 1.5px solid var(--border);
+      border-radius: 12px;
+      overflow: hidden;
+      position: relative;
+    }
+    .img-preview-wrap img {
+      width: 100%; max-height: 400px;
+      object-fit: contain; display: block;
+      background: #f5f5f5;
+    }
+    .img-preview-actions {
+      display: flex; align-items: center; justify-content: space-between;
+      padding: 12px 16px;
+      border-top: 1px solid var(--border);
+      background: var(--white);
+    }
+    .img-filename {
+      font-size: 0.78rem; color: var(--gray); white-space: nowrap;
+      overflow: hidden; text-overflow: ellipsis; max-width: 200px;
+    }
+    .btn-change {
+      font-size: 0.75rem; color: var(--sage); background: none; border: none;
+      cursor: pointer; font-weight: 500; text-decoration: underline;
+    }
+
+    /* Lang select */
+    .lang-row {
+      margin-top: 24px; display: flex; align-items: center; gap: 12px;
+    }
+    .lang-label { font-size: 0.78rem; color: var(--gray); font-weight: 500; white-space: nowrap; }
+    .lang-select {
+      flex: 1; padding: 9px 14px;
+      border: 1.5px solid var(--border); border-radius: 8px;
+      font-family: var(--font-body); font-size: 0.85rem;
+      color: var(--black); background: var(--white);
+      outline: none; transition: border-color 0.2s; cursor: pointer;
+    }
+    .lang-select:focus { border-color: var(--sage); }
+
+    /* Buttons */
+    .btn-primary {
+      background: var(--sage); color: var(--white); border: none;
+      padding: 13px 28px; border-radius: 30px;
+      font-family: var(--font-body); font-size: 0.88rem; font-weight: 500;
+      cursor: pointer; letter-spacing: 0.02em;
+      transition: background 0.2s, transform 0.15s;
+    }
+    .btn-primary:hover { background: var(--sage-dark); transform: translateY(-1px); }
+    .btn-primary:disabled {
+      background: var(--border); color: var(--gray-light); cursor: not-allowed; transform: none;
+    }
+
+    .action-row {
+      margin-top: 28px; display: flex; gap: 12px; align-items: center;
+    }
+
+    /* ── RIGHT PANEL: RESULT ── */
+    .panel-right {
+      padding: 48px 64px 48px 48px;
+      display: flex; flex-direction: column;
+      animation: fadeUp 0.6s 0.3s both;
+    }
+    .result-header {
+      display: flex; align-items: center; justify-content: space-between;
+      margin-bottom: 20px;
+    }
+
+    /* Progress */
+    .progress-wrap {
+      display: none; flex-direction: column; gap: 12px;
+      align-items: center; justify-content: center;
+      flex: 1; min-height: 280px;
+    }
+    .progress-spinner {
+      width: 48px; height: 48px;
+      border: 3px solid var(--sage-pale);
+      border-top-color: var(--sage);
+      border-radius: 50%;
+      animation: spin 0.9s linear infinite;
+    }
+    .progress-text {
+      font-size: 0.85rem; color: var(--gray);
+      animation: pulse 1.5s ease-in-out infinite;
+    }
+    .progress-bar-wrap {
+      width: 240px; height: 4px;
+      background: var(--sage-pale); border-radius: 4px; overflow: hidden;
+    }
+    .progress-bar {
+      height: 100%; background: var(--sage); border-radius: 4px;
+      width: 0%; transition: width 0.3s ease;
+    }
+
+    /* Empty state */
+    .result-empty {
+      flex: 1; display: flex; flex-direction: column;
+      align-items: center; justify-content: center;
+      text-align: center; color: var(--gray-light); min-height: 280px;
+    }
+    .result-empty-icon { font-size: 2.5rem; margin-bottom: 14px; opacity: 0.35; }
+    .result-empty p { font-size: 0.85rem; line-height: 1.7; max-width: 260px; }
+
+    /* Result text */
+    .result-box {
+      display: none;
+      flex: 1; flex-direction: column; gap: 14px;
+    }
+    .result-stats {
+      display: flex; gap: 20px;
+    }
+    .stat-chip {
+      font-size: 0.72rem; color: var(--gray);
+      background: var(--sage-pale); padding: 4px 10px;
+      border-radius: 20px; font-weight: 500;
+    }
+    .result-textarea {
+      flex: 1; min-height: 320px;
+      padding: 20px; border: 1.5px solid var(--border);
+      border-radius: 12px; font-family: var(--font-body);
+      font-size: 0.88rem; line-height: 1.75; color: var(--black);
+      resize: vertical; outline: none; transition: border-color 0.2s;
+      background: #fafaf9;
+    }
+    .result-textarea:focus { border-color: var(--sage); background: var(--white); }
+
+    .result-actions { display: flex; gap: 10px; flex-wrap: wrap; }
+    .btn-outline {
+      background: transparent; color: var(--black);
+      border: 1.5px solid var(--border); padding: 9px 18px;
+      border-radius: 30px; font-family: var(--font-body);
+      font-size: 0.82rem; font-weight: 500; cursor: pointer;
+      transition: border-color 0.2s, transform 0.15s;
+    }
+    .btn-outline:hover { border-color: var(--sage); color: var(--sage); transform: translateY(-1px); }
+
+    /* Copy feedback */
+    .copy-toast {
+      display: none; position: fixed; bottom: 28px; left: 50%;
+      transform: translateX(-50%);
+      background: var(--black); color: var(--white);
+      padding: 10px 20px; border-radius: 30px;
+      font-size: 0.82rem; font-weight: 500;
+      z-index: 999; animation: fadeUp 0.3s both;
+    }
+
+    /* ── TIPS SECTION ── */
+    .tips-section {
+      border-top: 1px solid var(--border);
+      padding: 48px 64px;
+      display: grid; grid-template-columns: repeat(3,1fr); gap: 1px;
+      background: var(--border);
+    }
+    .tip-card {
+      background: var(--white); padding: 32px;
+    }
+    .tip-icon { font-size: 1.4rem; margin-bottom: 12px; }
+    .tip-card h4 {
+      font-family: var(--font-display); font-size: 0.95rem;
+      font-weight: 600; margin-bottom: 8px;
+    }
+    .tip-card p { font-size: 0.82rem; color: var(--gray); line-height: 1.65; }
+
+    /* ── FOOTER ── */
+    footer {
+      display: flex; align-items: center; justify-content: space-between;
+      padding: 24px 64px; border-top: 1px solid var(--border);
+      font-size: 0.8rem; color: var(--gray-light);
+    }
+    .footer-logo { display: flex; align-items: center; gap: 0; }
+
+    /* ── DARK MODE ── */
+    body.dark { background: #0f0f0f; color: #eee; }
+    body.dark nav { background: rgba(15,15,15,0.94); border-bottom-color: #222; }
+    body.dark .drop-zone { background: #1a1a1a; border-color: #333; }
+    body.dark .drop-zone:hover, body.dark .drop-zone.drag-over { background: #1a3328; border-color: var(--sage); }
+    body.dark .lang-select { background: #1a1a1a; border-color: #333; color: #eee; }
+    body.dark .result-textarea { background: #1a1a1a; border-color: #333; color: #eee; }
+    body.dark .result-textarea:focus { background: #222; border-color: var(--sage); }
+    body.dark .img-preview-wrap { border-color: #333; }
+    body.dark .img-preview-actions { background: #1a1a1a; border-top-color: #333; }
+    body.dark .tips-section { background: #222; }
+    body.dark .tip-card { background: #0f0f0f; }
+    body.dark footer { border-top-color: #222; background: #0f0f0f; }
+    body.dark .nav-back { border-color: #333; color: #aaa; }
+    body.dark .page-label { color: #7ecf9a; }
+    body.dark .btn-outline { border-color: #333; color: #eee; }
+    body.dark .nav-back:hover { border-color: var(--sage); color: #7ecf9a; }
+    body.dark .stat-chip { background: #1a3328; }
+
+    /* ── RESPONSIVE ── */
+    @media(max-width:900px){
+      .tool-wrap { grid-template-columns: 1fr; }
+      .panel-left { border-right: none; border-bottom: 1px solid var(--border); padding: 32px 24px; }
+      .panel-right { padding: 32px 24px; }
+      .page-header { padding: 40px 24px 32px; }
+      .tips-section { grid-template-columns: 1fr; padding: 32px 24px; }
+      footer { padding: 20px 24px; }
+      nav { padding: 0 16px; }
+    }
+  </style>
+</head>
+<body>
+
+<!-- NAV -->
+<nav>
+  <a class="nav-logo" href="https://querencia.com.vn">
+    <div class="nav-logo-inner">
+      <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 120 120" width="28" height="28" style="position:relative;top:3px;margin-right:-3px;flex-shrink:0">
+        <defs><clipPath id="qClip"><circle cx="55" cy="55" r="32"/></clipPath></defs>
+        <circle cx="55" cy="55" r="38" fill="none" stroke="#4a7c59" stroke-width="7" stroke-linecap="round"/>
+        <line x1="81" y1="79" x2="98" y2="98" stroke="#4a7c59" stroke-width="7" stroke-linecap="round"/>
+        <polyline points="20,55 28,38 35,68 43,32 51,60 58,43 66,70 74,48 90,55" fill="none" stroke="#4a7c59" stroke-width="3" stroke-linecap="round" stroke-linejoin="round" clip-path="url(#qClip)"/>
+      </svg>
+      <span style="font-family:var(--font-display);font-weight:700;font-size:1.4rem"><span style="color:#111">ueren</span><span style="color:#4a7c59">cia</span></span>
+    </div>
+    <small class="nav-tagline">Tech and more</small>
+  </a>
+  <div style="display:flex;align-items:center;gap:12px">
+    <button onclick="toggleDark()" title="Dark mode" style="background:none;border:none;cursor:pointer;font-size:1.1rem;color:var(--gray-light);padding:4px 8px">◐</button>
+    <a class="nav-back" href="https://querencia.com.vn">
+      ← Về trang chủ
+    </a>
+  </div>
+</nav>
+
+<!-- PAGE HEADER -->
+<div class="page-header">
+  <p class="page-label">Tools · OCR</p>
+  <h1 class="page-title">Trích xuất chữ <em>từ ảnh</em> <span class="badge-free">Free</span></h1>
+  <p class="page-desc">Tải ảnh lên — chụp sách, tài liệu, bảng biểu — AI sẽ đọc và chuyển thành văn bản có thể chỉnh sửa ngay.</p>
+</div>
+
+<!-- MAIN TOOL -->
+<div class="tool-wrap">
+
+  <!-- LEFT: UPLOAD -->
+  <div class="panel-left">
+    <p class="panel-title">Ảnh đầu vào</p>
+
+    <!-- Drop zone -->
+    <div class="drop-zone" id="dropZone">
+      <input type="file" id="fileInput" accept="image/*" onchange="handleFile(this.files[0])"/>
+      <div class="drop-icon">🖼️</div>
+      <h3>Kéo thả ảnh vào đây</h3>
+      <p>hoặc <span class="browse-link">click để chọn file</span><br/>
+      Hỗ trợ JPG, PNG, WEBP, BMP · Tối đa 20MB</p>
+    </div>
+
+    <!-- Preview -->
+    <div class="img-preview-wrap" id="previewWrap">
+      <img id="previewImg" src="" alt="Preview"/>
+      <div class="img-preview-actions">
+        <span class="img-filename" id="imgFilename">—</span>
+        <button class="btn-change" onclick="resetFile()">Đổi ảnh</button>
+      </div>
+    </div>
+
+    <!-- Language -->
+    <div class="lang-row">
+      <span class="lang-label">Ngôn ngữ trong ảnh:</span>
+      <select class="lang-select" id="langSelect">
+        <option value="vie">🇻🇳 Tiếng Việt</option>
+        <option value="eng" selected>🇬🇧 English</option>
+        <option value="vie+eng">🇻🇳🇬🇧 Việt + Anh</option>
+        <option value="jpn">🇯🇵 日本語</option>
+        <option value="chi_sim">🇨🇳 中文 (Giản thể)</option>
+        <option value="kor">🇰🇷 한국어</option>
+        <option value="fra">🇫🇷 Français</option>
+        <option value="deu">🇩🇪 Deutsch</option>
+        <option value="spa">🇪🇸 Español</option>
+      </select>
+    </div>
+
+    <!-- Action -->
+    <div class="action-row">
+      <button class="btn-primary" id="btnExtract" onclick="runOCR()" disabled>
+        ✦ Trích xuất văn bản
+      </button>
+      <span id="fileInfo" style="font-size:0.78rem;color:var(--gray-light)">Chưa chọn ảnh</span>
+    </div>
+  </div>
+
+  <!-- RIGHT: RESULT -->
+  <div class="panel-right">
+    <div class="result-header">
+      <p class="panel-title">Kết quả</p>
+    </div>
+
+    <!-- Empty state -->
+    <div class="result-empty" id="resultEmpty">
+      <div class="result-empty-icon">📄</div>
+      <p>Văn bản trích xuất sẽ xuất hiện ở đây sau khi bạn tải ảnh lên và nhấn trích xuất.</p>
+    </div>
+
+    <!-- Progress -->
+    <div class="progress-wrap" id="progressWrap">
+      <div class="progress-spinner"></div>
+      <p class="progress-text" id="progressText">Đang khởi tạo...</p>
+      <div class="progress-bar-wrap">
+        <div class="progress-bar" id="progressBar"></div>
+      </div>
+    </div>
+
+    <!-- Result -->
+    <div class="result-box" id="resultBox">
+      <div class="result-stats" id="resultStats"></div>
+      <textarea class="result-textarea" id="resultText" placeholder="Văn bản sẽ xuất hiện ở đây..."></textarea>
+      <div class="result-actions">
+        <button class="btn-primary" onclick="copyText()">Sao chép</button>
+        <button class="btn-outline" onclick="downloadText()">Tải về .txt</button>
+        <button class="btn-outline" onclick="clearResult()">Xóa</button>
+      </div>
+    </div>
+  </div>
+
+</div>
+
+<!-- TIPS -->
+<div class="tips-section">
+  <div class="tip-card">
+    <div class="tip-icon">📸</div>
+    <h4>Ảnh rõ cho kết quả tốt</h4>
+    <p>Chụp thẳng, đủ sáng, không bị mờ. Ảnh độ phân giải cao sẽ cho độ chính xác tốt hơn đáng kể.</p>
+  </div>
+  <div class="tip-card">
+    <div class="tip-icon">🌐</div>
+    <h4>Chọn đúng ngôn ngữ</h4>
+    <p>Chọn ngôn ngữ phù hợp với nội dung ảnh. Nếu tài liệu có cả Việt lẫn Anh, chọn "Việt + Anh".</p>
+  </div>
+  <div class="tip-card">
+    <div class="tip-icon">🔒</div>
+    <h4>Ảnh không rời khỏi máy</h4>
+    <p>Toàn bộ xử lý diễn ra ngay trên trình duyệt của bạn. Không có ảnh nào được gửi lên server.</p>
+  </div>
+</div>
+
+<!-- FOOTER -->
+<footer>
+  <div class="footer-logo">
+    <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 120 120" width="20" height="20" style="position:relative;top:3px;margin-right:-2px">
+      <defs><clipPath id="qClipF"><circle cx="55" cy="55" r="32"/></clipPath></defs>
+      <circle cx="55" cy="55" r="38" fill="none" stroke="#4a7c59" stroke-width="7" stroke-linecap="round"/>
+      <line x1="81" y1="79" x2="98" y2="98" stroke="#4a7c59" stroke-width="7" stroke-linecap="round"/>
+      <polyline points="20,55 28,38 35,68 43,32 51,60 58,43 66,70 74,48 90,55" fill="none" stroke="#4a7c59" stroke-width="3" stroke-linecap="round" stroke-linejoin="round" clip-path="url(#qClipF)"/>
+    </svg>
+    <span style="font-family:var(--font-display);font-weight:700;font-size:0.9rem"><span style="color:#111">ueren</span><span style="color:#4a7c59">cia</span></span>
+  </div>
+  <span>© 2025 Querencia · All rights reserved</span>
+</footer>
+
+<!-- Copy toast -->
+<div class="copy-toast" id="copyToast">✓ Đã sao chép!</div>
+
+<script>
+  // ── DARK MODE ──
+  const saved = localStorage.getItem('darkMode');
+  if (saved === '1') document.body.classList.add('dark');
+  function toggleDark() {
+    document.body.classList.toggle('dark');
+    localStorage.setItem('darkMode', document.body.classList.contains('dark') ? '1' : '0');
+  }
+
+  // ── DRAG & DROP ──
+  const dropZone = document.getElementById('dropZone');
+  dropZone.addEventListener('dragover', e => { e.preventDefault(); dropZone.classList.add('drag-over'); });
+  dropZone.addEventListener('dragleave', () => dropZone.classList.remove('drag-over'));
+  dropZone.addEventListener('drop', e => {
+    e.preventDefault(); dropZone.classList.remove('drag-over');
+    const file = e.dataTransfer.files[0];
+    if (file && file.type.startsWith('image/')) handleFile(file);
+  });
+
+  let currentFile = null;
+
+  function handleFile(file) {
+    if (!file) return;
+    if (file.size > 20 * 1024 * 1024) {
+      alert('File quá lớn. Vui lòng chọn ảnh dưới 20MB.'); return;
+    }
+    currentFile = file;
+    const reader = new FileReader();
+    reader.onload = e => {
+      document.getElementById('previewImg').src = e.target.result;
+      document.getElementById('previewWrap').style.display = 'block';
+      dropZone.style.display = 'none';
+      document.getElementById('imgFilename').textContent = file.name;
+      document.getElementById('fileInfo').textContent = (file.size / 1024).toFixed(0) + ' KB';
+      document.getElementById('btnExtract').disabled = false;
+    };
+    reader.readAsDataURL(file);
+  }
+
+  function resetFile() {
+    currentFile = null;
+    document.getElementById('previewWrap').style.display = 'none';
+    document.getElementById('dropZone').style.display = 'block';
+    document.getElementById('fileInput').value = '';
+    document.getElementById('btnExtract').disabled = true;
+    document.getElementById('fileInfo').textContent = 'Chưa chọn ảnh';
+    clearResult();
+  }
+
+  // ── OCR ──
+  async function runOCR() {
+    if (!currentFile) return;
+
+    const lang = document.getElementById('langSelect').value;
+    const btn = document.getElementById('btnExtract');
+
+    // Show progress
+    document.getElementById('resultEmpty').style.display = 'none';
+    document.getElementById('resultBox').style.display = 'none';
+    document.getElementById('progressWrap').style.display = 'flex';
+    btn.disabled = true;
+
+    const progressMessages = [
+      'Đang tải engine nhận dạng...',
+      'Đang phân tích ảnh...',
+      'Đang nhận dạng ký tự...',
+      'Đang tinh chỉnh kết quả...',
+      'Gần xong rồi...'
+    ];
+
+    try {
+      const { data } = await Tesseract.recognize(currentFile, lang, {
+        logger: m => {
+          if (m.status === 'recognizing text') {
+            const pct = Math.round(m.progress * 100);
+            document.getElementById('progressBar').style.width = pct + '%';
+            const idx = Math.min(Math.floor(m.progress * progressMessages.length), progressMessages.length - 1);
+            document.getElementById('progressText').textContent = progressMessages[idx];
+          } else if (m.status === 'loading tesseract core') {
+            document.getElementById('progressText').textContent = 'Đang tải engine nhận dạng...';
+          } else if (m.status === 'loading language traineddata') {
+            document.getElementById('progressText').textContent = 'Đang tải dữ liệu ngôn ngữ...';
+            const pct = Math.round(m.progress * 100);
+            document.getElementById('progressBar').style.width = pct + '%';
+          } else if (m.status === 'initialized api') {
+            document.getElementById('progressText').textContent = 'Đang phân tích ảnh...';
+          }
+        }
+      });
+
+      const text = data.text.trim();
+      const wordCount = text.split(/\s+/).filter(Boolean).length;
+      const charCount = text.replace(/\s/g, '').length;
+      const confidence = Math.round(data.confidence);
+
+      // Show result
+      document.getElementById('progressWrap').style.display = 'none';
+      document.getElementById('resultBox').style.display = 'flex';
+      document.getElementById('resultText').value = text || '(Không nhận dạng được văn bản từ ảnh này)';
+
+      document.getElementById('resultStats').innerHTML = `
+        <span class="stat-chip">~${wordCount} từ</span>
+        <span class="stat-chip">${charCount} ký tự</span>
+        <span class="stat-chip">Độ tin cậy: ${confidence}%</span>
+      `;
+
+    } catch (err) {
+      document.getElementById('progressWrap').style.display = 'none';
+      document.getElementById('resultEmpty').style.display = 'flex';
+      document.getElementById('resultEmpty').innerHTML = `
+        <div class="result-empty-icon">⚠️</div>
+        <p>Có lỗi xảy ra: ${err.message || 'Không thể nhận dạng ảnh này'}. Thử lại với ảnh khác.</p>
+      `;
+    }
+
+    btn.disabled = false;
+  }
+
+  function clearResult() {
+    document.getElementById('resultBox').style.display = 'none';
+    document.getElementById('progressWrap').style.display = 'none';
+    document.getElementById('resultEmpty').style.display = 'flex';
+    document.getElementById('resultEmpty').innerHTML = `
+      <div class="result-empty-icon">📄</div>
+      <p>Văn bản trích xuất sẽ xuất hiện ở đây sau khi bạn tải ảnh lên và nhấn trích xuất.</p>
+    `;
+  }
+
+  function copyText() {
+    const text = document.getElementById('resultText').value;
+    navigator.clipboard.writeText(text).then(() => {
+      const toast = document.getElementById('copyToast');
+      toast.style.display = 'block';
+      setTimeout(() => toast.style.display = 'none', 2000);
+    });
+  }
+
+  function downloadText() {
+    const text = document.getElementById('resultText').value;
+    const blob = new Blob([text], { type: 'text/plain;charset=utf-8' });
+    const url = URL.createObjectURL(blob);
+    const a = document.createElement('a');
+    a.href = url; a.download = 'ocr-querencia.txt';
+    a.click(); URL.revokeObjectURL(url);
+  }
+</script>
+
+</body>
+</html>

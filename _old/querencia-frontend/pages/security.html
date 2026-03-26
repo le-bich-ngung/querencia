@@ -1,0 +1,240 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8"/>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>Security · Querencia</title>
+  <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:ital,wght@0,300;0,400;0,500;0,600;0,700;1,400&display=swap" rel="stylesheet"/>
+  <style>
+    :root { --sage: #4a7c59; --sage-light: #e8f0eb; --text: #1a1a1a; --muted: #666; --border: #e8e8e8; }
+    * { box-sizing: border-box; margin: 0; padding: 0; }
+    body { font-family: 'Plus Jakarta Sans', sans-serif; color: var(--text); background: #fafafa; line-height: 1.7; }
+    nav { display: flex; align-items: center; justify-content: space-between; padding: 16px 40px; background: #fff; border-bottom: 1px solid var(--border); position: sticky; top: 0; z-index: 100; }
+    .nav-logo { display: flex; flex-direction: column; align-items: flex-start; text-decoration: none; cursor: pointer; }
+    .nav-logo-row { display: flex; align-items: center; gap: 4px; }
+    .nav-logo-text { font-size: 1.4rem; font-weight: 700; line-height: 1; }
+    .nav-tagline { font-size: 0.62rem; font-weight: 600; color: var(--muted); letter-spacing: 0.06em; }
+    .nav-back { display: flex; align-items: center; gap: 6px; font-size: 0.85rem; color: var(--sage); text-decoration: none; font-weight: 600; transition: opacity 0.2s; }
+    .nav-back:hover { opacity: 0.7; }
+    .lang-switcher { display: flex; gap: 6px; }
+    .lang-btn { padding: 4px 10px; border: 1.5px solid var(--border); border-radius: 20px; background: none; font-family: inherit; font-size: 0.78rem; font-weight: 600; color: var(--muted); cursor: pointer; transition: all 0.2s; }
+    .lang-btn.active, .lang-btn:hover { border-color: var(--sage); color: var(--sage); background: var(--sage-light); }
+    .hero { background: linear-gradient(135deg, #1a2e23 0%, #2d5a3d 100%); color: #fff; padding: 64px 40px 48px; }
+    .hero-inner { max-width: 800px; margin: 0 auto; }
+    .hero-badge { display: inline-block; background: rgba(255,255,255,0.15); border: 1px solid rgba(255,255,255,0.25); border-radius: 20px; padding: 4px 14px; font-size: 0.75rem; font-weight: 600; letter-spacing: 0.08em; text-transform: uppercase; margin-bottom: 20px; }
+    .hero h1 { font-size: clamp(2rem, 4vw, 3rem); font-weight: 700; line-height: 1.2; margin-bottom: 12px; }
+    .hero-meta { font-size: 0.85rem; opacity: 0.75; }
+    .content { max-width: 800px; margin: 0 auto; padding: 48px 40px 80px; }
+    .section { margin-bottom: 40px; padding-bottom: 40px; border-bottom: 1px solid var(--border); }
+    .section:last-child { border-bottom: none; }
+    .section-num { display: inline-flex; align-items: center; justify-content: center; width: 28px; height: 28px; background: var(--sage); color: #fff; border-radius: 50%; font-size: 0.75rem; font-weight: 700; margin-bottom: 12px; }
+    .section h2 { font-size: 1.2rem; font-weight: 700; color: var(--text); margin-bottom: 10px; }
+    .section p { font-size: 0.92rem; color: #444; margin-bottom: 10px; }
+    .section ul { padding-left: 20px; margin-bottom: 10px; }
+    .section ul li { font-size: 0.92rem; color: #444; margin-bottom: 6px; }
+    .highlight-box { background: var(--sage-light); border-left: 3px solid var(--sage); border-radius: 0 8px 8px 0; padding: 16px 20px; margin: 16px 0; font-size: 0.88rem; color: #2d5a3d; }
+    .security-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(220px, 1fr)); gap: 16px; margin: 20px 0; }
+    .security-card { background: #fff; border: 1px solid var(--border); border-radius: 12px; padding: 20px; }
+    .security-card-icon { font-size: 1.6rem; margin-bottom: 10px; }
+    .security-card h3 { font-size: 0.9rem; font-weight: 700; margin-bottom: 6px; }
+    .security-card p { font-size: 0.82rem; color: var(--muted); margin: 0; }
+    footer { text-align: center; padding: 32px; background: #fff; border-top: 1px solid var(--border); font-size: 0.8rem; color: var(--muted); }
+    footer a { color: var(--sage); text-decoration: none; margin: 0 8px; }
+    [data-lang] { display: none; }
+    [data-lang].active { display: block; }
+    [data-lang-inline] { display: none; }
+    [data-lang-inline].active { display: inline; }
+    @media (max-width: 600px) { nav { padding: 14px 20px; } .hero { padding: 40px 20px 32px; } .content { padding: 32px 20px 60px; } }
+  </style>
+<script>
+function setLang(lang) {
+  document.querySelectorAll('[data-lang]').forEach(function(el) {
+    var val = el.getAttribute('data-lang').trim();
+    el.classList.toggle('active', val === lang);
+  });
+  document.querySelectorAll('[data-lang-inline]').forEach(function(el) {
+    var val = el.getAttribute('data-lang-inline').trim();
+    el.classList.toggle('active', val === lang);
+  });
+  document.querySelectorAll('.lang-btn').forEach(function(b) {
+    b.classList.toggle('active', b.getAttribute('data-lang-code') === lang);
+  });
+  try { localStorage.setItem('lang', lang); } catch(e) {}
+}
+var _lang = 'en';
+try { _lang = localStorage.getItem('lang') || 'en'; } catch(e) {}
+document.addEventListener('DOMContentLoaded', function() { setLang(_lang); });
+</script>
+</head>
+<body>
+
+<nav>
+  <a class="nav-logo" href="https://querencia.com.vn">
+    <div class="nav-logo-row">
+      <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 120 120" width="28" height="28" style="flex-shrink:0;position:relative;top:2px">
+        <circle cx="55" cy="55" r="38" fill="none" stroke="#4a7c59" stroke-width="7" stroke-linecap="round"/>
+        <line x1="81" y1="79" x2="98" y2="98" stroke="#4a7c59" stroke-width="7" stroke-linecap="round"/>
+        <defs><clipPath id="qc"><circle cx="55" cy="55" r="32"/></clipPath></defs>
+        <polyline points="20,55 28,38 35,68 43,32 51,60 58,43 66,70 74,48 90,55" fill="none" stroke="#4a7c59" stroke-width="3" stroke-linecap="round" stroke-linejoin="round" clip-path="url(#qc)"/>
+      </svg>
+      <span class="nav-logo-text"><span style="color:#111">ueren</span><span style="color:#4a7c59">cia</span></span>
+    </div>
+    <small class="nav-tagline">Tech and more</small>
+  </a>
+  <div style="display:flex;align-items:center;gap:20px">
+    <div class="lang-switcher">
+      <button class="lang-btn active" onclick="setLang('en')" data-lang-code="en">EN</button>
+      <button class="lang-btn" onclick="setLang('vi')" data-lang-code="vi">VI</button>
+      <button class="lang-btn" onclick="setLang('ja')" data-lang-code="ja">JA</button>
+      <button class="lang-btn" onclick="setLang('es')" data-lang-code="es">ES</button>
+    </div>
+    <a class="nav-back" href="https://querencia.com.vn">← <span data-lang-inline="en" class="active">Home</span><span data-lang-inline="vi">Trang chủ</span><span data-lang-inline="ja">ホーム</span><span data-lang-inline="es">Inicio</span></a>
+  </div>
+</nav>
+
+<div class="hero">
+  <div class="hero-inner">
+    <div class="hero-badge">Security</div>
+    <h1 data-lang="en" class="active">How We Protect You</h1>
+    <h1 data-lang="vi">Chúng Tôi Bảo Vệ Bạn Như Thế Nào</h1>
+    <h1 data-lang="ja">あなたを守るための取り組み</h1>
+    <h1 data-lang="es">Cómo Te Protegemos</h1>
+    <p class="hero-meta" data-lang="en" class="active">Last updated: March 2026</p>
+    <p class="hero-meta" data-lang="vi">Cập nhật lần cuối: Tháng 3/2026</p>
+    <p class="hero-meta" data-lang="ja">最終更新：2026年3月</p>
+    <p class="hero-meta" data-lang="es">Última actualización: Marzo 2026</p>
+  </div>
+</div>
+
+<div class="content">
+
+  <div class="section">
+    <div class="section-num">1</div>
+    <h2 data-lang="en" class="active">Security Measures</h2>
+    <h2 data-lang="vi">Các Biện Pháp Bảo Mật</h2>
+    <h2 data-lang="ja">セキュリティ対策</h2>
+    <h2 data-lang="es">Medidas de Seguridad</h2>
+
+    <div class="security-grid">
+      <div class="security-card">
+        <div class="security-card-icon">🔐</div>
+        <h3 data-lang="en" class="active">bcrypt Hashing</h3>
+        <h3 data-lang="vi">Mã Hóa bcrypt</h3>
+        <h3 data-lang="ja">bcryptハッシュ化</h3>
+        <h3 data-lang="es">Hash bcrypt</h3>
+        <p data-lang="en" class="active">All passwords are hashed with bcrypt. We never store or transmit plain text passwords.</p>
+        <p data-lang="vi">Tất cả mật khẩu được mã hóa bằng bcrypt. Chúng tôi không bao giờ lưu hoặc truyền mật khẩu dạng văn bản.</p>
+        <p data-lang="ja">すべてのパスワードはbcryptでハッシュ化されます。平文のパスワードは保存も送信もしません。</p>
+        <p data-lang="es">Todas las contraseñas se cifran con bcrypt. Nunca almacenamos ni transmitimos contraseñas en texto plano.</p>
+      </div>
+      <div class="security-card">
+        <div class="security-card-icon">🛡️</div>
+        <h3 data-lang="en" class="active">JWT Tokens</h3>
+        <h3 data-lang="vi">JWT Token</h3>
+        <h3 data-lang="ja">JWTトークン</h3>
+        <h3 data-lang="es">Tokens JWT</h3>
+        <p data-lang="en" class="active">Sessions are managed via signed JWT tokens that expire automatically, reducing unauthorized access risk.</p>
+        <p data-lang="vi">Phiên đăng nhập được quản lý bằng JWT token có chữ ký và tự động hết hạn, giảm thiểu nguy cơ truy cập trái phép.</p>
+        <p data-lang="ja">セッションは署名済みJWTトークンで管理され、自動的に期限切れになります。</p>
+        <p data-lang="es">Las sesiones se gestionan mediante tokens JWT firmados que caducan automáticamente.</p>
+      </div>
+      <div class="security-card">
+        <div class="security-card-icon">🔒</div>
+        <h3 data-lang="en" class="active">HTTPS Only</h3>
+        <h3 data-lang="vi">Chỉ HTTPS</h3>
+        <h3 data-lang="ja">HTTPSのみ</h3>
+        <h3 data-lang="es">Solo HTTPS</h3>
+        <p data-lang="en" class="active">All data transmission is encrypted via TLS/HTTPS. We do not support HTTP connections.</p>
+        <p data-lang="vi">Tất cả dữ liệu truyền tải được mã hóa qua TLS/HTTPS. Không hỗ trợ kết nối HTTP.</p>
+        <p data-lang="ja">すべてのデータ送信はTLS/HTTPSで暗号化されます。HTTP接続はサポートしていません。</p>
+        <p data-lang="es">Toda la transmisión de datos está encriptada mediante TLS/HTTPS. No admitimos conexiones HTTP.</p>
+      </div>
+      <div class="security-card">
+        <div class="security-card-icon">✉️</div>
+        <h3 data-lang="en" class="active">Email Verification</h3>
+        <h3 data-lang="vi">Xác Minh Email</h3>
+        <h3 data-lang="ja">メール認証</h3>
+        <h3 data-lang="es">Verificación de Email</h3>
+        <p data-lang="en" class="active">New accounts require email verification via a one-time token before login is permitted.</p>
+        <p data-lang="vi">Tài khoản mới cần xác minh email qua token dùng một lần trước khi được phép đăng nhập.</p>
+        <p data-lang="ja">新しいアカウントは、ログイン前にワンタイムトークンによるメール認証が必要です。</p>
+        <p data-lang="es">Las cuentas nuevas requieren verificación de email mediante un token de un solo uso antes de permitir el inicio de sesión.</p>
+      </div>
+      <div class="security-card">
+        <div class="security-card-icon">🗑️</div>
+        <h3 data-lang="en" class="active">7-Day Auto-Deletion</h3>
+        <h3 data-lang="vi">Tự Động Xóa Sau 7 Ngày</h3>
+        <h3 data-lang="ja">7日間の自動削除</h3>
+        <h3 data-lang="es">Auto-eliminación en 7 días</h3>
+        <p data-lang="en" class="active">To ensure privacy, files shared via Cùi Bắp are automatically deleted from our servers after 7 days.</p>
+        <p data-lang="vi">Để đảm bảo riêng tư, các tệp được chia sẻ qua Cùi Bắp sẽ tự động xóa khỏi máy chủ của chúng tôi sau 7 ngày.</p>
+        <p data-lang="ja">プライバシー保護のため、Cùi Bắpで共有されたファイルは7日後にサーバーから自動的に削除されます。</p>
+        <p data-lang="es">Para garantizar la privacidad, los archivos compartidos a través de Cùi Bắp se eliminan automáticamente de nuestros servidores después de 7 días.</p>
+      </div>
+    </div>
+  </div>
+
+  <div class="section">
+    <div class="section-num">2</div>
+    <h2 data-lang="en" class="active">Infrastructure</h2>
+    <h2 data-lang="vi">Cơ Sở Hạ Tầng</h2>
+    <h2 data-lang="ja">インフラストラクチャ</h2>
+    <h2 data-lang="es">Infraestructura</h2>
+
+    <ul data-lang="en" class="active">
+      <li><strong>Backend:</strong> FastAPI on Fly.io (Singapore region) — isolated containers with automatic restarts</li>
+      <li><strong>Database:</strong> PostgreSQL on Supabase (AWS ap-southeast-2) with connection pooling</li>
+      <li><strong>Frontend:</strong> Static files on Cloudflare Pages with global CDN</li>
+      <li><strong>Email:</strong> Resend API for transactional emails</li>
+    </ul>
+    <ul data-lang="vi">
+      <li><strong>Backend:</strong> FastAPI trên Fly.io (khu vực Singapore) — container cô lập với khởi động lại tự động</li>
+      <li><strong>Cơ sở dữ liệu:</strong> PostgreSQL trên Supabase (AWS ap-southeast-2) với connection pooling</li>
+      <li><strong>Frontend:</strong> File tĩnh trên Cloudflare Pages với CDN toàn cầu</li>
+      <li><strong>Email:</strong> Resend API cho email giao dịch</li>
+    </ul>
+    <ul data-lang="ja">
+      <li><strong>バックエンド：</strong>Fly.io（シンガポールリージョン）上のFastAPI — 自動再起動付き隔離コンテナ</li>
+      <li><strong>データベース：</strong>Supabase（AWS ap-southeast-2）上のPostgreSQL（コネクションプーリング付き）</li>
+      <li><strong>フロントエンド：</strong>グローバルCDN付きCloudflare Pages上の静的ファイル</li>
+      <li><strong>メール：</strong>トランザクションメール用Resend API</li>
+    </ul>
+    <ul data-lang="es">
+      <li><strong>Backend:</strong> FastAPI en Fly.io (región Singapur) — contenedores aislados con reinicios automáticos</li>
+      <li><strong>Base de datos:</strong> PostgreSQL en Supabase (AWS ap-southeast-2) con connection pooling</li>
+      <li><strong>Frontend:</strong> Archivos estáticos en Cloudflare Pages con CDN global</li>
+      <li><strong>Email:</strong> API de Resend para correos transaccionales</li>
+    </ul>
+  </div>
+
+  <div class="section">
+    <div class="section-num">3</div>
+    <h2 data-lang="en" class="active">Reporting a Vulnerability</h2>
+    <h2 data-lang="vi">Báo Cáo Lỗ Hổng Bảo Mật</h2>
+    <h2 data-lang="ja">脆弱性の報告</h2>
+    <h2 data-lang="es">Reportar una Vulnerabilidad</h2>
+
+    <p data-lang="en" class="active">If you discover a security vulnerability, please report it responsibly by emailing <a href="mailto:contact@querencia.com.vn" style="color:var(--sage)">contact@querencia.com.vn</a>. We commit to responding within 48 hours and will work with you to resolve the issue promptly.</p>
+    <p data-lang="vi">Nếu bạn phát hiện lỗ hổng bảo mật, vui lòng báo cáo có trách nhiệm bằng cách gửi email đến <a href="mailto:contact@querencia.com.vn" style="color:var(--sage)">contact@querencia.com.vn</a>. Chúng tôi cam kết phản hồi trong vòng 48 giờ và sẽ cùng bạn giải quyết vấn đề nhanh chóng.</p>
+    <p data-lang="ja">セキュリティの脆弱性を発見した場合は、<a href="mailto:contact@querencia.com.vn" style="color:var(--sage)">contact@querencia.com.vn</a>までメールで責任ある開示をお願いします。48時間以内に返信し、迅速に問題を解決します。</p>
+    <p data-lang="es">Si descubres una vulnerabilidad de seguridad, repórtala de manera responsable enviando un correo a <a href="mailto:contact@querencia.com.vn" style="color:var(--sage)">contact@querencia.com.vn</a>. Nos comprometemos a responder en 48 horas y trabajar contigo para resolver el problema.</p>
+
+    <div class="highlight-box" data-lang="en" class="active">Please do not publicly disclose vulnerabilities before we have had a chance to address them.</div>
+    <div class="highlight-box" data-lang="vi">Vui lòng không công khai lỗ hổng trước khi chúng tôi có cơ hội khắc phục.</div>
+    <div class="highlight-box" data-lang="ja">修正する機会を得る前に、脆弱性を公開しないようお願いします。</div>
+    <div class="highlight-box" data-lang="es">Por favor, no divulgues públicamente las vulnerabilidades antes de que hayamos tenido la oportunidad de abordarlas.</div>
+  </div>
+
+</div>
+
+<footer>
+  <p>© 2026 Querencia · querencia.com.vn</p>
+  <p style="margin-top:8px">
+    <a href="/privacy.html">Privacy</a> ·
+    <a href="/security.html">Security</a> ·
+    <a href="/terms.html">Terms</a> ·
+    <a href="https://querencia.com.vn">Home</a>
+  </p>
+</footer>
+
+<script d

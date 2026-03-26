@@ -1,0 +1,1002 @@
+<!-- FILE: pages/read.html -->
+<section class="section" id="read">
+
+<style>
+#read {
+  min-height: 100vh;
+  padding: 0;
+  display: block;
+  background: var(--bg, #fff);
+}
+
+/* ── HERO ── */
+.read-hero {
+  padding: 72px 48px 48px;
+  max-width: 900px;
+  margin: 0 auto;
+  border-bottom: 2px solid #111;
+  display: flex;
+  align-items: flex-end;
+  justify-content: space-between;
+  gap: 24px;
+}
+.dark .read-hero { border-bottom-color: #333; }
+.read-hero-left { flex: 1; }
+.read-label {
+  display: inline-block;
+  font-size: 0.68rem;
+  font-weight: 700;
+  letter-spacing: 0.18em;
+  text-transform: uppercase;
+  color: #4a7c59;
+  margin-bottom: 16px;
+}
+.read-hero h1 {
+  font-family: var(--font-display, 'Plus Jakarta Sans', sans-serif);
+  font-size: clamp(3rem, 7vw, 5.5rem);
+  font-weight: 700;
+  letter-spacing: -2px;
+  line-height: 0.95;
+  color: #111;
+  margin: 0 0 20px;
+}
+.dark .read-hero h1 { color: #f0f0f0; }
+.read-hero-desc {
+  font-size: 0.88rem;
+  color: #666;
+  max-width: 400px;
+  line-height: 1.7;
+  margin: 0;
+}
+.dark .read-hero-desc { color: #999; }
+.read-hero-meta {
+  text-align: right;
+  font-size: 0.72rem;
+  color: #bbb;
+  font-variant-numeric: tabular-nums;
+  letter-spacing: 0.02em;
+  line-height: 1.9;
+  flex-shrink: 0;
+}
+
+/* ── CATEGORY NAV ── */
+.read-categories {
+  max-width: 900px;
+  margin: 0 auto;
+  padding: 0 48px;
+  display: flex;
+  align-items: center;
+  border-bottom: 1px solid #e0e0e0;
+  overflow-x: auto;
+  scrollbar-width: none;
+}
+.dark .read-categories { border-bottom-color: #333; }
+.read-cat-btn {
+  padding: 16px 20px;
+  font-size: 0.8rem;
+  font-weight: 600;
+  letter-spacing: 0.04em;
+  text-transform: uppercase;
+  color: #999;
+  background: none;
+  border: none;
+  border-bottom: 2px solid transparent;
+  margin-bottom: -1px;
+  cursor: pointer;
+  transition: color 0.15s, border-color 0.15s;
+  white-space: nowrap;
+  font-family: inherit;
+}
+.read-cat-btn:hover { color: #333; }
+.dark .read-cat-btn:hover { color: #ccc; }
+.read-cat-btn.active { color: #111; border-bottom-color: #111; }
+.dark .read-cat-btn.active { color: #f0f0f0; border-bottom-color: #f0f0f0; }
+.read-cat-btn .read-cat-count {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  width: 18px;
+  height: 18px;
+  background: #4a7c59;
+  color: #fff;
+  border-radius: 50%;
+  font-size: 0.6rem;
+  font-weight: 700;
+  margin-left: 6px;
+  vertical-align: middle;
+}
+.read-cat-btn.soon {
+  opacity: 0.4;
+  cursor: default;
+  pointer-events: none;
+}
+
+/* ── CONTENT AREA ── */
+.read-content {
+  max-width: 900px;
+  margin: 0 auto;
+  padding: 48px 48px 80px;
+}
+
+/* ── FEATURED ── */
+.read-featured {
+  display: grid;
+  grid-template-columns: 3px 1fr;
+  gap: 0 28px;
+  padding: 0 0 40px;
+  margin-bottom: 40px;
+  border-bottom: 1px solid #e8e8e8;
+  cursor: pointer;
+  transition: opacity 0.15s;
+}
+.dark .read-featured { border-bottom-color: #2a2a2a; }
+.read-featured:hover { opacity: 0.75; }
+.read-featured-bar { background: #4a7c59; border-radius: 2px; }
+.read-featured-eyebrow {
+  font-size: 0.68rem;
+  font-weight: 700;
+  letter-spacing: 0.14em;
+  text-transform: uppercase;
+  color: #4a7c59;
+  margin-bottom: 10px;
+}
+.read-featured-title {
+  font-family: var(--font-display, 'Plus Jakarta Sans', sans-serif);
+  font-size: clamp(1.4rem, 3vw, 2rem);
+  font-weight: 700;
+  letter-spacing: -0.5px;
+  color: #111;
+  line-height: 1.2;
+  margin-bottom: 12px;
+}
+.dark .read-featured-title { color: #f0f0f0; }
+.read-featured-sub {
+  font-size: 0.85rem;
+  color: #666;
+  line-height: 1.65;
+  margin-bottom: 20px;
+  max-width: 600px;
+}
+.dark .read-featured-sub { color: #888; }
+.read-featured-tags { display: flex; gap: 8px; flex-wrap: wrap; align-items: center; }
+.read-tag {
+  padding: 3px 10px;
+  border: 1px solid #ddd;
+  border-radius: 3px;
+  font-size: 0.68rem;
+  font-weight: 600;
+  letter-spacing: 0.06em;
+  text-transform: uppercase;
+  color: #777;
+}
+.dark .read-tag { border-color: #444; color: #888; }
+.read-tag.green { border-color: #4a7c59; color: #4a7c59; background: #f0f7f2; }
+.dark .read-tag.green { background: #1a2e22; }
+.read-arrow {
+  margin-left: auto;
+  font-size: 1.1rem;
+  color: #4a7c59;
+  transition: transform 0.2s;
+}
+.read-featured:hover .read-arrow { transform: translateX(4px); }
+
+/* ── LIST ── */
+.read-section-label {
+  font-size: 0.68rem;
+  font-weight: 700;
+  letter-spacing: 0.14em;
+  text-transform: uppercase;
+  color: #bbb;
+  margin-bottom: 20px;
+  padding-bottom: 8px;
+  border-bottom: 1px solid #f0f0f0;
+}
+.dark .read-section-label { border-bottom-color: #2a2a2a; }
+.read-list { list-style: none; padding: 0; margin: 0; }
+.read-list-item {
+  display: flex;
+  align-items: center;
+  gap: 16px;
+  padding: 16px 6px;
+  border-bottom: 1px solid #f5f5f5;
+  cursor: pointer;
+  transition: background 0.12s;
+  border-radius: 4px;
+  margin: 0 -6px;
+}
+.dark .read-list-item { border-bottom-color: #222; }
+.read-list-item:hover { background: #f8faf8; }
+.dark .read-list-item:hover { background: #1a2420; }
+.read-list-num {
+  font-size: 0.7rem;
+  font-weight: 700;
+  color: #ccc;
+  font-variant-numeric: tabular-nums;
+  width: 24px;
+  flex-shrink: 0;
+  text-align: right;
+}
+.read-list-body { flex: 1; min-width: 0; }
+.read-list-title {
+  font-size: 0.88rem;
+  font-weight: 600;
+  color: #222;
+  line-height: 1.35;
+  margin-bottom: 3px;
+}
+.dark .read-list-title { color: #ddd; }
+.read-list-sub {
+  font-size: 0.72rem;
+  color: #aaa;
+  font-style: italic;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+.read-list-meta {
+  font-size: 0.72rem;
+  color: #bbb;
+  letter-spacing: 0.02em;
+  flex-shrink: 0;
+  text-align: right;
+  line-height: 1.6;
+}
+.read-list-badge {
+  font-size: 0.63rem;
+  font-weight: 700;
+  letter-spacing: 0.06em;
+  text-transform: uppercase;
+  padding: 2px 7px;
+  border-radius: 2px;
+  background: #e8f0eb;
+  color: #4a7c59;
+  flex-shrink: 0;
+}
+.read-list-chevron {
+  color: #ccc;
+  font-size: 0.85rem;
+  flex-shrink: 0;
+  transition: color 0.15s, transform 0.15s;
+}
+.read-list-item:hover .read-list-chevron { color: #4a7c59; transform: translateX(3px); }
+
+/* ── PANEL (slide-in from right) ── */
+.treaty-panel-overlay {
+  position: fixed;
+  inset: 0;
+  background: rgba(0,0,0,0.35);
+  backdrop-filter: blur(2px);
+  z-index: 400;
+  opacity: 0;
+  pointer-events: none;
+  transition: opacity 0.25s;
+}
+.treaty-panel-overlay.open {
+  opacity: 1;
+  pointer-events: all;
+}
+.treaty-panel {
+  position: fixed;
+  top: 0;
+  right: 0;
+  bottom: 0;
+  width: min(600px, 100vw);
+  background: #fff;
+  z-index: 401;
+  display: flex;
+  flex-direction: column;
+  box-shadow: -8px 0 40px rgba(0,0,0,0.12);
+  transform: translateX(100%);
+  transition: transform 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+  overflow: hidden;
+}
+.dark .treaty-panel { background: #111; }
+.treaty-panel.open { transform: translateX(0); }
+
+/* Panel top bar */
+.tp-bar {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 16px 24px;
+  border-bottom: 1px solid #f0f0f0;
+  flex-shrink: 0;
+}
+.dark .tp-bar { border-bottom-color: #222; }
+.tp-close {
+  width: 32px;
+  height: 32px;
+  border: none;
+  background: #f5f5f5;
+  border-radius: 50%;
+  cursor: pointer;
+  font-size: 16px;
+  color: #666;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  transition: background 0.15s;
+  flex-shrink: 0;
+}
+.dark .tp-close { background: #222; color: #aaa; }
+.tp-close:hover { background: #e0e0e0; }
+.dark .tp-close:hover { background: #333; }
+.tp-breadcrumb {
+  font-size: 0.72rem;
+  color: #aaa;
+  letter-spacing: 0.06em;
+  text-transform: uppercase;
+}
+
+/* Panel content */
+.tp-content {
+  flex: 1;
+  overflow-y: auto;
+  padding: 32px 28px 48px;
+  scrollbar-width: thin;
+  scrollbar-color: #e0e0e0 transparent;
+}
+
+/* Panel header */
+.tp-eyebrow {
+  font-size: 0.68rem;
+  font-weight: 700;
+  letter-spacing: 0.14em;
+  text-transform: uppercase;
+  color: #4a7c59;
+  margin-bottom: 10px;
+}
+.tp-title {
+  font-family: var(--font-display, 'Plus Jakarta Sans', sans-serif);
+  font-size: clamp(1.3rem, 3vw, 1.8rem);
+  font-weight: 700;
+  letter-spacing: -0.5px;
+  line-height: 1.15;
+  color: #111;
+  margin-bottom: 6px;
+}
+.dark .tp-title { color: #f0f0f0; }
+.tp-subtitle {
+  font-size: 0.82rem;
+  color: #888;
+  font-style: italic;
+  margin-bottom: 20px;
+  line-height: 1.5;
+}
+
+/* Meta grid */
+.tp-meta-grid {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 1px;
+  background: #f0f0f0;
+  border: 1px solid #f0f0f0;
+  border-radius: 8px;
+  overflow: hidden;
+  margin-bottom: 28px;
+}
+.dark .tp-meta-grid { background: #222; border-color: #222; }
+.tp-meta-cell {
+  background: #fff;
+  padding: 12px 14px;
+}
+.dark .tp-meta-cell { background: #111; }
+.tp-meta-label {
+  font-size: 0.65rem;
+  font-weight: 700;
+  letter-spacing: 0.1em;
+  text-transform: uppercase;
+  color: #bbb;
+  margin-bottom: 3px;
+}
+.tp-meta-value {
+  font-size: 0.88rem;
+  font-weight: 600;
+  color: #222;
+  line-height: 1.4;
+}
+.dark .tp-meta-value { color: #ddd; }
+.tp-meta-value.green { color: #4a7c59; }
+
+/* Divider */
+.tp-divider {
+  height: 1px;
+  background: #f0f0f0;
+  margin: 24px 0;
+}
+.dark .tp-divider { background: #222; }
+
+/* Section heading */
+.tp-section-head {
+  font-size: 0.72rem;
+  font-weight: 700;
+  letter-spacing: 0.1em;
+  text-transform: uppercase;
+  color: #bbb;
+  margin-bottom: 12px;
+  display: flex;
+  align-items: center;
+  gap: 8px;
+}
+.tp-section-head::after {
+  content: '';
+  flex: 1;
+  height: 1px;
+  background: #f0f0f0;
+}
+.dark .tp-section-head::after { background: #222; }
+
+/* Summary text */
+.tp-summary {
+  font-size: 0.9rem;
+  color: #444;
+  line-height: 1.8;
+  margin-bottom: 20px;
+}
+.dark .tp-summary { color: #aaa; }
+
+/* Article groups */
+.tp-articles {
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+  margin-bottom: 24px;
+}
+.tp-article-group {
+  border: 1px solid #f0f0f0;
+  border-radius: 8px;
+  overflow: hidden;
+}
+.dark .tp-article-group { border-color: #222; }
+.tp-ag-head {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  padding: 11px 14px;
+  cursor: pointer;
+  background: #fafafa;
+  transition: background 0.12s;
+  border: none;
+  width: 100%;
+  text-align: left;
+  font-family: inherit;
+}
+.dark .tp-ag-head { background: #181818; }
+.tp-ag-head:hover { background: #f5f5f5; }
+.dark .tp-ag-head:hover { background: #1e1e1e; }
+.tp-ag-num {
+  font-size: 0.68rem;
+  font-weight: 700;
+  color: #aaa;
+  font-variant-numeric: tabular-nums;
+  flex-shrink: 0;
+  min-width: 50px;
+}
+.tp-ag-title {
+  font-size: 0.85rem;
+  font-weight: 600;
+  color: #333;
+  flex: 1;
+  line-height: 1.35;
+}
+.dark .tp-ag-title { color: #ccc; }
+.tp-ag-toggle {
+  font-size: 0.7rem;
+  color: #bbb;
+  flex-shrink: 0;
+  transition: transform 0.2s;
+}
+.tp-ag-body {
+  display: none;
+  padding: 0 14px 13px;
+  font-size: 0.82rem;
+  color: #666;
+  line-height: 1.75;
+  border-top: 1px solid #f5f5f5;
+  padding-top: 10px;
+}
+.dark .tp-ag-body { color: #888; border-top-color: #222; }
+.tp-ag-body.open { display: block; }
+.tp-ag-toggle.open { transform: rotate(180deg); }
+
+/* Source links */
+.tp-sources {
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+}
+.tp-source-link {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  padding: 12px 14px;
+  border: 1px solid #e8e8e8;
+  border-radius: 8px;
+  text-decoration: none;
+  color: inherit;
+  transition: border-color 0.15s, background 0.15s;
+}
+.dark .tp-source-link { border-color: #2a2a2a; }
+.tp-source-link:hover { border-color: #4a7c59; background: #f8fbf9; }
+.dark .tp-source-link:hover { background: #1a2e22; }
+.tp-source-icon {
+  width: 32px;
+  height: 32px;
+  border-radius: 6px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  flex-shrink: 0;
+  font-size: 0.65rem;
+  font-weight: 800;
+  letter-spacing: 0.04em;
+}
+.tp-source-body { flex: 1; min-width: 0; }
+.tp-source-name { font-size: 0.85rem; font-weight: 600; color: #222; margin-bottom: 2px; }
+.dark .tp-source-name { color: #ddd; }
+.tp-source-desc { font-size: 0.72rem; color: #aaa; }
+.tp-source-arrow { color: #4a7c59; font-size: 0.75rem; flex-shrink: 0; }
+
+/* Citation note */
+.tp-cite-note {
+  margin-top: 20px;
+  padding: 12px 14px;
+  background: #f8f9fb;
+  border-radius: 6px;
+  border-left: 3px solid #4a7c59;
+  font-size: 0.75rem;
+  color: #888;
+  line-height: 1.65;
+}
+.dark .tp-cite-note { background: #161b17; }
+
+/* Mobile */
+@media (max-width: 640px) {
+  .read-hero { padding: 48px 20px 32px; flex-direction: column; align-items: flex-start; }
+  .read-hero-meta { text-align: left; }
+  .read-categories { padding: 0 20px; }
+  .read-content { padding: 28px 20px 64px; }
+  .treaty-panel { width: 100vw; }
+  .tp-content { padding: 24px 20px 40px; }
+  .tp-meta-grid { grid-template-columns: 1fr; }
+}
+</style>
+
+<!-- HERO -->
+<div class="read-hero">
+  <div class="read-hero-left">
+    <span class="read-label">Querencia · Library</span>
+    <h1>Read.</h1>
+    <p class="read-hero-desc">
+      Tài liệu tham khảo được chọn lọc — công ước quốc tế đa phương và những điều đáng đọc.
+    </p>
+  </div>
+  <div class="read-hero-meta">
+    <div>Cập nhật liên tục</div>
+    <div>Tiếng Việt · English</div>
+    <div>Miễn phí · Không quảng cáo</div>
+  </div>
+</div>
+
+<!-- CATEGORY NAV -->
+<div class="read-categories">
+  <button class="read-cat-btn active" onclick="readShowCat('treaties')">
+    Công ước quốc tế <span class="read-cat-count">8</span>
+  </button>
+  <button class="read-cat-btn soon">Danh ngôn</button>
+  <button class="read-cat-btn soon">Bài viết</button>
+</div>
+
+<!-- CONTENT -->
+<div class="read-content">
+  <div id="readTab-treaties">
+
+    <!-- Featured -->
+    <div class="read-featured" onclick="readOpenTreaty('crc')">
+      <div class="read-featured-bar"></div>
+      <div class="read-featured-body">
+        <div class="read-featured-eyebrow">Nổi bật · 196 quốc gia thành viên</div>
+        <div class="read-featured-title">Công ước Quốc tế về Quyền Trẻ em (CRC)</div>
+        <p class="read-featured-sub">
+          Văn kiện nhân quyền được phê chuẩn rộng rãi nhất lịch sử. 54 điều khoản quy định đầy đủ quyền dân sự, chính trị, kinh tế, xã hội và văn hoá của trẻ em trên toàn thế giới.
+        </p>
+        <div class="read-featured-tags">
+          <span class="read-tag green">UN · 1989</span>
+          <span class="read-tag">54 điều khoản</span>
+          <span class="read-tag">Song ngữ VI–EN</span>
+          <span class="read-arrow">→</span>
+        </div>
+      </div>
+    </div>
+
+    <div class="read-section-label">Tất cả công ước — 8 văn kiện</div>
+    <ul class="read-list" id="treatyList"></ul>
+  </div>
+</div>
+
+<!-- PANEL OVERLAY -->
+<div class="treaty-panel-overlay" id="tpOverlay" onclick="readClosePanel()"></div>
+
+<!-- PANEL -->
+<div class="treaty-panel" id="tpPanel">
+  <div class="tp-bar">
+    <span class="tp-breadcrumb">Querencia · Công ước quốc tế</span>
+    <button class="tp-close" onclick="readClosePanel()" title="Đóng (Esc)">✕</button>
+  </div>
+  <div class="tp-content" id="tpContent">
+    <!-- filled by JS -->
+  </div>
+</div>
+
+<script>
+(function() {
+
+/* ── DATA ── */
+const TREATIES = [
+  {
+    id: 'crc',
+    title: 'Công ước về Quyền Trẻ em (CRC)',
+    titleEN: 'Convention on the Rights of the Child',
+    org: 'Liên Hợp Quốc',
+    adopted: '20/11/1989',
+    inForce: '02/09/1990',
+    vnRatified: '28/02/1990',
+    members: '196 quốc gia',
+    articles: 54,
+    badge: 'Đã phê chuẩn',
+    summary: 'CRC là công ước quốc tế toàn diện nhất về quyền trẻ em, thiết lập các tiêu chuẩn toàn cầu cho việc bảo vệ và thúc đẩy quyền lợi của mọi người dưới 18 tuổi. Việt Nam là quốc gia đầu tiên ở châu Á và thứ hai trên thế giới phê chuẩn công ước này.',
+    groups: [
+      { arts: 'Điều 1–2', title: 'Định nghĩa & Không phân biệt đối xử', body: 'Xác định "trẻ em" là người dưới 18 tuổi. Mọi quyền được áp dụng không phân biệt chủng tộc, màu da, giới tính, ngôn ngữ, tôn giáo, quốc tịch, xuất thân hay khuyết tật.' },
+      { arts: 'Điều 3–6', title: 'Nguyên tắc nền tảng', body: 'Bốn nguyên tắc cốt lõi: lợi ích tốt nhất của trẻ em phải được đặt lên hàng đầu; quyền sống và phát triển; quyền được lắng nghe ý kiến; không phân biệt đối xử.' },
+      { arts: 'Điều 7–11', title: 'Danh tính & Gia đình', body: 'Quyền có họ tên, quốc tịch, biết cha mẹ và được chăm sóc. Nhà nước có nghĩa vụ bảo tồn danh tính và ngăn chặn ly tán gia đình trái pháp luật.' },
+      { arts: 'Điều 12–17', title: 'Tự do dân sự', body: 'Quyền bày tỏ ý kiến, tự do ngôn luận, tư tưởng, lương tâm và tôn giáo, lập hội, riêng tư, tiếp cận thông tin. Nhà nước phải bảo vệ trẻ khỏi nội dung có hại.' },
+      { arts: 'Điều 19–40', title: 'Bảo vệ đặc biệt', body: 'Bảo vệ khỏi bạo lực, xâm hại, bóc lột lao động, buôn bán người, lạm dụng tình dục. Quy định riêng cho trẻ tị nạn, trẻ khuyết tật, trẻ trong xung đột vũ trang và tư pháp người chưa thành niên.' },
+      { arts: 'Điều 41–54', title: 'Thực thi & Cơ chế giám sát', body: 'Thiết lập Ủy ban Quyền Trẻ em LHQ (CRC Committee) gồm 18 chuyên gia độc lập. Các quốc gia thành viên báo cáo định kỳ. Không ảnh hưởng đến quy định quốc gia có lợi hơn cho trẻ em.' },
+    ],
+    sources: [
+      { name: 'OHCHR — Full text (Official)', desc: 'Văn bản chính thức tiếng Anh · UN Treaty Collection', url: 'https://www.ohchr.org/en/instruments-mechanisms/instruments/convention-rights-child', lang: 'EN', bg: '#009edb20', color: '#009edb' },
+      { name: 'UNICEF — CRC in 5 languages', desc: 'Bao gồm tiếng Việt · tóm tắt dễ đọc', url: 'https://www.unicef.org/child-rights-convention/convention-text', lang: 'VI+', bg: '#00aeef20', color: '#00aeef' },
+      { name: 'UN Treaty Collection', desc: 'Trạng thái phê chuẩn · danh sách quốc gia thành viên', url: 'https://treaties.un.org/Pages/ViewDetails.aspx?src=IND&mtdsg_no=IV-11&chapter=4', lang: 'EN', bg: '#4a7c5920', color: '#4a7c59' },
+    ],
+    cite: 'United Nations, Treaty Series, vol. 1577, p. 3. Thông qua ngày 20/11/1989, có hiệu lực ngày 02/09/1990 theo Điều 49.',
+  },
+  {
+    id: 'iccpr',
+    title: 'Công ước về Quyền Dân sự và Chính trị (ICCPR)',
+    titleEN: 'International Covenant on Civil and Political Rights',
+    org: 'Liên Hợp Quốc',
+    adopted: '16/12/1966',
+    inForce: '23/03/1976',
+    vnRatified: '24/09/1982',
+    members: '173 quốc gia',
+    articles: 53,
+    badge: 'Đã phê chuẩn',
+    summary: 'ICCPR cùng ICESCR tạo thành Bộ Công ước Nhân quyền Quốc tế, mở rộng và ràng buộc pháp lý các quyền trong Tuyên ngôn Nhân quyền 1948. Bảo vệ các quyền dân sự và chính trị căn bản của mọi cá nhân.',
+    groups: [
+      { arts: 'Điều 1', title: 'Quyền tự quyết', body: 'Mọi dân tộc có quyền tự quyết, tự do quyết định thể chế chính trị và phát triển kinh tế, xã hội, văn hoá.' },
+      { arts: 'Điều 2–5', title: 'Nghĩa vụ quốc gia & Không phân biệt', body: 'Các quốc gia thành viên cam kết bảo đảm các quyền trong Công ước không phân biệt chủng tộc, màu da, giới tính, ngôn ngữ, tôn giáo, quan điểm chính trị, nguồn gốc dân tộc, tài sản, thành phần xuất thân.' },
+      { arts: 'Điều 6–11', title: 'Quyền sống & Tự do thân thể', body: 'Quyền sống được bảo hộ tuyệt đối. Cấm tra tấn, hình phạt tàn bạo, nô lệ, lao động cưỡng bức. Quyền tự do và an toàn thân thể, cấm giam giữ tùy tiện.' },
+      { arts: 'Điều 14–17', title: 'Tố tụng công bằng & Riêng tư', body: 'Quyền được xét xử công bằng, bình đẳng trước pháp luật, suy đoán vô tội, không bị truy tố hai lần cho cùng một tội. Bảo vệ đời tư, gia đình, nhà ở và thư tín.' },
+      { arts: 'Điều 18–22', title: 'Tự do tư tưởng & Biểu đạt', body: 'Quyền tự do tư tưởng, lương tâm, tôn giáo, ngôn luận, biểu đạt, hội họp hòa bình và lập hội. Hạn chế chỉ được áp dụng theo luật và cần thiết trong xã hội dân chủ.' },
+      { arts: 'Điều 25–27', title: 'Quyền tham gia chính trị & Thiểu số', body: 'Mọi công dân có quyền tham gia điều hành công việc nhà nước, bầu cử và ứng cử. Bảo vệ quyền của người thiểu số về văn hoá, tôn giáo và ngôn ngữ.' },
+    ],
+    sources: [
+      { name: 'OHCHR — Full text (Official)', desc: 'Văn bản chính thức · UN Treaty Series vol. 999', url: 'https://www.ohchr.org/en/instruments-mechanisms/instruments/international-covenant-civil-and-political-rights', lang: 'EN', bg: '#009edb20', color: '#009edb' },
+      { name: 'UN Treaty Collection — Status', desc: 'Danh sách quốc gia phê chuẩn và bảo lưu', url: 'https://treaties.un.org/Pages/ViewDetails.aspx?src=TREATY&mtdsg_no=IV-4&chapter=4', lang: 'EN', bg: '#4a7c5920', color: '#4a7c59' },
+    ],
+    cite: 'United Nations, Treaty Series, vol. 999, p. 171. Thông qua ngày 16/12/1966, có hiệu lực ngày 23/03/1976.',
+  },
+  {
+    id: 'icescr',
+    title: 'Công ước về Quyền Kinh tế, Xã hội và Văn hoá (ICESCR)',
+    titleEN: 'International Covenant on Economic, Social and Cultural Rights',
+    org: 'Liên Hợp Quốc',
+    adopted: '16/12/1966',
+    inForce: '03/01/1976',
+    vnRatified: '24/09/1982',
+    members: '171 quốc gia',
+    articles: 31,
+    badge: 'Đã phê chuẩn',
+    summary: 'ICESCR bảo vệ quyền "thế hệ thứ hai" — các quyền kinh tế, xã hội và văn hoá đòi hỏi hành động tích cực từ phía nhà nước. Được thực hiện dần dần tuỳ theo nguồn lực của từng quốc gia.',
+    groups: [
+      { arts: 'Điều 1', title: 'Quyền tự quyết', body: 'Giống ICCPR — mọi dân tộc có quyền tự quyết và tự do định đoạt nguồn tài nguyên thiên nhiên.' },
+      { arts: 'Điều 6–9', title: 'Quyền lao động', body: 'Quyền làm việc, điều kiện lao động công bằng, an toàn, tiền lương bình đẳng, nghỉ ngơi, quyền thành lập và gia nhập công đoàn, đình công. Bảo hiểm xã hội.' },
+      { arts: 'Điều 10–12', title: 'Gia đình, Sức khoẻ & Mức sống', body: 'Bảo vệ gia đình, trợ cấp thai sản. Quyền được có mức sống đầy đủ bao gồm lương thực, quần áo, nhà ở. Quyền được hưởng tiêu chuẩn sức khoẻ thể chất và tâm thần cao nhất có thể.' },
+      { arts: 'Điều 13–14', title: 'Quyền giáo dục', body: 'Giáo dục tiểu học miễn phí và bắt buộc. Giáo dục trung học và đại học được phổ cập dần dần. Tự do lựa chọn trường học và quyền thành lập cơ sở giáo dục tư thục.' },
+      { arts: 'Điều 15', title: 'Quyền văn hoá & Khoa học', body: 'Quyền tham gia vào đời sống văn hoá, hưởng thụ thành tựu khoa học và bảo vệ quyền lợi vật chất, tinh thần của tác giả.' },
+    ],
+    sources: [
+      { name: 'OHCHR — Full text (Official)', desc: 'Văn bản chính thức · UN Treaty Series vol. 993', url: 'https://www.ohchr.org/en/instruments-mechanisms/instruments/international-covenant-economic-social-and-cultural-rights', lang: 'EN', bg: '#009edb20', color: '#009edb' },
+      { name: 'UN Treaty Collection — Status', desc: 'Danh sách quốc gia thành viên và bảo lưu', url: 'https://treaties.un.org/Pages/ViewDetails.aspx?src=TREATY&mtdsg_no=IV-3&chapter=4', lang: 'EN', bg: '#4a7c5920', color: '#4a7c59' },
+    ],
+    cite: 'United Nations, Treaty Series, vol. 993, p. 3. Thông qua ngày 16/12/1966, có hiệu lực ngày 03/01/1976.',
+  },
+  {
+    id: 'cedaw',
+    title: 'Công ước về Xoá bỏ Phân biệt đối xử với Phụ nữ (CEDAW)',
+    titleEN: 'Convention on the Elimination of All Forms of Discrimination Against Women',
+    org: 'Liên Hợp Quốc',
+    adopted: '18/12/1979',
+    inForce: '03/09/1981',
+    vnRatified: '17/02/1982',
+    members: '189 quốc gia',
+    articles: 30,
+    badge: 'Đã phê chuẩn',
+    summary: 'CEDAW được coi là "Hiến chương nhân quyền quốc tế dành cho phụ nữ". Xác định rõ phân biệt đối xử với phụ nữ là gì và thiết lập chương trình hành động quốc gia để chấm dứt tình trạng này.',
+    groups: [
+      { arts: 'Điều 1–4', title: 'Định nghĩa & Nguyên tắc', body: 'Định nghĩa "phân biệt đối xử với phụ nữ" bao gồm mọi sự phân biệt, loại trừ hoặc hạn chế dựa trên giới tính. Cho phép các biện pháp đặc biệt tạm thời để thúc đẩy bình đẳng.' },
+      { arts: 'Điều 5–6', title: 'Định kiến & Buôn bán người', body: 'Yêu cầu sửa đổi các khuôn mẫu xã hội và văn hoá về vai trò giới. Cam kết xoá bỏ buôn bán phụ nữ và bóc lột mại dâm.' },
+      { arts: 'Điều 7–9', title: 'Đời sống chính trị & Quốc tịch', body: 'Bình đẳng trong bầu cử, nắm giữ chức vụ nhà nước, đại diện quốc tế. Phụ nữ có quyền nhập, thay đổi và giữ quốc tịch độc lập với hôn nhân.' },
+      { arts: 'Điều 10–14', title: 'Giáo dục, Việc làm & Sức khoẻ', body: 'Bình đẳng trong tiếp cận giáo dục ở mọi cấp. Cùng cơ hội việc làm và thăng tiến, bình đẳng tiền lương. Quyền chăm sóc sức khoẻ bao gồm dịch vụ kế hoạch gia đình.' },
+      { arts: 'Điều 15–16', title: 'Bình đẳng pháp lý & Hôn nhân', body: 'Bình đẳng trước pháp luật, quyền ký kết hợp đồng, tài sản, di chuyển tự do. Quyền bình đẳng trong hôn nhân, ly hôn, nuôi con và quyết định số con.' },
+    ],
+    sources: [
+      { name: 'OHCHR — Full text (Official)', desc: 'Văn bản chính thức tiếng Anh', url: 'https://www.ohchr.org/en/instruments-mechanisms/instruments/convention-elimination-all-forms-discrimination-against-women', lang: 'EN', bg: '#009edb20', color: '#009edb' },
+      { name: 'UN Women — CEDAW Overview', desc: 'Tổng quan và nguồn tài nguyên bổ sung', url: 'https://www.unwomen.org/en/digital-library/publications/2009/1/cedaw-and-its-optional-protocol', lang: 'EN', bg: '#e5243b20', color: '#e5243b' },
+      { name: 'UN Treaty Collection — Status', desc: 'Trạng thái phê chuẩn toàn cầu', url: 'https://treaties.un.org/Pages/ViewDetails.aspx?src=TREATY&mtdsg_no=IV-8&chapter=4', lang: 'EN', bg: '#4a7c5920', color: '#4a7c59' },
+    ],
+    cite: 'United Nations, Treaty Series, vol. 1249, p. 13. Thông qua ngày 18/12/1979, có hiệu lực ngày 03/09/1981.',
+  },
+  {
+    id: 'cat',
+    title: 'Công ước chống Tra tấn (CAT)',
+    titleEN: 'Convention Against Torture and Other Cruel, Inhuman or Degrading Treatment or Punishment',
+    org: 'Liên Hợp Quốc',
+    adopted: '10/12/1984',
+    inForce: '26/06/1987',
+    vnRatified: '05/02/2015',
+    members: '174 quốc gia',
+    articles: 33,
+    badge: 'Đã phê chuẩn',
+    summary: 'CAT thiết lập lệnh cấm tuyệt đối đối với tra tấn — không có ngoại lệ, không có hoàn cảnh nào biện minh được. Tạo ra nghĩa vụ ràng buộc pháp lý cho các quốc gia phải phòng ngừa, điều tra và truy tố hành vi tra tấn.',
+    groups: [
+      { arts: 'Điều 1', title: 'Định nghĩa tra tấn', body: 'Tra tấn là hành vi cố ý gây đau đớn hoặc khổ đau về thể xác hay tinh thần nhằm: khai thác thông tin, trừng phạt, đe doạ, ép buộc, hoặc phân biệt đối xử — do người đại diện nhà nước thực hiện hoặc đồng ý.' },
+      { arts: 'Điều 2–9', title: 'Nghĩa vụ phòng ngừa & Không trục xuất', body: 'Cấm tuyệt đối tra tấn, không có ngoại lệ kể cả chiến tranh hay khẩn cấp quốc gia. Nguyên tắc non-refoulement: không được trả người về nước nơi họ có nguy cơ bị tra tấn.' },
+      { arts: 'Điều 10–16', title: 'Giáo dục, Điều tra & Quyền nạn nhân', body: 'Nhà nước phải đào tạo nhân viên thực thi pháp luật về lệnh cấm tra tấn. Điều tra mọi cáo buộc khẩn trương và vô tư. Nạn nhân có quyền khiếu nại và bồi thường.' },
+      { arts: 'Điều 17–24', title: 'Cơ chế giám sát', body: 'Ủy ban CAT gồm 10 chuyên gia độc lập xem xét báo cáo quốc gia. Quyền điều tra bí mật khi có thông tin đáng tin cậy về tra tấn có hệ thống. Thủ tục khiếu nại cá nhân (tùy chọn).' },
+    ],
+    sources: [
+      { name: 'OHCHR — Full text (Official)', desc: 'Văn bản chính thức tiếng Anh', url: 'https://www.ohchr.org/en/instruments-mechanisms/instruments/convention-against-torture-and-other-cruel-inhuman-or-degrading', lang: 'EN', bg: '#009edb20', color: '#009edb' },
+      { name: 'UN Treaty Collection — Status', desc: 'Trạng thái phê chuẩn · báo cáo quốc gia', url: 'https://treaties.un.org/Pages/ViewDetails.aspx?src=TREATY&mtdsg_no=IV-9&chapter=4', lang: 'EN', bg: '#4a7c5920', color: '#4a7c59' },
+    ],
+    cite: 'United Nations, Treaty Series, vol. 1465, p. 85. Thông qua ngày 10/12/1984, có hiệu lực ngày 26/06/1987.',
+  },
+  {
+    id: 'crpd',
+    title: 'Công ước về Quyền của Người khuyết tật (CRPD)',
+    titleEN: 'Convention on the Rights of Persons with Disabilities',
+    org: 'Liên Hợp Quốc',
+    adopted: '13/12/2006',
+    inForce: '03/05/2008',
+    vnRatified: '22/10/2014',
+    members: '191 quốc gia',
+    articles: 50,
+    badge: 'Đã phê chuẩn',
+    summary: 'CRPD chuyển cách tiếp cận với người khuyết tật từ từ thiện sang nhân quyền. Khẳng định người khuyết tật là chủ thể của quyền, không phải đối tượng cần chăm sóc. Yêu cầu xã hội phải thích nghi, không phải người khuyết tật phải "khắc phục".',
+    groups: [
+      { arts: 'Điều 1–4', title: 'Mục đích & Nguyên tắc', body: 'Thúc đẩy, bảo vệ và bảo đảm đầy đủ mọi quyền con người của người khuyết tật. Tám nguyên tắc: tôn trọng tự chủ, không phân biệt, hoà nhập, tôn trọng sự khác biệt, bình đẳng cơ hội, tiếp cận, bình đẳng nam nữ, tôn trọng trẻ khuyết tật.' },
+      { arts: 'Điều 5–12', title: 'Bình đẳng pháp lý & Tự do', body: 'Bình đẳng trước pháp luật. Người khuyết tật có năng lực pháp lý đầy đủ và được hỗ trợ thực hiện quyền đó. Quyền sống, tự do, an toàn thân thể và không bị tra tấn.' },
+      { arts: 'Điều 19–30', title: 'Sống độc lập & Hoà nhập', body: 'Quyền sống trong cộng đồng với sự lựa chọn bình đẳng. Tiếp cận phương tiện đi lại, thông tin, truyền thông. Giáo dục hoà nhập, việc làm bình đẳng, tham gia chính trị và văn hoá.' },
+      { arts: 'Điều 31–40', title: 'Thực thi quốc gia', body: 'Thu thập dữ liệu và thống kê. Hợp tác quốc tế. Thiết lập cơ chế giám sát độc lập trong nước bao gồm sự tham gia của tổ chức người khuyết tật.' },
+    ],
+    sources: [
+      { name: 'OHCHR — Full text (Official)', desc: 'Văn bản chính thức tiếng Anh', url: 'https://www.ohchr.org/en/instruments-mechanisms/instruments/convention-rights-persons-disabilities', lang: 'EN', bg: '#009edb20', color: '#009edb' },
+      { name: 'UN Treaty Collection — Status', desc: 'Trạng thái phê chuẩn toàn cầu', url: 'https://treaties.un.org/Pages/ViewDetails.aspx?src=TREATY&mtdsg_no=IV-15&chapter=4', lang: 'EN', bg: '#4a7c5920', color: '#4a7c59' },
+    ],
+    cite: 'United Nations, Treaty Series, vol. 2515, p. 3. Thông qua ngày 13/12/2006, có hiệu lực ngày 03/05/2008.',
+  },
+  {
+    id: 'cerd',
+    title: 'Công ước về Xoá bỏ Phân biệt chủng tộc (CERD)',
+    titleEN: 'International Convention on the Elimination of All Forms of Racial Discrimination',
+    org: 'Liên Hợp Quốc',
+    adopted: '21/12/1965',
+    inForce: '04/01/1969',
+    vnRatified: '09/06/1982',
+    members: '182 quốc gia',
+    articles: 25,
+    badge: 'Đã phê chuẩn',
+    summary: 'Công ước nhân quyền đầu tiên của Liên Hợp Quốc có cơ chế giám sát. Ra đời trong bối cảnh phong trào dân quyền và chống apartheid, đặt nền móng pháp lý quốc tế cho cuộc chiến chống phân biệt chủng tộc.',
+    groups: [
+      { arts: 'Điều 1', title: 'Định nghĩa phân biệt chủng tộc', body: 'Mọi sự phân biệt, loại trừ, hạn chế hoặc ưu đãi dựa trên chủng tộc, màu da, dòng dõi, nguồn gốc dân tộc hoặc sắc tộc có mục đích hoặc tác động vô hiệu hoá hoặc làm suy yếu việc hưởng thụ các quyền con người.' },
+      { arts: 'Điều 2–7', title: 'Nghĩa vụ & Biện pháp xoá bỏ', body: 'Cấm và chấm dứt phân biệt chủng tộc trong mọi hình thức. Cấm tuyên truyền phân biệt chủng tộc và các tổ chức thúc đẩy phân biệt. Biện pháp đặc biệt tạm thời cho phát triển bình đẳng.' },
+      { arts: 'Điều 8–16', title: 'Cơ chế giám sát', body: 'Ủy ban CERD gồm 18 chuyên gia độc lập. Xem xét báo cáo định kỳ của quốc gia. Thủ tục giữa các quốc gia và khiếu nại cá nhân (tuỳ chọn).' },
+    ],
+    sources: [
+      { name: 'OHCHR — Full text (Official)', desc: 'Văn bản chính thức tiếng Anh', url: 'https://www.ohchr.org/en/instruments-mechanisms/instruments/international-convention-elimination-all-forms-racial', lang: 'EN', bg: '#009edb20', color: '#009edb' },
+      { name: 'UN Treaty Collection — Status', desc: 'Trạng thái phê chuẩn toàn cầu', url: 'https://treaties.un.org/Pages/ViewDetails.aspx?src=TREATY&mtdsg_no=IV-2&chapter=4', lang: 'EN', bg: '#4a7c5920', color: '#4a7c59' },
+    ],
+    cite: 'United Nations, Treaty Series, vol. 660, p. 195. Thông qua ngày 21/12/1965, có hiệu lực ngày 04/01/1969.',
+  },
+  {
+    id: 'udhr',
+    title: 'Tuyên ngôn Quốc tế Nhân quyền (UDHR)',
+    titleEN: 'Universal Declaration of Human Rights',
+    org: 'Liên Hợp Quốc',
+    adopted: '10/12/1948',
+    inForce: 'Không ràng buộc pháp lý',
+    vnRatified: 'Tuyên ngôn — không cần phê chuẩn',
+    members: '48 phiếu thuận, 0 phản đối',
+    articles: 30,
+    badge: 'Tuyên ngôn',
+    summary: 'UDHR là nền tảng của toàn bộ hệ thống nhân quyền quốc tế hiện đại. Dù không có tính ràng buộc pháp lý trực tiếp, UDHR đã trở thành một phần của tập quán pháp lý quốc tế và là nguồn cảm hứng cho hàng trăm hiến pháp và luật quốc gia.',
+    groups: [
+      { arts: 'Điều 1–2', title: 'Phẩm giá & Không phân biệt', body: 'Mọi người sinh ra tự do và bình đẳng về phẩm giá và quyền lợi. Mọi người được hưởng các quyền không phân biệt chủng tộc, màu da, giới tính, ngôn ngữ, tôn giáo, quan điểm chính trị, quốc tịch hay bất kỳ địa vị nào.' },
+      { arts: 'Điều 3–11', title: 'Quyền dân sự cơ bản', body: 'Quyền sống, tự do và an toàn thân thể. Cấm nô lệ, tra tấn, bắt giữ tùy tiện. Quyền được xét xử công bằng, suy đoán vô tội, không bị truy tố hồi tố.' },
+      { arts: 'Điều 12–17', title: 'Quyền công dân & Chính trị', body: 'Bảo vệ đời tư. Quyền tự do đi lại, tị nạn, quốc tịch, kết hôn và thành lập gia đình. Quyền sở hữu tài sản.' },
+      { arts: 'Điều 18–21', title: 'Tự do tư tưởng & Chính trị', body: 'Tự do tư tưởng, lương tâm, tôn giáo, ngôn luận, hội họp hòa bình. Quyền tham gia chính phủ và bầu cử tự do.' },
+      { arts: 'Điều 22–27', title: 'Quyền kinh tế, Xã hội & Văn hoá', body: 'Quyền an sinh xã hội, lao động, nghỉ ngơi, mức sống đầy đủ, giáo dục, tham gia đời sống văn hoá và hưởng thụ tiến bộ khoa học.' },
+      { arts: 'Điều 28–30', title: 'Nghĩa vụ & Giới hạn', body: 'Mọi người có quyền được hưởng một trật tự xã hội và quốc tế trong đó các quyền trong Tuyên ngôn được thực hiện đầy đủ. Mọi người cũng có nghĩa vụ đối với cộng đồng.' },
+    ],
+    sources: [
+      { name: 'UN — Full text (Official, 500+ languages)', desc: 'Bản dịch chính thức tiếng Việt và hơn 500 ngôn ngữ khác', url: 'https://www.un.org/en/about-us/universal-declaration-of-human-rights', lang: 'VI+', bg: '#009edb20', color: '#009edb' },
+      { name: 'OHCHR — UDHR Resource', desc: 'Tài liệu tham khảo và lịch sử soạn thảo', url: 'https://www.ohchr.org/en/human-rights/universal-declaration/translations/vietnamese', lang: 'VI', bg: '#4a7c5920', color: '#4a7c59' },
+    ],
+    cite: 'General Assembly resolution 217 A (III). Thông qua ngày 10/12/1948 tại Paris. Không có giá trị ràng buộc pháp lý nhưng được coi là tập quán pháp lý quốc tế.',
+  },
+];
+
+/* ── RENDER LIST ── */
+function renderTreaties() {
+  const list = document.getElementById('treatyList');
+  if (!list) return;
+  list.innerHTML = TREATIES.map((t, i) => `
+    <li class="read-list-item" onclick="readOpenTreaty('${t.id}')">
+      <span class="read-list-num">${String(i + 1).padStart(2, '0')}</span>
+      <div class="read-list-body">
+        <div class="read-list-title">${t.title}</div>
+        <div class="read-list-sub">${t.titleEN}</div>
+      </div>
+      <div class="read-list-meta">
+        <div>${t.articles} điều</div>
+        <div>${t.adopted.split('/').pop()}</div>
+      </div>
+      <span class="read-list-badge">${t.badge}</span>
+      <span class="read-list-chevron">›</span>
+    </li>
+  `).join('');
+}
+
+/* ── OPEN PANEL ── */
+window.readOpenTreaty = function(id) {
+  const t = TREATIES.find(x => x.id === id);
+  if (!t) return;
+
+  const content = document.getElementById('tpContent');
+  content.innerHTML = `
+    <!-- Header -->
+    <div class="tp-eyebrow">${t.org} · Công ước quốc tế đa phương</div>
+    <div class="tp-title">${t.title}</div>
+    <div class="tp-subtitle">${t.titleEN}</div>
+
+    <!-- Meta grid -->
+    <div class="tp-meta-grid">
+      <div class="tp-meta-cell">
+        <div class="tp-meta-label">Thông qua</div>
+        <div class="tp-meta-value">${t.adopted}</div>
+      </div>
+      <div class="tp-meta-cell">
+        <div class="tp-meta-label">Có hiệu lực</div>
+        <div class="tp-meta-value">${t.inForce}</div>
+      </div>
+      <div class="tp-meta-cell">
+        <div class="tp-meta-label">Việt Nam phê chuẩn</div>
+        <div class="tp-meta-value green">${t.vnRatified}</div>
+      </div>
+      <div class="tp-meta-cell">
+        <div class="tp-meta-label">Thành viên</div>
+        <div class="tp-meta-value">${t.members}</div>
+      </div>
+      <div class="tp-meta-cell">
+        <div class="tp-meta-label">Số điều khoản</div>
+        <div class="tp-meta-value">${t.articles} điều</div>
+      </div>
+      <div class="tp-meta-cell">
+        <div class="tp-meta-label">Cơ quan giám sát</div>
+        <div class="tp-meta-value">${getMonitor(t.id)}</div>
+      </div>
+    </div>
+
+    <!-- Summary -->
+    <div class="tp-section-head">Tổng quan</div>
+    <p class="tp-summary">${t.summary}</p>
+
+    <div class="tp-divider"></div>
+
+    <!-- Article groups -->
+    <div class="tp-section-head">Cấu trúc điều khoản</div>
+    <div class="tp-articles">
+      ${t.groups.map((g, gi) => `
+        <div class="tp-article-group">
+          <button class="tp-ag-head" onclick="tpToggle(this)">
+            <span class="tp-ag-num">${g.arts}</span>
+            <span class="tp-ag-title">${g.title}</span>
+            <span class="tp-ag-toggle">▾</span>
+          </button>
+          <div class="tp-ag-body">
+            ${g.body}
+          </div>
+        </div>
+      `).join('')}
+    </div>
+
+    <div class="tp-divider"></div>
+
+    <!-- Sources -->
+    <div class="tp-section-head">Nguồn chính thức</div>
+    <div class="tp-sources">
+      ${t.sources.map(s => `
+        <a class="tp-source-link" href="${s.url}" target="_blank" rel="noopener noreferrer">
+          <div class="tp-source-icon" style="background:${s.bg};color:${s.color}">${s.lang}</div>
+          <div class="tp-source-body">
+            <div class="tp-source-name">${s.name}</div>
+            <div class="tp-source-desc">${s.desc}</div>
+          </div>
+          <span class="tp-source-arrow">↗</span>
+        </a>
+      `).join('')}
+    </div>
+
+    <!-- Citation -->
+    <div class="tp-cite-note">
+      <strong>Trích dẫn chính thức:</strong> ${t.cite}
+    </div>
+  `;
+
+  // Open panel
+  document.getElementById('tpOverlay').classList.add('open');
+  document.getElementById('tpPanel').classList.add('open');
+  document.body.style.overflow = 'hidden';
+};
+
+function getMonitor(id) {
+  const monitors = {
+    crc: 'CRC Committee (18 thành viên)',
+    iccpr: 'Human Rights Committee',
+    icescr: 'CESCR Committee',
+    cedaw: 'CEDAW Committee',
+    cat: 'CAT Committee',
+    crpd: 'CRPD Committee',
+    cerd: 'CERD Committee',
+    udhr: 'Không có (tuyên ngôn)',
+  };
+  return monitors[id] || 'Ủy ban LHQ';
+}
+
+/* ── CLOSE PANEL ── */
+window.readClosePanel = function() {
+  document.getElementById('tpOverlay').classList.remove('open');
+  document.getElementById('tpPanel').classList.remove('open');
+  document.body.style.overflow = '';
+};
+
+/* ── TOGGLE ARTICLE GROUP ── */
+window.tpToggle = function(btn) {
+  const body = btn.nextElementSibling;
+  const toggle = btn.querySelector('.tp-ag-toggle');
+  const isOpen = body.classList.toggle('open');
+  toggle.classList.toggle('open', isOpen);
+};
+
+/* ── CATEGORY TAB ── */
+window.readShowCat = function(cat) {
+  document.querySelectorAll('.read-cat-btn').forEach(b => b.classList.remove('active'));
+  const btn = document.querySelector(`.read-cat-btn[onclick*="${cat}"]`);
+  if (btn) btn.classList.add('active');
+  document.querySelectorAll('[id^="readTab-"]').forEach(t => t.style.display = 'none');
+  const tab = document.getElementById('readTab-' + cat);
+  if (tab) tab.style.display = 'block';
+};
+
+/* ── KEYBOARD ── */
+document.addEventListener('keydown', function(e) {
+  if (e.key === 'Escape') window.readClosePanel();
+});
+
+/* ── INIT ── */
+renderTreaties();
+
+})();
+</script>
+
+</section>

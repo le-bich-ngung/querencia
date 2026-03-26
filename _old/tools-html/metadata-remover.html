@@ -1,0 +1,175 @@
+<!DOCTYPE html>
+<html lang="vi">
+<head>
+<meta charset="UTF-8"/>
+<meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+<title>Metadata Remover — Querencia Tools</title>
+<link href="https://fonts.googleapis.com/css2?family=DM+Mono:wght@400;500&family=Syne:wght@400;600;700;800&display=swap" rel="stylesheet"/>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/exif-js/2.3.0/exif.js"></script>
+<style>
+  :root{--sage:#4a7c59;--sage-light:#6fa882;--sage-pale:#ddeee3;--sage-dark:#2f5c3e;--bg:#f7faf8;--card:#fff;--border:#e0ece5;--text:#1a2e22;--muted:#6b8a74;--red:#c0392b;--red-pale:#fdecea;--font-display:'Syne',sans-serif;--font-mono:'DM Mono',monospace}
+  *{box-sizing:border-box;margin:0;padding:0}
+  body{font-family:var(--font-mono);background:var(--bg);color:var(--text);min-height:100vh;padding:32px 16px}
+  .container{max-width:700px;margin:0 auto}
+  .header{text-align:center;margin-bottom:36px}
+  .header h1{font-family:var(--font-display);font-size:2rem;font-weight:800;color:var(--sage-dark)}
+  .header p{font-size:0.82rem;color:var(--muted);margin-top:6px;line-height:1.6}
+  .drop-zone{border:2px dashed var(--border);border-radius:16px;padding:56px 24px;text-align:center;cursor:pointer;transition:all 0.2s;background:#fff;margin-bottom:24px}
+  .drop-zone:hover,.drop-zone.dragover{border-color:var(--sage);background:var(--sage-pale)}
+  .drop-icon{font-size:3rem;margin-bottom:14px;display:block}
+  .drop-text{font-family:var(--font-display);font-size:1rem;font-weight:700;color:var(--text);margin-bottom:6px}
+  .drop-sub{font-size:0.8rem;color:var(--muted)}
+  .drop-zone input{display:none}
+  .result-grid{display:grid;grid-template-columns:1fr 1fr;gap:16px;margin-bottom:20px}
+  @media(max-width:560px){.result-grid{grid-template-columns:1fr}}
+  .card{background:var(--card);border:1.5px solid var(--border);border-radius:14px;overflow:hidden}
+  .card-header{padding:14px 18px;border-bottom:1px solid var(--border);font-family:var(--font-display);font-size:0.85rem;font-weight:700;display:flex;align-items:center;gap:8px}
+  .card-header.danger{color:var(--red);border-color:#f5c6c2}
+  .card-header.safe{color:var(--sage-dark)}
+  .meta-row{display:flex;padding:9px 18px;border-bottom:1px solid var(--border);gap:10px;font-size:0.78rem}
+  .meta-row:last-child{border-bottom:none}
+  .meta-key{color:var(--muted);width:110px;flex-shrink:0}
+  .meta-val{color:var(--text);font-weight:500;word-break:break-all;flex:1}
+  .meta-val.sensitive{color:var(--red);font-weight:600}
+  .preview-img{width:100%;height:160px;object-fit:cover;display:block}
+  .action-bar{display:flex;gap:10px;margin-top:4px}
+  .btn-remove{flex:1;background:var(--sage);color:#fff;border:none;border-radius:10px;padding:14px;font-family:var(--font-display);font-size:0.9rem;font-weight:700;cursor:pointer;transition:background 0.18s}
+  .btn-remove:hover{background:var(--sage-dark)}
+  .btn-reset{background:transparent;border:1.5px solid var(--border);color:var(--muted);border-radius:10px;padding:14px 18px;font-family:var(--font-mono);font-size:0.82rem;cursor:pointer;transition:all 0.18s}
+  .btn-reset:hover{border-color:var(--sage);color:var(--sage)}
+  .success-banner{background:#eafaf1;border:1.5px solid #a9dfbf;border-radius:12px;padding:16px 20px;font-size:0.85rem;color:#1e8449;display:none;margin-bottom:16px}
+  .risk-badge{display:inline-block;font-size:0.7rem;padding:2px 8px;border-radius:10px;font-weight:600}
+  .risk-high{background:var(--red-pale);color:var(--red)}
+  .risk-low{background:var(--sage-pale);color:var(--sage-dark)}
+  .empty{padding:20px 18px;font-size:0.82rem;color:var(--muted);text-align:center}
+  @keyframes fadeIn{from{opacity:0;transform:translateY(6px)}to{opacity:1;transform:translateY(0)}}
+  .result-grid,.action-bar{animation:fadeIn 0.3s ease}
+</style>
+</head>
+<body>
+<div class="container">
+  <div class="header">
+    <h1>🕵️ Metadata Remover</h1>
+    <p>Xem và xóa metadata ẩn trong ảnh (EXIF) — vị trí GPS, thiết bị, ngày chụp, camera settings. Mọi thứ xử lý 100% trên máy bạn.</p>
+  </div>
+
+  <div class="drop-zone" id="dropZone" onclick="document.getElementById('fileInput').click()" ondragover="drag(event,true)" ondragleave="drag(event,false)" ondrop="drop(event)">
+    <span class="drop-icon">📷</span>
+    <div class="drop-text">Kéo thả ảnh vào đây hoặc click để chọn</div>
+    <div class="drop-sub">Hỗ trợ JPG, PNG, WEBP • Xử lý hoàn toàn offline</div>
+    <input type="file" id="fileInput" accept="image/*" onchange="handleFile(this.files[0])"/>
+  </div>
+
+  <div class="success-banner" id="successBanner">
+    ✅ Đã xóa metadata thành công! File ảnh sạch đã được tải xuống.
+  </div>
+
+  <div id="output" style="display:none">
+    <div class="result-grid">
+      <div>
+        <div class="card">
+          <div class="card-header safe">🖼 Ảnh gốc</div>
+          <img id="previewImg" class="preview-img" alt="preview"/>
+        </div>
+      </div>
+      <div>
+        <div class="card">
+          <div class="card-header danger">⚠️ Metadata phát hiện</div>
+          <div id="metaList"></div>
+        </div>
+      </div>
+    </div>
+    <div class="action-bar">
+      <button class="btn-remove" onclick="removeMetadata()">🧹 Xóa metadata & tải xuống</button>
+      <button class="btn-reset" onclick="reset()">✕ Xóa</button>
+    </div>
+  </div>
+</div>
+
+<script>
+let currentFile = null;
+
+function drag(e, on) {
+  e.preventDefault();
+  document.getElementById('dropZone').classList.toggle('dragover', on);
+}
+function drop(e) {
+  e.preventDefault();
+  drag(e, false);
+  handleFile(e.dataTransfer.files[0]);
+}
+
+function handleFile(file) {
+  if (!file || !file.type.startsWith('image/')) return;
+  currentFile = file;
+  const url = URL.createObjectURL(file);
+  document.getElementById('previewImg').src = url;
+  document.getElementById('output').style.display = 'block';
+  document.getElementById('successBanner').style.display = 'none';
+  document.getElementById('dropZone').style.display = 'none';
+  extractMeta(file);
+}
+
+function extractMeta(file) {
+  const sensitiveKeys = ['GPSLatitude','GPSLongitude','GPSAltitude','GPSLatitudeRef','GPSLongitudeRef','Make','Model','Software','DateTime','DateTimeOriginal','DateTimeDigitized','HostComputer','Artist','Copyright','CameraSerialNumber','LensSerialNumber'];
+  
+  EXIF.getData(file, function() {
+    const all = EXIF.getAllTags(this);
+    const list = document.getElementById('metaList');
+    
+    if (!all || Object.keys(all).length === 0) {
+      list.innerHTML = '<div class="empty">✅ Không phát hiện metadata đáng lo ngại</div>';
+      return;
+    }
+
+    const items = Object.entries(all).filter(([k,v]) => v !== undefined && v !== '');
+    if (!items.length) { list.innerHTML = '<div class="empty">✅ Metadata sạch</div>'; return; }
+
+    list.innerHTML = items.slice(0,20).map(([k,v]) => {
+      const isSensitive = sensitiveKeys.includes(k);
+      let display = typeof v === 'object' ? JSON.stringify(v) : String(v);
+      if (display.length > 40) display = display.substring(0,40)+'...';
+      return `<div class="meta-row">
+        <span class="meta-key">${k}</span>
+        <span class="meta-val ${isSensitive?'sensitive':''}">${display} ${isSensitive?'<span class="risk-badge risk-high">⚠</span>':'<span class="risk-badge risk-low">ok</span>'}</span>
+      </div>`;
+    }).join('') + (items.length > 20 ? `<div class="empty">+${items.length-20} trường khác...</div>` : '');
+  });
+}
+
+function removeMetadata() {
+  if (!currentFile) return;
+  const canvas = document.createElement('canvas');
+  const img = document.getElementById('previewImg');
+  
+  const image = new Image();
+  image.onload = () => {
+    canvas.width = image.naturalWidth;
+    canvas.height = image.naturalHeight;
+    const ctx = canvas.getContext('2d');
+    ctx.drawImage(image, 0, 0);
+    
+    canvas.toBlob(blob => {
+      const url = URL.createObjectURL(blob);
+      const a = document.createElement('a');
+      const ext = currentFile.name.split('.').pop();
+      a.href = url;
+      a.download = currentFile.name.replace(`.${ext}`, `_clean.jpg`);
+      a.click();
+      URL.revokeObjectURL(url);
+      document.getElementById('successBanner').style.display = 'block';
+    }, 'image/jpeg', 0.95);
+  };
+  image.src = img.src;
+}
+
+function reset() {
+  currentFile = null;
+  document.getElementById('output').style.display = 'none';
+  document.getElementById('dropZone').style.display = 'block';
+  document.getElementById('successBanner').style.display = 'none';
+  document.getElementById('fileInput').value = '';
+}
+</script>
+</body>
+</html>

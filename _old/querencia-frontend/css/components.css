@@ -1,0 +1,187 @@
+/* ── TRANG HOME ──────────────────────────────────────────
+       Hero: Khu vực logo lớn + quote ở giữa trang
+       Các animation fadeUp tạo hiệu ứng xuất hiện dần dần   */
+    .hero{display:flex;flex-direction:column;align-items:center;justify-content:center;text-align:center;padding:100px 24px 80px;position:relative;overflow:hidden}
+    .hero-eyebrow{font-size:0.72rem;letter-spacing:0.18em;text-transform:uppercase;color:var(--sage);font-weight:500;margin-bottom:20px;opacity:0;animation:fadeUp 0.7s 0.1s forwards}
+    .hero h1{font-family:var(--font-display);font-size:clamp(2.8rem,6vw,5rem);font-weight:700;line-height:1.1;letter-spacing:-1px;color:var(--black);max-width:780px;opacity:0;animation:fadeUp 0.7s 0.2s forwards}
+    .hero h1 em{font-style:italic;color:var(--sage)}
+    .hero-sub{margin-top:24px;font-size:1.05rem;color:var(--gray);font-weight:300;max-width:520px;line-height:1.7;opacity:0;animation:fadeUp 0.7s 0.35s forwards}
+    .hero-cta{margin-top:40px;display:flex;gap:12px;opacity:0;animation:fadeUp 0.7s 0.5s forwards}
+
+    /* Nút bấm — 2 loại: đặc (primary) và viền (outline) */
+    .btn-primary{background:var(--sage);color:var(--white);border:none;padding:13px 28px;border-radius:30px;font-family:var(--font-body);font-size:0.88rem;font-weight:500;cursor:pointer;letter-spacing:0.02em;transition:background 0.2s,transform 0.15s}
+    .btn-primary:hover{background:var(--sage-dark);transform:translateY(-1px)}
+    .btn-outline{background:transparent;color:var(--black);border:1.5px solid var(--border);padding:13px 28px;border-radius:30px;font-family:var(--font-body);font-size:0.88rem;font-weight:500;cursor:pointer;transition:border-color 0.2s,transform 0.15s}
+    .btn-outline:hover{border-color:var(--sage);transform:translateY(-1px)}
+
+    /* Grid 3 cột ở trang Home (Tools / Learn / Read) */
+    .home-grid{display:grid;grid-template-columns:repeat(3,1fr);gap:0;border-top:1px solid var(--border);border-bottom:1px solid var(--border)}
+    .home-card{padding:52px 40px;border-right:1px solid var(--border);cursor:pointer;transition:background 0.2s;opacity:0;animation:fadeUp 0.6s forwards}
+    .home-card:nth-child(1){animation-delay:0.6s}
+    .home-card:nth-child(2){animation-delay:0.75s}
+    .home-card:nth-child(3){animation-delay:0.9s;border-right:none}
+    .home-card:hover{background:var(--sage-pale)}
+    .card-icon{width:40px;height:40px;background:var(--sage-pale);border-radius:10px;display:flex;align-items:center;justify-content:center;margin-bottom:20px;font-size:1.1rem}
+    .home-card h3{font-family:var(--font-display);font-size:1.2rem;font-weight:600;margin-bottom:10px}
+    .home-card p{font-size:0.88rem;color:var(--gray);line-height:1.65}
+    .card-arrow{margin-top:20px;font-size:0.78rem;color:var(--sage);font-weight:500;letter-spacing:0.04em}
+    .home-footer-note{text-align:center;padding:48px 24px;font-size:0.82rem;color:var(--gray-light)}
+    .home-footer-note span{color:var(--sage)}
+
+
+
+
+ 
+ 
+ 
+ 
+/* ── HEADER CHUNG CÁC TRANG ──────────────────────────────
+       Dùng lại cho Tools, Learn, Read, Message               */
+    .page-header{padding:72px 64px 48px;border-bottom:1px solid var(--border)}
+    .page-label{font-size:0.7rem;letter-spacing:0.2em;text-transform:uppercase;color:var(--sage);font-weight:500;margin-bottom:12px}
+    .page-title{font-family:var(--font-display);font-size:clamp(2rem,4vw,3.2rem);font-weight:700;letter-spacing:-0.5px;line-height:1.15}
+    .page-desc{margin-top:16px;font-size:0.95rem;color:var(--gray);max-width:520px;line-height:1.7}
+
+
+
+
+ 
+ 
+ 
+ 
+/* ── TRANG TOOLS ─────────────────────────────────────────
+       Grid tự động: mỗi card tối thiểu 280px
+       Pricing strip: 3 gói Free / Pro / Team nằm ngang       */
+    .tools-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(280px,1fr));gap:1px;background:var(--border);border-bottom:1px solid var(--border)}
+    .tool-card{background:var(--white);padding:36px 32px;cursor:pointer;transition:background 0.2s;position:relative}
+    .tool-card:hover{background:var(--sage-pale)}
+    .tool-badge{display:inline-block;font-size:0.65rem;font-weight:600;letter-spacing:0.1em;text-transform:uppercase;padding:3px 8px;border-radius:4px;margin-bottom:16px}
+    .badge-free{background:var(--sage-pale);color:var(--sage-dark)}
+    .badge-pro{background:var(--black);color:var(--white)}
+    .tool-card h3{font-family:var(--font-display);font-size:1.15rem;font-weight:600;margin-bottom:8px}
+    .tool-card p{font-size:0.85rem;color:var(--gray);line-height:1.6}
+    .tool-coming{position:absolute;top:16px;right:16px;font-size:0.65rem;color:var(--gray-light);letter-spacing:0.08em;text-transform:uppercase}
+    .pricing-strip{display:flex;border-top:1px solid var(--border)}
+    .pricing-box{flex:1;padding:48px 40px;border-right:1px solid var(--border)}
+    .pricing-box:last-child{border-right:none}
+    .pricing-box h4{font-size:0.72rem;letter-spacing:0.15em;text-transform:uppercase;color:var(--sage);margin-bottom:12px}
+    .pricing-price{font-family:var(--font-display);font-size:2.4rem;font-weight:700;line-height:1;margin-bottom:6px}
+    .pricing-price small{font-size:0.9rem;font-family:var(--font-body);color:var(--gray);font-weight:300}
+    .pricing-desc{font-size:0.85rem;color:var(--gray);margin-bottom:24px;line-height:1.6}
+    .pricing-features{list-style:none}
+    .pricing-features li{font-size:0.84rem;color:var(--gray);padding:8px 0;border-bottom:1px solid var(--border);display:flex;align-items:center;gap:10px}
+    .pricing-features li::before{content:'·';color:var(--sage);font-size:0.7rem}
+
+    /* Placeholder khi chưa có nội dung (Learn, Read) */
+    .content-placeholder{padding:80px 64px;text-align:center;color:var(--gray-light)}
+    .content-placeholder-icon{font-size:2.5rem;margin-bottom:16px;opacity:0.4}
+    .content-placeholder h3{font-family:var(--font-display);font-size:1.4rem;color:var(--gray);margin-bottom:8px}
+    .content-placeholder p{font-size:0.88rem;max-width:360px;margin:0 auto;line-height:1.7}
+
+
+
+
+ 
+ 
+ 
+ 
+/* ── TRANG MESSAGE ───────────────────────────────────────
+       Form gửi tin nhắn — kết nối với backend POST /message
+       Các input có id để JS đọc giá trị khi submit           */
+    .message-wrap{display:grid;grid-template-columns:1fr 1fr;min-height:calc(100vh - 64px)}
+    .message-left{padding:64px;border-right:1px solid var(--border)}
+    .message-left h2{font-family:var(--font-display);font-size:2.2rem;font-weight:700;line-height:1.2;margin-bottom:20px}
+    .message-left h2 em{font-style:italic;color:var(--sage)}
+    .message-left p{font-size:0.9rem;color:var(--gray);line-height:1.75;max-width:380px}
+    .message-detail{margin-top:48px;display:flex;flex-direction:column;gap:16px}
+    .message-detail-item{display:flex;align-items:flex-start;gap:14px;font-size:0.85rem;color:var(--gray)}
+    .message-detail-item span:first-child{color:var(--sage);font-size:1rem;margin-top:1px}
+    .message-right{padding:64px}
+    .form-group{margin-bottom:24px}
+    .form-group label{display:block;font-size:0.72rem;letter-spacing:0.12em;text-transform:uppercase;color:var(--gray);margin-bottom:8px;font-weight:500}
+    .form-group input,.form-group textarea{width:100%;padding:12px 16px;border:1.5px solid var(--border);border-radius:8px;font-family:var(--font-body);font-size:0.9rem;color:var(--black);background:var(--white);outline:none;transition:border-color 0.2s}
+    .form-group input:focus,.form-group textarea:focus{border-color:var(--sage)}
+    .form-group textarea{height:140px;resize:vertical}
+    .form-row{display:grid;grid-template-columns:1fr 1fr;gap:16px}
+
+
+
+
+ 
+ 
+ 
+ 
+/* ── KHUNG ỨNG DỤNG (cho Nope, LàNo, Cùi Bắp) ───────────
+       Hiện tại chỉ là placeholder, sẽ thay bằng iframe/embed sau */
+    .apps-section{padding:64px}
+    .app-frame{border:1.5px solid var(--border);border-radius:16px;overflow:hidden;height:520px;display:flex;align-items:center;justify-content:center;background:#fff;margin-top:32px}
+    .app-placeholder{text-align:center;color:var(--gray)}
+    .app-placeholder-icon{font-size:3rem;margin-bottom:16px;opacity:0.5}
+    .app-placeholder h3{font-family:var(--font-display);font-size:1.5rem;margin-bottom:8px}
+    .app-placeholder p{font-size:0.88rem;max-width:300px;line-height:1.7;color:var(--gray-light)}
+
+
+
+
+ 
+ 
+ 
+ 
+/* ── TRANG LÀNO ──────────────────────────────────────────
+       Layout 2 cột: trái=mô tả, phải=preview chat
+       Chat bubble: .chat-user=người dùng, .chat-ai=AI       */
+    .laano-hero{padding:80px 64px 60px;border-bottom:1px solid var(--border);display:grid;grid-template-columns:1fr 1fr;gap:64px;align-items:center}
+    .laano-tagline{font-family:var(--font-display);font-size:clamp(2rem,3.5vw,3rem);font-weight:700;line-height:1.2;letter-spacing:-0.5px}
+    .laano-tagline em{font-style:italic;color:var(--sage)}
+    .laano-desc{margin-top:20px;font-size:0.92rem;color:var(--gray);line-height:1.75;max-width:420px}
+    .laano-name-story{margin-top:32px;padding:20px 24px;border-left:3px solid var(--sage);background:var(--sage-pale);border-radius:0 8px 8px 0}
+    .laano-name-story p{font-size:0.82rem;color:var(--gray);line-height:1.7}
+    .laano-name-story strong{color:var(--sage-dark)}
+    .laano-chat-preview{background:var(--sage-pale);border-radius:20px;padding:32px;display:flex;flex-direction:column;gap:16px}
+    .chat-bubble{max-width:80%;padding:12px 16px;border-radius:16px;font-size:0.88rem;line-height:1.6}
+    .chat-user{background:var(--white);border:1px solid var(--border);align-self:flex-end;border-bottom-right-radius:4px;color:var(--black)}
+    .chat-ai{background:var(--sage);color:var(--white);align-self:flex-start;border-bottom-left-radius:4px}
+    .chat-label{font-size:0.65rem;letter-spacing:0.1em;text-transform:uppercase;color:var(--gray-light);margin-bottom:-8px}
+    .chat-label.right{text-align:right}
+    .laano-features{display:grid;grid-template-columns:repeat(3,1fr);gap:1px;background:var(--border);border-top:1px solid var(--border);border-bottom:1px solid var(--border)}
+    .laano-feat{background:var(--white);padding:36px 32px}
+    .laano-feat-icon{font-size:1.4rem;margin-bottom:14px}
+    .laano-feat h4{font-family:var(--font-display);font-size:1rem;margin-bottom:8px}
+    .laano-feat p{font-size:0.83rem;color:var(--gray);line-height:1.6}
+
+
+
+
+ 
+ 
+ 
+ 
+
+
+
+
+ 
+ 
+ 
+ 
+
+
+
+
+ 
+ 
+ 
+ 
+/* ── SECTION "WHAT'S NEW" (trang Home) ───────────────────
+       Hiện tại trống, sẽ hiện card khi có nội dung mới       */
+    .whats-new-section{padding:64px;border-top:1px solid var(--border);min-height:260px}
+    .whats-new-label{font-size:0.85rem;letter-spacing:0.01em;color:var(--gray);font-weight:600;margin-bottom:32px}
+    .whats-new-empty{display:flex;align-items:center;justify-content:center;min-height:160px}
+    .whats-new-empty p{font-size:0.88rem;color:var(--gray-light);font-style:italic}
+    .whats-new-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(280px,1fr));gap:1px;background:var(--border);margin-top:0}
+    .whats-new-card{background:var(--white);padding:32px;cursor:pointer;transition:background 0.2s}
+    .whats-new-card:hover{background:var(--sage-pale)}
+    .whats-new-card-tag{font-size:0.65rem;letter-spacing:0.14em;text-transform:uppercase;color:var(--sage);font-weight:600;margin-bottom:12px}
+    .whats-new-card h3{font-family:var(--font-display);font-size:1.1rem;font-weight:600;margin-bottom:8px;line-height:1.35}
+    .whats-new-card p{font-size:0.83rem;color:var(--gray);line-height:1.6}
+    .whats-new-card-date{margin-top:16px;font-size:0.72rem;color:var(--gray-light)}

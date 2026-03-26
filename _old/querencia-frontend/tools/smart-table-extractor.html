@@ -1,0 +1,1505 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Smart Table Extractor — Querencia</title>
+<meta name="description" content="Extract tables from images, PDFs, HTML and URLs using AI. Export to Excel, CSV, JSON, Markdown. Edit, sort, filter, merge, split tables."/>
+<meta property="og:title" content="Smart Table Extractor — Querencia Pro"/>
+<meta property="og:description" content="AI-powered table extraction from images and PDFs. Export to Excel, CSV, JSON, Markdown."/>
+<script type="application/ld+json">{"@context":"https://schema.org","@type":"WebApplication","name":"Smart Table Extractor","applicationCategory":"UtilitiesApplication","offers":{"@type":"Offer","price":"0","priceCurrency":"USD"},"provider":{"@type":"Organization","name":"Querencia","url":"https://querencia.com.vn"}}</script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/xlsx/0.18.5/xlsx.full.min.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/pdf.js/3.11.174/pdf.min.js"></script>
+<style>
+:root{
+  --bg:#f8f9fb;--bg2:#f1f3f7;--surface:#fff;
+  --border:#e4e8ef;--border2:#d0d6e2;
+  --text:#0f1523;--text2:#3a4258;--muted:#8891a8;
+  --sage:#4a7c59;--sage-d:#2f5c3e;--sage-p:#e8f2ec;--sage-m:#c3deca;
+  --accent:#1a56db;--accent-h:#1647c0;--accent-s:rgba(26,86,219,.08);--accent-m:rgba(26,86,219,.16);
+  --green:#0d9f6e;--green-s:rgba(13,159,110,.1);
+  --red:#e53e3e;--red-s:rgba(229,62,62,.08);
+  --amber:#d97706;--amber-s:rgba(217,119,6,.1);
+  --purple:#7c3aed;
+  --sh-s:0 1px 3px rgba(15,21,35,.06),0 1px 2px rgba(15,21,35,.04);
+  --sh-m:0 4px 12px rgba(15,21,35,.08),0 2px 4px rgba(15,21,35,.04);
+  --sh-l:0 12px 32px rgba(15,21,35,.10),0 4px 8px rgba(15,21,35,.06);
+  --r:10px;--rl:14px;
+  --sans:'Plus Jakarta Sans',inherit;
+  --mono:'JetBrains Mono','Courier New',monospace;
+  --sidebar:252px;--topbar:52px;
+}
+body.dark{
+  --bg:#0c0f14;--bg2:#111522;--surface:#151928;
+  --border:#1e2538;--border2:#2a3048;
+  --text:#e8eaf0;--text2:#b0b8d0;--muted:#5a6480;
+  --sage:#7ecf9a;--sage-d:#4a9e6e;--sage-p:rgba(126,207,154,.1);--sage-m:rgba(126,207,154,.2);
+}
+*,*::before,*::after{box-sizing:border-box;margin:0;padding:0}
+html,body{height:100%}
+body{background:var(--bg);color:var(--text);font-family:var(--sans);font-size:14px;line-height:1.5;display:flex;flex-direction:column;overflow:hidden}
+
+/* ── TOPBAR ── */
+.topbar{height:var(--topbar);flex-shrink:0;background:var(--surface);border-bottom:1px solid var(--border);display:flex;align-items:center;padding:0 14px;gap:10px;box-shadow:var(--sh-s);z-index:200}
+.tl-logo{display:flex;align-items:center;gap:8px;font-size:14px;font-weight:700;color:var(--text);text-decoration:none;flex-shrink:0;cursor:pointer}
+.tl-logo-dot{width:8px;height:8px;border-radius:50%;background:var(--sage);flex-shrink:0}
+.tl-sep{width:1px;height:20px;background:var(--border2);flex-shrink:0}
+.tl-name{font-size:13px;font-weight:600;color:var(--text2);display:flex;align-items:center;gap:7px}
+.badge{font-size:10px;font-weight:700;letter-spacing:.06em;padding:2px 7px;border-radius:4px;background:var(--accent);color:#fff;text-transform:uppercase}
+.tl-space{flex:1}
+.tl-actions{display:flex;align-items:center;gap:6px}
+.tbtn{display:inline-flex;align-items:center;gap:5px;padding:6px 11px;border-radius:var(--r);border:1px solid var(--border2);background:var(--surface);color:var(--text2);font-family:var(--sans);font-size:12px;font-weight:500;cursor:pointer;transition:all .15s;white-space:nowrap}
+.tbtn:hover{background:var(--bg2)}
+.tbtn.primary{background:var(--sage);border-color:var(--sage);color:#fff}
+.tbtn.primary:hover{background:var(--sage-d);border-color:var(--sage-d)}
+.tbtn:disabled{opacity:.35;cursor:not-allowed}
+.tbtn.icon-only{padding:6px 8px}
+.tbtn.active{background:var(--sage-p);border-color:var(--sage-m);color:var(--sage)}
+
+/* ── SHELL ── */
+.shell{flex:1;display:flex;overflow:hidden}
+
+/* ── SIDEBAR ── */
+.sidebar{width:var(--sidebar);flex-shrink:0;background:var(--surface);border-right:1px solid var(--border);display:flex;flex-direction:column;overflow:hidden}
+.sb-section{padding:10px 8px 6px;border-bottom:1px solid var(--border)}
+.sb-label{font-size:10px;font-weight:700;letter-spacing:.08em;color:var(--muted);text-transform:uppercase;padding:0 4px;margin-bottom:5px}
+.src-tabs{display:flex;flex-direction:column;gap:2px}
+.src-tab{display:flex;align-items:center;gap:8px;padding:7px 9px;border-radius:7px;cursor:pointer;font-size:13px;font-weight:500;color:var(--text2);border:none;background:transparent;font-family:var(--sans);text-align:left;width:100%;transition:background .12s}
+.src-tab:hover{background:var(--bg)}
+.src-tab.active{background:var(--sage-p);color:var(--sage)}
+.src-tab .src-tag{font-size:9px;font-weight:700;padding:1px 5px;border-radius:3px;background:var(--green-s);color:var(--green);margin-left:auto}
+.history-list{flex:1;overflow-y:auto;padding:6px}
+.h-empty{padding:16px 12px;text-align:center;color:var(--muted);font-size:12px;line-height:1.8}
+.h-item{display:flex;align-items:center;gap:8px;padding:7px 8px;border-radius:8px;cursor:pointer;transition:background .12s;border:1px solid transparent;margin-bottom:2px}
+.h-item:hover{background:var(--bg2)}
+.h-item.active{background:var(--sage-p);border-color:var(--sage-m)}
+.h-icon{width:28px;height:28px;border-radius:6px;display:flex;align-items:center;justify-content:center;flex-shrink:0;background:var(--bg2)}
+.h-icon.image{background:rgba(124,58,237,.1);color:var(--purple)}
+.h-icon.pdf{background:rgba(229,62,62,.1);color:var(--red)}
+.h-icon.html{background:rgba(217,119,6,.1);color:var(--amber)}
+.h-icon.url{background:rgba(13,159,110,.1);color:var(--green)}
+.h-meta{flex:1;min-width:0}
+.h-name{font-size:12px;font-weight:600;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.h-info{font-size:10px;color:var(--muted)}
+.h-del{opacity:0;background:none;border:none;cursor:pointer;color:var(--muted);padding:2px 4px;border-radius:4px;font-size:13px;transition:all .12s}
+.h-item:hover .h-del{opacity:1}
+.h-del:hover{color:var(--red)}
+
+/* ── MAIN ── */
+.main{flex:1;display:flex;flex-direction:column;overflow:hidden}
+.work{flex:1;display:flex;flex-direction:column;overflow:hidden;padding:14px;gap:12px}
+
+/* ── INPUT CARD ── */
+.icard{background:var(--surface);border:1px solid var(--border);border-radius:var(--rl);box-shadow:var(--sh-s);flex-shrink:0}
+.icard-head{display:flex;align-items:center;gap:10px;padding:10px 14px;border-bottom:1px solid var(--border)}
+.icard-title{font-size:13px;font-weight:700;flex:1}
+.mode-pills{display:flex;gap:3px}
+.mpill{display:flex;align-items:center;gap:4px;padding:4px 10px;border-radius:7px;border:1px solid var(--border);background:var(--bg2);font-family:var(--sans);font-size:12px;font-weight:500;color:var(--muted);cursor:pointer;transition:all .15s}
+.mpill:hover{border-color:var(--border2);color:var(--text2)}
+.mpill.active{background:var(--sage);border-color:var(--sage);color:#fff}
+.icard-body{padding:12px 14px}
+.src-panel{display:none}
+.src-panel.active{display:block}
+
+/* Drop zone */
+.dz{border:2px dashed var(--border2);border-radius:var(--r);background:var(--bg);min-height:120px;display:flex;align-items:center;justify-content:center;cursor:pointer;transition:border-color .2s,background .2s;position:relative;overflow:hidden}
+.dz:hover,.dz.over{border-color:var(--sage);background:var(--sage-p)}
+.dz.has{border-style:solid;border-color:var(--green);background:var(--green-s)}
+.dz-inner{display:flex;flex-direction:column;align-items:center;gap:7px;padding:20px;text-align:center}
+.dz-ico{width:40px;height:40px;border-radius:10px;background:var(--surface);border:1px solid var(--border);display:flex;align-items:center;justify-content:center;box-shadow:var(--sh-s)}
+.dz-inner h3{font-size:13px;font-weight:600}
+.dz-inner p{font-size:11px;color:var(--muted);line-height:1.6}
+.dz-inner .br{color:var(--sage);cursor:pointer;font-weight:500}
+.dz-inner .br:hover{text-decoration:underline}
+
+/* PDF progress */
+.pdf-progress{display:none;padding:10px 14px;background:var(--amber-s);border-top:1px solid rgba(217,119,6,.2);font-size:12px;color:var(--amber);display:flex;align-items:center;gap:8px}
+.pdf-progress.on{display:flex}
+.pdf-prog-bar{flex:1;height:4px;background:var(--border);border-radius:2px;overflow:hidden}
+.pdf-prog-fill{height:100%;background:var(--amber);border-radius:2px;transition:width .3s}
+
+/* Batch list */
+.blist{display:flex;flex-direction:column;gap:4px;padding:2px 14px 10px}
+.bitem{display:flex;align-items:center;gap:8px;padding:6px 10px;border-radius:8px;background:var(--bg2);border:1px solid var(--border)}
+.bthumb{width:32px;height:32px;border-radius:5px;object-fit:cover;flex-shrink:0;border:1px solid var(--border)}
+.bthumb.pdf-icon{display:flex;align-items:center;justify-content:center;background:var(--red-s);font-size:10px;font-weight:700;color:var(--red);letter-spacing:.04em}
+.bname{font-size:12px;font-weight:600;flex:1;min-width:0;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.bsize{font-size:10px;color:var(--muted);flex-shrink:0}
+.sdot{width:7px;height:7px;border-radius:50%;display:inline-block;flex-shrink:0}
+.sdot.pending{background:var(--muted)}
+.sdot.running{background:var(--amber);animation:blink .8s ease-in-out infinite}
+.sdot.done{background:var(--green)}
+.sdot.error{background:var(--red)}
+@keyframes blink{0%,100%{opacity:1}50%{opacity:.3}}
+.bdel{background:none;border:none;cursor:pointer;color:var(--muted);padding:2px 4px;border-radius:4px;transition:color .12s;font-size:13px;line-height:1}
+.bdel:hover{color:var(--red)}
+
+/* Form elements */
+.flabel{font-size:11px;font-weight:700;color:var(--muted);letter-spacing:.06em;text-transform:uppercase;margin-bottom:5px}
+.finput{width:100%;background:var(--bg2);border:1px solid var(--border);border-radius:var(--r);color:var(--text);font-family:var(--mono);font-size:12px;line-height:1.7;padding:9px 11px;outline:none;resize:vertical;transition:border-color .15s,box-shadow .15s}
+.finput:focus{border-color:var(--sage);box-shadow:0 0 0 3px var(--sage-p)}
+.finput::placeholder{color:var(--muted);font-family:var(--sans);font-style:italic}
+.url-row{display:flex;gap:8px}
+
+/* Extract bar */
+.xbar{display:flex;align-items:center;gap:10px;padding:9px 14px;border-top:1px solid var(--border);background:var(--bg2);border-radius:0 0 var(--rl) var(--rl)}
+.btn-x{display:flex;align-items:center;gap:6px;padding:8px 18px;background:var(--sage);border:none;border-radius:var(--r);color:#fff;font-family:var(--sans);font-size:13px;font-weight:700;cursor:pointer;transition:background .15s,transform .12s,box-shadow .15s;box-shadow:0 1px 3px rgba(74,124,89,.3);flex-shrink:0}
+.btn-x:hover:not(:disabled){background:var(--sage-d);transform:translateY(-1px);box-shadow:0 4px 12px rgba(74,124,89,.35)}
+.btn-x:disabled{opacity:.35;cursor:not-allowed;transform:none;box-shadow:none}
+.ptrack{flex:1;height:4px;background:var(--border);border-radius:2px;overflow:hidden;display:none}
+.ptrack.on{display:block}
+.pfill{height:100%;width:0;background:linear-gradient(90deg,var(--sage),#7ecf9a);border-radius:2px;transition:width .3s ease}
+.plabel{font-size:11px;color:var(--muted);white-space:nowrap;display:none}
+.plabel.on{display:block}
+.xhint{font-size:12px;color:var(--muted);line-height:1.5}
+.xhint strong{color:var(--text2)}
+
+/* ── OUTPUT PANEL ── */
+.opanel{flex:1;background:var(--surface);border:1px solid var(--border);border-radius:var(--rl);box-shadow:var(--sh-s);display:flex;flex-direction:column;overflow:hidden;min-height:0}
+.o-empty{flex:1;display:flex;flex-direction:column;align-items:center;justify-content:center;gap:8px;padding:40px;text-align:center;color:var(--muted)}
+.o-empty-ico{width:52px;height:52px;border-radius:12px;background:var(--bg2);border:1px solid var(--border);display:flex;align-items:center;justify-content:center;margin-bottom:4px}
+.o-empty h3{font-size:14px;font-weight:600;color:var(--text2)}
+.o-empty p{font-size:12px;line-height:1.7;max-width:260px}
+.ocontent{flex:1;display:none;flex-direction:column;overflow:hidden}
+.ocontent.on{display:flex}
+
+/* Output toolbar */
+.ohead{display:flex;align-items:center;gap:6px;padding:8px 12px;border-bottom:1px solid var(--border);flex-shrink:0;flex-wrap:wrap;gap:6px}
+.otabs{display:flex;gap:2px;flex:1;min-width:0;overflow-x:auto}
+.otabs::-webkit-scrollbar{height:0}
+.otab{display:flex;align-items:center;gap:4px;padding:5px 10px;border-radius:7px;font-size:12px;font-weight:600;cursor:pointer;white-space:nowrap;border:none;background:transparent;color:var(--muted);font-family:var(--sans);transition:all .12s}
+.otab:hover{background:var(--bg2);color:var(--text2)}
+.otab.active{background:var(--sage-p);color:var(--sage)}
+.otab .tc{font-size:10px;padding:1px 5px;border-radius:4px;background:var(--sage-m);color:var(--sage);font-weight:700}
+.oactions{display:flex;align-items:center;gap:4px;flex-shrink:0}
+.vtoggle{display:flex;border:1px solid var(--border);border-radius:7px;overflow:hidden}
+.vt{padding:5px 9px;font-size:11px;font-weight:600;cursor:pointer;background:transparent;border:none;color:var(--muted);font-family:var(--sans);transition:all .12s;display:flex;align-items:center;gap:3px}
+.vt:hover{background:var(--bg2);color:var(--text2)}
+.vt.active{background:var(--surface);color:var(--text);box-shadow:var(--sh-s)}
+
+/* Table toolbar (below tabs) */
+.ttoolbar{display:flex;align-items:center;gap:5px;padding:5px 12px;border-bottom:1px solid var(--border);background:var(--bg2);flex-shrink:0;flex-wrap:wrap}
+.ttoolbar-search{display:flex;align-items:center;gap:6px;background:var(--surface);border:1px solid var(--border);border-radius:7px;padding:4px 9px;flex:1;max-width:220px}
+.ttoolbar-search input{border:none;outline:none;background:transparent;font-family:var(--sans);font-size:12px;color:var(--text);width:100%}
+.ttoolbar-search input::placeholder{color:var(--muted)}
+.ttoolbar-sep{width:1px;height:16px;background:var(--border)}
+
+/* Table summary */
+.table-summary{padding:8px 14px;background:var(--sage-p);border-bottom:1px solid var(--sage-m);font-size:12px;color:var(--sage-d);display:flex;align-items:center;gap:8px;flex-shrink:0}
+.table-summary.hidden{display:none}
+.summary-text{flex:1;font-style:italic}
+.confidence-badge{display:flex;align-items:center;gap:4px;font-size:11px;font-weight:600;padding:2px 8px;border-radius:20px;flex-shrink:0}
+.confidence-badge.high{background:var(--green-s);color:var(--green)}
+.confidence-badge.mid{background:var(--amber-s);color:var(--amber)}
+.confidence-badge.low{background:var(--red-s);color:var(--red)}
+
+/* Dropdown */
+.dd{position:relative}
+.ddmenu{position:absolute;right:0;top:calc(100% + 5px);background:var(--surface);border:1px solid var(--border);border-radius:var(--r);box-shadow:var(--sh-l);min-width:200px;z-index:300;display:none;flex-direction:column;overflow:hidden;padding:4px}
+.ddmenu.open{display:flex}
+.ddi{display:flex;align-items:center;gap:8px;padding:8px 11px;cursor:pointer;font-size:13px;color:var(--text2);transition:background .12s;border:none;background:transparent;font-family:var(--sans);text-align:left;border-radius:7px;width:100%}
+.ddi:hover{background:var(--bg2)}
+.ddi .de{font-family:var(--mono);font-size:10px;font-weight:500;padding:2px 5px;border-radius:4px;background:var(--bg2);color:var(--muted);margin-left:auto}
+.ddsep{height:1px;background:var(--border);margin:4px 0}
+
+/* Table */
+.tview{flex:1;overflow:auto;min-height:0}
+.tview table{width:100%;border-collapse:collapse;font-size:13px}
+.tview thead{position:sticky;top:0;z-index:10;background:var(--bg2)}
+.tview thead tr{border-bottom:2px solid var(--border2)}
+.tview th{padding:0;text-align:left;font-size:11px;font-weight:700;color:var(--text2);white-space:nowrap;border-right:1px solid var(--border);position:relative;user-select:none}
+.tview th:last-child{border-right:none}
+.th-inner{display:flex;align-items:center;padding:8px 12px;gap:6px}
+.th-name{flex:1;cursor:pointer}
+.th-name:hover{color:var(--sage)}
+.th-sort{color:var(--muted);font-size:9px;cursor:pointer}
+.th-sort:hover{color:var(--sage)}
+.th-type{font-size:9px;font-weight:600;padding:1px 4px;border-radius:3px;flex-shrink:0}
+.th-type.num{background:rgba(26,86,219,.1);color:var(--accent)}
+.th-type.date{background:rgba(124,58,237,.1);color:var(--purple)}
+.th-type.text{background:var(--bg2);color:var(--muted)}
+.th-add-col{border-right:none;background:var(--bg2)}
+.th-add-col button{padding:8px 12px;border:none;background:transparent;color:var(--muted);cursor:pointer;font-size:16px;transition:color .12s;font-family:var(--sans)}
+.th-add-col button:hover{color:var(--sage)}
+.th-rename-input{border:none;outline:none;background:var(--sage-p);color:var(--sage);font-family:var(--sans);font-size:11px;font-weight:700;width:100%;padding:0;letter-spacing:.04em}
+.tview td{padding:6px 12px;border-bottom:1px solid var(--border);border-right:1px solid var(--border);color:var(--text);vertical-align:top;line-height:1.5;min-width:80px;max-width:280px}
+.tview td:last-child{border-right:none}
+.tview tr:last-child td{border-bottom:none}
+.tview tr:hover td{background:rgba(74,124,89,.025)}
+.tview td:empty::after{content:'—';color:var(--muted)}
+.tview td[contenteditable]:focus{background:rgba(74,124,89,.07);box-shadow:inset 0 0 0 1.5px var(--sage);outline:none;position:relative;z-index:2}
+.tview td.filtered-hidden{display:none}
+.tview tr.filtered-hidden{display:none}
+.rnum{font-family:var(--mono);font-size:10px;color:var(--muted);text-align:center;padding:6px 8px;width:32px;min-width:32px;background:var(--bg2);border-right:1px solid var(--border2);user-select:none;position:relative}
+.rnum:hover .row-del{display:flex}
+.rnumh{background:var(--bg2);border-right:1px solid var(--border2);width:32px;min-width:32px}
+.row-del{display:none;position:absolute;inset:0;background:var(--red-s);align-items:center;justify-content:center;cursor:pointer;border:none;font-size:11px;color:var(--red)}
+.add-row-btn{display:flex;align-items:center;justify-content:center;gap:6px;padding:8px;font-size:12px;color:var(--muted);cursor:pointer;border:none;background:none;font-family:var(--sans);width:100%;transition:background .12s,color .12s;border-top:1px dashed var(--border)}
+.add-row-btn:hover{background:var(--sage-p);color:var(--sage)}
+
+/* JSON / Markdown */
+.codeview{flex:1;overflow:auto;min-height:0;padding:14px 16px;font-family:var(--mono);font-size:12px;line-height:1.8;white-space:pre-wrap;word-break:break-all;display:none;background:#1e2130;color:#abb2bf}
+.codeview .jk{color:#e06c75}.codeview .jv{color:#98c379}.codeview .jn{color:#d19a66}.codeview .jb{color:#56b6c2}
+.codeview.md-view{background:var(--surface);color:var(--text);font-size:12px}
+.pvview{flex:1;overflow:auto;min-height:0;padding:16px;display:none;background:var(--bg)}
+.pvpage{background:var(--surface);border:1px solid var(--border);border-radius:var(--r);box-shadow:var(--sh-m);padding:24px 32px;max-width:820px;margin:0 auto}
+.pvpage h2{font-size:14px;font-weight:700;margin-bottom:2px}
+.pvpage .pvsub{font-size:10px;color:var(--muted);margin-bottom:14px;font-family:var(--mono)}
+.pvtable{width:100%;border-collapse:collapse;font-size:12px}
+.pvtable th{padding:7px 11px;text-align:left;background:var(--sage);color:#fff;font-size:11px;font-weight:700;letter-spacing:.04em}
+.pvtable td{padding:6px 11px;border-bottom:1px solid var(--border);color:var(--text)}
+.pvtable tr:nth-child(even) td{background:var(--bg2)}
+.pvtable tr:last-child td{border-bottom:none}
+
+/* Status bar */
+.sbar{display:flex;align-items:center;gap:12px;padding:5px 12px;border-top:1px solid var(--border);background:var(--bg2);border-radius:0 0 var(--rl) var(--rl);flex-shrink:0;flex-wrap:wrap}
+.sb-i{font-size:11px;color:var(--muted);display:flex;align-items:center;gap:3px}
+.sb-i strong{color:var(--text2);font-weight:600}
+.sb-sp{flex:1}
+.sb-hint{font-size:11px;color:var(--muted);display:flex;align-items:center;gap:4px}
+
+/* Rate limit banner */
+#rateBanner{display:none;align-items:center;justify-content:center;gap:8px;padding:8px 20px;background:var(--amber-s);border-bottom:1px solid rgba(217,119,6,.25);font-size:12px;color:var(--amber);font-weight:500;flex-shrink:0}
+
+/* Quota */
+#quotaDisplay{font-size:11px;font-weight:600;display:flex;align-items:center;gap:5px;padding:5px 10px;border-radius:7px;border:1px solid var(--border);background:var(--bg2);color:var(--muted);white-space:nowrap}
+
+/* Modals */
+.moverlay{position:fixed;inset:0;z-index:500;background:rgba(15,21,35,.45);backdrop-filter:blur(4px);display:none;align-items:center;justify-content:center;padding:20px}
+.moverlay.open{display:flex}
+.modal{background:var(--surface);border:1px solid var(--border);border-radius:var(--rl);box-shadow:var(--sh-l);width:100%;max-width:520px;display:flex;flex-direction:column;max-height:90vh;overflow:hidden}
+.mhead{display:flex;align-items:center;padding:14px 16px;border-bottom:1px solid var(--border);flex-shrink:0}
+.mtitle{font-size:14px;font-weight:700;flex:1}
+.mclose{background:none;border:none;cursor:pointer;color:var(--muted);font-size:18px;line-height:1;padding:2px 6px;border-radius:4px;transition:color .12s}
+.mclose:hover{color:var(--text)}
+.mbody{padding:16px;display:flex;flex-direction:column;gap:10px;overflow-y:auto}
+.mfooter{padding:10px 16px;border-top:1px solid var(--border);display:flex;justify-content:flex-end;gap:8px;flex-shrink:0}
+.mbody p{font-size:13px;color:var(--text2);line-height:1.6}
+.cklist{display:flex;flex-direction:column;gap:4px;max-height:200px;overflow-y:auto}
+.ckitem{display:flex;align-items:center;gap:8px;padding:7px 10px;border-radius:8px;border:1px solid var(--border);cursor:pointer;transition:background .12s}
+.ckitem:hover{background:var(--bg2)}
+.ckitem input[type=checkbox]{accent-color:var(--sage);width:14px;height:14px;flex-shrink:0}
+.ckitem label{font-size:13px;color:var(--text2);cursor:pointer;flex:1}
+.ckitem .cr{font-size:11px;color:var(--muted);font-family:var(--mono)}
+.spopt{display:flex;align-items:flex-start;gap:8px;padding:9px 12px;border-radius:8px;border:1px solid var(--border);cursor:pointer;transition:all .12s}
+.spopt.sel{border-color:var(--sage);background:var(--sage-p)}
+.spopt input[type=radio]{accent-color:var(--sage);margin-top:2px}
+.spopt-body label{font-size:13px;font-weight:500;cursor:pointer;display:block}
+.spopt-body p{font-size:11px;color:var(--muted)}
+.svrow{display:flex;align-items:center;gap:10px}
+.svrow label{font-size:12px;color:var(--muted);white-space:nowrap}
+.svrow input[type=number],.svrow select{padding:6px 10px;background:var(--bg2);border:1px solid var(--border);border-radius:7px;color:var(--text);font-family:var(--mono);font-size:13px;outline:none;transition:border-color .15s}
+.svrow input[type=number]:focus,.svrow select:focus{border-color:var(--sage)}
+
+/* Toast */
+.ttoast-wrap{position:fixed;bottom:16px;right:16px;z-index:999;display:flex;flex-direction:column;gap:6px;align-items:flex-end}
+.ttoast{display:flex;align-items:center;gap:8px;padding:9px 14px;background:var(--text);color:var(--bg);border-radius:var(--r);box-shadow:var(--sh-l);font-size:13px;font-weight:500;opacity:0;transform:translateY(8px);transition:all .22s;max-width:280px}
+.ttoast.on{opacity:1;transform:translateY(0)}
+.ttoast.success{background:var(--green)}
+.ttoast.error{background:var(--red)}
+.ttoast.info{background:var(--accent)}
+
+/* Keyboard shortcut hint */
+kbd{display:inline-block;font-family:var(--mono);font-size:9px;padding:1px 4px;border:1px solid var(--border2);border-radius:3px;background:var(--bg2);color:var(--muted)}
+
+input[type=file]{display:none}
+::-webkit-scrollbar{width:5px;height:5px}
+::-webkit-scrollbar-track{background:transparent}
+::-webkit-scrollbar-thumb{background:var(--border2);border-radius:3px}
+::-webkit-scrollbar-thumb:hover{background:var(--muted)}
+@media(max-width:860px){.sidebar{display:none};body{overflow:auto};.work{padding:10px}}
+</style>
+</head>
+<body>
+
+<!-- TOP BAR -->
+<header class="topbar">
+  <a class="tl-logo" onclick="typeof showSection==='function'&&showSection('home')">
+    <div class="tl-logo-dot"></div>
+    Querencia
+  </a>
+  <div class="tl-sep"></div>
+  <div class="tl-name">Smart Table Extractor <span class="badge">Pro</span></div>
+  <div class="tl-space"></div>
+  <div class="tl-actions">
+    <!-- Undo / Redo -->
+    <button class="tbtn icon-only" id="btnUndo" onclick="undoOp()" disabled title="Undo (Ctrl+Z)">
+      <svg width="13" height="13" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path d="M3 7v6h6"/><path d="M3 13A9 9 0 1 0 5.12 6.5"/></svg>
+    </button>
+    <button class="tbtn icon-only" id="btnRedo" onclick="redoOp()" disabled title="Redo (Ctrl+Y)">
+      <svg width="13" height="13" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path d="M21 7v6h-6"/><path d="M21 13A9 9 0 1 1 18.88 6.5"/></svg>
+    </button>
+    <div class="tl-sep"></div>
+    <button class="tbtn" id="btnMerge" onclick="openMerge()" disabled>
+      <svg width="12" height="12" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path d="M8 3H5a2 2 0 0 0-2 2v14c0 1.1.9 2 2 2h3M16 3h3a2 2 0 0 1 2 2v14a2 2 0 0 1-2 2h-3M12 3v18"/></svg>
+      Merge
+    </button>
+    <button class="tbtn" id="btnSplit" onclick="openSplit()" disabled>
+      <svg width="12" height="12" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><line x1="12" y1="3" x2="12" y2="21"/><polyline points="8 8 3 3 8 3"/><polyline points="16 8 21 3 16 3"/><polyline points="8 16 3 21 8 21"/><polyline points="16 16 21 21 16 21"/></svg>
+      Split
+    </button>
+    <button class="tbtn" id="btnClean" onclick="cleanTable()" disabled title="Remove empty rows/columns, trim whitespace">
+      <svg width="12" height="12" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path d="M3 6h18M3 12h18M3 18h18"/></svg>
+      Clean
+    </button>
+    <button class="tbtn" id="btnCopy" onclick="copyTable()" disabled title="Copy table to clipboard">
+      <svg width="12" height="12" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><rect x="9" y="9" width="13" height="13" rx="2"/><path d="M5 15H4a2 2 0 0 1-2-2V4a2 2 0 0 1 2-2h9a2 2 0 0 1 2 2v1"/></svg>
+      Copy
+    </button>
+    <button class="tbtn" onclick="toggleDark()" title="Toggle dark mode (D)" id="darkBtn">◐</button>
+    <div class="tl-sep"></div>
+    <div class="dd" id="expDd">
+      <button class="tbtn primary" id="btnQE" onclick="toggleDd()" disabled>
+        <svg width="12" height="12" fill="none" stroke="currentColor" stroke-width="2.2" viewBox="0 0 24 24"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/><polyline points="7 10 12 15 17 10"/><line x1="12" y1="15" x2="12" y2="3"/></svg>
+        Export
+        <svg width="9" height="9" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><polyline points="6 9 12 15 18 9"/></svg>
+      </button>
+      <div class="ddmenu" id="ddmenu">
+        <button class="ddi" onclick="doExport('xlsx');closeDd()">
+          <svg width="13" height="13" fill="none" stroke="currentColor" stroke-width="1.8" viewBox="0 0 24 24"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"/><polyline points="14 2 14 8 20 8"/></svg>
+          Excel (current table)<span class="de">.xlsx</span>
+        </button>
+        <button class="ddi" onclick="doExport('all-xlsx');closeDd()">
+          <svg width="13" height="13" fill="none" stroke="currentColor" stroke-width="1.8" viewBox="0 0 24 24"><rect x="2" y="3" width="20" height="14" rx="2"/><path d="M8 21h8M12 17v4"/></svg>
+          Excel (all tables)<span class="de">.xlsx</span>
+        </button>
+        <div class="ddsep"></div>
+        <button class="ddi" onclick="doExport('csv');closeDd()">CSV<span class="de">.csv</span></button>
+        <button class="ddi" onclick="doExport('tsv');closeDd()">TSV<span class="de">.tsv</span></button>
+        <button class="ddi" onclick="doExport('json');closeDd()">JSON<span class="de">.json</span></button>
+        <button class="ddi" onclick="doExport('markdown');closeDd()">Markdown<span class="de">.md</span></button>
+        <div class="ddsep"></div>
+        <button class="ddi" onclick="doExport('all-csv');closeDd()">All tables — CSV<span class="de">all</span></button>
+      </div>
+    </div>
+    <div id="quotaDisplay">
+      <svg width="11" height="11" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><circle cx="12" cy="12" r="10"/><polyline points="12 6 12 12 16 14"/></svg>
+      — left today
+    </div>
+  </div>
+</header>
+
+<div id="rateBanner"></div>
+
+<div class="shell">
+  <!-- SIDEBAR -->
+  <aside class="sidebar">
+    <div class="sb-section">
+      <div class="sb-label">Data Source</div>
+      <div class="src-tabs">
+        <button class="src-tab active" data-src="image" onclick="setSrc('image')">
+          <svg width="14" height="14" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><rect x="3" y="3" width="18" height="18" rx="3"/><circle cx="8.5" cy="8.5" r="1.5"/><polyline points="21 15 16 10 5 21"/></svg>
+          Image / Screenshot
+        </button>
+        <button class="src-tab" data-src="pdf" onclick="setSrc('pdf')">
+          <svg width="14" height="14" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"/><polyline points="14 2 14 8 20 8"/><line x1="16" y1="13" x2="8" y2="13"/><line x1="16" y1="17" x2="8" y2="17"/><polyline points="10 9 9 9 8 9"/></svg>
+          PDF Document
+          <span class="src-tag">New</span>
+        </button>
+        <button class="src-tab" data-src="html" onclick="setSrc('html')">
+          <svg width="14" height="14" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><polyline points="16 18 22 12 16 6"/><polyline points="8 6 2 12 8 18"/></svg>
+          HTML / Text / CSV
+        </button>
+        <button class="src-tab" data-src="url" onclick="setSrc('url')">
+          <svg width="14" height="14" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><circle cx="12" cy="12" r="10"/><line x1="2" y1="12" x2="22" y2="12"/><path d="M12 2a15.3 15.3 0 0 1 4 10 15.3 15.3 0 0 1-4 10 15.3 15.3 0 0 1-4-10 15.3 15.3 0 0 1 4-10z"/></svg>
+          Web URL
+        </button>
+      </div>
+    </div>
+    <div class="sb-section" style="border-bottom:none;padding-bottom:4px">
+      <div class="sb-label">History</div>
+    </div>
+    <div class="history-list" id="histList">
+      <div class="h-empty" id="hEmpty">
+        <svg width="22" height="22" fill="none" stroke="currentColor" stroke-width="1.5" viewBox="0 0 24 24" style="opacity:.4;margin:0 auto 6px;display:block"><circle cx="12" cy="12" r="10"/><polyline points="12 6 12 12 16 14"/></svg>
+        No history yet.
+      </div>
+    </div>
+    <!-- Keyboard shortcuts -->
+    <div style="padding:8px 10px 10px;border-top:1px solid var(--border);flex-shrink:0">
+      <div class="sb-label" style="margin-bottom:6px">Shortcuts</div>
+      <div style="font-size:10px;color:var(--muted);line-height:2.2">
+        <div><kbd>Tab</kbd> Next cell &nbsp; <kbd>Enter</kbd> Confirm</div>
+        <div><kbd>Ctrl+Z</kbd> Undo &nbsp; <kbd>Ctrl+Y</kbd> Redo</div>
+        <div><kbd>Ctrl+S</kbd> Export Excel &nbsp; <kbd>D</kbd> Dark mode</div>
+      </div>
+    </div>
+  </aside>
+
+  <!-- MAIN -->
+  <main class="main">
+    <div class="work">
+
+      <!-- INPUT CARD -->
+      <div class="icard">
+        <div class="icard-head">
+          <div class="icard-title" id="icardTitle">Upload image to extract tables</div>
+          <div class="mode-pills" id="modePills">
+            <button class="mpill active" data-m="single" onclick="setMode('single')">Single</button>
+            <button class="mpill" data-m="batch" onclick="setMode('batch')">Batch</button>
+          </div>
+        </div>
+
+        <!-- IMAGE -->
+        <div class="src-panel active" id="sp-image">
+          <div class="icard-body" id="dzWrap">
+            <div class="dz" id="dz" onclick="fileInput.click()">
+              <div class="dz-inner" id="dzInner">
+                <div class="dz-ico"><svg width="20" height="20" fill="none" stroke="var(--sage)" stroke-width="1.8" viewBox="0 0 24 24"><rect x="3" y="3" width="18" height="18" rx="3"/><circle cx="8.5" cy="8.5" r="1.5"/><polyline points="21 15 16 10 5 21"/></svg></div>
+                <h3>Drop image here</h3>
+                <p>or <span class="br">click to choose</span> · PNG, JPG, WEBP<br>Ctrl+V paste from clipboard</p>
+              </div>
+            </div>
+          </div>
+          <div class="blist" id="bList" style="display:none"></div>
+        </div>
+
+        <!-- PDF -->
+        <div class="src-panel" id="sp-pdf">
+          <div class="icard-body">
+            <div class="dz" id="dz-pdf" onclick="pdfInput.click()">
+              <div class="dz-inner" id="dzPdfInner">
+                <div class="dz-ico"><svg width="20" height="20" fill="none" stroke="var(--red)" stroke-width="1.8" viewBox="0 0 24 24"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"/><polyline points="14 2 14 8 20 8"/><line x1="16" y1="13" x2="8" y2="13"/><line x1="16" y1="17" x2="8" y2="17"/></svg></div>
+                <h3>Drop PDF here</h3>
+                <p>or <span class="br">click to choose</span> · up to 20MB<br>Multi-page supported — all pages extracted</p>
+              </div>
+            </div>
+            <div class="pdf-progress" id="pdfProgress">
+              <svg width="13" height="13" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><circle cx="12" cy="12" r="10"/><polyline points="12 6 12 12 16 14"/></svg>
+              <span id="pdfProgressText">Converting PDF pages...</span>
+              <div class="pdf-prog-bar"><div class="pdf-prog-fill" id="pdfProgFill"></div></div>
+            </div>
+          </div>
+          <div class="blist" id="bListPdf" style="display:none"></div>
+        </div>
+
+        <!-- HTML -->
+        <div class="src-panel" id="sp-html">
+          <div class="icard-body">
+            <div class="flabel">Paste HTML, Markdown table, CSV, or structured text</div>
+            <textarea class="finput" id="htmlIn" rows="6" placeholder="Paste content here...&#10;&#10;Supports: HTML &lt;table&gt;, Markdown | col |, CSV, structured text" oninput="checkReady()"></textarea>
+          </div>
+        </div>
+
+        <!-- URL -->
+        <div class="src-panel" id="sp-url">
+          <div class="icard-body">
+            <div class="flabel">Web page URL containing data tables</div>
+            <div class="url-row" style="margin-bottom:10px">
+              <input class="finput" style="resize:none" id="urlIn" placeholder="https://..." type="text" onkeydown="if(event.key==='Enter')fetchURL()">
+              <button class="btn-x" onclick="fetchURL()" style="flex-shrink:0;font-size:12px;padding:7px 14px">Fetch</button>
+            </div>
+            <div class="flabel">Fetched HTML</div>
+            <textarea class="finput" id="fetchedHtml" rows="4" placeholder="HTML will appear here..." oninput="checkReady()"></textarea>
+          </div>
+        </div>
+
+        <!-- EXTRACT BAR -->
+        <div class="xbar">
+          <button class="btn-x" id="btnX" onclick="startExtract()" disabled>
+            <svg width="13" height="13" fill="none" stroke="currentColor" stroke-width="2.5" viewBox="0 0 24 24"><path d="M13 2L3 14h9l-1 8 10-12h-9l1-8z"/></svg>
+            Extract with AI
+          </button>
+          <div class="ptrack" id="ptrack"><div class="pfill" id="pfill"></div></div>
+          <div class="plabel" id="plabel"></div>
+          <div class="xhint" id="xhint">Powered by <strong>Claude Vision</strong> · Detects all table structures</div>
+        </div>
+      </div>
+
+      <!-- OUTPUT PANEL -->
+      <div class="opanel" id="opanel">
+        <div class="o-empty" id="oEmpty">
+          <div class="o-empty-ico"><svg width="24" height="24" fill="none" stroke="var(--muted)" stroke-width="1.6" viewBox="0 0 24 24"><rect x="3" y="3" width="18" height="18" rx="3"/><path d="M3 9h18M3 15h18M9 9v6M15 9v6"/></svg></div>
+          <h3>Results will appear here</h3>
+          <p>Upload image or PDF, paste content, then click <strong>Extract</strong> to begin.</p>
+        </div>
+        <div class="ocontent" id="ocontent">
+          <!-- Table tabs + view toggle -->
+          <div class="ohead">
+            <div class="otabs" id="otabs"></div>
+            <div class="oactions">
+              <div class="vtoggle">
+                <button class="vt active" id="vt-table" onclick="setView('table',this)">
+                  <svg width="10" height="10" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><rect x="3" y="3" width="18" height="18" rx="2"/><path d="M3 9h18M3 15h18M9 3v18"/></svg> Table
+                </button>
+                <button class="vt" id="vt-json" onclick="setView('json',this)">
+                  <svg width="10" height="10" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><polyline points="16 18 22 12 16 6"/><polyline points="8 6 2 12 8 18"/></svg> JSON
+                </button>
+                <button class="vt" id="vt-md" onclick="setView('md',this)">
+                  <svg width="10" height="10" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path d="M4 6h16M4 12h10M4 18h14"/></svg> MD
+                </button>
+                <button class="vt" id="vt-preview" onclick="setView('preview',this)">
+                  <svg width="10" height="10" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path d="M1 12s4-8 11-8 11 8 11 8-4 8-11 8-11-8-11-8z"/><circle cx="12" cy="12" r="3"/></svg> Preview
+                </button>
+              </div>
+            </div>
+          </div>
+
+          <!-- Table-level summary + confidence -->
+          <div class="table-summary hidden" id="tableSummary">
+            <svg width="13" height="13" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24" style="flex-shrink:0"><circle cx="12" cy="12" r="10"/><path d="M12 16v-4M12 8h.01"/></svg>
+            <span class="summary-text" id="summaryText"></span>
+            <span class="confidence-badge" id="confidenceBadge"></span>
+          </div>
+
+          <!-- Table toolbar: search, add row/col, sort, clean -->
+          <div class="ttoolbar" id="ttoolbar">
+            <div class="ttoolbar-search">
+              <svg width="12" height="12" fill="none" stroke="var(--muted)" stroke-width="2" viewBox="0 0 24 24"><circle cx="11" cy="11" r="8"/><line x1="21" y1="21" x2="16.65" y2="16.65"/></svg>
+              <input id="tableSearch" placeholder="Search in table..." oninput="filterTable(this.value)" onkeydown="if(event.key==='Escape'){this.value='';filterTable('')}"/>
+            </div>
+            <div class="ttoolbar-sep"></div>
+            <button class="tbtn" onclick="addRow()" title="Add row">+ Row</button>
+            <button class="tbtn" onclick="addColumn()" title="Add column">+ Col</button>
+            <div class="ttoolbar-sep"></div>
+            <span style="font-size:11px;color:var(--muted)">Sort:</span>
+            <button class="tbtn" id="sortAscBtn" onclick="sortColumn('asc')" title="Sort A→Z">A→Z</button>
+            <button class="tbtn" id="sortDescBtn" onclick="sortColumn('desc')" title="Sort Z→A">Z→A</button>
+            <div class="ttoolbar-sep"></div>
+            <span style="font-size:11px;color:var(--muted)">Col types:</span>
+            <button class="tbtn active" id="typeToggle" onclick="toggleColTypes()" title="Show/hide column type badges">Auto</button>
+          </div>
+
+          <!-- Table / JSON / MD / Preview views -->
+          <div class="tview" id="tview">
+            <table><thead id="thead"></thead><tbody id="tbody"></tbody></table>
+            <button class="add-row-btn" onclick="addRow()">
+              <svg width="12" height="12" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><line x1="12" y1="5" x2="12" y2="19"/><line x1="5" y1="12" x2="19" y2="12"/></svg>
+              Add row
+            </button>
+          </div>
+          <pre class="codeview" id="jview"></pre>
+          <pre class="codeview md-view" id="mdview"></pre>
+          <div class="pvview" id="pvview"><div class="pvpage" id="pvpage"></div></div>
+
+          <!-- Status bar -->
+          <div class="sbar">
+            <div class="sb-i"><strong id="sbR">0</strong> rows</div>
+            <div class="sb-i"><strong id="sbC">0</strong> cols</div>
+            <div class="sb-i" id="sbSrc"></div>
+            <div class="sb-sp"></div>
+            <div class="sb-hint">
+              <svg width="10" height="10" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path d="M11 4H4a2 2 0 0 0-2 2v14a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2v-7"/><path d="M18.5 2.5a2.121 2.121 0 0 1 3 3L12 15l-4 1 1-4 9.5-9.5z"/></svg>
+              Click cell to edit · Double-click header to rename
+            </div>
+          </div>
+        </div>
+      </div>
+
+    </div>
+  </main>
+</div>
+
+<!-- MERGE MODAL -->
+<div class="moverlay" id="mMerge">
+  <div class="modal">
+    <div class="mhead"><div class="mtitle">Merge Tables</div><button class="mclose" onclick="closeModal('mMerge')">×</button></div>
+    <div class="mbody">
+      <p>Select tables to merge. Headers will be unified — missing columns will be left blank.</p>
+      <div class="cklist" id="mergeList"></div>
+    </div>
+    <div class="mfooter">
+      <button class="tbtn" onclick="closeModal('mMerge')">Cancel</button>
+      <button class="tbtn primary" onclick="doMerge()">Merge selected</button>
+    </div>
+  </div>
+</div>
+
+<!-- SPLIT MODAL -->
+<div class="moverlay" id="mSplit">
+  <div class="modal">
+    <div class="mhead"><div class="mtitle">Split Table</div><button class="mclose" onclick="closeModal('mSplit')">×</button></div>
+    <div class="mbody">
+      <p>Split <strong id="splitName"></strong> into smaller tables.</p>
+      <div style="display:flex;flex-direction:column;gap:8px">
+        <div class="spopt sel" id="spo-rows" onclick="pickSplit(this,'rows')"><input type="radio" name="st" checked><div class="spopt-body"><label>Split by row count</label><p>Each table gets max N rows</p></div></div>
+        <div class="spopt" id="spo-col" onclick="pickSplit(this,'col')"><input type="radio" name="st"><div class="spopt-body"><label>Split by column value</label><p>Separate table per unique value</p></div></div>
+      </div>
+      <div class="svrow" id="svRows"><label>Rows per table:</label><input type="number" id="splitN" value="10" min="1"></div>
+      <div class="svrow" id="svCol" style="display:none"><label>Column to split by:</label><select id="splitCol"></select></div>
+    </div>
+    <div class="mfooter">
+      <button class="tbtn" onclick="closeModal('mSplit')">Cancel</button>
+      <button class="tbtn primary" onclick="doSplit()">Split</button>
+    </div>
+  </div>
+</div>
+
+<div class="ttoast-wrap" id="twrap"></div>
+<input type="file" id="fileInput" accept="image/*" multiple>
+<input type="file" id="pdfInput" accept="application/pdf" id="pdfInput">
+
+<script>
+/* ─────────────────────────────────────────────
+   WORKER URL — replace with your Cloudflare Worker URL
+───────────────────────────────────────────── */
+const WORKER_URL = "https://querencia-table-extractor.YOUR_SUBDOMAIN.workers.dev";
+
+
+/* ─── URL PARAMS (for embedded/linked use) ─── */
+(function(){
+  const p = new URLSearchParams(window.location.search);
+  const srcParam = p.get('src');
+  const embedParam = p.get('embed');
+
+  // If embedded, hide topbar nav logo link (stay in iframe context)
+  if(embedParam === '1'){
+    document.addEventListener('DOMContentLoaded', () => {
+      const logo = document.querySelector('.tl-logo');
+      if(logo) logo.style.pointerEvents = 'none';
+    });
+  }
+
+  // Preselect source based on ?src= param
+  if(srcParam && ['image','pdf','html','url'].includes(srcParam)){
+    document.addEventListener('DOMContentLoaded', () => {
+      setSrc(srcParam);
+    });
+  }
+})();
+
+/* ─── PDF.js setup ─── */
+pdfjsLib.GlobalWorkerOptions.workerSrc = 'https://cdnjs.cloudflare.com/ajax/libs/pdf.js/3.11.174/pdf.worker.min.js';
+
+/* ─── STATE ─── */
+let src='image', mode='single';
+let files=[], pdfFiles=[];
+let tables=[], activeI=0;
+let history=[], splitType='rows';
+let opStack=[], opRedo=[];   // undo/redo for table operations
+let showColTypes=true;
+let sortState={col:-1, dir:'asc'};
+let currentView='table';
+
+/* ─── SYSTEM PROMPT ─── */
+const SYS = `You are an expert AI for extracting data tables. Extract ALL tables from the input.
+
+Rules:
+1. Return ONLY pure JSON — no markdown, no backticks, no explanation.
+2. Schema: {"tables":[{"title":"Short table name","headers":["Col A",...],"rows":[["val",...],...], "summary":"One sentence description"}]}
+3. If no tables found: {"tables":[]}
+4. Clean data: preserve numbers/units, make headers meaningful (not empty), trim whitespace.
+5. Detect column types: for each header note if values are mostly numeric, date, or text.`;
+
+/* ─── SOURCE / MODE ─── */
+function setSrc(s){
+  src=s;
+  document.querySelectorAll('.src-tab').forEach(t=>t.classList.toggle('active',t.dataset.src===s));
+  document.querySelectorAll('.src-panel').forEach(p=>p.classList.toggle('active',p.id==='sp-'+s));
+  const titles={image:'Upload image to extract tables',pdf:'Upload PDF — all pages extracted',html:'Paste HTML, Markdown, CSV or structured text',url:'Enter web page URL with tables'};
+  document.getElementById('icardTitle').textContent=titles[s];
+  document.getElementById('modePills').style.display=(s==='image'||s==='pdf')?'':'none';
+  checkReady();
+}
+
+function setMode(m){
+  mode=m;
+  document.querySelectorAll('.mpill').forEach(p=>p.classList.toggle('active',p.dataset.m===m));
+  if(m==='single'){ files=files.slice(0,1); pdfFiles=pdfFiles.slice(0,1); }
+  renderFiles(); checkReady();
+}
+
+/* ─── IMAGE FILES ─── */
+const fileInput = document.getElementById('fileInput');
+const dz = document.getElementById('dz');
+fileInput.onchange = e=>Array.from(e.target.files).forEach(addImageFile);
+dz.ondragover = e=>{e.preventDefault();dz.classList.add('over')};
+dz.ondragleave = ()=>dz.classList.remove('over');
+dz.ondrop = e=>{e.preventDefault();dz.classList.remove('over');Array.from(e.dataTransfer.files).forEach(f=>{if(f.type.startsWith('image/'))addImageFile(f)})};
+document.addEventListener('paste',e=>{
+  if(src!=='image')return;
+  for(const it of (e.clipboardData?.items||[])){if(it.type.startsWith('image/')){addImageFile(it.getAsFile());break}}
+});
+
+function addImageFile(file){
+  if(!file)return;
+  if(mode==='single') files=[];
+  const r=new FileReader();
+  r.onload=ev=>{
+    files.push({file,b64:ev.target.result.split(',')[1],mime:file.type||'image/jpeg',name:file.name,dataUrl:ev.target.result,status:'pending'});
+    renderFiles(); checkReady();
+  };
+  r.readAsDataURL(file);
+}
+function removeFile(i){ files.splice(i,1); renderFiles(); checkReady(); }
+
+function renderFiles(){
+  const bl=document.getElementById('bList');
+  const di=document.getElementById('dzInner');
+  dz.classList.toggle('has',files.length>0);
+  if(!files.length){
+    bl.style.display='none';
+    di.innerHTML=`<div class="dz-ico"><svg width="20" height="20" fill="none" stroke="var(--sage)" stroke-width="1.8" viewBox="0 0 24 24"><rect x="3" y="3" width="18" height="18" rx="3"/><circle cx="8.5" cy="8.5" r="1.5"/><polyline points="21 15 16 10 5 21"/></svg></div><h3>Drop image here</h3><p>or <span class="br">click to choose</span> · PNG, JPG, WEBP<br>Ctrl+V paste from clipboard</p>`;
+    return;
+  }
+  di.innerHTML=`<div class="dz-ico" style="background:var(--green-s);border-color:rgba(13,159,110,.3)"><svg width="16" height="16" fill="none" stroke="var(--green)" stroke-width="2.5" viewBox="0 0 24 24"><polyline points="20 6 9 17 4 12"/></svg></div><h3 style="color:var(--green)">${files.length} file${files.length>1?'s':''} selected</h3><p><span class="br" onclick="fileInput.click();event.stopPropagation()">Add more</span></p>`;
+  bl.style.display='flex';
+  bl.innerHTML=files.map((f,i)=>`<div class="bitem"><img class="bthumb" src="${f.dataUrl}"><div class="bname">${esc(f.name)}</div><div class="bsize">${fmtB(f.file.size)}</div><span class="sdot ${f.status}" id="sd${i}"></span><button class="bdel" onclick="removeFile(${i});event.stopPropagation()">×</button></div>`).join('');
+}
+
+/* ─── PDF FILES ─── */
+const pdfInput = document.getElementById('pdfInput');
+const dzPdf = document.getElementById('dz-pdf');
+pdfInput.onchange = e=>{ if(e.target.files[0]) addPDFFile(e.target.files[0]); };
+dzPdf.ondragover = e=>{e.preventDefault();dzPdf.classList.add('over')};
+dzPdf.ondragleave = ()=>dzPdf.classList.remove('over');
+dzPdf.ondrop = e=>{e.preventDefault();dzPdf.classList.remove('over');const f=Array.from(e.dataTransfer.files).find(f=>f.type==='application/pdf');if(f)addPDFFile(f)};
+
+async function addPDFFile(file){
+  if(!file)return;
+  if(mode==='single') pdfFiles=[];
+  const progressEl = document.getElementById('pdfProgress');
+  const progressText = document.getElementById('pdfProgressText');
+  const progressFill = document.getElementById('pdfProgFill');
+  progressEl.classList.add('on');
+
+  try {
+    const arrayBuf = await file.arrayBuffer();
+    const pdf = await pdfjsLib.getDocument({data: arrayBuf}).promise;
+    const totalPages = pdf.numPages;
+    const pages = [];
+
+    for(let i=1;i<=totalPages;i++){
+      progressText.textContent = `Converting page ${i} of ${totalPages}...`;
+      progressFill.style.width = `${(i/totalPages*100)}%`;
+      const page = await pdf.getPage(i);
+      const viewport = page.getViewport({scale: 2.0}); // 2x scale for better OCR
+      const canvas = document.createElement('canvas');
+      canvas.width = viewport.width;
+      canvas.height = viewport.height;
+      const ctx = canvas.getContext('2d');
+      await page.render({canvasContext: ctx, viewport}).promise;
+      const dataUrl = canvas.toDataURL('image/jpeg', 0.92);
+      pages.push({
+        b64: dataUrl.split(',')[1],
+        mime: 'image/jpeg',
+        name: `${file.name} — Page ${i}`,
+        dataUrl,
+        status: 'pending',
+        pageNum: i
+      });
+    }
+
+    pdfFiles.push({file, name: file.name, pages, totalPages});
+    progressEl.classList.remove('on');
+    renderPDFFiles();
+    checkReady();
+    toast(`PDF loaded: ${totalPages} page${totalPages>1?'s':''}`, 'success');
+  } catch(e) {
+    progressEl.classList.remove('on');
+    toast('Failed to load PDF: '+e.message, 'error');
+  }
+}
+
+function removePDFFile(i){ pdfFiles.splice(i,1); renderPDFFiles(); checkReady(); }
+
+function renderPDFFiles(){
+  const bl = document.getElementById('bListPdf');
+  const di = document.getElementById('dzPdfInner');
+  dzPdf.classList.toggle('has', pdfFiles.length>0);
+  if(!pdfFiles.length){
+    bl.style.display='none';
+    di.innerHTML=`<div class="dz-ico"><svg width="20" height="20" fill="none" stroke="var(--red)" stroke-width="1.8" viewBox="0 0 24 24"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"/><polyline points="14 2 14 8 20 8"/><line x1="16" y1="13" x2="8" y2="13"/><line x1="16" y1="17" x2="8" y2="17"/></svg></div><h3>Drop PDF here</h3><p>or <span class="br">click to choose</span> · up to 20MB<br>Multi-page supported — all pages extracted</p>`;
+    return;
+  }
+  di.innerHTML=`<div class="dz-ico" style="background:var(--green-s);border-color:rgba(13,159,110,.3)"><svg width="16" height="16" fill="none" stroke="var(--green)" stroke-width="2.5" viewBox="0 0 24 24"><polyline points="20 6 9 17 4 12"/></svg></div><h3 style="color:var(--green)">${pdfFiles.reduce((s,f)=>s+f.totalPages,0)} pages ready</h3><p><span class="br" onclick="pdfInput.click();event.stopPropagation()">Add more</span></p>`;
+  bl.style.display='flex';
+  bl.innerHTML=pdfFiles.map((f,i)=>`<div class="bitem"><div class="bthumb pdf-icon">PDF</div><div class="bname">${esc(f.name)}</div><div class="bsize">${f.totalPages}p · ${fmtB(f.file.size)}</div><button class="bdel" onclick="removePDFFile(${i});event.stopPropagation()">×</button></div>`).join('');
+}
+
+/* ─── URL FETCH ─── */
+async function fetchURL(){
+  const url=document.getElementById('urlIn').value.trim();
+  if(!url)return;
+  toast('Fetching page...','info');
+  try{
+    const r=await fetch(`https://api.allorigins.win/get?url=${encodeURIComponent(url)}`);
+    const d=await r.json();
+    document.getElementById('fetchedHtml').value=(d.contents||'').substring(0,60000);
+    checkReady();
+    toast('HTML fetched — click Extract','success');
+  }catch{ toast('Could not fetch this URL','error'); }
+}
+
+/* ─── READY CHECK ─── */
+function checkReady(){
+  const ok=(src==='image'&&files.length>0)
+    ||(src==='pdf'&&pdfFiles.length>0)
+    ||(src==='html'&&document.getElementById('htmlIn').value.trim().length>5)
+    ||(src==='url'&&document.getElementById('fetchedHtml').value.trim().length>5);
+  document.getElementById('btnX').disabled=!ok;
+}
+
+/* ─── EXTRACT ─── */
+async function startExtract(){
+  setExtr(true);
+  try{
+    if(src==='pdf') await doPDF();
+    else if(src==='image'&&mode==='batch'&&files.length>1) await doBatch();
+    else await doSingle();
+  }catch(e){ toast('Error: '+e.message,'error'); }
+  finally{ setExtr(false); }
+}
+
+async function doSingle(){
+  let msgs, name='';
+  if(src==='image'){
+    const f=files[0]; name=f.name;
+    msgs=[{role:'user',content:[{type:'image',source:{type:'base64',media_type:f.mime,data:f.b64}},{type:'text',text:'Extract all data tables from this image.'}]}];
+  }else{
+    const raw=(src==='html'?document.getElementById('htmlIn'):document.getElementById('fetchedHtml')).value.trim();
+    name=src==='url'?document.getElementById('urlIn').value:'HTML input';
+    msgs=[{role:'user',content:`Extract all tables from:\n\n${raw.substring(0,50000)}`}];
+  }
+  setP(30,'Analyzing...');
+  const result=await callAI(msgs);
+  setP(80,'Rendering...');
+  const ts=parse(result);
+  if(!ts.length){toast('No tables found','error');return;}
+  ts.forEach(t=>{t.source=name; detectColTypes(t);});
+  saveOp(); // snapshot for undo
+  tables=[...tables,...ts];
+  activeI=tables.length-ts.length;
+  setP(100,'Done!');
+  addHist({type:src,name,count:ts.length,ts:deepClone(ts)});
+  renderOutput();
+  toast(`Extracted ${ts.length} table${ts.length>1?'s':''}`, 'success');
+}
+
+async function doBatch(){
+  const results=[];
+  for(let i=0;i<files.length;i++){
+    const f=files[i];
+    setP(Math.round(i/files.length*90),`Processing ${f.name}...`);
+    setSd(i,'running');
+    try{
+      const msgs=[{role:'user',content:[{type:'image',source:{type:'base64',media_type:f.mime,data:f.b64}},{type:'text',text:'Extract all tables from this image.'}]}];
+      const raw=await callAI(msgs);
+      const ts=parse(raw);
+      ts.forEach(t=>{t.source=f.name; detectColTypes(t);});
+      results.push(...ts); setSd(i,'done');
+    }catch(e){ setSd(i,'error'); toast(`Error: ${f.name}`,'error'); }
+  }
+  if(!results.length){toast('No tables found','error');return;}
+  saveOp();
+  tables=[...tables,...results];
+  activeI=tables.length-results.length;
+  setP(100,'Done!');
+  addHist({type:'image',name:`Batch ${files.length} images`,count:results.length,ts:deepClone(results)});
+  renderOutput();
+  toast(`${results.length} tables from ${files.length} images`,'success');
+}
+
+async function doPDF(){
+  const allPages=pdfFiles.flatMap(f=>f.pages);
+  const results=[];
+  // Process pages in groups (batch by document for context)
+  for(let fi=0;fi<pdfFiles.length;fi++){
+    const pf=pdfFiles[fi];
+    for(let pi=0;pi<pf.pages.length;pi++){
+      const page=pf.pages[pi];
+      setP(Math.round((fi*pf.pages.length+pi)/allPages.length*90), `${pf.name} — page ${pi+1}/${pf.pages.length}...`);
+      page.status='running'; renderPDFFiles();
+      try{
+        const msgs=[{role:'user',content:[{type:'image',source:{type:'base64',media_type:'image/jpeg',data:page.b64}},{type:'text',text:`Extract all data tables from page ${pi+1} of the PDF "${pf.name}".`}]}];
+        const raw=await callAI(msgs);
+        const ts=parse(raw);
+        ts.forEach(t=>{t.source=`${pf.name} p.${pi+1}`; detectColTypes(t);});
+        results.push(...ts); page.status='done';
+      }catch(e){ page.status='error'; toast(`Error on page ${pi+1}`,'error'); }
+      renderPDFFiles();
+    }
+  }
+  if(!results.length){toast('No tables found in PDF','error');return;}
+  saveOp();
+  tables=[...tables,...results];
+  activeI=tables.length-results.length;
+  setP(100,'Done!');
+  addHist({type:'pdf',name:pdfFiles.map(f=>f.name).join(', '),count:results.length,ts:deepClone(results)});
+  renderOutput();
+  toast(`${results.length} tables extracted from PDF`,'success');
+}
+
+function setSd(i,s){files[i].status=s;const d=document.getElementById('sd'+i);if(d)d.className='sdot '+s;}
+
+/* ─── AI CALL ─── */
+async function callAI(msgs){
+  let res;
+  try{
+    res=await fetch(WORKER_URL,{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify({system:SYS,messages:msgs})});
+  }catch(e){ throw new Error('Cannot connect to server. Check your connection.'); }
+  if(!res.ok){
+    if(res.status===429){
+      const d=await res.json().catch(()=>({}));
+      showRateLimitBanner(d.limitType,d.retryAfter);
+      throw new Error(d.error||'Rate limit reached');
+    }
+    throw new Error(`Server error ${res.status}`);
+  }
+  const data=await res.json().catch(()=>({}));
+  if(data.error) throw new Error(data.error);
+  updateQuota(data._quota);
+  hideBanner();
+  const content=data.content;
+  if(!content||!content[0]) throw new Error('Empty response from AI');
+  return content[0].text||'';
+}
+
+function updateQuota(q){
+  if(!q) return;
+  const el=document.getElementById('quotaDisplay');
+  el.innerHTML=`<svg width="11" height="11" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><circle cx="12" cy="12" r="10"/><polyline points="12 6 12 12 16 14"/></svg>
+    <span title="Remaining today">${q.remaining_daily??'?'} left today</span>`;
+  el.style.color=q.remaining_daily>3?'var(--green)':q.remaining_daily>0?'var(--amber)':'var(--red)';
+}
+
+function showRateLimitBanner(type,retryAfter){
+  const b=document.getElementById('rateBanner');
+  const msg=type==='daily'
+    ?`Daily limit reached. Come back tomorrow or upgrade to Pro.`
+    :`Too fast — wait ${retryAfter}s and try again.`;
+  b.innerHTML=`<svg width="14" height="14" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><circle cx="12" cy="12" r="10"/><line x1="12" y1="8" x2="12" y2="12"/><line x1="12" y1="16" x2="12.01" y2="16"/></svg>${msg}`;
+  b.style.display='flex';
+}
+function hideBanner(){ document.getElementById('rateBanner').style.display='none'; }
+
+/* ─── PARSE ─── */
+function parse(raw){
+  const c=raw.replace(/```json|```/g,'').trim();
+  try{ const d=JSON.parse(c); return Array.isArray(d.tables)?d.tables:[]; }
+  catch{ return []; }
+}
+
+/* ─── COLUMN TYPE DETECTION ─── */
+function detectColTypes(t){
+  if(!t.headers||!t.rows||!t.rows.length) return;
+  t.colTypes = t.headers.map((_,ci)=>{
+    const vals=t.rows.map(r=>String(r[ci]||'').trim()).filter(Boolean);
+    if(!vals.length) return 'text';
+    const numCount=vals.filter(v=>!isNaN(v.replace(/[,$%]/g,'').trim())&&v.trim()!=='').length;
+    const dateCount=vals.filter(v=>/^\d{1,4}[-\/]\d{1,2}[-\/]\d{1,4}$/.test(v)||/^\d{1,2}[\/\.]\d{1,2}[\/\.]\d{2,4}$/.test(v)).length;
+    if(dateCount/vals.length>0.5) return 'date';
+    if(numCount/vals.length>0.6) return 'num';
+    return 'text';
+  });
+}
+
+/* ─── CONFIDENCE ESTIMATION ─── */
+function estimateConfidence(t){
+  if(!t||!t.rows||!t.headers) return 0;
+  const totalCells = t.rows.length * t.headers.length;
+  if(!totalCells) return 0;
+  const filledCells = t.rows.flatMap(r=>r).filter(v=>String(v||'').trim()).length;
+  const fillRate = filledCells/totalCells;
+  const hasHeaders = t.headers.every(h=>h&&h.trim()!=='');
+  const base = fillRate * (hasHeaders?1:0.8);
+  return Math.min(Math.round(base*100), 98);
+}
+
+/* ─── RENDER ─── */
+function renderOutput(){
+  const hasT=tables.length>0;
+  document.getElementById('oEmpty').style.display=hasT?'none':'';
+  document.getElementById('ocontent').classList.toggle('on',hasT);
+  if(!hasT) return;
+  renderTabs();
+  renderTable(tables[activeI]);
+  // Enable action buttons
+  ['btnMerge','btnSplit','btnQE','btnClean','btnCopy'].forEach(id=>{
+    const el=document.getElementById(id);
+    if(el) el.disabled=false;
+  });
+  updateUndoRedoBtns();
+}
+
+function renderTabs(){
+  document.getElementById('otabs').innerHTML=tables.map((t,i)=>`
+    <button class="otab${i===activeI?' active':''}" onclick="switchT(${i})">
+      ${esc(t.title||`Table ${i+1}`).substring(0,28)}
+      <span class="tc">${t.rows?.length||0}</span>
+    </button>`).join('');
+}
+
+function switchT(i){ activeI=i; renderTabs(); renderTable(tables[i]); }
+
+function renderTable(t){
+  if(!t) return;
+  const view=currentView;
+  const conf=estimateConfidence(t);
+  const confBadge=document.getElementById('confidenceBadge');
+  const summaryEl=document.getElementById('tableSummary');
+  const summaryText=document.getElementById('summaryText');
+
+  // Summary + confidence
+  if(t.summary){
+    summaryText.textContent=t.summary;
+    summaryEl.classList.remove('hidden');
+  } else {
+    summaryEl.classList.add('hidden');
+  }
+  confBadge.className='confidence-badge '+(conf>=80?'high':conf>=50?'mid':'low');
+  confBadge.innerHTML=`<svg width="10" height="10" fill="none" stroke="currentColor" stroke-width="2.5" viewBox="0 0 24 24">${conf>=80?'<polyline points="20 6 9 17 4 12"/>':'<circle cx="12" cy="12" r="10"/>'}
+  </svg> ${conf}% confidence`;
+
+  // Table view
+  const headers=t.headers||[];
+  const rows=t.rows||[];
+  const types=t.colTypes||headers.map(()=>'text');
+
+  const thHtml=`<tr>
+    <th class="rnumh"></th>
+    ${headers.map((h,ci)=>`<th>
+      <div class="th-inner">
+        <span class="th-name" onclick="setSortCol(${ci})" title="Sort by this column">${esc(h)}</span>
+        ${showColTypes?`<span class="th-type ${types[ci]}">${types[ci]}</span>`:''}
+        <span class="th-sort" onclick="setSortCol(${ci})">${sortState.col===ci?(sortState.dir==='asc'?'↑':'↓'):'↕'}</span>
+      </div>
+    </th>`).join('')}
+    <th class="th-add-col"><button onclick="addColumn()" title="Add column">+</button></th>
+  </tr>`;
+
+  const tbHtml=rows.map((row,ri)=>`<tr>
+    <td class="rnum">${ri+1}<button class="row-del" onclick="deleteRow(${ri})" title="Delete row">✕</button></td>
+    ${headers.map((_,ci)=>`<td contenteditable="true" data-ri="${ri}" data-ci="${ci}" onblur="cellEdit(this)" onkeydown="cellKeydown(event,this)">${esc(String(row[ci]??''))}</td>`).join('')}
+    <td></td>
+  </tr>`).join('');
+
+  document.getElementById('thead').innerHTML=thHtml;
+  document.getElementById('tbody').innerHTML=tbHtml;
+
+  // Wire header double-click to rename
+  document.querySelectorAll('#thead .th-name').forEach((el,ci)=>{
+    el.ondblclick=()=>renameHeader(ci,el);
+  });
+
+  document.getElementById('sbR').textContent=rows.length;
+  document.getElementById('sbC').textContent=headers.length;
+  document.getElementById('sbSrc').innerHTML=t.source?`<svg width="9" height="9" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/><polyline points="7 10 12 15 17 10"/></svg> ${esc(t.source)}`:'';
+
+  // JSON view
+  document.getElementById('jview').innerHTML=syntaxHighlight(JSON.stringify(
+    rows.map(r=>{const o={};headers.forEach((h,i)=>o[h]=r[i]??'');return o}),null,2
+  ));
+
+  // Markdown view
+  document.getElementById('mdview').textContent=toMarkdown(t,rows);
+
+  // Preview
+  document.getElementById('pvpage').innerHTML=`
+    <h2>${esc(t.title||'Table')}</h2>
+    <div class="pvsub">${rows.length} rows · ${headers.length} cols${t.source?` · ${esc(t.source)}`:''}</div>
+    <table class="pvtable">
+      <thead><tr>${headers.map(h=>`<th>${esc(h)}</th>`).join('')}</tr></thead>
+      <tbody>${rows.map(r=>`<tr>${headers.map((_,ci)=>`<td>${esc(String(r[ci]??''))}</td>`).join('')}</tr>`).join('')}</tbody>
+    </table>`;
+
+  setView(view, document.getElementById('vt-'+view));
+}
+
+/* ─── COLUMN TYPE TOGGLE ─── */
+function toggleColTypes(){
+  showColTypes=!showColTypes;
+  document.getElementById('typeToggle').classList.toggle('active',showColTypes);
+  if(tables[activeI]) renderTable(tables[activeI]);
+}
+
+/* ─── SORT ─── */
+function setSortCol(ci){
+  if(sortState.col===ci){
+    sortState.dir=sortState.dir==='asc'?'desc':'asc';
+  } else {
+    sortState.col=ci; sortState.dir='asc';
+  }
+  sortColumn(sortState.dir);
+}
+
+function sortColumn(dir){
+  const t=tables[activeI]; if(!t||!t.rows.length) return;
+  const ci=sortState.col; if(ci<0) return;
+  saveOp();
+  const isNum=t.colTypes?.[ci]==='num';
+  t.rows.sort((a,b)=>{
+    const av=String(a[ci]??''), bv=String(b[ci]??'');
+    if(isNum){
+      const an=parseFloat(av.replace(/[,$%]/g,'')), bn=parseFloat(bv.replace(/[,$%]/g,''));
+      return dir==='asc'?an-bn:bn-an;
+    }
+    return dir==='asc'?av.localeCompare(bv):bv.localeCompare(av);
+  });
+  renderTable(t);
+  toast(`Sorted by "${t.headers[ci]}" ${dir==='asc'?'A→Z':'Z→A'}`,'');
+}
+
+/* ─── SEARCH / FILTER ─── */
+function filterTable(q){
+  const rows=document.querySelectorAll('#tbody tr');
+  if(!q.trim()){rows.forEach(r=>r.classList.remove('filtered-hidden'));return;}
+  const lq=q.toLowerCase();
+  rows.forEach(r=>{
+    const text=Array.from(r.querySelectorAll('td[contenteditable]')).map(td=>td.textContent).join(' ').toLowerCase();
+    r.classList.toggle('filtered-hidden',!text.includes(lq));
+  });
+}
+
+/* ─── CELL EDIT ─── */
+function cellEdit(td){
+  const ri=+td.dataset.ri, ci=+td.dataset.ci;
+  const t=tables[activeI];
+  if(!t||!t.rows[ri]) return;
+  t.rows[ri][ci]=td.textContent;
+}
+
+function cellKeydown(e,td){
+  if(e.key==='Enter'&&!e.shiftKey){
+    e.preventDefault();
+    // Move to cell below
+    const ri=+td.dataset.ri, ci=+td.dataset.ci;
+    const next=document.querySelector(`td[data-ri="${ri+1}"][data-ci="${ci}"]`);
+    if(next) next.focus();
+    else td.blur();
+  }
+  if(e.key==='Tab'){
+    e.preventDefault();
+    const ri=+td.dataset.ri, ci=+td.dataset.ci;
+    const t=tables[activeI];
+    const nextCi=ci+1, nextRi=ri+(nextCi>=t.headers.length?1:0), nc=nextCi%t.headers.length;
+    const next=document.querySelector(`td[data-ri="${nextRi}"][data-ci="${nc}"]`);
+    if(next) next.focus(); else td.blur();
+  }
+}
+
+/* ─── RENAME HEADER ─── */
+function renameHeader(ci, el){
+  const t=tables[activeI]; if(!t) return;
+  const oldVal=t.headers[ci];
+  const input=document.createElement('input');
+  input.className='th-rename-input';
+  input.value=oldVal;
+  el.replaceWith(input);
+  input.focus(); input.select();
+  const finish=()=>{
+    const newVal=input.value.trim()||oldVal;
+    saveOp();
+    t.headers[ci]=newVal;
+    detectColTypes(t);
+    renderTable(t);
+    toast(`Renamed to "${newVal}"`,'');
+  };
+  input.onblur=finish;
+  input.onkeydown=e=>{if(e.key==='Enter')finish(); if(e.key==='Escape'){input.value=oldVal;finish();}};
+}
+
+/* ─── ADD / DELETE ROW / COL ─── */
+function addRow(){
+  const t=tables[activeI]; if(!t) return;
+  saveOp();
+  t.rows.push(new Array(t.headers.length).fill(''));
+  renderTable(t);
+  // Focus first cell of new row
+  setTimeout(()=>{
+    const newCell=document.querySelector(`td[data-ri="${t.rows.length-1}"][data-ci="0"]`);
+    if(newCell) newCell.focus();
+  },50);
+}
+
+function deleteRow(ri){
+  const t=tables[activeI]; if(!t) return;
+  saveOp();
+  t.rows.splice(ri,1);
+  renderTable(t);
+}
+
+function addColumn(){
+  const t=tables[activeI]; if(!t) return;
+  saveOp();
+  const name=prompt('Column name:', `Column ${t.headers.length+1}`);
+  if(!name) return;
+  t.headers.push(name.trim());
+  t.rows.forEach(r=>r.push(''));
+  detectColTypes(t);
+  renderTable(t);
+  toast(`Added column "${name.trim()}"`,'');
+}
+
+/* ─── CLEAN TABLE ─── */
+function cleanTable(){
+  const t=tables[activeI]; if(!t) return;
+  saveOp();
+  let cleaned=0;
+
+  // Remove rows that are entirely empty
+  const before=t.rows.length;
+  t.rows=t.rows.filter(r=>r.some(v=>String(v||'').trim()));
+  cleaned+=before-t.rows.length;
+
+  // Remove columns that are entirely empty (all cells empty)
+  const emptyColIdxs=t.headers.map((_,ci)=>t.rows.every(r=>!String(r[ci]||'').trim())?ci:-1).filter(ci=>ci>=0).reverse();
+  emptyColIdxs.forEach(ci=>{
+    t.headers.splice(ci,1);
+    t.rows.forEach(r=>r.splice(ci,1));
+    if(t.colTypes) t.colTypes.splice(ci,1);
+    cleaned++;
+  });
+
+  // Trim whitespace in all cells
+  t.rows=t.rows.map(r=>r.map(v=>String(v||'').trim()));
+  t.headers=t.headers.map(h=>String(h||'').trim());
+
+  detectColTypes(t);
+  renderTable(t);
+  toast(`Cleaned: removed ${cleaned} empty rows/cols, trimmed whitespace`,'success');
+}
+
+/* ─── COPY TABLE ─── */
+function copyTable(){
+  const t=tables[activeI]; if(!t) return;
+  const rows=getLive(activeI);
+  const text=toTSV(t,rows); // TSV pastes perfectly into Excel/Google Sheets
+  navigator.clipboard.writeText(text).then(()=>toast('Table copied — paste into Excel or Google Sheets','success')).catch(()=>toast('Copy failed','error'));
+}
+
+/* ─── VIEW ─── */
+function setView(v,btn){
+  currentView=v;
+  document.querySelectorAll('.vt').forEach(b=>b.classList.toggle('active',b===btn));
+  document.getElementById('tview').style.display=v==='table'?'':'none';
+  document.getElementById('jview').style.display=v==='json'?'block':'none';
+  document.getElementById('mdview').style.display=v==='md'?'block':'none';
+  document.getElementById('pvview').style.display=v==='preview'?'':'none';
+  // Toolbar only for table view
+  document.getElementById('ttoolbar').style.display=v==='table'?'':'none';
+}
+
+/* ─── EXPORT ─── */
+function getLive(ti){
+  if(ti!==activeI) return tables[ti].rows;
+  const rows=[];
+  document.querySelectorAll('#tbody tr').forEach(tr=>rows.push(Array.from(tr.querySelectorAll('td[contenteditable]')).map(td=>td.textContent)));
+  return rows.length?rows:tables[ti].rows;
+}
+
+function doExport(fmt){
+  const t=tables[activeI];
+  if(!t&&!fmt.startsWith('all')) return;
+  const fname=S=>S.replace(/[^\w\s-]/g,'').trim()||'table';
+  if(fmt==='xlsx') exportXLSX([t],[activeI]);
+  else if(fmt==='all-xlsx') exportXLSX(tables,tables.map((_,i)=>i));
+  else if(fmt==='csv')      dl(toCSV(t,getLive(activeI)), `querencia-table-${fname(t.title||'table')}.csv`,'text/csv');
+  else if(fmt==='tsv')      dl(toTSV(t,getLive(activeI)), `querencia-table-${fname(t.title||'table')}.tsv`,'text/tab-separated-values');
+  else if(fmt==='json')     dl(toJSON(t,getLive(activeI)),`querencia-table-${fname(t.title||'table')}.json`,'application/json');
+  else if(fmt==='markdown') dl(toMarkdown(t,getLive(activeI)),`querencia-table-${fname(t.title||'table')}.md`,'text/markdown');
+  else if(fmt==='all-csv'){ tables.forEach((t,i)=>dl(toCSV(t,getLive(i)),`querencia-table-${fname(t.title||'table'+i)}.csv`,'text/csv')); toast('All CSV files exported','success'); return; }
+  toast('Exported as '+fmt.replace('all-','').toUpperCase(),'success');
+}
+
+function exportXLSX(ts,idxs){
+  const wb=XLSX.utils.book_new();
+  ts.forEach((t,ii)=>{
+    const rows=getLive(idxs[ii]);
+    const ws=XLSX.utils.aoa_to_sheet([t.headers||[],...rows]);
+    ws['!cols']=(t.headers||[]).map((h,ci)=>({wch:Math.max(h.length,...rows.map(r=>String(r[ci]||'').length))+3}));
+    XLSX.utils.book_append_sheet(wb,ws,(t.title||`Table${ii+1}`).substring(0,31).replace(/[\\\/?*\[\]]/g,'')||`Sheet${ii+1}`);
+  });
+  XLSX.writeFile(wb,`querencia-tables-${Date.now()}.xlsx`);
+}
+
+function toCSV(t,rows){const e=v=>`"${String(v).replace(/"/g,'""')}"`;return[(t.headers||[]).map(e).join(','),...rows.map(r=>r.map(e).join(','))].join('\n')}
+function toTSV(t,rows){return[(t.headers||[]).join('\t'),...rows.map(r=>r.join('\t'))].join('\n')}
+function toJSON(t,rows){return JSON.stringify(rows.map(r=>{const o={};(t.headers||[]).forEach((h,i)=>o[h]=r[i]??'');return o}),null,2)}
+function toMarkdown(t,rows){
+  if(!t||!t.headers) return '';
+  const h=t.headers.map(v=>`| ${v} `).join('')+'|';
+  const sep=t.headers.map(()=>`| --- `).join('')+'|';
+  const body=rows.map(r=>r.map(v=>`| ${String(v||'').replace(/\|/g,'\\|')} `).join('')+'|').join('\n');
+  return `### ${t.title||'Table'}\n\n${h}\n${sep}\n${body}\n`;
+}
+function dl(content,name,mime){const a=document.createElement('a');a.href=URL.createObjectURL(new Blob([content],{type:mime}));a.download=name;a.click()}
+
+/* ─── SYNTAX HIGHLIGHT JSON ─── */
+function syntaxHighlight(json){
+  return json.replace(/("(\\u[a-zA-Z0-9]{4}|\\[^u]|[^\\"])*"(\s*:)?|\b(true|false|null)\b|-?\d+(?:\.\d*)?(?:[eE][+\-]?\d+)?)/g,m=>{
+    let cls='jn';
+    if(/^"/.test(m)){cls=/:$/.test(m)?'jk':'jv';}
+    else if(/true|false/.test(m)){cls='jb';}
+    return `<span class="${cls}">${m}</span>`;
+  });
+}
+
+/* ─── MERGE ─── */
+function openMerge(){
+  document.getElementById('mergeList').innerHTML=tables.map((t,i)=>`
+    <div class="ckitem"><input type="checkbox" id="mc${i}" ${i===activeI?'checked':''}><label for="mc${i}">${esc(t.title||'Table '+(i+1))}</label><span class="cr">${t.rows.length}r × ${t.headers.length}c</span></div>`).join('');
+  openModal('mMerge');
+}
+function doMerge(){
+  const idxs=Array.from(document.querySelectorAll('#mergeList input:checked')).map(c=>parseInt(c.id.slice(2)));
+  if(idxs.length<2){toast('Select at least 2 tables','error');return;}
+  saveOp();
+  const ts=idxs.map(i=>tables[i]);
+  const headers=[...new Set(ts.flatMap(t=>t.headers||[]))];
+  const rows=ts.flatMap(t=>(t.rows||[]).map(r=>headers.map((h,hi)=>{const ci=(t.headers||[]).indexOf(h);return ci>=0?r[ci]:''})));
+  const merged={title:'Merged: '+ts.map(t=>t.title||'?').join(' + '),headers,rows,source:'Merged'};
+  detectColTypes(merged);
+  idxs.sort((a,b)=>b-a).forEach(i=>tables.splice(i,1));
+  tables.push(merged); activeI=tables.length-1;
+  closeModal('mMerge'); renderOutput();
+  toast(`Merged ${idxs.length} tables`,'success');
+}
+
+/* ─── SPLIT ─── */
+function openSplit(){
+  const t=tables[activeI]; if(!t)return;
+  document.getElementById('splitName').textContent=`"${t.title||'Table '+(activeI+1)}"`;
+  document.getElementById('splitCol').innerHTML=(t.headers||[]).map((h,i)=>`<option value="${i}">${esc(h)}</option>`).join('');
+  openModal('mSplit');
+}
+function pickSplit(el,type){
+  document.querySelectorAll('.spopt').forEach(o=>o.classList.remove('sel')); el.classList.add('sel');
+  splitType=type;
+  document.getElementById('svRows').style.display=type==='rows'?'':'none';
+  document.getElementById('svCol').style.display=type==='col'?'':'none';
+}
+function doSplit(){
+  const t=tables[activeI]; if(!t)return;
+  saveOp();
+  let newTs=[];
+  if(splitType==='rows'){
+    const n=parseInt(document.getElementById('splitN').value)||10;
+    for(let i=0;i<t.rows.length;i+=n)
+      newTs.push({title:`${t.title||'Table'} (${i+1}–${Math.min(i+n,t.rows.length)})`,headers:[...t.headers],rows:t.rows.slice(i,i+n),source:t.source});
+  }else{
+    const ci=parseInt(document.getElementById('splitCol').value);
+    const g={};
+    t.rows.forEach(r=>{const k=r[ci]??'(empty)';(g[k]=g[k]||[]).push(r)});
+    newTs=Object.entries(g).map(([k,rows])=>({title:`${t.headers[ci]}: ${k}`,headers:[...t.headers],rows,source:t.source}));
+  }
+  if(!newTs.length){toast('Cannot split','error');return;}
+  newTs.forEach(t=>detectColTypes(t));
+  tables.splice(activeI,1,...newTs);
+  closeModal('mSplit'); renderOutput();
+  toast(`Split into ${newTs.length} tables`,'success');
+}
+
+/* ─── UNDO / REDO ─── */
+function saveOp(){
+  opStack.push(deepClone({tables,activeI}));
+  if(opStack.length>30) opStack.shift();
+  opRedo=[];
+  updateUndoRedoBtns();
+}
+function undoOp(){
+  if(!opStack.length) return;
+  opRedo.push(deepClone({tables,activeI}));
+  const prev=opStack.pop();
+  tables=prev.tables; activeI=prev.activeI;
+  renderOutput(); updateUndoRedoBtns();
+  toast('Undone','');
+}
+function redoOp(){
+  if(!opRedo.length) return;
+  opStack.push(deepClone({tables,activeI}));
+  const next=opRedo.pop();
+  tables=next.tables; activeI=next.activeI;
+  renderOutput(); updateUndoRedoBtns();
+  toast('Redone','');
+}
+function updateUndoRedoBtns(){
+  document.getElementById('btnUndo').disabled=opStack.length===0;
+  document.getElementById('btnRedo').disabled=opRedo.length===0;
+}
+
+/* ─── HISTORY ─── */
+function addHist(entry){
+  history.unshift({...entry,id:Date.now(),ts:Date.now()});
+  if(history.length>30) history=history.slice(0,30);
+  renderHist();
+}
+function renderHist(){
+  const el=document.getElementById('histList');
+  document.getElementById('hEmpty').style.display=history.length?'none':'';
+  el.innerHTML=history.map((h,i)=>`
+    <div class="h-item ${i===0?'active':''}" onclick="loadHist(${i})">
+      <div class="h-icon ${h.type}">${{
+        image:`<svg width="13" height="13" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><rect x="3" y="3" width="18" height="18" rx="3"/><circle cx="8.5" cy="8.5" r="1.5"/><polyline points="21 15 16 10 5 21"/></svg>`,
+        pdf:`<svg width="13" height="13" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"/><polyline points="14 2 14 8 20 8"/></svg>`,
+        html:`<svg width="13" height="13" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><polyline points="16 18 22 12 16 6"/><polyline points="8 6 2 12 8 18"/></svg>`,
+        url:`<svg width="13" height="13" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><circle cx="12" cy="12" r="10"/><line x1="2" y1="12" x2="22" y2="12"/></svg>`,
+      }[h.type]||''}</div>
+      <div class="h-meta">
+        <div class="h-name">${esc(h.name)}</div>
+        <div class="h-info">${h.count} table${h.count!==1?'s':''} · ${ago(h.ts)}</div>
+      </div>
+      <button class="h-del" onclick="delHist(${i});event.stopPropagation()">×</button>
+    </div>`).join('');
+}
+function loadHist(i){
+  const h=history[i]; if(!h?.ts)return;
+  saveOp();
+  tables=deepClone(h.ts); activeI=0;
+  renderOutput();
+  document.querySelectorAll('.h-item').forEach((el,j)=>el.classList.toggle('active',j===i));
+}
+function delHist(i){ history.splice(i,1); renderHist(); }
+
+/* ─── DARK MODE ─── */
+function toggleDark(){ document.body.classList.toggle('dark'); localStorage.setItem('qte_dark',document.body.classList.contains('dark')?'1':'0'); }
+if(localStorage.getItem('qte_dark')==='1') document.body.classList.add('dark');
+
+/* ─── MODAL / DD ─── */
+function openModal(id){document.getElementById(id).classList.add('open')}
+function closeModal(id){document.getElementById(id).classList.remove('open')}
+function toggleDd(){document.getElementById('ddmenu').classList.toggle('open')}
+function closeDd(){document.getElementById('ddmenu').classList.remove('open')}
+document.addEventListener('click',e=>{if(!e.target.closest('#expDd'))closeDd()});
+document.addEventListener('click',e=>{if(e.target.classList.contains('moverlay'))e.target.classList.remove('open')});
+
+/* ─── KEYBOARD SHORTCUTS ─── */
+document.addEventListener('keydown',e=>{
+  const tag=document.activeElement.tagName;
+  if(tag==='INPUT'||tag==='TEXTAREA') return;
+  if((e.ctrlKey||e.metaKey)&&e.key==='z'){e.preventDefault();undoOp();}
+  else if((e.ctrlKey||e.metaKey)&&(e.key==='y'||e.key==='Z')){e.preventDefault();redoOp();}
+  else if((e.ctrlKey||e.metaKey)&&e.key==='s'){e.preventDefault();if(!document.getElementById('btnQE').disabled)doExport('xlsx');}
+  else if(e.key==='d'||e.key==='D') toggleDark();
+  else if(e.key==='Escape'){
+    document.querySelectorAll('.moverlay.open').forEach(m=>m.classList.remove('open'));
+    closeDd();
+    document.getElementById('tableSearch').value='';
+    filterTable('');
+  }
+});
+
+/* ─── PROGRESS / EXTRACT STATE ─── */
+function setExtr(on){
+  document.getElementById('btnX').disabled=on;
+  document.getElementById('ptrack').classList.toggle('on',on);
+  document.getElementById('plabel').classList.toggle('on',on);
+  document.getElementById('xhint').style.display=on?'none':'';
+  if(!on) setTimeout(()=>{document.getElementById('pfill').style.width='0%';document.getElementById('plabel').textContent=''},700);
+}
+let ptimer;
+function setP(pct,label){
+  document.getElementById('pfill').style.width=pct+'%';
+  document.getElementById('plabel').textContent=label;
+  if(pct>=100){clearTimeout(ptimer);ptimer=setTimeout(()=>setExtr(false),900);}
+}
+
+/* ─── TOAST ─── */
+function toast(msg,type=''){
+  const w=document.getElementById('twrap');
+  const t=document.createElement('div');
+  t.className=`ttoast${type?' '+type:''}`;
+  t.textContent=msg; w.appendChild(t);
+  requestAnimationFrame(()=>requestAnimationFrame(()=>t.classList.add('on')));
+  setTimeout(()=>{t.classList.remove('on');setTimeout(()=>t.remove(),250)},3200);
+}
+
+/* ─── UTILS ─── */
+function esc(s){return String(s).replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;')}
+function fmtB(b){return b<1024?b+'B':b<1048576?(b/1024).toFixed(1)+'KB':(b/1048576).toFixed(1)+'MB'}
+function deepClone(o){return JSON.parse(JSON.stringify(o))}
+function ago(ts){const s=Math.floor((Date.now()-ts)/1000);return s<60?'just now':s<3600?Math.floor(s/60)+'m ago':Math.floor(s/3600)+'h ago'}
+
+</script>
+</body>
+</html>

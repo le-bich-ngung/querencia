@@ -1,0 +1,665 @@
+<!DOCTYPE html>
+<html lang="vi">
+<head>
+  <meta charset="UTF-8"/>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>Vault · Querencia Tools</title>
+  <link rel="shortcut icon" type="image/svg+xml" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 120 120'><circle cx='55' cy='55' r='38' fill='none' stroke='%234a7c59' stroke-width='7' stroke-linecap='round'/><line x1='81' y1='79' x2='98' y2='98' stroke='%234a7c59' stroke-width='7' stroke-linecap='round'/><polyline points='20,55 28,38 35,68 43,32 51,60 58,43 66,70 74,48 90,55' fill='none' stroke='%234a7c59' stroke-width='3' stroke-linecap='round' stroke-linejoin='round'/></svg>"/>
+  <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:ital,wght@0,300;0,400;0,500;0,600;0,700;1,400&display=swap" rel="stylesheet"/>
+  <style>
+    :root{
+      --sage:#4a7c59;--sage-pale:#ddeee3;--sage-dark:#2f5c3e;
+      --black:#111;--gray:#555;--gray-light:#999;--border:#e0e0e0;--white:#fff;
+      --font:'Plus Jakarta Sans',sans-serif;
+    }
+    *,*::before,*::after{box-sizing:border-box;margin:0;padding:0}
+    html{scroll-behavior:smooth}
+    body{font-family:var(--font);color:var(--black);background:var(--white);min-height:100vh}
+    @keyframes fadeUp{from{opacity:0;transform:translateY(14px)}to{opacity:1;transform:none}}
+    @keyframes spin{to{transform:rotate(360deg)}}
+    @keyframes pop{0%{transform:scale(0.88);opacity:0}70%{transform:scale(1.04)}100%{transform:scale(1);opacity:1}}
+    @keyframes countdown{from{width:100%}to{width:0%}}
+
+    /* NAV */
+    nav{position:sticky;top:0;z-index:100;display:flex;align-items:center;justify-content:space-between;padding:0 32px;height:64px;background:rgba(255,255,255,0.94);backdrop-filter:blur(12px);border-bottom:1px solid var(--border)}
+    .nav-logo{display:flex;flex-direction:column;align-items:flex-start;text-decoration:none;gap:1px}
+    .nav-logo-inner{display:flex;align-items:center}
+    .nav-tagline{font-size:0.65rem;font-weight:600;letter-spacing:0.06em;color:var(--sage)}
+    .nav-back{font-size:0.82rem;color:var(--gray);text-decoration:none;padding:6px 14px;border:1.5px solid var(--border);border-radius:20px;transition:all 0.2s}
+    .nav-back:hover{border-color:var(--sage);color:var(--sage)}
+
+    /* HEADER */
+    .page-header{padding:64px 64px 48px;border-bottom:1px solid var(--border);animation:fadeUp 0.6s 0.1s both}
+    .page-label{font-size:0.7rem;letter-spacing:0.2em;text-transform:uppercase;color:var(--sage);font-weight:500;margin-bottom:12px}
+    .page-title{font-family:var(--font);font-size:clamp(2rem,4vw,3rem);font-weight:700;letter-spacing:-0.5px;line-height:1.15}
+    .page-title em{font-style:italic;color:var(--sage)}
+    .page-desc{margin-top:14px;font-size:0.92rem;color:var(--gray);max-width:520px;line-height:1.7}
+    .badge-free{display:inline-block;font-size:0.65rem;font-weight:600;letter-spacing:0.1em;text-transform:uppercase;padding:3px 8px;border-radius:4px;margin-left:12px;background:var(--sage-pale);color:var(--sage-dark);vertical-align:middle}
+
+    /* LAYOUT */
+    .tool-wrap{display:grid;grid-template-columns:1fr 1fr;min-height:calc(100vh - 280px)}
+    .panel-left{padding:48px 48px 48px 64px;border-right:1px solid var(--border);animation:fadeUp 0.5s 0.2s both}
+    .panel-right{padding:48px 64px 48px 48px;background:#fafaf9;animation:fadeUp 0.5s 0.3s both}
+    .panel-title{font-size:0.7rem;letter-spacing:0.15em;text-transform:uppercase;color:var(--gray-light);font-weight:500;margin-bottom:20px}
+
+    /* DROP ZONE */
+    .drop-zone{border:2px dashed var(--border);border-radius:16px;padding:48px 28px;text-align:center;cursor:pointer;transition:all 0.25s;position:relative;background:var(--white)}
+    .drop-zone:hover,.drop-zone.over{border-color:var(--sage);background:var(--sage-pale)}
+    .drop-zone input{position:absolute;inset:0;opacity:0;cursor:pointer;width:100%;height:100%}
+    .drop-icon{font-size:2.6rem;margin-bottom:14px;opacity:0.45;transition:transform 0.2s}
+    .drop-zone:hover .drop-icon{transform:scale(1.08);opacity:0.7}
+    .drop-zone h3{font-family:var(--font);font-size:1rem;font-weight:600;margin-bottom:6px}
+    .drop-zone p{font-size:0.8rem;color:var(--gray-light);line-height:1.6}
+    .browse{color:var(--sage);text-decoration:underline;font-weight:500}
+
+    /* FILE PREVIEW */
+    .file-preview{display:none;margin-top:16px;padding:14px 16px;border:1.5px solid var(--border);border-radius:10px;align-items:center;gap:12px;background:var(--white)}
+    .file-preview-icon{font-size:1.6rem;flex-shrink:0}
+    .file-info{flex:1;min-width:0}
+    .file-name{font-size:0.85rem;font-weight:600;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+    .file-size{font-size:0.72rem;color:var(--gray-light);margin-top:2px}
+    .btn-clear{background:none;border:none;cursor:pointer;color:var(--gray-light);font-size:0.85rem;padding:4px 8px;border-radius:6px;transition:all 0.15s}
+    .btn-clear:hover{background:#fdecea;color:#c0392b}
+
+    /* OPTIONS */
+    .options{margin-top:24px;display:flex;flex-direction:column;gap:18px}
+    .opt-label{font-size:0.72rem;letter-spacing:0.12em;text-transform:uppercase;color:var(--gray);font-weight:500;margin-bottom:8px;display:block}
+    .opt-grid{display:grid;grid-template-columns:1fr 1fr;gap:8px}
+    .opt-card{padding:10px 14px;border:1.5px solid var(--border);border-radius:10px;cursor:pointer;transition:all 0.15s;background:var(--white)}
+    .opt-card:hover{border-color:var(--sage)}
+    .opt-card.active{border-color:var(--sage);background:var(--sage-pale)}
+    .opt-card-title{font-size:0.82rem;font-weight:600;margin-bottom:2px}
+    .opt-card.active .opt-card-title{color:var(--sage-dark)}
+    .opt-card-sub{font-size:0.7rem;color:var(--gray-light)}
+
+    /* Custom time */
+    .custom-time{display:none;margin-top:10px}
+    .custom-row{display:flex;align-items:center;gap:8px}
+    .custom-input{padding:8px 12px;border:1.5px solid var(--border);border-radius:8px;font-family:var(--font);font-size:0.88rem;color:var(--black);outline:none;width:90px;transition:border-color 0.2s}
+    .custom-input:focus{border-color:var(--sage)}
+    .custom-unit{font-size:0.82rem;color:var(--gray)}
+
+    /* Password */
+    .pass-toggle{display:flex;align-items:center;gap:8px;font-size:0.83rem;cursor:pointer;margin-bottom:8px}
+    .pass-toggle input[type=checkbox]{accent-color:var(--sage)}
+    .pass-input{padding:9px 12px;border:1.5px solid var(--border);border-radius:8px;font-family:var(--font);font-size:0.85rem;color:var(--black);outline:none;width:100%;transition:border-color 0.2s;display:none}
+    .pass-input:focus{border-color:var(--sage)}
+
+    /* BTN */
+    .btn-primary{background:var(--sage);color:#fff;border:none;padding:14px;border-radius:30px;font-family:var(--font);font-size:0.92rem;font-weight:600;cursor:pointer;width:100%;margin-top:24px;transition:background 0.2s,transform 0.15s}
+    .btn-primary:hover{background:var(--sage-dark);transform:translateY(-1px)}
+    .btn-primary:disabled{background:var(--border);color:var(--gray-light);cursor:not-allowed;transform:none}
+    .btn-outline{background:transparent;color:var(--black);border:1.5px solid var(--border);padding:10px 20px;border-radius:30px;font-family:var(--font);font-size:0.82rem;font-weight:500;cursor:pointer;transition:all 0.2s}
+    .btn-outline:hover{border-color:var(--sage);color:var(--sage)}
+
+    /* PROGRESS */
+    .upload-progress{display:none;margin-top:16px}
+    .progress-bar-wrap{width:100%;height:4px;background:var(--sage-pale);border-radius:4px;overflow:hidden;margin-bottom:8px}
+    .progress-bar{height:100%;background:var(--sage);border-radius:4px;width:0%;transition:width 0.3s}
+    .progress-label{font-size:0.78rem;color:var(--gray-light);text-align:center}
+
+    /* RIGHT: RESULT & RECEIVE */
+    .state-empty{display:flex;flex-direction:column;align-items:center;justify-content:center;min-height:320px;text-align:center;color:var(--gray-light)}
+    .state-empty-icon{font-size:3rem;margin-bottom:14px;opacity:0.25}
+    .state-empty p{font-size:0.85rem;line-height:1.7;max-width:240px}
+
+    /* RESULT CARD */
+    .result-card{display:none;animation:pop 0.35s both}
+    .result-success{display:flex;align-items:center;gap:10px;padding:14px 16px;background:var(--sage-pale);border-radius:10px;margin-bottom:20px}
+    .result-success-icon{font-size:1.4rem}
+    .result-success-text{font-size:0.85rem;color:var(--sage-dark);font-weight:500;line-height:1.5}
+
+    .link-box{border:1.5px solid var(--border);border-radius:10px;overflow:hidden;margin-bottom:16px}
+    .link-label{padding:8px 14px;background:#f5f5f3;font-size:0.65rem;letter-spacing:0.12em;text-transform:uppercase;color:var(--gray-light);font-weight:500;border-bottom:1px solid var(--border)}
+    .link-url{padding:12px 14px;font-size:0.8rem;color:var(--black);word-break:break-all;line-height:1.5;font-family:monospace;background:var(--white)}
+    .link-actions{padding:10px 14px;border-top:1px solid var(--border);display:flex;gap:8px;background:#fafaf9}
+
+    .expire-badge{display:inline-flex;align-items:center;gap:6px;padding:6px 14px;border-radius:20px;font-size:0.78rem;font-weight:600;background:#fff3cd;color:#856404;border:1px solid #ffc107;margin-bottom:16px}
+
+    .qr-section{text-align:center;padding:20px;border:1.5px solid var(--border);border-radius:10px;margin-top:16px}
+    .qr-section canvas{display:block;margin:0 auto 10px}
+    .qr-label{font-size:0.72rem;color:var(--gray-light)}
+
+    /* RECEIVE CARD */
+    .receive-card{display:none;animation:pop 0.4s both;text-align:center}
+    .receive-lock{font-size:3.5rem;margin-bottom:16px}
+    .receive-title{font-size:1.3rem;font-weight:700;margin-bottom:8px;font-family:var(--font)}
+    .receive-meta{font-size:0.82rem;color:var(--gray);line-height:1.7;margin-bottom:20px}
+    .receive-warn{padding:10px 16px;background:#fff3cd;border:1px solid #ffc107;border-radius:8px;font-size:0.8rem;color:#856404;margin-bottom:20px;text-align:left;line-height:1.6}
+    .receive-pass-wrap{margin-bottom:16px;display:none}
+
+    /* EXPIRED CARD */
+    .expired-card{display:none;animation:pop 0.35s both;text-align:center}
+    .expired-icon{font-size:3rem;margin-bottom:14px;opacity:0.5}
+    .expired-title{font-size:1.2rem;font-weight:600;color:var(--gray);margin-bottom:8px}
+    .expired-sub{font-size:0.85rem;color:var(--gray-light);line-height:1.7}
+
+    /* TIPS */
+    .tips-section{border-top:1px solid var(--border);display:grid;grid-template-columns:repeat(3,1fr);gap:1px;background:var(--border)}
+    .tip-card{background:var(--white);padding:32px}
+    .tip-icon{font-size:1.4rem;margin-bottom:12px}
+    .tip-card h4{font-family:var(--font);font-size:0.95rem;font-weight:600;margin-bottom:8px}
+    .tip-card p{font-size:0.82rem;color:var(--gray);line-height:1.65}
+
+    /* FOOTER */
+    footer{display:flex;align-items:center;justify-content:space-between;padding:24px 64px;border-top:1px solid var(--border);font-size:0.8rem;color:var(--gray-light)}
+
+    /* TOAST */
+    .toast{display:none;position:fixed;bottom:28px;left:50%;transform:translateX(-50%);background:var(--black);color:#fff;padding:10px 20px;border-radius:30px;font-size:0.82rem;font-weight:500;z-index:999;animation:fadeUp 0.3s both}
+
+    /* DARK */
+    body.dark{background:#0f0f0f;color:#eee}
+    body.dark nav{background:rgba(15,15,15,0.94);border-bottom-color:#222}
+    body.dark .drop-zone{background:#1a1a1a;border-color:#333}
+    body.dark .drop-zone:hover,.dark .drop-zone.over{background:#1a3328;border-color:var(--sage)}
+    body.dark .panel-right{background:#0a0a0a}
+    body.dark .file-preview,.dark .opt-card,.dark .link-box,.dark .link-url{background:#1a1a1a;border-color:#333}
+    body.dark .opt-card.active{background:#1a3328;border-color:var(--sage)}
+    body.dark .link-label,.dark .link-actions{background:#111;border-color:#333}
+    body.dark .custom-input,.dark .pass-input{background:#1a1a1a;border-color:#333;color:#eee}
+    body.dark .tips-section{background:#222}
+    body.dark .tip-card{background:#0f0f0f}
+    body.dark footer{border-top-color:#222;background:#0f0f0f}
+    body.dark .nav-back{border-color:#333;color:#aaa}
+    body.dark .page-label{color:#7ecf9a}
+    body.dark .btn-outline{border-color:#333;color:#eee}
+    body.dark .qr-section{border-color:#333;background:#1a1a1a}
+
+    @media(max-width:900px){
+      .tool-wrap{grid-template-columns:1fr}
+      .panel-left{border-right:none;border-bottom:1px solid var(--border);padding:32px 24px}
+      .panel-right{padding:32px 24px;background:var(--white)}
+      .page-header{padding:40px 24px 32px}
+      .tips-section{grid-template-columns:1fr}
+      footer{padding:20px 24px;flex-direction:column;gap:8px}
+      nav{padding:0 16px}
+      .opt-grid{grid-template-columns:1fr 1fr}
+    }
+  </style>
+</head>
+<body>
+
+<!-- NAV -->
+<nav>
+  <a class="nav-logo" href="https://querencia.com.vn">
+    <div class="nav-logo-inner">
+      <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 120 120" width="28" height="28" style="position:relative;top:3px;margin-right:-3px;flex-shrink:0">
+        <defs><clipPath id="qClip"><circle cx="55" cy="55" r="32"/></clipPath></defs>
+        <circle cx="55" cy="55" r="38" fill="none" stroke="#4a7c59" stroke-width="7" stroke-linecap="round"/>
+        <line x1="81" y1="79" x2="98" y2="98" stroke="#4a7c59" stroke-width="7" stroke-linecap="round"/>
+        <polyline points="20,55 28,38 35,68 43,32 51,60 58,43 66,70 74,48 90,55" fill="none" stroke="#4a7c59" stroke-width="3" stroke-linecap="round" stroke-linejoin="round" clip-path="url(#qClip)"/>
+      </svg>
+      <span style="font-family:var(--font);font-weight:700;font-size:1.4rem"><span style="color:#111">ueren</span><span style="color:#4a7c59">cia</span></span>
+    </div>
+    <small class="nav-tagline">Tech and more</small>
+  </a>
+  <div style="display:flex;align-items:center;gap:12px">
+    <button onclick="toggleDark()" style="background:none;border:none;cursor:pointer;font-size:1.1rem;color:var(--gray-light);padding:4px 8px">◐</button>
+    <a class="nav-back" href="https://querencia.com.vn">← Về trang chủ</a>
+  </div>
+</nav>
+
+<!-- HEADER -->
+<div class="page-header">
+  <p class="page-label">Tools · Vault</p>
+  <h1 class="page-title">Link chia sẻ <em>tự hủy</em> <span class="badge-free">Free</span></h1>
+  <p class="page-desc">Tạo link chia sẻ file có thời hạn. Sau khi người nhận tải về — hoặc hết giờ — file tự động bị xóa vĩnh viễn khỏi server.</p>
+</div>
+
+<!-- MAIN -->
+<div class="tool-wrap">
+
+  <!-- LEFT: UPLOAD -->
+  <div class="panel-left">
+    <p class="panel-title">Tải file lên</p>
+
+    <div class="drop-zone" id="dropZone">
+      <input type="file" id="fileInput" onchange="handleFile(this.files[0])"/>
+      <div class="drop-icon">🔒</div>
+      <h3>Kéo thả file vào đây</h3>
+      <p>hoặc <span class="browse">click để chọn</span><br/>Tối đa 25MB · Mọi định dạng</p>
+    </div>
+
+    <div class="file-preview" id="filePreview">
+      <span class="file-preview-icon" id="fileIcon">📄</span>
+      <div class="file-info">
+        <div class="file-name" id="fileName">—</div>
+        <div class="file-size" id="fileSize">—</div>
+      </div>
+      <button class="btn-clear" onclick="clearFile()">✕</button>
+    </div>
+
+    <!-- OPTIONS -->
+    <div class="options" id="options" style="display:none">
+
+      <!-- Thời hạn -->
+      <div>
+        <span class="opt-label">Tự hủy sau</span>
+        <div class="opt-grid">
+          <div class="opt-card" onclick="setExpire('1read',this)">
+            <div class="opt-card-title">1 lần đọc</div>
+            <div class="opt-card-sub">Xóa ngay sau khi tải</div>
+          </div>
+          <div class="opt-card active" onclick="setExpire('24h',this)">
+            <div class="opt-card-title">24 giờ</div>
+            <div class="opt-card-sub">Hết hạn sau 1 ngày</div>
+          </div>
+          <div class="opt-card" onclick="setExpire('1h',this)">
+            <div class="opt-card-title">1 giờ</div>
+            <div class="opt-card-sub">Hết hạn sau 60 phút</div>
+          </div>
+          <div class="opt-card" onclick="setExpire('7d',this)">
+            <div class="opt-card-title">7 ngày</div>
+            <div class="opt-card-sub">Hết hạn sau 1 tuần</div>
+          </div>
+          <div class="opt-card" onclick="setExpire('custom',this)" style="grid-column:span 2">
+            <div class="opt-card-title">⚙ Tự nhập thời gian</div>
+            <div class="opt-card-sub">Tùy chỉnh số phút / giờ</div>
+          </div>
+        </div>
+
+        <!-- Custom time -->
+        <div class="custom-time" id="customTimeWrap">
+          <div class="custom-row">
+            <input class="custom-input" type="number" id="customVal" min="1" value="30" placeholder="30"/>
+            <select class="custom-input" id="customUnit" style="width:auto;padding:8px 10px">
+              <option value="1">phút</option>
+              <option value="60">giờ</option>
+              <option value="1440">ngày</option>
+            </select>
+          </div>
+        </div>
+      </div>
+
+      <!-- Mật khẩu -->
+      <div>
+        <span class="opt-label">Bảo vệ bằng mật khẩu</span>
+        <label class="pass-toggle">
+          <input type="checkbox" id="passToggle" onchange="togglePass(this)"/>
+          Đặt mật khẩu cho link
+        </label>
+        <input class="pass-input" type="password" id="passInput" placeholder="Nhập mật khẩu..."/>
+      </div>
+
+    </div>
+
+    <div class="upload-progress" id="uploadProgress">
+      <div class="progress-bar-wrap"><div class="progress-bar" id="uploadBar"></div></div>
+      <div class="progress-label" id="uploadLabel">Đang tải lên...</div>
+    </div>
+
+    <button class="btn-primary" id="btnUpload" onclick="doUpload()" disabled>🔒 Tạo link tự hủy</button>
+  </div>
+
+  <!-- RIGHT: RESULT / RECEIVE -->
+  <div class="panel-right">
+
+    <!-- Empty -->
+    <div class="state-empty" id="stateEmpty">
+      <div class="state-empty-icon">🔗</div>
+      <p>Tải file lên để tạo link chia sẻ tự hủy. Người nhận chỉ cần link — không cần tài khoản.</p>
+    </div>
+
+    <!-- Result after upload -->
+    <div class="result-card" id="resultCard">
+      <div class="result-success">
+        <span class="result-success-icon">✓</span>
+        <div class="result-success-text">Link đã được tạo! Chia sẻ cho người nhận.<br/>File sẽ tự động bị xóa sau khi hết hạn.</div>
+      </div>
+
+      <div class="expire-badge" id="expireBadge">⏱ —</div>
+
+      <div class="link-box">
+        <div class="link-label">Link chia sẻ</div>
+        <div class="link-url" id="shareUrl">—</div>
+        <div class="link-actions">
+          <button class="btn-outline" style="font-size:0.78rem;padding:6px 14px" onclick="copyLink()">📋 Sao chép</button>
+          <button class="btn-outline" style="font-size:0.78rem;padding:6px 14px" onclick="shareLink()">↗ Chia sẻ</button>
+          <button class="btn-outline" style="font-size:0.78rem;padding:6px 14px" onclick="resetAll()">+ Tạo link mới</button>
+        </div>
+      </div>
+
+      <div class="qr-section" id="qrSection">
+        <canvas id="qrCanvas"></canvas>
+        <div class="qr-label">Quét QR để mở link</div>
+      </div>
+    </div>
+
+    <!-- Receive mode (khi có ?token=... trên URL) -->
+    <div class="receive-card" id="receiveCard">
+      <div class="receive-lock" id="receiveIcon">🔒</div>
+      <div class="receive-title" id="receiveTitle">Bạn nhận được một file</div>
+      <div class="receive-meta" id="receiveMeta">Đang tải thông tin...</div>
+
+      <div class="receive-warn" id="receiveWarn" style="display:none"></div>
+
+      <div class="receive-pass-wrap" id="receivePassWrap">
+        <input type="password" id="receivePass" placeholder="Nhập mật khẩu để tải file..."
+          style="width:100%;padding:11px 14px;border:1.5px solid var(--border);border-radius:8px;font-family:var(--font);font-size:0.88rem;outline:none;margin-bottom:10px"
+          onfocus="this.style.borderColor='var(--sage)'" onblur="this.style.borderColor='var(--border)'"/>
+      </div>
+
+      <button class="btn-primary" id="btnDownload" onclick="doDownload()" style="width:auto;padding:13px 36px">⬇ Tải về ngay</button>
+    </div>
+
+    <!-- Expired -->
+    <div class="expired-card" id="expiredCard">
+      <div class="expired-icon">💨</div>
+      <div class="expired-title">Link đã tự hủy</div>
+      <div class="expired-sub" id="expiredMsg">File này đã bị xóa vĩnh viễn khỏi server.</div>
+      <button class="btn-outline" style="margin-top:20px" onclick="location.href=location.pathname">Tạo link mới</button>
+    </div>
+
+  </div>
+</div>
+
+<!-- TIPS -->
+<div class="tips-section">
+  <div class="tip-card">
+    <div class="tip-icon">💨</div>
+    <h4>Tự hủy thật sự</h4>
+    <p>File bị xóa vĩnh viễn khỏi server sau khi tải về hoặc hết giờ. Không ai — kể cả admin — có thể khôi phục lại.</p>
+  </div>
+  <div class="tip-card">
+    <div class="tip-icon">🔑</div>
+    <h4>Mã hóa tùy chọn</h4>
+    <p>Đặt mật khẩu để chỉ người biết mật khẩu mới tải được. Link không có mật khẩu thì ai có link cũng tải được.</p>
+  </div>
+  <div class="tip-card">
+    <div class="tip-icon">📱</div>
+    <h4>Không cần tài khoản</h4>
+    <p>Người nhận không cần tài khoản Querencia. Chỉ cần mở link là tải được ngay — đơn giản như gửi link bình thường.</p>
+  </div>
+</div>
+
+<footer>
+  <div style="display:flex;align-items:center">
+    <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 120 120" width="20" height="20" style="position:relative;top:3px;margin-right:-2px">
+      <defs><clipPath id="qClipF"><circle cx="55" cy="55" r="32"/></clipPath></defs>
+      <circle cx="55" cy="55" r="38" fill="none" stroke="#4a7c59" stroke-width="7" stroke-linecap="round"/>
+      <line x1="81" y1="79" x2="98" y2="98" stroke="#4a7c59" stroke-width="7" stroke-linecap="round"/>
+      <polyline points="20,55 28,38 35,68 43,32 51,60 58,43 66,70 74,48 90,55" fill="none" stroke="#4a7c59" stroke-width="3" stroke-linecap="round" stroke-linejoin="round" clip-path="url(#qClipF)"/>
+    </svg>
+    <span style="font-family:var(--font);font-weight:700;font-size:0.9rem"><span style="color:#111">ueren</span><span style="color:#4a7c59">cia</span></span>
+  </div>
+  <span>© 2025 Querencia · All rights reserved</span>
+</footer>
+
+<div class="toast" id="toast"></div>
+
+<!-- QR lib -->
+<script src="https://cdnjs.cloudflare.com/ajax/libs/qrcodejs/1.0.0/qrcode.min.js"></script>
+<script>
+const API = '/ai';
+
+// ── DARK MODE ──
+if (localStorage.getItem('darkMode') === '1') document.body.classList.add('dark');
+function toggleDark() {
+  document.body.classList.toggle('dark');
+  localStorage.setItem('darkMode', document.body.classList.contains('dark') ? '1' : '0');
+}
+
+function toast(msg, dur=2500) {
+  const t = document.getElementById('toast');
+  t.textContent = msg; t.style.display = 'block';
+  clearTimeout(t._t); t._t = setTimeout(() => t.style.display = 'none', dur);
+}
+
+// ── CHECK URL FOR TOKEN ──
+window.addEventListener('DOMContentLoaded', () => {
+  const params = new URLSearchParams(location.search);
+  const token = params.get('token');
+  if (token) enterReceiveMode(token);
+});
+
+// ── FILE HANDLING ──
+let selectedFile = null;
+let expireMode = '24h';
+
+const dz = document.getElementById('dropZone');
+dz.addEventListener('dragover', e => { e.preventDefault(); dz.classList.add('over'); });
+dz.addEventListener('dragleave', () => dz.classList.remove('over'));
+dz.addEventListener('drop', e => {
+  e.preventDefault(); dz.classList.remove('over');
+  if (e.dataTransfer.files[0]) handleFile(e.dataTransfer.files[0]);
+});
+
+const FILE_ICONS = {
+  pdf:'📄', doc:'📝', docx:'📝', xls:'📊', xlsx:'📊',
+  ppt:'📊', pptx:'📊', zip:'📦', rar:'📦', '7z':'📦',
+  jpg:'🖼️', jpeg:'🖼️', png:'🖼️', gif:'🖼️', mp4:'🎬',
+  mp3:'🎵', txt:'📃', csv:'📊',
+};
+
+function handleFile(file) {
+  if (file.size > 25 * 1024 * 1024) { toast('File quá lớn! Tối đa 25MB.'); return; }
+  selectedFile = file;
+  const ext = file.name.split('.').pop().toLowerCase();
+  document.getElementById('fileIcon').textContent = FILE_ICONS[ext] || '📄';
+  document.getElementById('fileName').textContent = file.name;
+  document.getElementById('fileSize').textContent = formatSize(file.size);
+  document.getElementById('filePreview').style.display = 'flex';
+  document.getElementById('dropZone').style.display = 'none';
+  document.getElementById('options').style.display = 'flex';
+  document.getElementById('btnUpload').disabled = false;
+}
+
+function clearFile() {
+  selectedFile = null;
+  document.getElementById('fileInput').value = '';
+  document.getElementById('filePreview').style.display = 'none';
+  document.getElementById('dropZone').style.display = 'block';
+  document.getElementById('options').style.display = 'none';
+  document.getElementById('btnUpload').disabled = true;
+}
+
+function formatSize(bytes) {
+  if (bytes < 1024) return bytes + ' B';
+  if (bytes < 1048576) return (bytes/1024).toFixed(1) + ' KB';
+  return (bytes/1048576).toFixed(1) + ' MB';
+}
+
+// ── EXPIRE OPTIONS ──
+function setExpire(mode, el) {
+  expireMode = mode;
+  document.querySelectorAll('.opt-card').forEach(c => c.classList.remove('active'));
+  el.classList.add('active');
+  document.getElementById('customTimeWrap').style.display = mode === 'custom' ? 'block' : 'none';
+}
+
+function togglePass(cb) {
+  document.getElementById('passInput').style.display = cb.checked ? 'block' : 'none';
+}
+
+// ── UPLOAD ──
+async function doUpload() {
+  if (!selectedFile) return;
+
+  const formData = new FormData();
+  formData.append('file', selectedFile);
+  formData.append('mode', expireMode);
+
+  if (expireMode === 'custom') {
+    const val = parseInt(document.getElementById('customVal').value) || 30;
+    const unit = parseInt(document.getElementById('customUnit').value) || 1;
+    formData.append('custom_minutes', val * unit);
+  }
+
+  const pass = document.getElementById('passToggle').checked
+    ? document.getElementById('passInput').value.trim() : '';
+  if (pass) formData.append('password', pass);
+
+  // UI
+  document.getElementById('btnUpload').disabled = true;
+  document.getElementById('uploadProgress').style.display = 'block';
+
+  // Fake progress
+  let prog = 0;
+  const bar = document.getElementById('uploadBar');
+  const label = document.getElementById('uploadLabel');
+  const fakeInterval = setInterval(() => {
+    prog = Math.min(prog + Math.random() * 15, 85);
+    bar.style.width = prog + '%';
+  }, 200);
+
+  try {
+    const res = await fetch(`${API}/vault/upload`, { method: 'POST', body: formData });
+    clearInterval(fakeInterval);
+
+    if (!res.ok) {
+      const err = await res.json();
+      throw new Error(err.detail || 'Upload thất bại');
+    }
+
+    bar.style.width = '100%';
+    label.textContent = 'Hoàn thành!';
+
+    const data = await res.json();
+    setTimeout(() => showResult(data), 400);
+
+  } catch(e) {
+    clearInterval(fakeInterval);
+    document.getElementById('uploadProgress').style.display = 'none';
+    document.getElementById('btnUpload').disabled = false;
+    toast('Lỗi: ' + e.message);
+  }
+}
+
+function showResult(data) {
+  document.getElementById('uploadProgress').style.display = 'none';
+  document.getElementById('stateEmpty').style.display = 'none';
+  document.getElementById('resultCard').style.display = 'block';
+  document.getElementById('shareUrl').textContent = data.share_url;
+  document.getElementById('expireBadge').textContent = '⏱ ' + data.expire_label;
+
+  // QR
+  const canvas = document.getElementById('qrCanvas');
+  canvas.width = 160; canvas.height = 160;
+  try {
+    new QRCode(document.getElementById('qrSection'), {
+      text: data.share_url, width: 140, height: 140,
+      colorDark: '#111', colorLight: '#fff',
+    });
+    document.getElementById('qrSection').querySelector('img')?.style.setProperty('margin', '0 auto 10px');
+  } catch(e) {}
+}
+
+function copyLink() {
+  const url = document.getElementById('shareUrl').textContent;
+  navigator.clipboard.writeText(url).then(() => toast('✓ Đã sao chép link!'));
+}
+
+function shareLink() {
+  const url = document.getElementById('shareUrl').textContent;
+  if (navigator.share) {
+    navigator.share({ title: 'File từ Querencia Vault', url });
+  } else {
+    copyLink();
+  }
+}
+
+function resetAll() {
+  clearFile();
+  document.getElementById('stateEmpty').style.display = 'flex';
+  document.getElementById('resultCard').style.display = 'none';
+  document.getElementById('qrSection').innerHTML = '<canvas id="qrCanvas"></canvas><div class="qr-label">Quét QR để mở link</div>';
+  document.getElementById('btnUpload').disabled = true;
+  // Clear URL param
+  history.replaceState({}, '', location.pathname);
+}
+
+// ── RECEIVE MODE ──
+let receiveToken = '';
+let needsPassword = false;
+
+async function enterReceiveMode(token) {
+  receiveToken = token;
+  // Hide upload panel, show receive
+  document.getElementById('stateEmpty').style.display = 'none';
+  document.getElementById('receiveCard').style.display = 'block';
+  document.getElementById('panel-left')?.style.setProperty('display','none');
+
+  // Fetch info
+  try {
+    const res = await fetch(`${API}/vault/${token}/info`);
+    if (res.status === 404 || res.status === 410) {
+      const err = await res.json();
+      showExpired(err.detail);
+      return;
+    }
+    const info = await res.json();
+
+    if (info.needs_password) {
+      needsPassword = true;
+      document.getElementById('receivePassWrap').style.display = 'block';
+    }
+
+    document.getElementById('receiveIcon').textContent = info.burn_after_read ? '🔥' : '📦';
+    document.getElementById('receiveTitle').textContent = info.filename;
+
+    const sizeStr = formatSize(info.size);
+    let metaLines = [sizeStr];
+    if (info.expire_in) metaLines.push(`Hết hạn sau: ${info.expire_in}`);
+    if (info.remaining_reads != null) metaLines.push(`Còn ${info.remaining_reads} lần tải`);
+    document.getElementById('receiveMeta').textContent = metaLines.join(' · ');
+
+    if (info.burn_after_read) {
+      document.getElementById('receiveWarn').style.display = 'block';
+      document.getElementById('receiveWarn').textContent = '⚠ File này sẽ tự hủy ngay sau khi bạn tải về. Chỉ tải 1 lần duy nhất!';
+    }
+
+  } catch(e) {
+    showExpired('Không thể kết nối server. Thử lại sau.');
+  }
+}
+
+async function doDownload() {
+  const pass = needsPassword ? document.getElementById('receivePass').value.trim() : '';
+  if (needsPassword && !pass) { toast('Nhập mật khẩu trước!'); return; }
+
+  document.getElementById('btnDownload').disabled = true;
+  document.getElementById('btnDownload').textContent = '⏳ Đang tải...';
+
+  try {
+    const url = `${API}/vault/${receiveToken}/download${pass ? '?password='+encodeURIComponent(pass) : ''}`;
+    const res = await fetch(url);
+
+    if (res.status === 401) { toast('Sai mật khẩu!'); document.getElementById('btnDownload').disabled = false; document.getElementById('btnDownload').textContent = '⬇ Tải về ngay'; return; }
+    if (res.status === 404 || res.status === 410) { showExpired('File đã bị xóa.'); return; }
+    if (!res.ok) throw new Error('Tải thất bại');
+
+    const blob = await res.blob();
+    const disposition = res.headers.get('content-disposition') || '';
+    let filename = 'file';
+    const match = disposition.match(/filename="?([^";\n]+)"?/);
+    if (match) filename = match[1];
+
+    const dlUrl = URL.createObjectURL(blob);
+    const a = document.createElement('a');
+    a.href = dlUrl; a.download = filename; a.click();
+    URL.revokeObjectURL(dlUrl);
+
+    toast('✓ Đã tải về!');
+    document.getElementById('btnDownload').textContent = '✓ Đã tải về';
+
+    // Update UI to show burned
+    setTimeout(() => {
+      document.getElementById('receiveWarn').textContent = '💨 File đã bị xóa khỏi server sau khi bạn tải về.';
+      document.getElementById('receiveWarn').style.display = 'block';
+    }, 2000);
+
+  } catch(e) {
+    toast('Lỗi: ' + e.message);
+    document.getElementById('btnDownload').disabled = false;
+    document.getElementById('btnDownload').textContent = '⬇ Tải về ngay';
+  }
+}
+
+function showExpired(msg) {
+  document.getElementById('receiveCard').style.display = 'none';
+  document.getElementById('expiredCard').style.display = 'block';
+  document.getElementById('expiredMsg').textContent = msg || 'File này đã bị xóa vĩnh viễn khỏi server.';
+}
+</script>
+</body>
+</html>

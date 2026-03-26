@@ -1,0 +1,92 @@
+/* ── THANH ĐIỀU HƯỚNG (NAV) ─────────────────────────────
+       Fixed ở trên cùng, trong suốt với hiệu ứng blur
+       Khi scroll xuống → thêm class "scrolled" → đổ bóng   */
+    nav{position:fixed;top:0;left:0;right:0;z-index:100;display:flex;align-items:center;justify-content:space-between;padding:0 32px;height:64px;background:rgba(255,255,255,0.94);backdrop-filter:blur(12px);border-bottom:1px solid var(--border);transition:box-shadow 0.3s}
+    nav.scrolled{box-shadow:0 2px 20px rgba(0,0,0,0.06)}
+
+    /* Logo "Querencia" bên trái nav */
+    .nav-logo{font-family:var(--font-display);font-size:1.3rem;font-weight:700;color:var(--black);text-decoration:none;cursor:pointer;flex-shrink:0}
+    .nav-logo span{color:var(--sage)}
+    .nav-logo{display:flex;flex-direction:column;line-height:1.1;gap:2px;align-items:flex-start}
+
+    /* Dòng chữ nhỏ "Tech and more" dưới logo — căn giữa */
+    .nav-tagline{font-family:var(--font-body);font-size:0.6rem;font-weight:400;letter-spacing:0.04em;color:var(--sage);font-style:normal;text-align:center;width:100%}
+    .nav-logo-text{font-family:var(--font-display);font-size:1.3rem;font-weight:700;color:var(--black);vertical-align:middle;letter-spacing:-0.5px}
+
+    /* Quote nghiêng ở trang Home */
+    .hero-quote{margin-top:18px;font-size:0.92rem;color:var(--sage);font-style:italic;max-width:560px;text-align:center;line-height:1.75;opacity:0;animation:fadeUp 0.7s 0.3s forwards}
+
+    /* Khu vực bên phải nav (links + search + dark mode + language) */
+    .nav-right{display:flex;align-items:center;gap:4px;flex-wrap:wrap}
+    .nav-links{display:flex;align-items:center;gap:2px;list-style:none}
+    .nav-links a{font-size:0.78rem;font-weight:500;letter-spacing:0.04em;text-transform:uppercase;color:var(--gray);text-decoration:none;padding:5px 10px;border-radius:6px;transition:color 0.2s,background 0.2s;cursor:pointer;white-space:nowrap}
+    .nav-links a:hover{color:var(--black);background:var(--sage-pale)}
+    .nav-links a.active{color:var(--sage-dark);background:var(--sage-pale)}
+
+    /* Nút "Tools" có kiểu pill màu xanh đặc biệt */
+    .nav-links a.tools-link{color:var(--white);background:var(--sage);padding:5px 14px;border-radius:20px}
+    .nav-links a.tools-link:hover{background:var(--sage-dark)}
+
+    /* Nút search (⌕) và dark mode (◐) */
+    .nav-search-btn{background:none;border:none;cursor:pointer;padding:7px;color:var(--gray);transition:color 0.2s;font-size:1.1rem;display:flex;align-items:center}
+    .nav-search-btn:hover{color:var(--sage)}
+/* ── DROPDOWN CHỌN NGÔN NGỮ ─────────────────────────────
+       Hỗ trợ 4 ngôn ngữ: EN, VI, JA, ES
+       Khi click vào globe → toggle class "open" → dropdown hiện */
+    .lang-switcher{position:relative;margin-left:8px}
+    .lang-globe-btn{display:flex;align-items:center;gap:5px;background:none;border:1.5px solid var(--border);border-radius:20px;padding:5px 12px 5px 10px;cursor:pointer;font-family:var(--font-body);font-size:0.72rem;font-weight:500;color:var(--gray);transition:all 0.2s;white-space:nowrap}
+    .lang-globe-btn:hover{border-color:var(--sage);color:var(--sage-dark)}
+    .lang-globe-btn svg{width:14px;height:14px;flex-shrink:0}
+    .lang-globe-btn .lang-chevron{font-size:0.55rem;transition:transform 0.2s;margin-left:2px}
+    .lang-switcher.open .lang-chevron{transform:rotate(180deg)}
+    .lang-dropdown{display:none;position:absolute;top:calc(100% + 8px);right:0;background:var(--white);border:1.5px solid var(--border);border-radius:12px;overflow:hidden;box-shadow:0 8px 24px rgba(0,0,0,0.08);min-width:140px;z-index:300}
+    .lang-switcher.open .lang-dropdown{display:block}
+    .lang-option{display:flex;align-items:center;gap:10px;padding:10px 16px;font-size:0.82rem;font-weight:500;color:var(--gray);cursor:pointer;transition:background 0.15s;border:none;background:none;width:100%;text-align:left;font-family:var(--font-body)}
+    .lang-option:hover{background:var(--sage-pale);color:var(--sage-dark)}
+    .lang-option.active{color:var(--sage-dark);background:var(--sage-pale)}
+    .lang-option .lang-flag{font-size:1rem}
+/* ── HỆ THỐNG SECTIONS ───────────────────────────────────
+       Website dùng cơ chế SPA (Single Page Application)
+       Mỗi "trang" là một <section class="section">
+       Chỉ section có class "active" mới hiển thị
+       Khi click nav → showSection() xóa active cũ, thêm mới */
+    .section{display:none;padding-top:64px}
+    .section.active{animation:pageFade 0.25s ease forwards}
+    @keyframes pageFade{from{opacity:0;transform:translateY(8px)}to{opacity:1;transform:translateY(0)}}
+    .section.active{display:block}
+    
+/* ── TÌM KIẾM OVERLAY ────────────────────────────────────
+       Nhấn ⌕ → overlay phủ toàn màn hình
+       Nhấn Escape hoặc ✕ → đóng lại
+       Hiện tại chỉ là UI, chưa có logic tìm kiếm thật        */
+    .search-overlay{display:none;position:fixed;inset:0;z-index:200;background:rgba(255,255,255,0.97);backdrop-filter:blur(12px);align-items:flex-start;justify-content:center;padding-top:120px}
+    .search-overlay.open{display:flex}
+    .search-overlay-inner{width:100%;max-width:600px;padding:0 24px}
+    .search-overlay-bar{display:flex;align-items:center;border-bottom:2px solid var(--black);padding:12px 0;gap:12px}
+    .search-overlay-bar input{flex:1;border:none;outline:none;font-family:var(--font-display);font-size:1.8rem;font-weight:400;color:var(--black);background:transparent}
+    .search-overlay-close{background:none;border:none;font-size:1.3rem;cursor:pointer;color:var(--gray);padding:4px}
+    .search-hint{margin-top:32px;font-size:0.78rem;color:var(--gray-light);letter-spacing:0.1em;text-transform:uppercase}
+/* ── FOOTER ──────────────────────────────────────────────
+       Mỗi section có footer riêng ở cuối trang               */
+    footer{border-top:1px solid var(--border);padding:6px 32px;display:flex;flex-direction:column;align-items:stretch;justify-content:center;position:fixed;bottom:0;left:0;right:0;background:var(--white);z-index:50;min-height:0}
+    .footer-logo{display:flex;align-items:center;gap:0}
+    .footer-logo span{color:var(--sage)}
+    footer p{font-size:0.75rem;color:var(--gray-light)}
+/* ── AUTH DROPDOWN ────────────────────────────────────────
+       Dropdown đăng nhập/đăng ký — thiết kế giống lang-switcher
+       Click vào nút → toggle class "open" → dropdown hiện    */
+    .auth-switcher{position:relative;margin-left:4px}
+    .auth-btn{display:flex;align-items:center;gap:4px;background:none;border:1.5px solid var(--sage);border-radius:20px;padding:5px 10px;cursor:pointer;font-family:var(--font-body);font-size:0.72rem;font-weight:600;color:var(--sage);transition:all 0.2s;white-space:nowrap}
+    .auth-btn:hover{background:var(--sage);color:var(--white)}
+    .auth-chevron{font-size:0.55rem;transition:transform 0.2s;margin-left:2px}
+    .auth-switcher.open .auth-chevron{transform:rotate(180deg)}
+    .auth-dropdown{display:none;position:absolute;top:calc(100% + 8px);right:0;background:var(--white);border:1.5px solid var(--border);border-radius:12px;overflow:hidden;box-shadow:0 8px 24px rgba(0,0,0,0.08);min-width:220px;z-index:300}
+    .auth-switcher.open .auth-dropdown{display:block}
+    .auth-option{display:block;width:100%;padding:10px 16px;font-size:0.85rem;font-weight:500;color:var(--gray);cursor:pointer;transition:background 0.15s;border:none;background:none;text-align:left;font-family:var(--font-body)}
+    .auth-option:hover{background:var(--sage-pale);color:var(--sage-dark)}
+    /* Dark mode */
+    body.dark .auth-btn{border-color:#7ecf9a;color:#7ecf9a}
+    body.dark .auth-btn:hover{background:#7ecf9a;color:#0f0f0f}
+    body.dark .auth-dropdown{background:#1a1a1a;border-color:#333}
+    body.dark .auth-option{color:#aaa}
+    body.dark .auth-option:hover{background:#222;color:#eee}

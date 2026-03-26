@@ -1,0 +1,541 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8"/>
+<meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+<title>Barcode Scanner — Querencia</title>
+<link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@300;400;500;600;700&family=DM+Mono:wght@400;500&display=swap" rel="stylesheet"/>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/jsbarcode/3.11.6/JsBarcode.all.min.js"></script>
+<style>
+*, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+:root {
+  --bg: #0e0e0e; --panel: #161616; --panel2: #1e1e1e; --border: #2a2a2a;
+  --white: #f0eeec; --gray: #777; --gray-light: #444;
+  --accent: #4a7c59; --accent-light: #6fa882;
+  --font: 'Plus Jakarta Sans', sans-serif; --mono: 'DM Mono', monospace;
+}
+body { font-family: var(--font); background: var(--bg); color: var(--white);
+  min-height: 100vh; display: flex; align-items: center; justify-content: center; padding: 24px; }
+.wrapper { width: 100%; max-width: 560px; display: flex; flex-direction: column; gap: 16px; }
+.header { text-align: center; }
+.header h1 { font-size: 1.5rem; font-weight: 700; }
+.header h1 span { color: var(--accent-light); }
+.header p { font-size: 0.78rem; color: var(--gray); margin-top: 4px; }
+
+/* Tabs */
+.tabs { display: flex; background: var(--panel); border-radius: 10px; padding: 3px; gap: 3px; }
+.tab { flex: 1; padding: 8px; border: none; border-radius: 7px; background: none;
+  font-family: var(--font); font-size: 0.75rem; font-weight: 600; color: var(--gray);
+  cursor: pointer; transition: all 0.15s; }
+.tab.active { background: var(--panel2); color: var(--white); box-shadow: 0 1px 4px rgba(0,0,0,0.4); }
+
+/* Card */
+.card { background: var(--panel); border: 1.5px solid var(--border); border-radius: 16px; overflow: hidden; }
+
+/* Camera view */
+.camera-wrap { position: relative; width: 100%; aspect-ratio: 4/3; background: #000;
+  display: flex; align-items: center; justify-content: center; }
+#cameraVideo { width: 100%; height: 100%; object-fit: cover; display: none; }
+.scan-overlay { position: absolute; inset: 0; display: flex; align-items: center; justify-content: center; pointer-events: none; }
+.scan-frame { width: 220px; height: 220px; position: relative; }
+.scan-frame::before, .scan-frame::after,
+.scan-frame-inner::before, .scan-frame-inner::after {
+  content: ''; position: absolute; width: 30px; height: 30px; border-color: var(--accent-light); border-style: solid;
+}
+.scan-frame::before  { top:0;    left:0;  border-width: 3px 0 0 3px; }
+.scan-frame::after   { top:0;    right:0; border-width: 3px 3px 0 0; }
+.scan-frame-inner::before { bottom:0; left:0;  border-width: 0 0 3px 3px; }
+.scan-frame-inner::after  { bottom:0; right:0; border-width: 0 3px 3px 0; }
+.scan-line { position: absolute; left: 10px; right: 10px; height: 2px;
+  background: linear-gradient(to right, transparent, var(--accent-light), transparent);
+  animation: scanMove 2s ease-in-out infinite; top: 10px; }
+@keyframes scanMove { 0%,100%{top:10px;opacity:0.6} 50%{top:calc(100% - 10px);opacity:1} }
+
+.camera-placeholder { display: flex; flex-direction: column; align-items: center; gap: 12px; color: var(--gray); text-align: center; padding: 40px; }
+.cam-icon { font-size: 3rem; opacity: 0.3; }
+
+/* Controls */
+.cam-controls { padding: 14px 16px; display: flex; gap: 8px; border-top: 1px solid var(--border); }
+.ctrl-btn { flex: 1; padding: 10px; border-radius: 9px; border: 1.5px solid var(--border);
+  background: none; color: var(--gray); font-family: var(--font); font-size: 0.78rem; font-weight: 600;
+  cursor: pointer; transition: all 0.15s; }
+.ctrl-btn:hover { border-color: var(--accent); color: var(--accent-light); }
+.ctrl-btn.primary { background: var(--accent); border-color: var(--accent); color: #fff; }
+.ctrl-btn.primary:hover { background: #3d6b4a; }
+.ctrl-btn.danger { border-color: #555; }
+.ctrl-btn.danger:hover { border-color: #e05252; color: #e05252; }
+
+/* Results */
+.result-box { padding: 16px; border-top: 1px solid var(--border); display: none; }
+.result-label { font-size: 0.62rem; font-weight: 700; letter-spacing: 0.12em;
+  text-transform: uppercase; color: var(--gray); margin-bottom: 8px; }
+.result-text { font-family: var(--mono); font-size: 0.85rem; color: var(--accent-light);
+  word-break: break-all; line-height: 1.6; background: var(--panel2); border-radius: 8px;
+  padding: 10px 12px; border: 1px solid var(--border); margin-bottom: 10px; }
+.result-actions { display: flex; gap: 6px; }
+.res-btn { padding: 6px 12px; border-radius: 6px; border: 1px solid var(--border);
+  background: none; color: var(--gray); font-family: var(--font); font-size: 0.72rem;
+  font-weight: 600; cursor: pointer; transition: all 0.12s; }
+.res-btn:hover { border-color: var(--accent); color: var(--accent-light); }
+
+/* History */
+.history-section { padding: 14px 16px; border-top: 1px solid var(--border); }
+.history-title { font-size: 0.62rem; font-weight: 700; letter-spacing: 0.12em;
+  text-transform: uppercase; color: var(--gray); margin-bottom: 10px;
+  display: flex; justify-content: space-between; align-items: center; }
+.history-clear { background: none; border: none; color: var(--gray-light);
+  font-size: 0.68rem; cursor: pointer; font-family: var(--font); }
+.history-clear:hover { color: #e05252; }
+.history-item { display: flex; align-items: center; gap: 8px; padding: 8px 0;
+  border-bottom: 1px solid var(--border); cursor: pointer; transition: all 0.12s; }
+.history-item:last-child { border-bottom: none; }
+.history-item:hover .history-val { color: var(--accent-light); }
+.history-type { font-size: 0.6rem; font-weight: 700; padding: 2px 6px;
+  border-radius: 4px; background: var(--panel2); color: var(--gray); flex-shrink: 0; }
+.history-val { font-family: var(--mono); font-size: 0.75rem; color: var(--gray);
+  flex: 1; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
+.history-copy { background: none; border: none; color: var(--gray-light);
+  cursor: pointer; font-size: 0.75rem; padding: 2px 5px; border-radius: 3px; }
+.history-copy:hover { color: var(--accent-light); }
+.history-empty { font-size: 0.72rem; color: var(--gray-light); text-align: center; padding: 8px 0; }
+
+/* Upload from file */
+.upload-area { padding: 16px; }
+.upload-zone { border: 1.5px dashed var(--border); border-radius: 12px; padding: 32px;
+  text-align: center; cursor: pointer; transition: all 0.15s;
+  display: flex; flex-direction: column; align-items: center; gap: 10px; color: var(--gray); }
+.upload-zone:hover { border-color: var(--accent); color: var(--accent-light); background: rgba(74,124,89,0.04); }
+.upload-icon { font-size: 2rem; opacity: 0.4; }
+.upload-zone p { font-size: 0.78rem; }
+#imgPreview { width: 100%; border-radius: 8px; margin-top: 12px; display: none; max-height: 200px; object-fit: contain; }
+
+/* Generate tab */
+.gen-section { padding: 20px; display: flex; flex-direction: column; gap: 14px; }
+.gen-row { display: flex; flex-direction: column; gap: 6px; }
+.gen-label { font-size: 0.68rem; font-weight: 700; letter-spacing: 0.1em; text-transform: uppercase; color: var(--gray); }
+.gen-input { padding: 10px 12px; background: var(--panel2); border: 1.5px solid var(--border);
+  border-radius: 9px; color: var(--white); font-family: var(--font); font-size: 0.85rem; outline: none; }
+.gen-input:focus { border-color: var(--accent); }
+.gen-type-grid { display: grid; grid-template-columns: repeat(4, 1fr); gap: 6px; }
+.gen-type-btn { padding: 7px; border: 1.5px solid var(--border); border-radius: 7px;
+  background: none; color: var(--gray); font-family: var(--font); font-size: 0.68rem;
+  font-weight: 700; cursor: pointer; transition: all 0.14s; text-align: center; }
+.gen-type-btn:hover { border-color: var(--accent); color: var(--accent-light); }
+.gen-type-btn.active { background: var(--accent); border-color: var(--accent); color: #fff; }
+.gen-output { background: var(--panel2); border-radius: 12px; padding: 20px;
+  display: flex; align-items: center; justify-content: center; min-height: 120px;
+  border: 1.5px solid var(--border); }
+#barcodeOutput { max-width: 100%; }
+#qrOutput { max-width: 200px; }
+
+/* Toast */
+.toast { position: fixed; bottom: 24px; left: 50%; transform: translateX(-50%) translateY(60px);
+  background: var(--panel); border: 1px solid var(--border); border-radius: 10px;
+  padding: 10px 18px; font-size: 0.78rem; font-weight: 600; color: var(--accent-light);
+  transition: transform 0.22s cubic-bezier(0.34,1.56,0.64,1); z-index: 999; pointer-events: none; }
+.toast.show { transform: translateX(-50%) translateY(0); }
+</style>
+</head>
+<body>
+<div class="wrapper">
+  <div class="header">
+    <h1>Barcode <span>Scanner</span></h1>
+    <p>Scan QR codes & barcodes via camera or image upload. Generate them too.</p>
+  </div>
+
+  <div class="tabs">
+    <button class="tab active" onclick="setTab('camera')">📷 Camera</button>
+    <button class="tab" onclick="setTab('upload')">🖼 Upload</button>
+    <button class="tab" onclick="setTab('generate')">✦ Generate</button>
+  </div>
+
+  <!-- CAMERA TAB -->
+  <div class="card" id="tab-camera">
+    <div class="camera-wrap">
+      <video id="cameraVideo" autoplay playsinline muted></video>
+      <canvas id="cameraCanvas" style="display:none"></canvas>
+      <div class="scan-overlay" id="scanOverlay" style="display:none">
+        <div class="scan-frame">
+          <div class="scan-frame-inner"></div>
+          <div class="scan-line"></div>
+        </div>
+      </div>
+      <div class="camera-placeholder" id="cameraPlaceholder">
+        <div class="cam-icon">📷</div>
+        <p>Click "Start Camera" to begin scanning</p>
+        <p style="font-size:0.68rem;opacity:0.5">Supports QR, EAN, Code128, and more</p>
+      </div>
+    </div>
+    <div class="cam-controls">
+      <button class="ctrl-btn primary" id="camBtn" onclick="toggleCamera()">Start Camera</button>
+      <button class="ctrl-btn" onclick="switchCamera()" id="switchBtn" style="display:none">⇄ Switch</button>
+    </div>
+    <div class="result-box" id="camResult">
+      <div class="result-label">Scanned Result</div>
+      <div class="result-text" id="camResultText"></div>
+      <div class="result-actions">
+        <button class="res-btn" onclick="copyResult('cam')">⎘ Copy</button>
+        <button class="res-btn" onclick="openIfUrl('cam')">🔗 Open URL</button>
+      </div>
+    </div>
+    <div class="history-section">
+      <div class="history-title">History <button class="history-clear" onclick="clearHistory()">Clear</button></div>
+      <div id="historyList"><div class="history-empty">No scans yet</div></div>
+    </div>
+  </div>
+
+  <!-- UPLOAD TAB -->
+  <div class="card" id="tab-upload" style="display:none">
+    <div class="upload-area">
+      <div class="upload-zone" onclick="document.getElementById('imgUpload').click()">
+        <div class="upload-icon">🖼</div>
+        <p>Click to upload image or drag & drop</p>
+        <p style="font-size:0.68rem;opacity:0.6">PNG, JPG, GIF, WebP supported</p>
+      </div>
+      <input type="file" id="imgUpload" accept="image/*" style="display:none" onchange="scanFromFile(this)"/>
+      <img id="imgPreview"/>
+    </div>
+    <div class="result-box" id="uploadResult">
+      <div class="result-label">Decoded Result</div>
+      <div class="result-text" id="uploadResultText"></div>
+      <div class="result-actions">
+        <button class="res-btn" onclick="copyResult('upload')">⎘ Copy</button>
+        <button class="res-btn" onclick="openIfUrl('upload')">🔗 Open URL</button>
+      </div>
+    </div>
+  </div>
+
+  <!-- GENERATE TAB -->
+  <div class="card" id="tab-generate" style="display:none">
+    <div class="gen-section">
+      <div class="gen-row">
+        <div class="gen-label">Type</div>
+        <div class="gen-type-grid">
+          <button class="gen-type-btn active" onclick="setGenType('qr')">QR Code</button>
+          <button class="gen-type-btn" onclick="setGenType('code128')">Code 128</button>
+          <button class="gen-type-btn" onclick="setGenType('ean13')">EAN-13</button>
+          <button class="gen-type-btn" onclick="setGenType('code39')">Code 39</button>
+        </div>
+      </div>
+      <div class="gen-row">
+        <div class="gen-label">Content</div>
+        <input class="gen-input" id="genInput" placeholder="Enter text or URL…" oninput="generateCode()"/>
+      </div>
+      <div class="gen-output" id="genOutput">
+        <canvas id="qrOutput"></canvas>
+        <svg id="barcodeOutput"></svg>
+      </div>
+      <button class="ctrl-btn primary" onclick="downloadCode()">↓ Download PNG</button>
+    </div>
+  </div>
+</div>
+
+<div class="toast" id="toast"></div>
+
+<!-- BarcodeDetector polyfill via ZXing-like approach using canvas -->
+<script src="https://cdnjs.cloudflare.com/ajax/libs/qrcodejs/1.0.0/qrcode.min.js"></script>
+<script>
+// ============================================================
+// STATE
+// ============================================================
+let cameraStream = null;
+let scanning = false;
+let scanInterval = null;
+let facingMode = 'environment';
+let scanHistory = JSON.parse(localStorage.getItem('qscan_history') || '[]');
+let genType = 'qr';
+let lastCamResult = '';
+let lastUploadResult = '';
+
+// ============================================================
+// TABS
+// ============================================================
+function setTab(tab) {
+  ['camera','upload','generate'].forEach(t => {
+    document.getElementById('tab-' + t).style.display = t === tab ? 'block' : 'none';
+  });
+  document.querySelectorAll('.tab').forEach((b,i) => {
+    b.classList.toggle('active', ['camera','upload','generate'][i] === tab);
+  });
+  if (tab !== 'camera' && cameraStream) stopCamera();
+  if (tab === 'generate') generateCode();
+}
+
+// ============================================================
+// CAMERA SCAN
+// ============================================================
+async function toggleCamera() {
+  if (scanning) stopCamera();
+  else await startCamera();
+}
+
+async function startCamera() {
+  try {
+    cameraStream = await navigator.mediaDevices.getUserMedia({
+      video: { facingMode, width: { ideal: 1280 }, height: { ideal: 720 } }
+    });
+    const video = document.getElementById('cameraVideo');
+    video.srcObject = cameraStream;
+    video.style.display = 'block';
+    document.getElementById('cameraPlaceholder').style.display = 'none';
+    document.getElementById('scanOverlay').style.display = 'flex';
+    document.getElementById('camBtn').textContent = 'Stop Camera';
+    document.getElementById('camBtn').className = 'ctrl-btn danger';
+    document.getElementById('switchBtn').style.display = 'block';
+    scanning = true;
+
+    // Start scanning loop
+    if ('BarcodeDetector' in window) {
+      startNativeScanning(video);
+    } else {
+      startCanvasScanning(video);
+    }
+  } catch(e) {
+    showToast('Camera access denied');
+  }
+}
+
+function stopCamera() {
+  if (cameraStream) { cameraStream.getTracks().forEach(t => t.stop()); cameraStream = null; }
+  clearInterval(scanInterval);
+  scanning = false;
+  const video = document.getElementById('cameraVideo');
+  video.style.display = 'none';
+  video.srcObject = null;
+  document.getElementById('cameraPlaceholder').style.display = 'flex';
+  document.getElementById('scanOverlay').style.display = 'none';
+  document.getElementById('camBtn').textContent = 'Start Camera';
+  document.getElementById('camBtn').className = 'ctrl-btn primary';
+  document.getElementById('switchBtn').style.display = 'none';
+}
+
+function switchCamera() {
+  facingMode = facingMode === 'environment' ? 'user' : 'environment';
+  stopCamera(); startCamera();
+}
+
+async function startNativeScanning(video) {
+  const detector = new BarcodeDetector({ formats: ['qr_code','ean_13','ean_8','code_128','code_39','itf','upc_a','upc_e','pdf417','aztec','data_matrix'] });
+  scanInterval = setInterval(async () => {
+    if (video.readyState < 2) return;
+    try {
+      const codes = await detector.detect(video);
+      if (codes.length) { onScanResult(codes[0].rawValue, codes[0].format); }
+    } catch(e) {}
+  }, 300);
+}
+
+function startCanvasScanning(video) {
+  // Fallback: grab frames and use BarcodeDetector if available, else show message
+  showToast('BarcodeDetector not supported — try uploading an image');
+}
+
+function onScanResult(value, format = 'QR') {
+  if (value === lastCamResult) return;
+  lastCamResult = value;
+
+  document.getElementById('camResultText').textContent = value;
+  document.getElementById('camResult').style.display = 'block';
+
+  addHistory(value, format);
+  showToast('✓ Scanned!');
+
+  // Flash
+  document.getElementById('scanOverlay').style.opacity = '0.4';
+  setTimeout(() => document.getElementById('scanOverlay').style.opacity = '1', 200);
+}
+
+// ============================================================
+// UPLOAD SCAN
+// ============================================================
+async function scanFromFile(input) {
+  const file = input.files[0];
+  if (!file) return;
+
+  const url = URL.createObjectURL(file);
+  const img = document.getElementById('imgPreview');
+  img.src = url; img.style.display = 'block';
+
+  if ('BarcodeDetector' in window) {
+    try {
+      const bitmap = await createImageBitmap(file);
+      const detector = new BarcodeDetector({ formats: ['qr_code','ean_13','ean_8','code_128','code_39','itf','upc_a','upc_e','pdf417','aztec','data_matrix'] });
+      const codes = await detector.detect(bitmap);
+      if (codes.length) {
+        const val = codes[0].rawValue;
+        lastUploadResult = val;
+        document.getElementById('uploadResultText').textContent = val;
+        document.getElementById('uploadResult').style.display = 'block';
+        addHistory(val, codes[0].format);
+        showToast('✓ Decoded!');
+      } else {
+        showToast('No barcode found in image');
+      }
+    } catch(e) { showToast('Could not decode image'); }
+  } else {
+    // Try canvas + ZXing approach (basic QR via image analysis)
+    showToast('BarcodeDetector API not available in this browser');
+  }
+}
+
+// ============================================================
+// HISTORY
+// ============================================================
+function addHistory(val, fmt) {
+  scanHistory.unshift({ val, fmt: String(fmt).replace('_',''), ts: Date.now() });
+  if (scanHistory.length > 20) scanHistory.pop();
+  localStorage.setItem('qscan_history', JSON.stringify(scanHistory));
+  renderHistory();
+}
+
+function renderHistory() {
+  const list = document.getElementById('historyList');
+  if (!scanHistory.length) { list.innerHTML = '<div class="history-empty">No scans yet</div>'; return; }
+  list.innerHTML = scanHistory.slice(0,8).map((h, i) => `
+    <div class="history-item" onclick="copyText('${escAttr(h.val)}')">
+      <span class="history-type">${h.fmt || 'QR'}</span>
+      <span class="history-val">${escHtml(h.val)}</span>
+      <button class="history-copy" onclick="event.stopPropagation();copyText('${escAttr(h.val)}')">⎘</button>
+    </div>
+  `).join('');
+}
+
+function clearHistory() { scanHistory = []; localStorage.removeItem('qscan_history'); renderHistory(); }
+
+// ============================================================
+// GENERATE
+// ============================================================
+function setGenType(t) {
+  genType = t;
+  document.querySelectorAll('.gen-type-btn').forEach((b,i) => {
+    b.classList.toggle('active', ['qr','code128','ean13','code39'][i] === t);
+  });
+  document.getElementById('qrOutput').style.display = t === 'qr' ? 'block' : 'none';
+  document.getElementById('barcodeOutput').style.display = t !== 'qr' ? 'block' : 'none';
+  generateCode();
+}
+
+function generateCode() {
+  const val = document.getElementById('genInput').value || 'https://querencia.com.vn';
+  if (genType === 'qr') {
+    document.getElementById('qrOutput').style.display = 'block';
+    document.getElementById('barcodeOutput').style.display = 'none';
+    generateQR(val);
+  } else {
+    document.getElementById('qrOutput').style.display = 'none';
+    document.getElementById('barcodeOutput').style.display = 'block';
+    generateBarcode(val);
+  }
+}
+
+function generateQR(text) {
+  const canvas = document.getElementById('qrOutput');
+  const size = 200;
+  canvas.width = size; canvas.height = size;
+  try {
+    // Use qrcode.js
+    const qr = qrcode(0, 'M');
+    qr.addData(text);
+    qr.make();
+    const ctx = canvas.getContext('2d');
+    const modules = qr.getModuleCount();
+    const cellSize = size / modules;
+    ctx.fillStyle = '#1e1e1e';
+    ctx.fillRect(0,0,size,size);
+    ctx.fillStyle = '#f0eeec';
+    for (let r = 0; r < modules; r++) {
+      for (let c = 0; c < modules; c++) {
+        if (qr.isDark(r, c)) {
+          ctx.fillRect(Math.floor(c * cellSize), Math.floor(r * cellSize), Math.ceil(cellSize), Math.ceil(cellSize));
+        }
+      }
+    }
+  } catch(e) {}
+}
+
+function generateBarcode(text) {
+  try {
+    const fmt = genType === 'ean13' ? 'EAN13' : genType === 'code39' ? 'CODE39' : 'CODE128';
+    let val = text;
+    if (fmt === 'EAN13') {
+      val = text.replace(/\D/g,'').padStart(12,'0').slice(0,12);
+    }
+    JsBarcode('#barcodeOutput', val, {
+      format: fmt,
+      lineColor: '#f0eeec',
+      background: '#1e1e1e',
+      width: 2, height: 80,
+      displayValue: true,
+      fontOptions: 'bold',
+      fontSize: 14,
+      textColor: '#a0a0a0',
+    });
+  } catch(e) {}
+}
+
+function downloadCode() {
+  if (genType === 'qr') {
+    const a = document.createElement('a');
+    a.href = document.getElementById('qrOutput').toDataURL('image/png');
+    a.download = 'qrcode.png';
+    a.click();
+  } else {
+    const svg = document.getElementById('barcodeOutput');
+    const data = new XMLSerializer().serializeToString(svg);
+    const canvas = document.createElement('canvas');
+    const img = new Image();
+    img.onload = () => {
+      canvas.width = img.width; canvas.height = img.height;
+      canvas.getContext('2d').drawImage(img, 0, 0);
+      const a = document.createElement('a');
+      a.href = canvas.toDataURL('image/png');
+      a.download = 'barcode.png'; a.click();
+    };
+    img.src = 'data:image/svg+xml;base64,' + btoa(data);
+  }
+}
+
+// ============================================================
+// UTILS
+// ============================================================
+function copyResult(which) {
+  const text = which === 'cam' ? lastCamResult : lastUploadResult;
+  if (text) copyText(text);
+}
+function openIfUrl(which) {
+  const text = which === 'cam' ? lastCamResult : lastUploadResult;
+  if (text && (text.startsWith('http://') || text.startsWith('https://'))) window.open(text, '_blank');
+  else showToast('Not a URL');
+}
+function copyText(text) {
+  navigator.clipboard.writeText(text).then(() => showToast('Copied!'));
+}
+function escHtml(s) { return s.replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;'); }
+function escAttr(s) { return s.replace(/'/g,"\\'").replace(/"/g,'&quot;'); }
+
+let toastTimer;
+function showToast(msg) {
+  const t = document.getElementById('toast');
+  t.textContent = msg; t.classList.add('show');
+  clearTimeout(toastTimer);
+  toastTimer = setTimeout(() => t.classList.remove('show'), 2200);
+}
+
+// Init
+window.addEventListener('DOMContentLoaded', () => {
+  renderHistory();
+  generateCode();
+  document.getElementById('qrOutput').style.display = 'block';
+  document.getElementById('barcodeOutput').style.display = 'none';
+
+  // Drag & drop
+  document.getElementById('tab-upload').addEventListener('dragover', e => e.preventDefault());
+  document.getElementById('tab-upload').addEventListener('drop', e => {
+    e.preventDefault();
+    const file = e.dataTransfer.files[0];
+    if (file) { const dt = new DataTransfer(); dt.items.add(file); document.getElementById('imgUpload').files = dt.files; scanFromFile(document.getElementById('imgUpload')); }
+  });
+});
+</script>
+</body>
+</html>

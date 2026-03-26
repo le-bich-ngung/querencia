@@ -1,0 +1,225 @@
+<!DOCTYPE html>
+<html lang="vi">
+<head>
+<meta charset="UTF-8"/>
+<meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+<title>Temporary Email — Querencia Tools</title>
+<link href="https://fonts.googleapis.com/css2?family=DM+Mono:wght@400;500&family=Syne:wght@400;600;700;800&display=swap" rel="stylesheet"/>
+<style>
+  :root {
+    --sage:#4a7c59;--sage-light:#6fa882;--sage-pale:#ddeee3;--sage-dark:#2f5c3e;
+    --bg:#f7faf8;--card:#fff;--border:#e0ece5;--text:#1a2e22;--muted:#6b8a74;
+    --font-display:'Syne',sans-serif;--font-mono:'DM Mono',monospace;
+  }
+  *{box-sizing:border-box;margin:0;padding:0}
+  body{font-family:var(--font-mono);background:var(--bg);color:var(--text);min-height:100vh;padding:32px 16px}
+  .container{max-width:640px;margin:0 auto}
+  .header{text-align:center;margin-bottom:40px}
+  .header h1{font-family:var(--font-display);font-size:2rem;font-weight:800;color:var(--sage-dark);letter-spacing:-0.02em}
+  .header p{font-size:0.82rem;color:var(--muted);margin-top:6px;line-height:1.6}
+  .email-card{background:var(--card);border:1.5px solid var(--border);border-radius:16px;padding:28px;margin-bottom:20px;position:relative;overflow:hidden}
+  .email-card::before{content:'';position:absolute;top:0;left:0;right:0;height:3px;background:linear-gradient(90deg,var(--sage),var(--sage-light))}
+  .label{font-size:0.72rem;color:var(--muted);text-transform:uppercase;letter-spacing:0.08em;margin-bottom:8px}
+  .email-display{display:flex;align-items:center;gap:12px;background:var(--bg);border:1.5px solid var(--border);border-radius:10px;padding:14px 16px}
+  .email-text{flex:1;font-family:var(--font-mono);font-size:0.95rem;color:var(--sage-dark);font-weight:500;word-break:break-all}
+  .btn-copy{background:var(--sage);color:#fff;border:none;border-radius:8px;padding:8px 14px;font-family:var(--font-mono);font-size:0.78rem;cursor:pointer;transition:all 0.18s;white-space:nowrap}
+  .btn-copy:hover{background:var(--sage-dark)}
+  .btn-copy.copied{background:#27ae60}
+  .actions{display:flex;gap:10px;margin-top:14px}
+  .btn-refresh{flex:1;background:transparent;border:1.5px solid var(--border);color:var(--sage);border-radius:8px;padding:10px;font-family:var(--font-mono);font-size:0.82rem;cursor:pointer;transition:all 0.18s}
+  .btn-refresh:hover{border-color:var(--sage);background:var(--sage-pale)}
+  .timer{font-size:0.78rem;color:var(--muted);text-align:center;margin-top:10px}
+  .timer span{color:var(--sage);font-weight:500}
+  .inbox{background:var(--card);border:1.5px solid var(--border);border-radius:16px;overflow:hidden}
+  .inbox-header{padding:16px 20px;border-bottom:1px solid var(--border);display:flex;align-items:center;justify-content:space-between}
+  .inbox-title{font-family:var(--font-display);font-size:0.9rem;font-weight:700;color:var(--text)}
+  .badge{background:var(--sage-pale);color:var(--sage-dark);font-size:0.72rem;font-weight:600;padding:2px 8px;border-radius:20px}
+  .inbox-empty{padding:48px 20px;text-align:center;color:var(--muted);font-size:0.85rem}
+  .inbox-empty .icon{font-size:2.5rem;margin-bottom:12px;opacity:0.4}
+  .mail-item{padding:16px 20px;border-bottom:1px solid var(--border);cursor:pointer;transition:background 0.15s}
+  .mail-item:hover{background:var(--bg)}
+  .mail-item:last-child{border-bottom:none}
+  .mail-from{font-size:0.82rem;font-weight:500;color:var(--text);margin-bottom:3px}
+  .mail-subject{font-size:0.88rem;color:var(--sage-dark);font-weight:600;margin-bottom:3px}
+  .mail-preview{font-size:0.78rem;color:var(--muted);white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+  .mail-time{font-size:0.72rem;color:var(--muted);float:right;margin-top:2px}
+  /* Modal */
+  .modal{display:none;position:fixed;inset:0;background:rgba(0,0,0,0.5);z-index:1000;padding:20px;overflow-y:auto}
+  .modal.open{display:flex;align-items:flex-start;justify-content:center;padding-top:60px}
+  .modal-box{background:#fff;border-radius:16px;max-width:600px;width:100%;padding:28px;position:relative}
+  .modal-close{position:absolute;top:16px;right:16px;background:none;border:none;font-size:1.2rem;cursor:pointer;color:var(--muted)}
+  .modal-from{font-size:0.8rem;color:var(--muted);margin-bottom:4px}
+  .modal-subject{font-family:var(--font-display);font-size:1.2rem;font-weight:700;margin-bottom:16px;color:var(--text)}
+  .modal-body{font-size:0.88rem;line-height:1.7;color:var(--text);white-space:pre-wrap;border-top:1px solid var(--border);padding-top:16px}
+  .dot{display:inline-block;width:8px;height:8px;border-radius:50%;background:var(--sage-light);margin-right:6px;animation:pulse 1.5s infinite}
+  @keyframes pulse{0%,100%{opacity:1}50%{opacity:0.3}}
+  @keyframes fadeIn{from{opacity:0;transform:translateY(8px)}to{opacity:1;transform:translateY(0)}}
+  .mail-item{animation:fadeIn 0.3s ease}
+</style>
+</head>
+<body>
+<div class="container">
+  <div class="header">
+    <h1>📬 Temp Email</h1>
+    <p>Email tạm thời, tự hủy sau 10 phút. Không cần đăng ký, không lộ email thật.</p>
+  </div>
+
+  <div class="email-card">
+    <div class="label"><span class="dot"></span>Email của bạn</div>
+    <div class="email-display">
+      <span class="email-text" id="emailAddr">Đang tạo...</span>
+      <button class="btn-copy" id="copyBtn" onclick="copyEmail()">Sao chép</button>
+    </div>
+    <div class="actions">
+      <button class="btn-refresh" onclick="newEmail()">↺ Tạo email mới</button>
+      <button class="btn-refresh" onclick="checkInbox()" id="refreshBtn">⟳ Làm mới hộp thư</button>
+    </div>
+    <div class="timer">Tự hủy sau: <span id="countdown">10:00</span></div>
+  </div>
+
+  <div class="inbox">
+    <div class="inbox-header">
+      <span class="inbox-title">Hộp thư đến</span>
+      <span class="badge" id="mailCount">0 tin</span>
+    </div>
+    <div id="inboxContent">
+      <div class="inbox-empty">
+        <div class="icon">📭</div>
+        <div>Chưa có email nào<br/>Thư sẽ xuất hiện ở đây sau vài giây</div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- Modal đọc mail -->
+<div class="modal" id="mailModal">
+  <div class="modal-box">
+    <button class="modal-close" onclick="closeModal()">✕</button>
+    <div class="modal-from" id="modalFrom"></div>
+    <div class="modal-subject" id="modalSubject"></div>
+    <div class="modal-body" id="modalBody"></div>
+  </div>
+</div>
+
+<script>
+// Dùng mail.tm API (miễn phí, không cần key)
+const API = 'https://api.mail.tm';
+let token = '', emailAddr = '', accountId = '';
+let mails = [], countdown = 600;
+
+async function init() {
+  // Tạo domain list
+  const res = await fetch(`${API}/domains`);
+  const data = await res.json();
+  const domain = data['hydra:member'][0].domain;
+
+  // Tạo địa chỉ random
+  const rand = Math.random().toString(36).substring(2, 10);
+  const pass = Math.random().toString(36).substring(2, 18);
+  emailAddr = `${rand}@${domain}`;
+
+  // Đăng ký account
+  await fetch(`${API}/accounts`, {
+    method: 'POST',
+    headers: {'Content-Type':'application/json'},
+    body: JSON.stringify({address: emailAddr, password: pass})
+  });
+
+  // Lấy token
+  const tkRes = await fetch(`${API}/token`, {
+    method: 'POST',
+    headers: {'Content-Type':'application/json'},
+    body: JSON.stringify({address: emailAddr, password: pass})
+  });
+  const tkData = await tkRes.json();
+  token = tkData.token;
+
+  document.getElementById('emailAddr').textContent = emailAddr;
+  startCountdown();
+  setInterval(checkInbox, 8000);
+  checkInbox();
+}
+
+async function checkInbox() {
+  if (!token) return;
+  const btn = document.getElementById('refreshBtn');
+  btn.textContent = '⟳ Đang kiểm tra...';
+  try {
+    const res = await fetch(`${API}/messages`, {
+      headers: {'Authorization': `Bearer ${token}`}
+    });
+    const data = await res.json();
+    mails = data['hydra:member'] || [];
+    renderInbox();
+  } catch(e) {}
+  btn.textContent = '⟳ Làm mới hộp thư';
+}
+
+function renderInbox() {
+  const box = document.getElementById('inboxContent');
+  document.getElementById('mailCount').textContent = `${mails.length} tin`;
+  if (!mails.length) {
+    box.innerHTML = `<div class="inbox-empty"><div class="icon">📭</div><div>Chưa có email nào<br/>Thư sẽ xuất hiện ở đây sau vài giây</div></div>`;
+    return;
+  }
+  box.innerHTML = mails.map((m, i) => `
+    <div class="mail-item" onclick="openMail(${i})">
+      <span class="mail-time">${new Date(m.createdAt).toLocaleTimeString('vi-VN',{hour:'2-digit',minute:'2-digit'})}</span>
+      <div class="mail-from">${m.from.address}</div>
+      <div class="mail-subject">${m.subject || '(Không có tiêu đề)'}</div>
+      <div class="mail-preview">${m.intro || ''}</div>
+    </div>
+  `).join('');
+}
+
+async function openMail(idx) {
+  const m = mails[idx];
+  // Lấy full mail
+  const res = await fetch(`${API}/messages/${m.id}`, {
+    headers: {'Authorization': `Bearer ${token}`}
+  });
+  const full = await res.json();
+  document.getElementById('modalFrom').textContent = `Từ: ${m.from.address} • ${new Date(m.createdAt).toLocaleString('vi-VN')}`;
+  document.getElementById('modalSubject').textContent = m.subject || '(Không có tiêu đề)';
+  document.getElementById('modalBody').textContent = full.text || full.html?.replace(/<[^>]+>/g,'') || '(Nội dung trống)';
+  document.getElementById('mailModal').classList.add('open');
+}
+
+function closeModal() { document.getElementById('mailModal').classList.remove('open'); }
+
+async function newEmail() {
+  document.getElementById('emailAddr').textContent = 'Đang tạo...';
+  mails = [];
+  renderInbox();
+  countdown = 600;
+  token = ''; accountId = '';
+  await init();
+}
+
+function copyEmail() {
+  navigator.clipboard.writeText(emailAddr);
+  const btn = document.getElementById('copyBtn');
+  btn.textContent = '✓ Đã chép!';
+  btn.classList.add('copied');
+  setTimeout(() => { btn.textContent = 'Sao chép'; btn.classList.remove('copied'); }, 2000);
+}
+
+function startCountdown() {
+  setInterval(() => {
+    countdown--;
+    if (countdown <= 0) { newEmail(); return; }
+    const m = Math.floor(countdown/60).toString().padStart(2,'0');
+    const s = (countdown%60).toString().padStart(2,'0');
+    document.getElementById('countdown').textContent = `${m}:${s}`;
+  }, 1000);
+}
+
+// Click ngoài modal để đóng
+document.getElementById('mailModal').addEventListener('click', e => {
+  if (e.target === e.currentTarget) closeModal();
+});
+
+init();
+</script>
+</body>
+</html>

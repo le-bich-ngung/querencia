@@ -1,0 +1,243 @@
+<!DOCTYPE html>
+<html lang="vi">
+<head>
+<meta charset="UTF-8"/>
+<meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+<title>World Clock · Querencia Tools</title>
+<style>
+  @import url('https://fonts.googleapis.com/css2?family=DM+Mono:wght@400;500&family=Fraunces:ital,wght@0,300;0,700;1,300&display=swap');
+  *{box-sizing:border-box;margin:0;padding:0}
+  :root{
+    --bg:#0a0e0b;--card:#111710;--border:#1e2b1f;
+    --sage:#4a7c59;--sage-pale:#ddeee3;--sage-glow:rgba(74,124,89,0.15);
+    --white:#f4f8f5;--gray:#7a9480;--gray-dim:#3a4d3c;
+    --mono:'DM Mono',monospace;--display:'Fraunces',serif;
+  }
+  body{background:var(--bg);color:var(--white);font-family:var(--mono);min-height:100vh;padding:0 0 60px}
+
+  /* HEADER */
+  .header{padding:40px 32px 24px;border-bottom:1px solid var(--border)}
+  .header h1{font-family:var(--display);font-size:2rem;font-weight:300;color:var(--white);letter-spacing:-0.5px}
+  .header h1 span{color:var(--sage);font-style:italic}
+  .header p{color:var(--gray);font-size:0.8rem;margin-top:6px}
+
+  /* ADD ZONE */
+  .add-zone{padding:20px 32px;display:flex;gap:10px;align-items:center;flex-wrap:wrap;border-bottom:1px solid var(--border)}
+  .tz-select{flex:1;min-width:200px;padding:10px 14px;background:var(--card);border:1px solid var(--border);border-radius:8px;color:var(--white);font-family:var(--mono);font-size:0.85rem;outline:none;cursor:pointer}
+  .tz-select:focus{border-color:var(--sage)}
+  .add-btn{padding:10px 20px;background:var(--sage);color:#fff;border:none;border-radius:8px;font-family:var(--mono);font-size:0.85rem;font-weight:500;cursor:pointer;transition:opacity 0.2s;white-space:nowrap}
+  .add-btn:hover{opacity:0.85}
+
+  /* CLOCKS GRID */
+  .clocks-grid{padding:24px 32px;display:grid;grid-template-columns:repeat(auto-fill,minmax(260px,1fr));gap:16px}
+
+  /* CLOCK CARD */
+  .clock-card{background:var(--card);border:1px solid var(--border);border-radius:14px;padding:20px 22px;position:relative;transition:border-color 0.2s}
+  .clock-card:hover{border-color:var(--sage)}
+  .clock-card.home{border-color:var(--sage);background:linear-gradient(135deg,#0d1a10,#111f14)}
+
+  .clock-remove{position:absolute;top:12px;right:12px;background:none;border:none;color:var(--gray-dim);cursor:pointer;font-size:1rem;transition:color 0.2s;line-height:1}
+  .clock-remove:hover{color:#e74c3c}
+
+  .clock-city{font-size:0.72rem;font-weight:500;color:var(--sage);text-transform:uppercase;letter-spacing:1px;margin-bottom:4px}
+  .clock-country{font-size:0.78rem;color:var(--gray);margin-bottom:14px}
+
+  .clock-time{font-family:var(--display);font-size:2.8rem;font-weight:300;color:var(--white);letter-spacing:-1px;line-height:1;margin-bottom:6px}
+  .clock-time .seconds{font-size:1.4rem;color:var(--sage);vertical-align:top;margin-top:6px}
+  .clock-ampm{font-size:0.75rem;color:var(--gray);margin-left:6px}
+
+  .clock-date{font-size:0.78rem;color:var(--gray);margin-bottom:12px}
+  .clock-offset{font-size:0.7rem;color:var(--gray-dim);background:var(--bg);padding:3px 8px;border-radius:6px;display:inline-block}
+  .clock-home-badge{font-size:0.65rem;color:var(--sage);border:1px solid var(--sage);padding:2px 7px;border-radius:99px;margin-left:6px}
+
+  /* ANALOG CLOCK */
+  .analog-wrap{margin-bottom:12px;display:flex;justify-content:center}
+  svg.analog-face circle.bg{fill:var(--bg);stroke:var(--border)}
+  svg.analog-face .tick{stroke:var(--gray-dim)}
+  svg.analog-face .tick-major{stroke:var(--gray)}
+  svg.analog-face .hour-hand{stroke:var(--white);stroke-linecap:round}
+  svg.analog-face .min-hand{stroke:var(--sage-pale);stroke-linecap:round}
+  svg.analog-face .sec-hand{stroke:var(--sage);stroke-linecap:round}
+
+  @media(max-width:600px){.clocks-grid{padding:16px;grid-template-columns:1fr 1fr}}
+  @media(max-width:400px){.clocks-grid{grid-template-columns:1fr}}
+</style>
+</head>
+<body>
+
+<div class="header">
+  <h1>World <span>Clock</span></h1>
+  <p>Xem giờ nhiều múi giờ cùng lúc — realtime</p>
+</div>
+
+<div class="add-zone">
+  <select id="tzSelect" class="tz-select">
+    <option value="">-- Chọn thành phố / múi giờ --</option>
+  </select>
+  <button class="add-btn" onclick="addClock()">+ Thêm</button>
+</div>
+
+<div class="clocks-grid" id="clocksGrid"></div>
+
+<script>
+const TIMEZONES = [
+  {city:'Hồ Chí Minh',country:'Việt Nam',tz:'Asia/Ho_Chi_Minh'},
+  {city:'Hà Nội',country:'Việt Nam',tz:'Asia/Bangkok'},
+  {city:'Tokyo',country:'Nhật Bản',tz:'Asia/Tokyo'},
+  {city:'Seoul',country:'Hàn Quốc',tz:'Asia/Seoul'},
+  {city:'Beijing',country:'Trung Quốc',tz:'Asia/Shanghai'},
+  {city:'Singapore',country:'Singapore',tz:'Asia/Singapore'},
+  {city:'Bangkok',country:'Thái Lan',tz:'Asia/Bangkok'},
+  {city:'Mumbai',country:'Ấn Độ',tz:'Asia/Kolkata'},
+  {city:'Dubai',country:'UAE',tz:'Asia/Dubai'},
+  {city:'Moscow',country:'Nga',tz:'Europe/Moscow'},
+  {city:'Istanbul',country:'Thổ Nhĩ Kỳ',tz:'Europe/Istanbul'},
+  {city:'Paris',country:'Pháp',tz:'Europe/Paris'},
+  {city:'Berlin',country:'Đức',tz:'Europe/Berlin'},
+  {city:'London',country:'Anh',tz:'Europe/London'},
+  {city:'New York',country:'Mỹ',tz:'America/New_York'},
+  {city:'Los Angeles',country:'Mỹ',tz:'America/Los_Angeles'},
+  {city:'Chicago',country:'Mỹ',tz:'America/Chicago'},
+  {city:'São Paulo',country:'Brazil',tz:'America/Sao_Paulo'},
+  {city:'Sydney',country:'Úc',tz:'Australia/Sydney'},
+  {city:'Auckland',country:'New Zealand',tz:'Pacific/Auckland'},
+  {city:'Johannesburg',country:'Nam Phi',tz:'Africa/Johannesburg'},
+  {city:'Cairo',country:'Ai Cập',tz:'Africa/Cairo'},
+  {city:'Taipei',country:'Đài Loan',tz:'Asia/Taipei'},
+  {city:'Jakarta',country:'Indonesia',tz:'Asia/Jakarta'},
+  {city:'Manila',country:'Philippines',tz:'Asia/Manila'},
+  {city:'Karachi',country:'Pakistan',tz:'Asia/Karachi'},
+  {city:'Toronto',country:'Canada',tz:'America/Toronto'},
+  {city:'Mexico City',country:'Mexico',tz:'America/Mexico_City'},
+];
+
+let clocks = JSON.parse(localStorage.getItem('wc_clocks') || '[]');
+const homeTz = Intl.DateTimeFormat().resolvedOptions().timeZone;
+
+// Populate select
+const sel = document.getElementById('tzSelect');
+TIMEZONES.forEach(t => {
+  const opt = document.createElement('option');
+  opt.value = t.tz;
+  opt.textContent = `${t.city}, ${t.country}`;
+  sel.appendChild(opt);
+});
+
+// Default clocks
+if (!clocks.length) {
+  clocks = [
+    {tz:'Asia/Ho_Chi_Minh',city:'Hồ Chí Minh',country:'Việt Nam'},
+    {tz:'Asia/Tokyo',city:'Tokyo',country:'Nhật Bản'},
+    {tz:'Europe/London',city:'London',country:'Anh'},
+    {tz:'America/New_York',city:'New York',country:'Mỹ'},
+  ];
+}
+
+function addClock() {
+  const tz = sel.value;
+  if (!tz) return;
+  if (clocks.find(c => c.tz === tz)) return;
+  const info = TIMEZONES.find(t => t.tz === tz);
+  clocks.push({tz, city: info?.city || tz, country: info?.country || ''});
+  save();
+  render();
+}
+
+function removeClock(tz) {
+  clocks = clocks.filter(c => c.tz !== tz);
+  save();
+  render();
+}
+
+function save() { localStorage.setItem('wc_clocks', JSON.stringify(clocks)); }
+
+function getTimeInTz(tz) {
+  const now = new Date();
+  const parts = new Intl.DateTimeFormat('en-US', {
+    timeZone: tz, hour12: false,
+    hour:'2-digit', minute:'2-digit', second:'2-digit',
+    weekday:'short', day:'numeric', month:'short', year:'numeric'
+  }).formatToParts(now);
+  const get = t => parts.find(p=>p.type===t)?.value||'';
+  let h = parseInt(get('hour')); const m = get('minute'); const s = get('second');
+  const ampm = h >= 12 ? 'PM' : 'AM';
+  if (h === 24) h = 0;
+  return {
+    h: String(h).padStart(2,'0'), m, s, ampm,
+    date: `${get('weekday')}, ${get('day')} ${get('month')} ${get('year')}`,
+    hNum: h, mNum: parseInt(m), sNum: parseInt(s)
+  };
+}
+
+function getOffset(tz) {
+  const now = new Date();
+  const local = new Date(now.toLocaleString('en-US',{timeZone:tz}));
+  const diff = (local - now + now.getTimezoneOffset()*60000) / 3600000;
+  const sign = diff >= 0 ? '+' : '';
+  return `UTC${sign}${diff % 1 === 0 ? diff : diff.toFixed(1)}`;
+}
+
+function analogSvg(h, m, s, id) {
+  const size = 90;
+  const cx = size/2, cy = size/2, r = size/2 - 4;
+  const toRad = deg => (deg - 90) * Math.PI / 180;
+  const pt = (angle, len) => {
+    const a = toRad(angle);
+    return `${cx + Math.cos(a)*len},${cy + Math.sin(a)*len}`;
+  };
+  const secDeg = s * 6;
+  const minDeg = m * 6 + s * 0.1;
+  const hourDeg = (h % 12) * 30 + m * 0.5;
+
+  let ticks = '';
+  for (let i = 0; i < 60; i++) {
+    const a = toRad(i * 6);
+    const major = i % 5 === 0;
+    const r1 = major ? r - 10 : r - 6;
+    ticks += `<line class="${major?'tick-major':'tick'}" x1="${cx+Math.cos(a)*r1}" y1="${cy+Math.sin(a)*r1}" x2="${cx+Math.cos(a)*r}" y2="${cy+Math.sin(a)*r}" stroke-width="${major?1.5:0.8}"/>`;
+  }
+
+  return `<svg class="analog-face" width="${size}" height="${size}" viewBox="0 0 ${size} ${size}">
+    <circle class="bg" cx="${cx}" cy="${cy}" r="${r}" stroke-width="1"/>
+    ${ticks}
+    <line class="hour-hand" x1="${pt(hourDeg+180,8)}" x2="${pt(hourDeg+180,8).split(',')[0]}" y1="${pt(hourDeg+180,8).split(',')[1]}" x2="${pt(hourDeg,r*0.52)}" stroke-width="3"/>
+    <line class="min-hand"  x1="${pt(minDeg+180,10)}" x2="${pt(minDeg+180,10).split(',')[0]}" y1="${pt(minDeg+180,10).split(',')[1]}" x2="${pt(minDeg,r*0.72)}" stroke-width="2"/>
+    <line class="sec-hand"  x1="${pt(secDeg+180,12)}" x2="${pt(secDeg+180,12).split(',')[0]}" y1="${pt(secDeg+180,12).split(',')[1]}" x2="${pt(secDeg,r*0.82)}" stroke-width="1"/>
+    <circle cx="${cx}" cy="${cy}" r="3" fill="var(--sage)"/>
+  </svg>`;
+}
+
+function render() {
+  const grid = document.getElementById('clocksGrid');
+  grid.innerHTML = clocks.map(c => {
+    const t = getTimeInTz(c.tz);
+    const isHome = c.tz === homeTz || (c.tz === 'Asia/Bangkok' && homeTz === 'Asia/Ho_Chi_Minh');
+    return `<div class="clock-card${isHome?' home':''}">
+      ${!isHome ? `<button class="clock-remove" onclick="removeClock('${c.tz}')">✕</button>` : ''}
+      <div class="clock-city">${c.city}${isHome?'<span class="clock-home-badge">HOME</span>':''}</div>
+      <div class="clock-country">${c.country}</div>
+      ${analogSvg(t.hNum, t.mNum, t.sNum)}
+      <div class="clock-time">${t.h}:${t.m}<span class="seconds">:${t.s}</span><span class="clock-ampm">${t.ampm}</span></div>
+      <div class="clock-date">${t.date}</div>
+      <span class="clock-offset">${getOffset(c.tz)}</span>
+    </div>`;
+  }).join('');
+}
+
+render();
+setInterval(() => {
+  document.querySelectorAll('.clock-card').forEach((card, i) => {
+    const c = clocks[i];
+    if (!c) return;
+    const t = getTimeInTz(c.tz);
+    const timeEl = card.querySelector('.clock-time');
+    const dateEl = card.querySelector('.clock-date');
+    const svgEl = card.querySelector('.analog-face');
+    if (timeEl) timeEl.innerHTML = `${t.h}:${t.m}<span class="seconds">:${t.s}</span><span class="clock-ampm">${t.ampm}</span>`;
+    if (dateEl) dateEl.textContent = t.date;
+    if (svgEl) svgEl.outerHTML = analogSvg(t.hNum, t.mNum, t.sNum);
+  });
+}, 1000);
+</script>
+</body>
+</html>

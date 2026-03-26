@@ -1,0 +1,85 @@
+# ============================================================
+# DANH SÁCH THƯ VIỆN CẦN CÀI CHO BACKEND FASTAPI
+# Project: Querencia Backend
+#
+# Cách cài tất cả thư viện:
+# pip install -r requirements.txt
+# ============================================================
+
+
+# ------------------------------------------------------------
+# FASTAPI CORE
+# ------------------------------------------------------------
+
+fastapi==0.115.0
+# Framework chính để xây dựng API backend
+
+uvicorn[standard]==0.30.0
+# ASGI server dùng để chạy FastAPI
+
+
+# ------------------------------------------------------------
+# ENVIRONMENT VARIABLES
+# ------------------------------------------------------------
+
+python-dotenv==1.0.0
+# Đọc biến môi trường từ file .env
+# Ví dụ: API keys, database URL, secret key...
+
+
+# ------------------------------------------------------------
+# DATABASE
+# ------------------------------------------------------------
+
+sqlalchemy==2.0.30
+# ORM giúp thao tác database bằng Python thay vì SQL
+
+psycopg2-binary==2.9.9
+# Driver để kết nối PostgreSQL
+
+
+# ------------------------------------------------------------
+# AUTHENTICATION / SECURITY
+# ------------------------------------------------------------
+
+passlib[bcrypt]==1.7.4
+# Thư viện mã hóa mật khẩu
+
+bcrypt==4.0.1
+# Thuật toán mã hóa mạnh dùng với passlib
+
+
+# ------------------------------------------------------------
+# JWT TOKEN
+# ------------------------------------------------------------
+
+python-jose[cryptography]==3.3.0
+# Tạo và xác thực JWT token (dùng cho login / authentication)
+
+
+# ------------------------------------------------------------
+# FORM DATA
+# ------------------------------------------------------------
+
+python-multipart==0.0.9
+# Xử lý form data (cần cho login form hoặc upload file)
+
+
+# ------------------------------------------------------------
+# VALIDATION
+# ------------------------------------------------------------
+
+email-validator==2.1.0
+# Kiểm tra email hợp lệ khi user đăng ký tài khoản
+# ------------------------------------------------------------
+# EMAIL
+# ------------------------------------------------------------
+
+resend==2.0.0
+# Gửi email transactional (verify email, reset password...)
+
+httpx==0.27.0
+# HTTP client async (dùng cho Anthropic API calls)
+
+boto3==1.34.0
+# AWS S3 client (dùng cho file upload)

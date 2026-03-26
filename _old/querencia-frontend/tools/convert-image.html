@@ -1,0 +1,845 @@
+<meta name="description" content="Convert images between JPG, PNG, WebP, GIF, BMP, ICO online for free. No upload to server, instant conversion in browser."/>
+<meta name="keywords" content="convert image format, jpg to png, png to webp, webp to jpg, image converter online, free format converter"/>
+<meta property="og:title" content="Convert Image Format Online Free — JPG PNG WebP | Querencia"/>
+<meta property="og:description" content="Convert images between JPG, PNG, WebP, GIF, BMP, ICO online for free. No upload to server, instant conversion in browser."/>
+<meta property="og:type" content="website"/>
+<meta property="og:url" content="https://querencia.com.vn/#tools"/>
+<meta name="twitter:card" content="summary"/>
+<meta name="twitter:title" content="Convert Image Format Online Free — JPG PNG WebP | Querencia"/>
+<link rel="canonical" href="https://querencia.com.vn/#tools"/>
+<script type="application/ld+json">
+{
+  "@context": "https://schema.org",
+  "@type": "WebApplication",
+  "name": "Convert Image Format Online Free",
+  "url": "https://querencia.com.vn/#tools",
+  "description": "Convert images between JPG, PNG, WebP, GIF, BMP, ICO online for free. No upload to server, instant conversion in browser.",
+  "applicationCategory": "MultimediaApplication",
+  "operatingSystem": "Any",
+  "offers": { "@type": "Offer", "price": "0", "priceCurrency": "USD" },
+  "provider": { "@type": "Organization", "name": "Querencia", "url": "https://querencia.com.vn" }
+}
+</script>
+<!DOCTYPE html>
+<html lang="vi">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Convert Image — Querencia</title>
+<meta name="description" content="Chuyển đổi định dạng ảnh miễn phí: JPG, PNG, WEBP, GIF, BMP, ICO. Điều chỉnh chất lượng, xem trước kích thước file. Không upload server.">
+
+
+
+<style>
+  
+
+  *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+  body {
+    background: var(--white);
+    color: var(--black);
+    font-family: var(--font-body);
+    font-weight: 300;
+    min-height: 100vh;
+  }
+
+  /* ── NAV ── */
+  nav {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    padding: 18px 40px;
+    border-bottom: 1px solid var(--border);
+    background: var(--white);
+    position: sticky;
+    top: 0;
+    z-index: 100;
+  }
+  .logo {
+    font-family: var(--font-body);
+    font-weight: 700;
+    font-size: 1.25rem;
+    color: var(--black);
+    text-decoration: none;
+    letter-spacing: -.02em;
+  }
+  .logo span { color: var(--sage); }
+  nav a.back {
+    font-size: .8rem;
+    color: var(--gray-light);
+    text-decoration: none;
+    display: flex;
+    align-items: center;
+    gap: 6px;
+    transition: color .2s;
+    font-family: var(--font-body);
+  }
+  nav a.back:hover { color: var(--black); }
+
+  /* ── HERO ── */
+  .hero {
+    padding: 56px 24px 36px;
+    text-align: center;
+    position: relative;
+  }
+  .hero::before {
+    content: '';
+    position: absolute;
+    inset: 0;
+    background: radial-gradient(ellipse 60% 50% at 50% 0%, rgba(42,92,255,.06) 0%, transparent 70%);
+    pointer-events: none;
+  }
+  .hero-eyebrow {
+    font-family: var(--font-body);
+    font-size: .72rem;
+    color: var(--sage);
+    letter-spacing: .12em;
+    margin-bottom: 16px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 10px;
+  }
+  .hero-eyebrow::before,
+  .hero-eyebrow::after {
+    content: '';
+    width: 32px;
+    height: 1px;
+    background: var(--sage);
+    opacity: .4;
+  }
+  .hero h1 {
+    font-family: var(--font-body);
+    font-size: clamp(2rem, 5vw, 3rem);
+    font-weight: 700;
+    line-height: 1.1;
+    margin-bottom: 14px;
+    letter-spacing: -.03em;
+  }
+  .hero h1 .hi { color: var(--sage); }
+  .hero p {
+    color: var(--gray-light);
+    font-size: .92rem;
+    max-width: 440px;
+    margin: 0 auto;
+    line-height: 1.75;
+  }
+
+  /* ── FORMAT PILL BAR (target selection) ── */
+  .format-bar-wrap {
+    max-width: 700px;
+    margin: 0 auto 8px;
+    padding: 0 24px;
+  }
+  .format-bar-label {
+    font-family: var(--font-body);
+    font-size: .68rem;
+    letter-spacing: .1em;
+    color: var(--gray-light);
+    margin-bottom: 10px;
+    text-transform: uppercase;
+  }
+  .format-bar {
+    display: flex;
+    gap: 8px;
+    flex-wrap: wrap;
+  }
+  .fmt-pill {
+    font-family: var(--font-body);
+    font-size: .8rem;
+    padding: 8px 16px;
+    border-radius: 100px;
+    border: 1.5px solid var(--border);
+    background: var(--white);
+    color: var(--gray-light);
+    cursor: pointer;
+    transition: all .18s;
+    display: flex;
+    align-items: center;
+    gap: 6px;
+  }
+  .fmt-pill:hover { border-color: var(--sage); color: var(--sage); }
+  .fmt-pill.active {
+    background: var(--sage);
+    border-color: var(--sage);
+    color: #fff;
+    box-shadow: 0 3px 12px rgba(42,92,255,.25);
+  }
+  .fmt-pill .fmt-ext { font-weight: 600; }
+  .fmt-pill .fmt-desc { font-size: .65rem; opacity: .75; }
+
+  /* ── MAIN ── */
+  .workspace {
+    max-width: 900px;
+    margin: 32px auto 0;
+    padding: 0 24px 80px;
+    display: grid;
+    grid-template-columns: 1fr 280px;
+    gap: 20px;
+    align-items: start;
+  }
+  @media(max-width: 700px) {
+    .workspace { grid-template-columns: 1fr; }
+  }
+
+  /* ── DROP ZONE ── */
+  .drop-zone {
+    border: 2px dashed var(--border);
+    border-radius: 14px;
+    background: var(--white);
+    min-height: 380px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    flex-direction: column;
+    cursor: pointer;
+    transition: border-color .22s, background .22s;
+    position: relative;
+    overflow: hidden;
+  }
+  .drop-zone.over {
+    border-color: var(--sage);
+    background: var(--sage-pale);
+  }
+  .drop-zone.has-image { cursor: default; }
+
+  .drop-placeholder {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 12px;
+    padding: 48px 32px;
+    text-align: center;
+  }
+  .drop-icon-ring {
+    width: 72px; height: 72px;
+    border-radius: 50%;
+    border: 2px solid var(--border);
+    display: flex; align-items: center; justify-content: center;
+    background: var(--white);
+    position: relative;
+  }
+  .drop-icon-ring::after {
+    content: '';
+    position: absolute;
+    inset: -6px;
+    border-radius: 50%;
+    border: 1px dashed var(--border);
+    animation: spin 12s linear infinite;
+  }
+  @keyframes spin { to { transform: rotate(360deg); } }
+
+  .drop-placeholder h3 { font-family: var(--font-body); font-size: 1rem; font-weight: 600; }
+  .drop-placeholder p { font-size: .8rem; color: var(--gray-light); line-height: 1.6; }
+  .drop-placeholder .browse { color: var(--sage); text-decoration: underline; cursor: pointer; }
+
+  /* preview */
+  #canvas-wrap {
+    width: 100%; min-height: 380px;
+    display: flex; align-items: center; justify-content: center;
+    padding: 20px;
+    flex-direction: column;
+    gap: 12px;
+  }
+  #preview-canvas {
+    max-width: 100%; max-height: 340px;
+    border-radius: 8px;
+    display: block;
+    box-shadow: 0 4px 24px rgba(0,0,0,.1);
+  }
+  .canvas-label {
+    font-family: var(--font-body);
+    font-size: .7rem;
+    color: var(--gray-light);
+    background: #f5f5f5;
+    border-radius: 4px;
+    padding: 3px 10px;
+  }
+
+  /* ── PANEL ── */
+  .panel { display: flex; flex-direction: column; gap: 14px; }
+
+  .card {
+    background: var(--white);
+    border: 1px solid var(--border);
+    border-radius: var(--radius);
+    padding: 18px;
+  }
+  .card-title {
+    font-family: var(--font-body);
+    font-size: .65rem;
+    letter-spacing: .12em;
+    color: var(--gray-light);
+    text-transform: uppercase;
+    margin-bottom: 14px;
+  }
+
+  /* Quality slider */
+  .q-row {
+    display: flex; justify-content: space-between;
+    align-items: center; font-size: .82rem; margin-bottom: 8px;
+  }
+  .q-row span { color: var(--gray-light); }
+  .q-val {
+    font-family: var(--font-body);
+    font-size: .9rem;
+    color: var(--sage);
+    font-weight: 600;
+  }
+  input[type=range] {
+    -webkit-appearance: none;
+    width: 100%; height: 4px;
+    background: var(--border);
+    border-radius: 2px;
+    outline: none; cursor: pointer;
+  }
+  input[type=range]::-webkit-slider-thumb {
+    -webkit-appearance: none;
+    width: 18px; height: 18px;
+    background: var(--sage);
+    border-radius: 50%;
+    cursor: pointer;
+    box-shadow: 0 0 0 3px var(--sage-pale);
+  }
+  .quality-note {
+    font-size: .72rem;
+    color: var(--gray-light);
+    margin-top: 8px;
+    line-height: 1.5;
+  }
+
+  /* Size compare */
+  .size-compare {
+    display: grid; grid-template-columns: 1fr auto 1fr; gap: 8px;
+    align-items: center; font-size: .78rem;
+  }
+  .size-box {
+    background: #f5f5f5;
+    border-radius: 6px;
+    padding: 10px 8px;
+    text-align: center;
+  }
+  .size-box .sz-label { font-size: .65rem; color: var(--gray-light); font-family: var(--font-body); margin-bottom: 4px; }
+  .size-box .sz-val { font-family: var(--font-body); font-size: .9rem; font-weight: 600; color: var(--black); }
+  .size-arrow { color: var(--gray-light); font-size: .9rem; text-align: center; }
+  .sz-saving {
+    text-align: center;
+    font-family: var(--font-body);
+    font-size: .75rem;
+    margin-top: 8px;
+    height: 18px;
+  }
+  .saving-pos { color: #0d9f6e; }
+  .saving-neg { color: #e53e3e; }
+
+  /* Info rows */
+  .info-row {
+    display: flex; justify-content: space-between;
+    font-size: .78rem; color: var(--gray-light); padding: 4px 0;
+    border-bottom: 1px solid #f5f5f5;
+  }
+  .info-row:last-child { border-bottom: none; }
+  .info-row span:last-child { color: var(--black); font-family: var(--font-body); font-size: .76rem; }
+
+  /* Buttons */
+  .btn-convert {
+    width: 100%;
+    background: var(--sage);
+    color: #fff;
+    border: none;
+    border-radius: 8px;
+    font-family: var(--font-body);
+    font-size: .9rem;
+    font-weight: 600;
+    padding: 14px;
+    cursor: pointer;
+    display: flex; align-items: center; justify-content: center; gap: 8px;
+    transition: background .18s, transform .15s, box-shadow .18s;
+    letter-spacing: -.01em;
+  }
+  .btn-convert:hover:not(:disabled) {
+    background: #1a46e0;
+    transform: translateY(-1px);
+    box-shadow: 0 6px 20px rgba(42,92,255,.3);
+  }
+  .btn-convert:disabled { opacity: .3; cursor: not-allowed; transform: none; box-shadow: none; }
+
+  .btn-new {
+    width: 100%;
+    background: transparent;
+    border: 1.5px solid var(--border);
+    border-radius: 8px;
+    color: var(--gray-light);
+    font-family: var(--font-body);
+    font-size: .82rem;
+    padding: 10px;
+    cursor: pointer;
+    transition: color .18s, border-color .18s;
+  }
+  .btn-new:hover:not(:disabled) { color: #e53e3e; border-color: #e53e3e; }
+  .btn-new:disabled { opacity: .3; cursor: not-allowed; }
+
+  /* progress bar during "conversion" */
+  .progress-wrap {
+    height: 3px; background: var(--border); border-radius: 2px;
+    overflow: hidden; margin-top: 6px;
+    display: none;
+  }
+  .progress-bar {
+    height: 100%; background: var(--sage);
+    border-radius: 2px; width: 0;
+    transition: width .05s linear;
+  }
+
+  /* toast */
+  .toast {
+    position: fixed; bottom: 28px; left: 50%;
+    transform: translateX(-50%) translateY(16px);
+    background: var(--black);
+    border-radius: 8px;
+    padding: 10px 20px;
+    font-size: .82rem;
+    color: var(--white);
+    opacity: 0;
+    transition: opacity .25s, transform .25s;
+    pointer-events: none; z-index: 999;
+    white-space: nowrap;
+    font-family: var(--font-body);
+  }
+  .toast.show { opacity: 1; transform: translateX(-50%) translateY(0); }
+
+  input[type=file] { display: none; }
+
+  /* format target in panel */
+  .target-fmt-row {
+    display: flex; gap: 6px; flex-wrap: wrap;
+  }
+  .tfmt {
+    font-family: var(--font-body);
+    font-size: .72rem;
+    padding: 5px 10px;
+    border-radius: 6px;
+    border: 1.5px solid var(--border);
+    background: #f5f5f5;
+    color: var(--gray-light);
+    cursor: pointer;
+    transition: all .15s;
+  }
+  .tfmt:hover { border-color: var(--sage); color: var(--sage); }
+  .tfmt.active { background: var(--sage-pale); border-color: var(--sage); color: var(--sage); font-weight: 600; }
+</style>
+</head>
+<body>
+
+
+
+<div class="hero">
+  <div class="hero-eyebrow"><span data-i18n="t_tool_title">Image Converter</span></div>
+  <h1 data-i18n="t_subtitle">Convert format <span class="hi">tức thì</span></h1>
+  <p data-i18n="t_desc">JPG · PNG · WEBP · GIF · BMP · ICO — convert freely, không mất ảnh gốc, không upload server.</p>
+</div>
+
+<!-- Format target bar -->
+<div class="format-bar-wrap">
+  <div class="format-bar-label" data-i18n="t_convert_to">Convert to format</div>
+  <div class="format-bar">
+    <div class="fmt-pill" data-fmt="image/jpeg" data-ext="jpg" onclick="selectFormat(this)">
+      <span class="fmt-ext">JPG</span><span class="fmt-desc">nhỏ gọn</span>
+    </div>
+    <div class="fmt-pill active" data-fmt="image/png" data-ext="png" onclick="selectFormat(this)">
+      <span class="fmt-ext">PNG</span><span class="fmt-desc">trong suốt</span>
+    </div>
+    <div class="fmt-pill" data-fmt="image/webp" data-ext="webp" onclick="selectFormat(this)">
+      <span class="fmt-ext">WEBP</span><span class="fmt-desc">web tối ưu</span>
+    </div>
+    <div class="fmt-pill" data-fmt="image/gif" data-ext="gif" onclick="selectFormat(this)">
+      <span class="fmt-ext">GIF</span><span class="fmt-desc">256 màu</span>
+    </div>
+    <div class="fmt-pill" data-fmt="image/bmp" data-ext="bmp" onclick="selectFormat(this)">
+      <span class="fmt-ext">BMP</span><span class="fmt-desc" data-i18n="t_no_compress">no compression</span>
+    </div>
+    <div class="fmt-pill" data-fmt="image/x-icon" data-ext="ico" onclick="selectFormat(this)">
+      <span class="fmt-ext">ICO</span><span class="fmt-desc">favicon</span>
+    </div>
+  </div>
+</div>
+
+<!-- Workspace -->
+<div class="workspace">
+
+  <!-- Preview -->
+  <div class="drop-zone" id="dropZone">
+    <div class="drop-placeholder" id="dropPlaceholder">
+      <div class="drop-icon-ring">
+        <svg width="28" height="28" fill="none" stroke="var(--sage)" stroke-width="1.6" viewBox="0 0 24 24">
+          <rect x="3" y="3" width="18" height="18" rx="3"/>
+          <circle cx="8.5" cy="8.5" r="1.5"/>
+          <polyline points="21 15 16 10 5 21"/>
+        </svg>
+      </div>
+      <h3 data-i18n="t_drop">Drop image here</h3>
+      <p data-i18n="t_or">or <span class="browse" id="browseBtn" data-i18n="t_browse">choose from device</span><br data-i18n="t_drop_sub">PNG, JPG, WEBP, GIF, BMP — up to 30MB</p>
+    </div>
+    <div id="canvas-wrap" style="display:none">
+      <canvas id="preview-canvas"></canvas>
+      <div class="canvas-label" id="canvasLabel">—</div>
+    </div>
+  </div>
+  <input type="file" id="fileInput" accept="image/*">
+
+  <!-- Panel -->
+  <div class="panel">
+
+    <!-- Target format (panel mirror) -->
+    <div class="card">
+      <div class="card-title">Định dạng đầu ra</div>
+      <div class="target-fmt-row">
+        <span class="tfmt" data-fmt="image/jpeg" data-ext="jpg" onclick="selectFormat2(this)">JPG</span>
+        <span class="tfmt active" data-fmt="image/png" data-ext="png" onclick="selectFormat2(this)">PNG</span>
+        <span class="tfmt" data-fmt="image/webp" data-ext="webp" onclick="selectFormat2(this)">WEBP</span>
+        <span class="tfmt" data-fmt="image/gif" data-ext="gif" onclick="selectFormat2(this)">GIF</span>
+        <span class="tfmt" data-fmt="image/bmp" data-ext="bmp" onclick="selectFormat2(this)">BMP</span>
+        <span class="tfmt" data-fmt="image/x-icon" data-ext="ico" onclick="selectFormat2(this)">ICO</span>
+      </div>
+    </div>
+
+    <!-- Quality -->
+    <div class="card" id="qualityCard">
+      <div class="card-title" data-i18n="t_quality">Quality</div>
+      <div class="q-row">
+        <span>Quality</span>
+        <span class="q-val" id="qVal">92%</span>
+      </div>
+      <input type="range" id="qualitySlider" min="10" max="100" value="92" oninput="onQualityChange(this.value)">
+      <div class="quality-note" id="qualityNote">Áp dụng cho JPG và WEBP. PNG/BMP/GIF không mất dữ liệu.</div>
+    </div>
+
+    <!-- Size estimate -->
+    <div class="card">
+      <div class="card-title" data-i18n="t_compare">Size comparison</div>
+      <div class="size-compare">
+        <div class="size-box">
+          <div class="sz-label" data-i18n="t_orig">Original</div>
+          <div class="sz-val" id="origSize">—</div>
+        </div>
+        <div class="size-arrow">→</div>
+        <div class="size-box">
+          <div class="sz-label" data-i18n="t_after">After</div>
+          <div class="sz-val" id="outSize">—</div>
+        </div>
+      </div>
+      <div class="sz-saving" id="szSaving"></div>
+    </div>
+
+    <!-- Info -->
+    <div class="card">
+      <div class="card-title" data-i18n="t_size_info">Image info</div>
+      <div class="info-row"><span>Kích thước</span><span id="infoWH">—</span></div>
+      <div class="info-row"><span>Định dạng gốc</span><span id="infoSrcFmt">—</span></div>
+      <div class="info-row"><span>Chuyển sang</span><span id="infoDstFmt">PNG</span></div>
+      <div class="info-row"><span>Có transparency</span><span id="infoAlpha">—</span></div>
+    </div>
+
+    <div>
+      <button class="btn-convert" id="btnConvert" disabled onclick="convertAndDownload()">
+        <svg width="15" height="15" fill="none" stroke="currentColor" stroke-width="2.2" viewBox="0 0 24 24">
+          <polyline points="17 1 21 5 17 9"/><path d="M3 11V9a4 4 0 0 1 4-4h14"/>
+          <polyline points="7 23 3 19 7 15"/><path d="M21 13v2a4 4 0 0 1-4 4H3"/>
+        </svg>
+        Chuyển đổi &amp; Tải xuống
+      </button>
+      <div class="progress-wrap" id="progressWrap">
+        <div class="progress-bar" id="progressBar"></div>
+      </div>
+    </div>
+
+    <button class="btn-new" id="btnNew" disabled onclick="resetAll()" data-i18n="t_try_other">Try another image</button>
+
+  </div>
+</div>
+
+<div class="toast" id="toast"></div>
+
+<script>
+  // ── State ──
+  let img = null;
+  let origFileSize = 0;
+  let origFileName = 'image';
+  let targetMime = 'image/png';
+  let targetExt  = 'png';
+  let quality = 0.92;
+  let outputBlob = null;
+
+  // ── DOM refs ──
+  const dropZone    = document.getElementById('dropZone');
+  const placeholder = document.getElementById('dropPlaceholder');
+  const canvasWrap  = document.getElementById('canvas-wrap');
+  const canvas      = document.getElementById('preview-canvas');
+  const ctx         = canvas.getContext('2d');
+  const fileInput   = document.getElementById('fileInput');
+
+  // ── Upload ──
+  document.getElementById('browseBtn').onclick = () => fileInput.click();
+  dropZone.onclick = () => { if (!img) fileInput.click(); };
+  fileInput.onchange = e => loadFile(e.target.files[0]);
+
+  dropZone.ondragover = e => { e.preventDefault(); dropZone.classList.add('over'); };
+  dropZone.ondragleave = () => dropZone.classList.remove('over');
+  dropZone.ondrop = e => {
+    e.preventDefault(); dropZone.classList.remove('over');
+    const f = e.dataTransfer.files[0];
+    if (f && f.type.startsWith('image/')) loadFile(f);
+  };
+
+  document.addEventListener('paste', e => {
+    const items = e.clipboardData?.items;
+    if (!items) return;
+    for (const item of items) {
+      if (item.type.startsWith('image/')) { loadFile(item.getAsFile()); break; }
+    }
+  });
+
+  function loadFile(file) {
+    if (!file) return;
+    if (file.size > 30 * 1024 * 1024) { showToast('⚠️ File quá lớn (tối đa 30MB)'); return; }
+    origFileSize = file.size;
+    origFileName = file.name.replace(/\.[^.]+$/, '');
+    const srcFmt = file.type.split('/')[1]?.toUpperCase() || '?';
+    document.getElementById('infoSrcFmt').textContent = srcFmt;
+    document.getElementById('origSize').textContent = fmtBytes(file.size);
+
+    const reader = new FileReader();
+    reader.onload = e2 => {
+      const image = new Image();
+      image.onload = () => {
+        img = image;
+        canvas.width  = image.naturalWidth;
+        canvas.height = image.naturalHeight;
+        ctx.clearRect(0, 0, canvas.width, canvas.height);
+        ctx.drawImage(image, 0, 0);
+
+        document.getElementById('infoWH').textContent = `${image.naturalWidth} × ${image.naturalHeight}`;
+        document.getElementById('infoAlpha').textContent = hasAlpha() ? 'Có' : 'Không';
+        document.getElementById('canvasLabel').textContent = `${origFileName}.${srcFmt.toLowerCase()} · ${fmtBytes(file.size)}`;
+
+        placeholder.style.display = 'none';
+        canvasWrap.style.display = 'flex';
+        dropZone.classList.add('has-image');
+        enableControls(true);
+        estimateOutput();
+      };
+      image.src = e2.target.result;
+    };
+    reader.readAsDataURL(file);
+  }
+
+  function hasAlpha() {
+    if (!img) return false;
+    const d = ctx.getImageData(0, 0, Math.min(canvas.width,100), Math.min(canvas.height,100)).data;
+    for (let i = 3; i < d.length; i += 4) { if (d[i] < 255) return true; }
+    return false;
+  }
+
+  function enableControls(on) {
+    document.getElementById('btnConvert').disabled = !on;
+    document.getElementById('btnNew').disabled = !on;
+    document.getElementById('qualitySlider').disabled = !on;
+  }
+
+  // ── Format selection (top bar) ──
+  function selectFormat(el) {
+    document.querySelectorAll('.fmt-pill').forEach(p => p.classList.remove('active'));
+    el.classList.add('active');
+    targetMime = el.dataset.fmt;
+    targetExt  = el.dataset.ext;
+    syncPanelFmt();
+    updateInfoDst();
+    estimateOutput();
+  }
+
+  // ── Format selection (panel) ──
+  function selectFormat2(el) {
+    document.querySelectorAll('.tfmt').forEach(p => p.classList.remove('active'));
+    el.classList.add('active');
+    targetMime = el.dataset.fmt;
+    targetExt  = el.dataset.ext;
+    syncBarFmt();
+    updateInfoDst();
+    estimateOutput();
+  }
+
+  function syncPanelFmt() {
+    document.querySelectorAll('.tfmt').forEach(p => {
+      p.classList.toggle('active', p.dataset.fmt === targetMime);
+    });
+  }
+  function syncBarFmt() {
+    document.querySelectorAll('.fmt-pill').forEach(p => {
+      p.classList.toggle('active', p.dataset.fmt === targetMime);
+    });
+  }
+
+  function updateInfoDst() {
+    document.getElementById('infoDstFmt').textContent = targetExt.toUpperCase();
+    // quality slider only meaningful for jpg/webp
+    const hasQuality = ['image/jpeg','image/webp'].includes(targetMime);
+    document.getElementById('qualityCard').style.opacity = hasQuality ? '1' : '.5';
+  }
+
+  // ── Quality ──
+  function onQualityChange(val) {
+    quality = val / 100;
+    document.getElementById('qVal').textContent = `${val}%`;
+    estimateOutput();
+  }
+
+  // ── Estimate output size ──
+  function estimateOutput() {
+    if (!img) return;
+    const q = ['image/jpeg','image/webp'].includes(targetMime) ? quality : undefined;
+    const dataURL = canvas.toDataURL(targetMime, q);
+    const bytes = Math.round((dataURL.length - dataURL.indexOf(',') - 1) * 3 / 4);
+    document.getElementById('outSize').textContent = fmtBytes(bytes);
+
+    const diff = bytes - origFileSize;
+    const pct  = Math.round(Math.abs(diff) / origFileSize * 100);
+    const el   = document.getElementById('szSaving');
+    if (diff < 0)      el.innerHTML = `<span class="saving-pos">▼ ${pct}% nhỏ hơn</span>`;
+    else if (diff > 0) el.innerHTML = `<span class="saving-neg">▲ ${pct}% lớn hơn</span>`;
+    else               el.innerHTML = `<span>Kích thước tương đương</span>`;
+  }
+
+  // ── Convert & Download ──
+  function convertAndDownload() {
+    if (!img) return;
+    const btn = document.getElementById('btnConvert');
+    const pw  = document.getElementById('progressWrap');
+    const pb  = document.getElementById('progressBar');
+
+    btn.disabled = true;
+    pw.style.display = 'block';
+    pb.style.width = '0%';
+
+    let p = 0;
+    const tick = setInterval(() => {
+      p += Math.random() * 22;
+      if (p > 90) p = 90;
+      pb.style.width = p + '%';
+    }, 60);
+
+    setTimeout(() => {
+      clearInterval(tick);
+      pb.style.width = '100%';
+
+      const q = ['image/jpeg','image/webp'].includes(targetMime) ? quality : undefined;
+
+      // Special ICO handling (32×32 canvas)
+      let exportCanvas = canvas;
+      if (targetMime === 'image/x-icon') {
+        exportCanvas = document.createElement('canvas');
+        exportCanvas.width  = 32;
+        exportCanvas.height = 32;
+        const ectx = exportCanvas.getContext('2d');
+        ectx.drawImage(img, 0, 0, 32, 32);
+      }
+
+      // BMP doesn't support alpha; flatten to white bg
+      if (targetMime === 'image/bmp') {
+        const tmp = document.createElement('canvas');
+        tmp.width  = canvas.width;
+        tmp.height = canvas.height;
+        const tctx = tmp.getContext('2d');
+        tctx.fillStyle = '#ffffff';
+        tctx.fillRect(0, 0, tmp.width, tmp.height);
+        tctx.drawImage(canvas, 0, 0);
+        exportCanvas = tmp;
+      }
+
+      const mime = targetMime === 'image/x-icon' ? 'image/png' : targetMime;
+      const dataURL = exportCanvas.toDataURL(mime, q);
+      const ext = targetMime === 'image/x-icon' ? 'ico' : targetExt;
+
+      const a = document.createElement('a');
+      a.href = dataURL;
+      a.download = `${origFileName}.${ext}`;
+      a.click();
+
+      setTimeout(() => {
+        pw.style.display = 'none';
+        pb.style.width = '0%';
+        btn.disabled = false;
+        showToast(`✅ Đã xuất ${origFileName}.${ext}`);
+      }, 300);
+    }, 500);
+  }
+
+  // ── Reset ──
+  function resetAll() {
+    img = null; origFileSize = 0;
+    placeholder.style.display = 'flex';
+    canvasWrap.style.display = 'none';
+    dropZone.classList.remove('has-image');
+    ctx.clearRect(0, 0, canvas.width, canvas.height);
+    fileInput.value = '';
+    enableControls(false);
+    ['infoWH','infoSrcFmt','infoAlpha'].forEach(id => document.getElementById(id).textContent = '—');
+    document.getElementById('origSize').textContent = '—';
+    document.getElementById('outSize').textContent = '—';
+    document.getElementById('szSaving').textContent = '';
+    document.getElementById('canvasLabel').textContent = '—';
+  }
+
+  // ── Helpers ──
+  function fmtBytes(b) {
+    if (b < 1024) return b + ' B';
+    if (b < 1024*1024) return (b/1024).toFixed(1) + ' KB';
+    return (b/(1024*1024)).toFixed(2) + ' MB';
+  }
+
+  function showToast(msg) {
+    const t = document.getElementById('toast');
+    t.textContent = msg;
+    t.classList.add('show');
+    clearTimeout(t._tid);
+    t._tid = setTimeout(() => t.classList.remove('show'), 2800);
+  }
+
+  // init
+  updateInfoDst();
+</script>
+</body>
+</html>
+
+<script>
+(function(){
+  const _T = {en:{t_tool_title:'Image Converter',t_subtitle:'Convert format',t_desc:'JPG · PNG · WEBP · GIF · BMP · ICO — convert freely, original preserved, no upload.',t_convert_to:'Convert to format',t_drop:'Drop image here',t_drop_sub:'PNG, JPG, WEBP, GIF, BMP — up to 30MB',t_or:'or',t_browse:'choose from device',t_size_info:'Image info',t_orig:'Original',t_after:'After',t_compare:'Size comparison',t_quality:'Quality',t_download:'Download',t_try_other:'Try another image',t_privacy:'🔒 Images never leave your browser',t_no_compress:'no compression'},vi:{t_tool_title:'Chuyển Định Dạng Ảnh',t_subtitle:'Chuyển định dạng',t_desc:'JPG · PNG · WEBP · GIF · BMP · ICO — chuyển đổi tự do, không mất ảnh gốc, không upload server.',t_convert_to:'Chuyển sang định dạng',t_drop:'Kéo thả ảnh vào đây',t_drop_sub:'PNG, JPG, WEBP, GIF, BMP — tối đa 30MB',t_or:'hoặc',t_browse:'chọn từ máy tính',t_size_info:'Thông tin ảnh',t_orig:'Gốc',t_after:'Sau',t_compare:'So sánh kích thước',t_quality:'Chất lượng',t_download:'Tải xuống',t_try_other:'Chọn ảnh khác',t_privacy:'🔒 Ảnh không bao giờ rời trình duyệt',t_no_compress:'không nén'},ja:{t_tool_title:'画像形式変換',t_subtitle:'形式変換',t_desc:'JPG · PNG · WEBP · GIF · BMP · ICO — 自由に変換、元画像を保持、アップロード不要。',t_convert_to:'変換先の形式',t_drop:'画像をドロップ',t_drop_sub:'PNG, JPG, WEBP, GIF, BMP — 最大30MB',t_or:'または',t_browse:'デバイスから選択',t_size_info:'画像情報',t_orig:'元',t_after:'変換後',t_compare:'サイズ比較',t_quality:'品質',t_download:'ダウンロード',t_try_other:'別の画像を試す',t_privacy:'🔒 画像はブラウザ外に出ません',t_no_compress:'圧縮なし'},es:{t_tool_title:'Convertidor de Imagen',t_subtitle:'Convertir formato',t_desc:'JPG · PNG · WEBP · GIF · BMP · ICO — convierte libremente, original preservado, sin subida.',t_convert_to:'Convertir a formato',t_drop:'Arrastra una imagen aquí',t_drop_sub:'PNG, JPG, WEBP, GIF, BMP — hasta 30MB',t_or:'o',t_browse:'elige desde el dispositivo',t_size_info:'Info de imagen',t_orig:'Original',t_after:'Después',t_compare:'Comparar tamaño',t_quality:'Calidad',t_download:'Descargar',t_try_other:'Probar otra imagen',t_privacy:'🔒 Las imágenes nunca salen de tu navegador',t_no_compress:'sin compresión'}};
+  function _apply(){
+    const lang = localStorage.getItem('querencia_lang')||'en';
+    const t = _T[lang]||_T.en;
+    // Merge into window.T for app.js setLang() to pick up
+    if(window.T){
+      if(!window.T[lang]) window.T[lang]={};
+      Object.assign(window.T[lang], t);
+    }
+    document.querySelectorAll('[data-i18n]').forEach(el=>{
+      const k=el.getAttribute('data-i18n');
+      if(t[k]!==undefined) el.innerHTML=t[k];
+    });
+    document.querySelectorAll('[data-i18n-ph]').forEach(el=>{
+      const k=el.getAttribute('data-i18n-ph');
+      if(t[k]!==undefined) el.placeholder=t[k];
+    });
+  }
+  // Run immediately and also hook into app.js setLang
+  _apply();
+  const _orig = window.setLang;
+  window.setLang = function(l){ if(_orig) _orig(l); _apply(); };
+  // Also re-apply when applyTranslations is called
+  const _origAT = window.applyTranslations;
+  window.applyTranslations = function(){ if(_origAT) _origAT(); _apply(); };
+  window._convert_image_t = function(k){
+    const lang=localStorage.getItem('querencia_lang')||'en';
+    return (_T[lang]||_T.en)[k]||_T.en[k]||k;
+  };
+})();
+</script>

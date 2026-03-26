@@ -1,0 +1,48 @@
+<!-- ============================================================
+     FILE: pages/message.html
+     SECTION: #message
+     Được load vào index.html qua fetch() khi người dùng click nav
+     ============================================================ -->
+<section class="section" id="message">
+<div style="flex:1"><div style="flex:1"><div class="page-header">
+    <p class="page-label" data-i18n="nav_message">Message</p>
+    <h1 class="page-title" data-i18n="msg_title"></h1>
+    <p class="page-desc" data-i18n="msg_desc">Drop your feedback here. We read everything but we don't reply.</p>
+  </div>
+  <div style="padding:48px 64px;max-width:600px">
+    <!-- Hiện khi chưa đăng nhập -->
+    <div id="msgLoginGate" style="display:block">
+      <p style="color:var(--gray);margin-bottom:20px" data-i18n="msg_login_required">You need to sign in to send a message.</p>
+      <button class="btn-primary" onclick="openAuthModal('login')" data-i18n="auth_login">Đăng nhập</button>
+    </div>
+    <!-- Hiện khi đã đăng nhập -->
+    <div id="msgForm" style="display:none">
+      <!-- Thông báo thành công/thất bại — ẩn mặc định -->
+      <div id="msgFeedback" style="display:none;padding:12px 16px;border-radius:8px;font-size:0.85rem;margin-bottom:20px"></div>
+      <div class="form-group"><label data-i18n="form_subject">Subject</label><input id="msgSubject" type="text" data-i18n-placeholder="form_subject_ph"/></div>
+      <div class="form-group"><label data-i18n="form_message">Message</label><textarea id="msgBody" data-i18n-placeholder="form_msg_ph"></textarea></div>
+      <button class="btn-primary" id="msgSendBtn" onclick="sendMessage()">Send Message</button>
+    </div>
+  </div>
+  </div>
+  
+<script>
+(function() {
+  function updateMsgGate() {
+    var token = localStorage.getItem('token');
+    var gate = document.getElementById('msgLoginGate');
+    var form = document.getElementById('msgForm');
+    if (gate && form) {
+      gate.style.display = token ? 'none' : 'block';
+      form.style.display = token ? 'block' : 'none';
+    }
+  }
+  updateMsgGate();
+  // Re-check khi authToken thay đổi
+  window.addEventListener('storage', updateMsgGate);
+  // Re-check mỗi lần section được load
+  document.addEventListener('DOMContentLoaded', updateMsgGate);
+})();
+</script>
+</div>
+</section>

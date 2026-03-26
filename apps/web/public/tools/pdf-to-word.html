@@ -1,0 +1,311 @@
+<!DOCTYPE html>
+<html lang="vi">
+<head>
+  <meta charset="UTF-8"/>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>PDF → Word — Querencia</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com"/>
+  <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700&display=swap" rel="stylesheet"/>
+  <style>
+    :root {
+      --sage:#4a7c59;--sage-pale:#ddeee3;--sage-dark:#2f5c3e;
+      --black:#111;--gray:#555;--gray-light:#999;--border:#e0e0e0;
+      --font:'Plus Jakarta Sans',sans-serif;
+    }
+    *,*::before,*::after{box-sizing:border-box;margin:0;padding:0}
+    body{font-family:var(--font);color:var(--black);background:#f7f9f7;min-height:100vh}
+
+    nav{display:flex;align-items:center;justify-content:space-between;padding:0 32px;height:56px;background:rgba(255,255,255,0.95);backdrop-filter:blur(8px);border-bottom:1px solid var(--border);position:sticky;top:0;z-index:100}
+    .nav-left{display:flex;align-items:center;gap:10px;text-decoration:none;color:inherit}
+    .nav-logo{width:28px;height:28px}
+    .nav-title{font-weight:700;font-size:0.95rem}
+    .nav-back{font-size:0.82rem;color:var(--gray);text-decoration:none;padding:6px 12px;border-radius:8px;transition:background 0.15s}
+    .nav-back:hover{background:var(--sage-pale);color:var(--sage)}
+
+    .container{max-width:680px;margin:0 auto;padding:48px 24px}
+    .page-title{font-size:1.6rem;font-weight:700;letter-spacing:-0.5px;margin-bottom:6px}
+    .page-sub{font-size:0.88rem;color:var(--gray-light);margin-bottom:40px}
+
+    /* DROP ZONE */
+    .drop-zone{border:2px dashed var(--border);border-radius:16px;padding:56px 24px;text-align:center;cursor:pointer;transition:all 0.2s;background:#fff;position:relative}
+    .drop-zone:hover,.drop-zone.dragover{border-color:var(--sage);background:var(--sage-pale)}
+    .drop-zone input{position:absolute;inset:0;opacity:0;cursor:pointer;width:100%;height:100%}
+    .drop-icon{font-size:3rem;margin-bottom:14px;display:block}
+    .drop-title{font-weight:700;font-size:1.05rem;margin-bottom:5px}
+    .drop-sub{font-size:0.82rem;color:var(--gray-light)}
+
+    /* FILE INFO */
+    .file-info{display:none;margin-top:20px;background:#fff;border:1.5px solid var(--border);border-radius:12px;padding:16px 20px;align-items:center;gap:14px}
+    .file-info.visible{display:flex}
+    .file-icon{font-size:2rem;flex-shrink:0}
+    .file-details{flex:1;min-width:0}
+    .file-name{font-weight:700;font-size:0.92rem;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+    .file-size{font-size:0.78rem;color:var(--gray-light);margin-top:3px}
+    .file-remove{background:none;border:none;cursor:pointer;color:var(--gray-light);font-size:1.1rem;padding:4px;border-radius:6px;flex-shrink:0}
+    .file-remove:hover{color:#e74c3c}
+
+    /* CONVERT BTN */
+    .btn-convert{width:100%;margin-top:20px;padding:14px;background:var(--sage);color:#fff;border:none;border-radius:12px;font-family:var(--font);font-size:1rem;font-weight:700;cursor:pointer;transition:all 0.2s;display:none}
+    .btn-convert.visible{display:block}
+    .btn-convert:hover{background:var(--sage-dark)}
+    .btn-convert:disabled{opacity:0.6;cursor:not-allowed}
+
+    /* PROGRESS */
+    .progress-wrap{display:none;margin-top:20px;background:#fff;border:1.5px solid var(--border);border-radius:12px;padding:20px}
+    .progress-wrap.visible{display:block}
+    .progress-label{font-size:0.88rem;font-weight:600;margin-bottom:10px;display:flex;justify-content:space-between}
+    .progress-bar{height:6px;background:var(--border);border-radius:99px;overflow:hidden}
+    .progress-fill{height:100%;background:var(--sage);border-radius:99px;transition:width 0.4s ease;width:0%}
+    .progress-hint{font-size:0.78rem;color:var(--gray-light);margin-top:8px}
+
+    /* RESULT */
+    .result-wrap{display:none;margin-top:20px;background:#fff;border:1.5px solid #b7dfca;border-radius:12px;padding:20px;text-align:center}
+    .result-wrap.visible{display:block;animation:fadeUp 0.3s ease}
+    .result-icon{font-size:2.5rem;margin-bottom:10px}
+    .result-title{font-weight:700;font-size:1rem;margin-bottom:4px}
+    .result-sub{font-size:0.82rem;color:var(--gray-light);margin-bottom:16px}
+    .btn-download{display:inline-flex;align-items:center;gap:8px;background:var(--sage);color:#fff;border:none;padding:11px 28px;border-radius:10px;font-family:var(--font);font-size:0.92rem;font-weight:600;cursor:pointer;transition:background 0.2s;text-decoration:none}
+    .btn-download:hover{background:var(--sage-dark)}
+    .btn-another{display:inline-block;margin-top:12px;font-size:0.82rem;color:var(--gray-light);cursor:pointer;text-decoration:underline}
+    .btn-another:hover{color:var(--sage)}
+
+    /* ERROR */
+    .error-wrap{display:none;margin-top:20px;background:#fff5f5;border:1.5px solid #fca5a5;border-radius:12px;padding:16px 20px}
+    .error-wrap.visible{display:block}
+    .error-text{font-size:0.88rem;color:#c0392b;font-weight:500}
+
+    /* NOTE */
+    .note-box{margin-top:32px;background:#fffbeb;border:1.5px solid #fde68a;border-radius:12px;padding:16px 20px}
+    .note-title{font-size:0.8rem;font-weight:700;color:#92400e;margin-bottom:6px}
+    .note-text{font-size:0.78rem;color:#78350f;line-height:1.6}
+
+    body.dark{background:#0f0f0f;color:#eee}
+    body.dark nav{background:rgba(15,15,15,0.95);border-bottom-color:#222}
+    body.dark .drop-zone,.dark .file-info,.dark .progress-wrap,.dark .result-wrap{background:#1a1a1a;border-color:#2a2a2a}
+    body.dark .drop-zone:hover,.dark .drop-zone.dragover{background:#1a3328}
+
+    @keyframes fadeUp{from{opacity:0;transform:translateY(10px)}to{opacity:1;transform:translateY(0)}}
+    @media(max-width:600px){nav{padding:0 16px}.container{padding:28px 16px}}
+  </style>
+</head>
+<body>
+
+<nav>
+  <a class="nav-left" href="/">
+    <svg class="nav-logo" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 120 120">
+      <circle cx="55" cy="55" r="38" fill="none" stroke="#4a7c59" stroke-width="7" stroke-linecap="round"/>
+      <line x1="81" y1="79" x2="98" y2="98" stroke="#4a7c59" stroke-width="7" stroke-linecap="round"/>
+    </svg>
+    <span class="nav-title">PDF → Word</span>
+  </a>
+  <a class="nav-back" href="/">← Querencia</a>
+</nav>
+
+<div class="container">
+  <h1 class="page-title">PDF → Word</h1>
+  <p class="page-sub">Chuyển PDF sang .docx · Giữ nguyên bảng biểu, font, layout · Tối đa 20MB</p>
+
+  <!-- DROP ZONE -->
+  <div class="drop-zone" id="dropZone">
+    <input type="file" id="fileInput" accept=".pdf,application/pdf" onchange="handleFile(this.files[0])"/>
+    <span class="drop-icon">📄</span>
+    <div class="drop-title">Kéo thả file PDF vào đây</div>
+    <div class="drop-sub">Hoặc click để chọn · Tối đa 20MB</div>
+  </div>
+
+  <!-- FILE INFO -->
+  <div class="file-info" id="fileInfo">
+    <span class="file-icon">📄</span>
+    <div class="file-details">
+      <div class="file-name" id="fileName"></div>
+      <div class="file-size" id="fileSize"></div>
+    </div>
+    <button class="file-remove" onclick="reset()" title="Xóa">✕</button>
+  </div>
+
+  <!-- CONVERT BTN -->
+  <button class="btn-convert" id="convertBtn" onclick="convert()">
+    ✨ Chuyển sang Word
+  </button>
+
+  <!-- PROGRESS -->
+  <div class="progress-wrap" id="progressWrap">
+    <div class="progress-label">
+      <span id="progressLabel">Đang xử lý...</span>
+      <span id="progressPct"></span>
+    </div>
+    <div class="progress-bar"><div class="progress-fill" id="progressFill"></div></div>
+    <div class="progress-hint">Tùy độ phức tạp của tài liệu, có thể mất 10–60 giây</div>
+  </div>
+
+  <!-- RESULT -->
+  <div class="result-wrap" id="resultWrap">
+    <div class="result-icon">✅</div>
+    <div class="result-title">Chuyển đổi thành công!</div>
+    <div class="result-sub" id="resultSub"></div>
+    <a class="btn-download" id="downloadBtn" href="#" download>⬇ Tải file Word</a>
+    <br/>
+    <span class="btn-another" onclick="reset()">Chuyển file khác</span>
+  </div>
+
+  <!-- ERROR -->
+  <div class="error-wrap" id="errorWrap">
+    <div class="error-text" id="errorText"></div>
+  </div>
+
+  <!-- NOTE -->
+  <div class="note-box">
+    <div class="note-title">📌 Lưu ý</div>
+    <div class="note-text">
+      • File PDF scan (chỉ là ảnh chụp) sẽ không chuyển được chữ — cần dùng OCR trước.<br/>
+      • Tài liệu phức tạp (nhiều cột, bảng lồng nhau) có thể cần chỉnh nhỏ sau khi chuyển.<br/>
+      • File chỉ được xử lý tạm thời trên server và xóa ngay sau khi bạn tải về.
+    </div>
+  </div>
+</div>
+
+<script>
+const API = 'https://querencia-tools.fly.dev';
+let selectedFile = null;
+let downloadUrl  = null;
+
+function formatSize(bytes) {
+  if (bytes < 1024 * 1024) return (bytes / 1024).toFixed(0) + ' KB';
+  return (bytes / 1024 / 1024).toFixed(1) + ' MB';
+}
+
+function handleFile(file) {
+  if (!file) return;
+  if (!file.name.toLowerCase().endsWith('.pdf')) {
+    showError('Vui lòng chọn file PDF (.pdf)');
+    return;
+  }
+  if (file.size > 20 * 1024 * 1024) {
+    showError('File quá lớn! Tối đa 20MB.');
+    return;
+  }
+
+  selectedFile = file;
+  document.getElementById('fileName').textContent = file.name;
+  document.getElementById('fileSize').textContent = formatSize(file.size);
+  document.getElementById('fileInfo').classList.add('visible');
+  document.getElementById('convertBtn').classList.add('visible');
+  document.getElementById('errorWrap').style.display = 'none';
+  document.getElementById('resultWrap').classList.remove('visible');
+}
+
+async function convert() {
+  if (!selectedFile) return;
+
+  const btn = document.getElementById('convertBtn');
+  btn.disabled = true;
+  btn.textContent = '⏳ Đang gửi...';
+
+  // Show progress
+  document.getElementById('progressWrap').classList.add('visible');
+  document.getElementById('resultWrap').classList.remove('visible');
+  document.getElementById('errorWrap').style.display = 'none';
+
+  // Animate progress (giả lập vì không biết tiến trình thật)
+  animateProgress();
+
+  try {
+    const formData = new FormData();
+    formData.append('file', selectedFile);
+
+    const res = await fetch(`${API}/pdf/to-word`, {
+      method: 'POST',
+      body: formData,
+    });
+
+    if (!res.ok) {
+      const err = await res.json().catch(() => ({ detail: 'Lỗi không xác định' }));
+      throw new Error(err.detail || `Lỗi server: ${res.status}`);
+    }
+
+    // Nhận file blob
+    const blob = await res.blob();
+    const docxName = selectedFile.name.replace(/\.pdf$/i, '.docx');
+
+    if (downloadUrl) URL.revokeObjectURL(downloadUrl);
+    downloadUrl = URL.createObjectURL(blob);
+
+    // Hiện kết quả
+    setProgress(100, 'Hoàn tất!');
+    document.getElementById('downloadBtn').href     = downloadUrl;
+    document.getElementById('downloadBtn').download = docxName;
+    document.getElementById('resultSub').textContent = `${docxName} · ${formatSize(blob.size)}`;
+
+    setTimeout(() => {
+      document.getElementById('progressWrap').classList.remove('visible');
+      document.getElementById('resultWrap').classList.add('visible');
+    }, 600);
+
+    btn.textContent = '✨ Chuyển sang Word';
+    btn.disabled = false;
+
+  } catch (err) {
+    document.getElementById('progressWrap').classList.remove('visible');
+    showError(err.message || 'Có lỗi xảy ra. Vui lòng thử lại.');
+    btn.textContent = '✨ Chuyển sang Word';
+    btn.disabled = false;
+  }
+}
+
+// Animate thanh progress giả lập
+let progressTimer = null;
+function animateProgress() {
+  clearInterval(progressTimer);
+  let pct = 0;
+  setProgress(0, 'Đang tải file lên...');
+
+  progressTimer = setInterval(() => {
+    if (pct < 30) { pct += 5; setProgress(pct, 'Đang tải file lên...'); }
+    else if (pct < 60) { pct += 2; setProgress(pct, 'Đang phân tích tài liệu...'); }
+    else if (pct < 85) { pct += 1; setProgress(pct, 'Đang chuyển đổi nội dung...'); }
+    else { clearInterval(progressTimer); }
+  }, 400);
+}
+
+function setProgress(pct, label) {
+  document.getElementById('progressFill').style.width = pct + '%';
+  document.getElementById('progressLabel').textContent = label;
+  document.getElementById('progressPct').textContent = pct < 100 ? pct + '%' : '';
+}
+
+function showError(msg) {
+  const el = document.getElementById('errorWrap');
+  document.getElementById('errorText').textContent = '⚠️ ' + msg;
+  el.style.display = 'block';
+}
+
+function reset() {
+  selectedFile = null;
+  if (downloadUrl) { URL.revokeObjectURL(downloadUrl); downloadUrl = null; }
+  clearInterval(progressTimer);
+
+  document.getElementById('fileInput').value = '';
+  document.getElementById('fileInfo').classList.remove('visible');
+  document.getElementById('convertBtn').classList.remove('visible');
+  document.getElementById('convertBtn').disabled = false;
+  document.getElementById('convertBtn').textContent = '✨ Chuyển sang Word';
+  document.getElementById('progressWrap').classList.remove('visible');
+  document.getElementById('resultWrap').classList.remove('visible');
+  document.getElementById('errorWrap').style.display = 'none';
+}
+
+// Drag & drop
+const dz = document.getElementById('dropZone');
+dz.addEventListener('dragover', e => { e.preventDefault(); dz.classList.add('dragover'); });
+dz.addEventListener('dragleave', () => dz.classList.remove('dragover'));
+dz.addEventListener('drop', e => {
+  e.preventDefault();
+  dz.classList.remove('dragover');
+  const f = e.dataTransfer.files[0];
+  if (f) handleFile(f);
+});
+
+if (localStorage.getItem('darkMode') === 'true') document.body.classList.add('dark');
+</script>
+</body>
+</html>

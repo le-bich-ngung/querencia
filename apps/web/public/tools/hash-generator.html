@@ -1,0 +1,250 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8"/>
+<meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+<title>Hash Generator — Querencia</title>
+<link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700&family=DM+Mono:wght@400;500&display=swap" rel="stylesheet"/>
+<style>
+*, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+:root {
+  --bg: #0d0d0d; --panel: #141414; --panel2: #1b1b1b; --border: #262626;
+  --white: #f0eeec; --gray: #777; --gray-light: #444;
+  --accent: #4a7c59; --accent-light: #6fa882;
+  --font: 'Plus Jakarta Sans', sans-serif; --mono: 'DM Mono', monospace;
+}
+body { font-family: var(--font); background: var(--bg); color: var(--white);
+  min-height: 100vh; display: flex; align-items: center; justify-content: center; padding: 28px 24px; }
+.wrapper { width: 100%; max-width: 600px; display: flex; flex-direction: column; gap: 16px; }
+.header { text-align: center; }
+.header h1 { font-size: 1.5rem; font-weight: 700; }
+.header h1 span { color: var(--accent-light); }
+.header p { font-size: 0.78rem; color: var(--gray); margin-top: 4px; }
+
+/* Input */
+.input-card { background: var(--panel); border: 1.5px solid var(--border); border-radius: 14px; overflow: hidden; }
+.card-header { padding: 10px 16px; background: var(--panel2); border-bottom: 1px solid var(--border);
+  font-size: 0.65rem; font-weight: 700; letter-spacing: 0.12em; text-transform: uppercase;
+  color: var(--gray); display: flex; justify-content: space-between; align-items: center; }
+.sh-btn { background: none; border: 1px solid var(--border); border-radius: 5px; padding: 3px 8px;
+  font-family: var(--font); font-size: 0.62rem; font-weight: 600; color: var(--gray); cursor: pointer; transition: all 0.12s; }
+.sh-btn:hover { border-color: var(--accent); color: var(--accent-light); }
+textarea#hashInput { width: 100%; padding: 14px 16px; background: transparent; border: none;
+  outline: none; font-family: var(--mono); font-size: 0.85rem; line-height: 1.7; color: var(--white);
+  resize: vertical; min-height: 100px; }
+textarea#hashInput::placeholder { color: var(--gray-light); }
+.input-footer { padding: 8px 16px; border-top: 1px solid var(--border); display: flex; gap: 8px; align-items: center; }
+.input-stat { font-size: 0.68rem; color: var(--gray); }
+.input-stat span { color: var(--white); font-weight: 600; font-variant-numeric: tabular-nums; }
+
+/* File drop */
+.file-drop { border: 1.5px dashed var(--border); border-radius: 10px; padding: 14px;
+  text-align: center; cursor: pointer; transition: all 0.15s; font-size: 0.75rem; color: var(--gray); }
+.file-drop:hover { border-color: var(--accent); color: var(--accent-light); background: rgba(74,124,89,0.04); }
+#fileInputHash { display: none; }
+
+/* Hash results */
+.hashes-card { background: var(--panel); border: 1.5px solid var(--border); border-radius: 14px; overflow: hidden; }
+.hash-row { display: flex; align-items: center; gap: 0; border-bottom: 1px solid var(--border); transition: background 0.12s; }
+.hash-row:last-child { border-bottom: none; }
+.hash-row:hover { background: var(--panel2); }
+.hash-algo { width: 90px; flex-shrink: 0; padding: 14px 16px; font-size: 0.7rem; font-weight: 700;
+  letter-spacing: 0.06em; color: var(--gray); border-right: 1px solid var(--border); text-transform: uppercase; }
+.hash-val { flex: 1; font-family: var(--mono); font-size: 0.78rem; color: var(--white);
+  padding: 14px 14px; word-break: break-all; line-height: 1.5; min-width: 0; }
+.hash-val.empty { color: var(--gray-light); font-style: italic; font-size: 0.72rem; }
+.hash-copy { padding: 14px 14px; background: none; border: none; cursor: pointer;
+  color: var(--gray-light); font-size: 0.8rem; transition: color 0.12s; flex-shrink: 0; }
+.hash-copy:hover { color: var(--accent-light); }
+.hash-copy.copied { color: var(--accent-light); }
+
+/* Compare */
+.compare-card { background: var(--panel); border: 1.5px solid var(--border); border-radius: 14px; overflow: hidden; }
+.compare-input { width: 100%; padding: 12px 16px; background: transparent; border: none;
+  outline: none; font-family: var(--mono); font-size: 0.82rem; color: var(--white); }
+.compare-input::placeholder { color: var(--gray-light); }
+.compare-result { padding: 10px 16px; border-top: 1px solid var(--border);
+  font-size: 0.78rem; font-weight: 600; display: none; }
+.compare-result.match { color: #52b87a; background: rgba(82,184,122,0.08); }
+.compare-result.nomatch { color: #e05252; background: rgba(224,82,82,0.08); }
+</style>
+</head>
+<body>
+<div class="wrapper">
+
+  <div class="header">
+    <h1>Hash <span>Generator</span></h1>
+    <p>Generate cryptographic hashes from text or files. Runs entirely in your browser.</p>
+  </div>
+
+  <!-- Input -->
+  <div class="input-card">
+    <div class="card-header">
+      Input
+      <div style="display:flex;gap:5px">
+        <button class="sh-btn" onclick="clearInput()">Clear</button>
+        <button class="sh-btn" onclick="loadSample()">Sample</button>
+      </div>
+    </div>
+    <textarea id="hashInput" placeholder="Type or paste text to hash…" oninput="hashAll()"></textarea>
+    <div class="input-footer">
+      <span class="input-stat">Chars: <span id="charCount">0</span></span>
+      <span class="input-stat">Bytes: <span id="byteCount">0</span></span>
+      <label class="file-drop" style="margin-left:auto;padding:6px 12px;border-radius:7px;margin:0 0 0 auto;font-size:0.68rem" for="fileInputHash">📎 Hash a file</label>
+      <input type="file" id="fileInputHash" onchange="hashFile(this)"/>
+    </div>
+  </div>
+
+  <!-- Hashes -->
+  <div class="hashes-card">
+    <div class="card-header">Hash Results</div>
+    <div class="hash-row">
+      <div class="hash-algo">MD5</div>
+      <div class="hash-val empty" id="hash-md5">—</div>
+      <button class="hash-copy" onclick="copyHash('md5')" id="copy-md5">⎘</button>
+    </div>
+    <div class="hash-row">
+      <div class="hash-algo">SHA-1</div>
+      <div class="hash-val empty" id="hash-sha1">—</div>
+      <button class="hash-copy" onclick="copyHash('sha1')" id="copy-sha1">⎘</button>
+    </div>
+    <div class="hash-row">
+      <div class="hash-algo">SHA-256</div>
+      <div class="hash-val empty" id="hash-sha256">—</div>
+      <button class="hash-copy" onclick="copyHash('sha256')" id="copy-sha256">⎘</button>
+    </div>
+    <div class="hash-row">
+      <div class="hash-algo">SHA-512</div>
+      <div class="hash-val empty" id="hash-sha512">—</div>
+      <button class="hash-copy" onclick="copyHash('sha512')" id="copy-sha512">⎘</button>
+    </div>
+  </div>
+
+  <!-- Compare -->
+  <div class="compare-card">
+    <div class="card-header">Verify / Compare Hash</div>
+    <input class="compare-input" type="text" id="compareInput" placeholder="Paste a hash here to compare…" oninput="compareHash()"/>
+    <div class="compare-result" id="compareResult"></div>
+  </div>
+
+</div>
+<script>
+const hashes = { md5: '', sha1: '', sha256: '', sha512: '' };
+
+// ── HASH ────────────────────────────────────────────────────
+async function hashAll() {
+  const text = document.getElementById('hashInput').value;
+  document.getElementById('charCount').textContent = text.length;
+  document.getElementById('byteCount').textContent = new Blob([text]).size;
+
+  if (!text) {
+    ['md5','sha1','sha256','sha512'].forEach(a => {
+      const el = document.getElementById('hash-' + a);
+      el.textContent = '—'; el.className = 'hash-val empty';
+      hashes[a] = '';
+    });
+    compareHash(); return;
+  }
+
+  const enc = new TextEncoder().encode(text);
+  hashes.md5    = md5(text);
+  hashes.sha1   = await digest('SHA-1', enc);
+  hashes.sha256 = await digest('SHA-256', enc);
+  hashes.sha512 = await digest('SHA-512', enc);
+
+  ['md5','sha1','sha256','sha512'].forEach(a => {
+    const el = document.getElementById('hash-' + a);
+    el.textContent = hashes[a]; el.className = 'hash-val';
+  });
+  compareHash();
+}
+
+async function digest(algo, data) {
+  const buf = await crypto.subtle.digest(algo, data);
+  return [...new Uint8Array(buf)].map(b => b.toString(16).padStart(2,'0')).join('');
+}
+
+async function hashFile(input) {
+  const file = input.files[0]; if (!file) return;
+  const buf = await file.arrayBuffer();
+  const enc = new Uint8Array(buf);
+  const text = new TextDecoder().decode(enc);
+
+  document.getElementById('hashInput').value = `[File: ${file.name} — ${(file.size/1024).toFixed(1)} KB]`;
+  document.getElementById('charCount').textContent = '—';
+  document.getElementById('byteCount').textContent = file.size;
+
+  hashes.md5    = md5(text);
+  hashes.sha1   = await digest('SHA-1', enc);
+  hashes.sha256 = await digest('SHA-256', enc);
+  hashes.sha512 = await digest('SHA-512', enc);
+
+  ['md5','sha1','sha256','sha512'].forEach(a => {
+    const el = document.getElementById('hash-' + a);
+    el.textContent = hashes[a]; el.className = 'hash-val';
+  });
+  compareHash();
+}
+
+function copyHash(algo) {
+  if (!hashes[algo]) return;
+  navigator.clipboard.writeText(hashes[algo]).then(() => {
+    const btn = document.getElementById('copy-' + algo);
+    btn.textContent = '✓'; btn.classList.add('copied');
+    setTimeout(() => { btn.textContent = '⎘'; btn.classList.remove('copied'); }, 2000);
+  });
+}
+
+function compareHash() {
+  const cmp = document.getElementById('compareInput').value.trim().toLowerCase();
+  const res = document.getElementById('compareResult');
+  if (!cmp) { res.style.display = 'none'; return; }
+  const match = Object.entries(hashes).find(([,v]) => v && v.toLowerCase() === cmp);
+  res.style.display = 'block';
+  if (match) {
+    res.className = 'compare-result match';
+    res.textContent = `✓ Matches ${match[0].toUpperCase()} hash`;
+  } else {
+    res.className = 'compare-result nomatch';
+    res.textContent = '✗ Does not match any hash';
+  }
+}
+
+function clearInput() { document.getElementById('hashInput').value = ''; hashAll(); }
+function loadSample() { document.getElementById('hashInput').value = 'Hello, Querencia!'; hashAll(); }
+
+// ── MD5 (pure JS) ───────────────────────────────────────────
+function md5(s) {
+  function safeAdd(x,y){var l=(x&0xffff)+(y&0xffff);var m=(x>>16)+(y>>16)+(l>>16);return(m<<16)|(l&0xffff);}
+  function bitRotateLeft(n,c){return(n<<c)|(n>>>(32-c));}
+  function md5cmn(q,a,b,x,s,t){return safeAdd(bitRotateLeft(safeAdd(safeAdd(a,q),safeAdd(x,t)),s),b);}
+  function md5ff(a,b,c,d,x,s,t){return md5cmn((b&c)|((~b)&d),a,b,x,s,t);}
+  function md5gg(a,b,c,d,x,s,t){return md5cmn((b&d)|(c&(~d)),a,b,x,s,t);}
+  function md5hh(a,b,c,d,x,s,t){return md5cmn(b^c^d,a,b,x,s,t);}
+  function md5ii(a,b,c,d,x,s,t){return md5cmn(c^(b|(~d)),a,b,x,s,t);}
+  s=unescape(encodeURIComponent(s));var n=[];var m=8*s.length;for(var i=0;i<s.length;i+=4){n[i>>2]=s.charCodeAt(i)+(s.charCodeAt(i+1)<<8)+(s.charCodeAt(i+2)<<16)+(s.charCodeAt(i+3)<<24);}
+  n[m>>5]|=0x80<<(m%32);n[(((m+64)>>>9)<<4)+14]=m;var a=1732584193,b=-271733879,c=-1732584194,d=271733878;
+  for(var i=0;i<n.length;i+=16){var aa=a,bb=b,cc=c,dd=d;
+    a=md5ff(a,b,c,d,n[i],7,-680876936);d=md5ff(d,a,b,c,n[i+1],12,-389564586);c=md5ff(c,d,a,b,n[i+2],17,606105819);b=md5ff(b,c,d,a,n[i+3],22,-1044525330);
+    a=md5ff(a,b,c,d,n[i+4],7,-176418897);d=md5ff(d,a,b,c,n[i+5],12,1200080426);c=md5ff(c,d,a,b,n[i+6],17,-1473231341);b=md5ff(b,c,d,a,n[i+7],22,-45705983);
+    a=md5ff(a,b,c,d,n[i+8],7,1770035416);d=md5ff(d,a,b,c,n[i+9],12,-1958414417);c=md5ff(c,d,a,b,n[i+10],17,-42063);b=md5ff(b,c,d,a,n[i+11],22,-1990404162);
+    a=md5ff(a,b,c,d,n[i+12],7,1804603682);d=md5ff(d,a,b,c,n[i+13],12,-40341101);c=md5ff(c,d,a,b,n[i+14],17,-1502002290);b=md5ff(b,c,d,a,n[i+15],22,1236535329);
+    a=md5gg(a,b,c,d,n[i+1],5,-165796510);d=md5gg(d,a,b,c,n[i+6],9,-1069501632);c=md5gg(c,d,a,b,n[i+11],14,643717713);b=md5gg(b,c,d,a,n[i],20,-373897302);
+    a=md5gg(a,b,c,d,n[i+5],5,-701558691);d=md5gg(d,a,b,c,n[i+10],9,38016083);c=md5gg(c,d,a,b,n[i+15],14,-660478335);b=md5gg(b,c,d,a,n[i+4],20,-405537848);
+    a=md5gg(a,b,c,d,n[i+9],5,568446438);d=md5gg(d,a,b,c,n[i+14],9,-1019803690);c=md5gg(c,d,a,b,n[i+3],14,-187363961);b=md5gg(b,c,d,a,n[i+8],20,1163531501);
+    a=md5gg(a,b,c,d,n[i+13],5,-1444681467);d=md5gg(d,a,b,c,n[i+2],9,-51403784);c=md5gg(c,d,a,b,n[i+7],14,1735328473);b=md5gg(b,c,d,a,n[i+12],20,-1926607734);
+    a=md5hh(a,b,c,d,n[i+5],4,-378558);d=md5hh(d,a,b,c,n[i+8],11,-2022574463);c=md5hh(c,d,a,b,n[i+11],16,1839030562);b=md5hh(b,c,d,a,n[i+14],23,-35309556);
+    a=md5hh(a,b,c,d,n[i+1],4,-1530992060);d=md5hh(d,a,b,c,n[i+4],11,1272893353);c=md5hh(c,d,a,b,n[i+7],16,-155497632);b=md5hh(b,c,d,a,n[i+10],23,-1094730640);
+    a=md5hh(a,b,c,d,n[i+13],4,681279174);d=md5hh(d,a,b,c,n[i],11,-358537222);c=md5hh(c,d,a,b,n[i+3],16,-722521979);b=md5hh(b,c,d,a,n[i+6],23,76029189);
+    a=md5hh(a,b,c,d,n[i+9],4,-640364487);d=md5hh(d,a,b,c,n[i+12],11,-421815835);c=md5hh(c,d,a,b,n[i+15],16,530742520);b=md5hh(b,c,d,a,n[i+2],23,-995338651);
+    a=md5ii(a,b,c,d,n[i],6,-198630844);d=md5ii(d,a,b,c,n[i+7],10,1126891415);c=md5ii(c,d,a,b,n[i+14],15,-1416354905);b=md5ii(b,c,d,a,n[i+5],21,-57434055);
+    a=md5ii(a,b,c,d,n[i+12],6,1700485571);d=md5ii(d,a,b,c,n[i+3],10,-1894986606);c=md5ii(c,d,a,b,n[i+10],15,-1051523);b=md5ii(b,c,d,a,n[i+1],21,-2054922799);
+    a=md5ii(a,b,c,d,n[i+8],6,1873313359);d=md5ii(d,a,b,c,n[i+15],10,-30611744);c=md5ii(c,d,a,b,n[i+6],15,-1560198380);b=md5ii(b,c,d,a,n[i+13],21,1309151649);
+    a=md5ii(a,b,c,d,n[i+4],6,-145523070);d=md5ii(d,a,b,c,n[i+11],10,-1120210379);c=md5ii(c,d,a,b,n[i+2],15,718787259);b=md5ii(b,c,d,a,n[i+9],21,-343485551);
+    a=safeAdd(a,aa);b=safeAdd(b,bb);c=safeAdd(c,cc);d=safeAdd(d,dd);
+  }
+  return [a,b,c,d].map(n=>(n<0?n+0x100000000:n).toString(16).padStart(8,'0').match(/../g).reverse().join('')).join('');
+}
+</script>
+</body>
+</html>

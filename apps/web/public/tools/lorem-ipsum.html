@@ -1,0 +1,248 @@
+<!DOCTYPE html>
+<html lang="vi">
+<head>
+<meta charset="UTF-8"/>
+<meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+<title>Lorem Ipsum Generator · Querencia Tools</title>
+<style>
+  @import url('https://fonts.googleapis.com/css2?family=Libre+Baskerville:ital,wght@0,400;0,700;1,400&family=Courier+Prime:wght@400;700&display=swap');
+  *{box-sizing:border-box;margin:0;padding:0}
+  :root{
+    --bg:#fafaf8;--card:#fff;--border:#e4e0d8;
+    --sage:#4a7c59;--sage-pale:#ddeee3;--sage-dark:#2f5c3e;
+    --black:#1a1510;--gray:#6b6050;--gray-light:#b0a898;
+    --display:'Libre Baskerville',serif;--mono:'Courier Prime',monospace;
+  }
+  body{background:var(--bg);color:var(--black);font-family:var(--display);min-height:100vh;padding:0 0 60px}
+
+  .header{padding:36px 32px 24px;border-bottom:1px solid var(--border);display:flex;align-items:flex-end;justify-content:space-between;gap:16px;flex-wrap:wrap}
+  .header h1{font-size:2rem;font-weight:700;color:var(--black);letter-spacing:-0.5px}
+  .header p{font-size:0.88rem;color:var(--gray);font-style:italic;margin-top:4px}
+
+  /* CONTROLS */
+  .controls{max-width:700px;margin:0 auto;padding:24px 20px;display:flex;flex-direction:column;gap:16px}
+
+  .ctrl-row{display:flex;gap:10px;align-items:flex-end;flex-wrap:wrap}
+  .ctrl-group{display:flex;flex-direction:column;gap:6px}
+  .ctrl-label{font-size:0.72rem;font-weight:700;color:var(--gray-light);text-transform:uppercase;letter-spacing:0.5px}
+
+  .seg-btns{display:flex;border:1.5px solid var(--border);border-radius:9px;overflow:hidden}
+  .seg-btn{padding:8px 16px;background:none;border:none;color:var(--gray);font-family:var(--display);font-size:0.85rem;cursor:pointer;transition:all 0.15s;border-right:1px solid var(--border)}
+  .seg-btn:last-child{border:none}
+  .seg-btn.active{background:var(--sage);color:#fff}
+
+  .num-input{padding:8px 12px;border:1.5px solid var(--border);border-radius:9px;font-family:var(--display);font-size:0.9rem;color:var(--black);width:80px;outline:none;background:var(--card);text-align:center}
+  .num-input:focus{border-color:var(--sage)}
+
+  .gen-btn{padding:10px 28px;background:var(--sage);color:#fff;border:none;border-radius:10px;font-family:var(--display);font-size:0.95rem;font-weight:700;cursor:pointer;transition:background 0.2s;white-space:nowrap}
+  .gen-btn:hover{background:var(--sage-dark)}
+
+  /* OPTIONS */
+  .options-row{display:flex;gap:16px;flex-wrap:wrap}
+  .checkbox-item{display:flex;align-items:center;gap:7px;cursor:pointer;font-size:0.85rem;color:var(--gray)}
+  .checkbox-item input{width:15px;height:15px;accent-color:var(--sage);cursor:pointer}
+
+  /* FORMAT TABS */
+  .format-tabs{display:flex;gap:4px}
+  .fmt-btn{padding:7px 14px;background:none;border:1.5px solid var(--border);border-radius:8px;color:var(--gray);font-family:var(--mono);font-size:0.78rem;cursor:pointer;transition:all 0.15s}
+  .fmt-btn.active{background:var(--sage-pale);border-color:var(--sage);color:var(--sage-dark)}
+
+  /* OUTPUT */
+  .output-wrap{max-width:700px;margin:0 auto;padding:0 20px}
+  .output-toolbar{display:flex;align-items:center;justify-content:space-between;margin-bottom:10px}
+  .word-count{font-size:0.78rem;color:var(--gray-light);font-style:italic}
+  .copy-btn{padding:7px 16px;background:var(--sage);color:#fff;border:none;border-radius:8px;font-family:var(--display);font-size:0.82rem;font-weight:700;cursor:pointer;transition:opacity 0.2s}
+  .copy-btn:hover{opacity:0.85}
+
+  .output-text{background:var(--card);border:1.5px solid var(--border);border-radius:14px;padding:24px 28px;font-family:var(--display);font-size:0.95rem;line-height:1.9;color:var(--black);min-height:200px;white-space:pre-wrap;word-break:break-word}
+  .output-text.monospace{font-family:var(--mono);font-size:0.85rem;line-height:1.7}
+  .output-text code{background:var(--sage-pale);padding:0 4px;border-radius:4px;font-family:var(--mono)}
+
+  /* LANGUAGES */
+  .lang-tabs{display:flex;gap:4px;flex-wrap:wrap}
+  .lang-btn{padding:5px 12px;background:none;border:1.5px solid var(--border);border-radius:99px;color:var(--gray);font-family:var(--display);font-size:0.78rem;cursor:pointer;transition:all 0.15s}
+  .lang-btn.active{background:var(--sage-pale);border-color:var(--sage);color:var(--sage-dark);font-weight:700}
+</style>
+</head>
+<body>
+
+<div class="header">
+  <div>
+    <h1>Lorem Ipsum</h1>
+    <p>Generator — văn bản giả cho design & development</p>
+  </div>
+</div>
+
+<div class="controls">
+  <!-- TYPE + AMOUNT -->
+  <div class="ctrl-row">
+    <div class="ctrl-group">
+      <div class="ctrl-label">Loại</div>
+      <div class="seg-btns">
+        <button class="seg-btn active" onclick="setUnit('paragraphs',this)">Đoạn văn</button>
+        <button class="seg-btn" onclick="setUnit('sentences',this)">Câu</button>
+        <button class="seg-btn" onclick="setUnit('words',this)">Từ</button>
+      </div>
+    </div>
+    <div class="ctrl-group">
+      <div class="ctrl-label">Số lượng</div>
+      <input id="amountInput" class="num-input" type="number" min="1" max="100" value="3"/>
+    </div>
+    <button class="gen-btn" onclick="generate()">✦ Tạo ngay</button>
+  </div>
+
+  <!-- LANGUAGE -->
+  <div class="ctrl-group">
+    <div class="ctrl-label">Ngôn ngữ / Nội dung</div>
+    <div class="lang-tabs">
+      <button class="lang-btn active" onclick="setLang('classic',this)">Classic Latin</button>
+      <button class="lang-btn" onclick="setLang('vi',this)">Tiếng Việt</button>
+      <button class="lang-btn" onclick="setLang('business',this)">Business</button>
+      <button class="lang-btn" onclick="setLang('tech',this)">Tech/Dev</button>
+      <button class="lang-btn" onclick="setLang('food',this)">Food</button>
+      <button class="lang-btn" onclick="setLang('nature',this)">Thiên nhiên</button>
+    </div>
+  </div>
+
+  <!-- OPTIONS -->
+  <div class="ctrl-group">
+    <div class="ctrl-label">Tùy chọn</div>
+    <div class="options-row">
+      <label class="checkbox-item"><input type="checkbox" id="optStart" checked/> Bắt đầu bằng "Lorem ipsum"</label>
+      <label class="checkbox-item"><input type="checkbox" id="optHtml"/> Wrap HTML &lt;p&gt;</label>
+      <label class="checkbox-item"><input type="checkbox" id="optMarkdown"/> Markdown format</label>
+    </div>
+  </div>
+
+  <!-- FORMAT -->
+  <div class="ctrl-group">
+    <div class="ctrl-label">Hiển thị</div>
+    <div class="format-tabs">
+      <button class="fmt-btn active" onclick="setFmt('plain',this)">Plain text</button>
+      <button class="fmt-btn" onclick="setFmt('html',this)">HTML source</button>
+      <button class="fmt-btn" onclick="setFmt('monospace',this)">Monospace</button>
+    </div>
+  </div>
+</div>
+
+<div class="output-wrap">
+  <div class="output-toolbar">
+    <span class="word-count" id="wordCount">0 từ · 0 ký tự</span>
+    <button class="copy-btn" id="copyBtn" onclick="copyOutput()">📋 Copy</button>
+  </div>
+  <div class="output-text" id="outputText">Nhấn "Tạo ngay" để tạo Lorem Ipsum...</div>
+</div>
+
+<script>
+const WORDS = {
+  classic: 'lorem ipsum dolor sit amet consectetur adipiscing elit sed do eiusmod tempor incididunt ut labore et dolore magna aliqua ut enim ad minim veniam quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat duis aute irure dolor in reprehenderit in voluptate velit esse cillum dolore eu fugiat nulla pariatur excepteur sint occaecat cupidatat non proident sunt in culpa qui officia deserunt mollit anim id est laborum cras ultricies ligula sed magna dictum porta donec vel ante in nunc molestie malesuada proin ullamcorper est sit amet est congue pharetra gravida consequat'.split(' '),
+  vi: 'cuộc sống con người hạnh phúc tình yêu gia đình bạn bè học tập làm việc kinh nghiệm tri thức sáng tạo đổi mới phát triển thành công thất bại hy vọng ước mơ cố gắng nỗ lực bền bỉ kiên trì trưởng thành cảm xúc suy nghĩ hành động kết quả mục tiêu giá trị ý nghĩa cuộc đời niềm vui nỗi buồn khó khăn thử thách vượt qua chiến thắng tương lai hiện tại quá khứ ký ức cảm nhận trải nghiệm bài học'.split(' '),
+  business: 'strategy revenue growth market share stakeholder value proposition customer journey conversion rate optimization roadmap agile sprint milestone deliverable KPI ROI quarterly annual report dashboard pipeline funnel acquisition retention engagement synergy leverage scalable infrastructure monetization partnership ecosystem platform product market fit bootstrap venture capital startup disruption innovation'.split(' '),
+  tech: 'API endpoint request response JSON payload authentication authorization token OAuth React component state props hook useEffect useState TypeScript interface async await promise callback closure prototype inheritance polymorphism algorithm complexity recursion binary tree hash map queue stack linked list database query index migration deployment CI CD Docker container microservice serverless cloud infrastructure'.split(' '),
+  food: 'thơm ngon ngọt chua mặn cay béo giòn mềm mịn đậm đà hương vị tươi ngon gia vị nêm nếm chế biến nấu ăn nguyên liệu tươi sống lành mạnh dinh dưỡng protein carbohydrate vitamin khoáng chất năng lượng ẩm thực truyền thống hiện đại sáng tạo thực đơn món ăn công thức bí quyết'.split(' '),
+  nature: 'thiên nhiên rừng núi biển đảo sông suối đồng bằng bầu trời mây gió mưa nắng hoa cỏ cây xanh côn trùng chim muông sinh thái môi trường trong lành yên bình tĩnh lặng hùng vĩ bao la mênh mông xanh tươi mát mẻ thanh bình thư thái phong cảnh cảnh quan địa hình khí hậu'.split(' '),
+};
+
+let state = { unit:'paragraphs', amount:3, lang:'classic', fmt:'plain' };
+
+function setUnit(u, btn) {
+  state.unit = u;
+  document.querySelectorAll('.seg-btn').forEach(b=>b.classList.remove('active'));
+  btn.classList.add('active');
+}
+function setLang(l, btn) {
+  state.lang = l;
+  document.querySelectorAll('.lang-btn').forEach(b=>b.classList.remove('active'));
+  btn.classList.add('active');
+}
+function setFmt(f, btn) {
+  state.fmt = f;
+  document.querySelectorAll('.fmt-btn').forEach(b=>b.classList.remove('active'));
+  btn.classList.add('active');
+  renderOutput(lastGenerated);
+}
+
+let lastGenerated = [];
+
+function rnd(arr) { return arr[Math.floor(Math.random()*arr.length)]; }
+function capitalize(s) { return s.charAt(0).toUpperCase() + s.slice(1); }
+
+function makeSentence(words, minW=8, maxW=18) {
+  const len = minW + Math.floor(Math.random()*(maxW-minW));
+  let s = [];
+  for (let i=0;i<len;i++) s.push(rnd(words));
+  return capitalize(s.join(' ')) + (Math.random()<0.15?'!':Math.random()<0.1?'?':'.') + (Math.random()<0.2?' '+'...' : '');
+}
+
+function makeParagraph(words, minS=4, maxS=7) {
+  const n = minS + Math.floor(Math.random()*(maxS-minS));
+  return Array.from({length:n}, ()=>makeSentence(words)).join(' ');
+}
+
+function generate() {
+  const amount = Math.min(100, Math.max(1, parseInt(document.getElementById('amountInput').value)||3));
+  const words = WORDS[state.lang] || WORDS.classic;
+  const startWithLorem = document.getElementById('optStart').checked && state.lang === 'classic';
+
+  let pieces = [];
+
+  if (state.unit === 'paragraphs') {
+    for (let i=0;i<amount;i++) {
+      let p = makeParagraph(words);
+      if (i===0 && startWithLorem) p = 'Lorem ipsum dolor sit amet, consectetur adipiscing elit. ' + p;
+      pieces.push(p);
+    }
+  } else if (state.unit === 'sentences') {
+    for (let i=0;i<amount;i++) {
+      let s = makeSentence(words);
+      if (i===0 && startWithLorem) s = 'Lorem ipsum dolor sit amet. ' + s;
+      pieces.push(s);
+    }
+  } else {
+    let ws = [];
+    for (let i=0;i<amount;i++) ws.push(rnd(words));
+    if (startWithLorem && amount >= 5) { ws[0]='lorem'; ws[1]='ipsum'; ws[2]='dolor'; ws[3]='sit'; ws[4]='amet'; }
+    pieces = [ws.join(' ')];
+  }
+
+  lastGenerated = pieces;
+  renderOutput(pieces);
+}
+
+function renderOutput(pieces) {
+  if (!pieces.length) return;
+  const optHtml = document.getElementById('optHtml').checked;
+  const optMd = document.getElementById('optMarkdown').checked;
+
+  let text = '';
+  if (state.fmt === 'html') {
+    text = pieces.map(p => `<p>${p}</p>`).join('\n');
+  } else if (optHtml) {
+    text = pieces.map(p => `<p>${p}</p>`).join('\n');
+  } else if (optMd) {
+    text = pieces.map(p => p).join('\n\n');
+  } else {
+    text = pieces.join('\n\n');
+  }
+
+  const el = document.getElementById('outputText');
+  el.textContent = text;
+  el.className = 'output-text' + (state.fmt==='monospace'?' monospace':'');
+
+  const wordCount = text.trim().split(/\s+/).length;
+  document.getElementById('wordCount').textContent = `${wordCount} từ · ${text.length} ký tự`;
+}
+
+function copyOutput() {
+  const text = document.getElementById('outputText').textContent;
+  navigator.clipboard.writeText(text).then(() => {
+    const btn = document.getElementById('copyBtn');
+    btn.textContent = '✅ Copied!';
+    setTimeout(()=>btn.textContent='📋 Copy', 1500);
+  });
+}
+
+generate();
+</script>
+</body>
+</html>

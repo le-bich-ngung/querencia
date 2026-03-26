@@ -1,0 +1,372 @@
+<!-- ================= COOKIE BANNER FULL ================= -->
+<div id="cookie-banner" class="cookie-banner">
+  
+  <!-- ICON -->
+  <div class="cookie-icon">
+    🍪
+  </div>
+
+  <!-- CONTENT -->
+  <div class="cookie-content">
+    <div class="cookie-title" id="cb-title">Querencia respects your privacy</div>
+    <div class="cookie-text" id="cb-text">
+      We use cookies to improve your experience while keeping your data safe — 
+      no ads, no selling of personal data.
+      <a href="/privacy.html" target="_blank" rel="noopener noreferrer" id="cb-learn">
+        Learn more
+      </a>
+    </div>
+  </div>
+
+  <!-- BUTTONS -->
+  <div class="cookie-actions">
+    <button class="btn ghost" onclick="openCookieSettings()" id="cb-customize">Customize</button>
+    <button class="btn ghost" onclick="cookieDeny()" id="cb-decline">Decline</button>
+    <button class="btn primary" onclick="cookieAccept()" id="cb-allow">Allow</button>
+  </div>
+
+</div>
+
+<!-- ================= COOKIE SETTINGS MODAL ================= -->
+<div id="cookie-modal" class="cookie-modal hidden">
+  <div class="modal-box">
+    <h3 id="cb-settings-title">Cookie Settings</h3>
+
+    <div class="cookie-option">
+      <label>
+        <input type="checkbox" checked disabled />
+        <span id="cb-necessary">Necessary (always enabled)</span>
+      </label>
+    </div>
+
+    <div class="cookie-option">
+      <label>
+        <input type="checkbox" id="analytics-toggle" />
+        <span id="cb-analytics">Analytics cookies</span>
+      </label>
+    </div>
+
+    <div class="cookie-option">
+      <label>
+        <input type="checkbox" id="marketing-toggle" />
+        <span id="cb-marketing">Marketing cookies (disabled by default)</span>
+      </label>
+    </div>
+
+    <div class="modal-actions">
+      <button class="btn ghost" onclick="closeCookieSettings()" id="cb-cancel">Cancel</button>
+      <button class="btn primary" onclick="saveCookieSettings()" id="cb-save">Save preferences</button>
+    </div>
+  </div>
+</div>
+
+<!-- ================= STYLE ================= -->
+<style>
+.cookie-banner {
+  position: fixed;
+  bottom: 20px;
+  left: 50%;
+  transform: translateX(-50%);
+  max-width: 640px;
+  width: calc(100% - 32px);
+
+  display: flex;
+  gap: 16px;
+  align-items: center;
+  flex-wrap: wrap;
+
+  background: #fff;
+  border: 1px solid rgba(0,0,0,0.08);
+  border-radius: 16px;
+  padding: 18px 20px;
+
+  box-shadow: 0 8px 32px rgba(0,0,0,0.12);
+  z-index: 9999;
+
+  animation: slideUp 0.35s ease;
+}
+
+.cookie-icon {
+  font-size: 24px;
+}
+
+.cookie-content {
+  flex: 1;
+  min-width: 220px;
+}
+
+.cookie-title {
+  font-size: 15px;
+  font-weight: 600;
+  margin-bottom: 4px;
+}
+
+.cookie-text {
+  font-size: 13.5px;
+  color: #555;
+  line-height: 1.5;
+}
+
+.cookie-text a {
+  color: #4a7c59;
+  font-weight: 500;
+  text-decoration: none;
+}
+
+.cookie-actions {
+  display: flex;
+  gap: 8px;
+}
+
+.btn {
+  padding: 9px 18px;
+  font-size: 13px;
+  border-radius: 10px;
+  cursor: pointer;
+  font-family: inherit;
+  transition: all 0.2s ease;
+}
+
+.btn.ghost {
+  border: 1px solid #ddd;
+  background: transparent;
+  color: #555;
+}
+
+.btn.primary {
+  background: #4a7c59;
+  color: #fff;
+  border: none;
+  font-weight: 600;
+}
+
+.btn:hover {
+  transform: translateY(-1px);
+  opacity: 0.95;
+}
+
+/* MODAL */
+.cookie-modal {
+  position: fixed;
+  inset: 0;
+  background: rgba(0,0,0,0.4);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  z-index: 10000;
+}
+
+.hidden {
+  display: none;
+}
+
+.modal-box {
+  background: #fff;
+  padding: 24px;
+  border-radius: 16px;
+  width: 90%;
+  max-width: 420px;
+}
+
+.cookie-option {
+  margin: 12px 0;
+}
+
+.modal-actions {
+  margin-top: 16px;
+  display: flex;
+  justify-content: flex-end;
+  gap: 10px;
+}
+
+@keyframes slideUp {
+  from { opacity: 0; transform: translateX(-50%) translateY(20px); }
+  to { opacity: 1; transform: translateX(-50%) translateY(0); }
+}
+
+/* MOBILE */
+@media (max-width: 480px) {
+  .cookie-banner {
+    flex-direction: column;
+    align-items: flex-start;
+  }
+
+  .cookie-actions {
+    width: 100%;
+    justify-content: flex-end;
+  }
+}
+</style>
+
+<!-- ================= SCRIPT ================= -->
+<script>
+(function () {
+
+  // ── AUTO LANGUAGE DETECTION ──
+  // Priority: 1) Querencia saved lang, 2) browser lang, 3) English
+  const CB_LANG = (function() {
+    try {
+      // 1. Querencia's own language setting
+      const saved = localStorage.getItem('querencia_lang');
+      if (saved && ['en','vi','ja','es'].includes(saved)) return saved;
+    } catch(e) {}
+    // 2. Browser language
+    const nav = (navigator.language || navigator.userLanguage || 'en').toLowerCase();
+    if (nav.startsWith('vi')) return 'vi';
+    if (nav.startsWith('ja')) return 'ja';
+    if (nav.startsWith('es') || nav.startsWith('ca') || nav.startsWith('gl')) return 'es';
+    return 'en';
+  })();
+
+  const CB_T = {
+    en: {
+      title:     'Querencia respects your privacy',
+      text:      'We use cookies to improve your experience while keeping your data safe — no ads, no selling of personal data.',
+      learn:     'Learn more',
+      customize: 'Customize',
+      decline:   'Decline',
+      allow:     'Allow',
+      settings:  'Cookie Settings',
+      necessary: 'Necessary (always enabled)',
+      analytics: 'Analytics cookies',
+      marketing: 'Marketing cookies (disabled by default)',
+      cancel:    'Cancel',
+      save:      'Save preferences',
+    },
+    vi: {
+      title:     'Querencia tôn trọng quyền riêng tư của bạn',
+      text:      'Chúng tôi dùng cookie để cải thiện trải nghiệm, giữ dữ liệu an toàn — không quảng cáo, không bán dữ liệu.',
+      learn:     'Tìm hiểu thêm',
+      customize: 'Tùy chỉnh',
+      decline:   'Từ chối',
+      allow:     'Chấp nhận',
+      settings:  'Cài đặt Cookie',
+      necessary: 'Cần thiết (luôn bật)',
+      analytics: 'Cookie phân tích',
+      marketing: 'Cookie marketing (tắt mặc định)',
+      cancel:    'Hủy',
+      save:      'Lưu tùy chọn',
+    },
+    ja: {
+      title:     'Querenciaはあなたのプライバシーを尊重します',
+      text:      'お客様の体験向上のためCookieを使用します。データは安全に保護され、広告への利用・販売は一切行いません。',
+      learn:     '詳細を見る',
+      customize: 'カスタマイズ',
+      decline:   '拒否',
+      allow:     '許可',
+      settings:  'Cookie設定',
+      necessary: '必須（常に有効）',
+      analytics: '分析Cookie',
+      marketing: 'マーケティングCookie（デフォルト無効）',
+      cancel:    'キャンセル',
+      save:      '設定を保存',
+    },
+    es: {
+      title:     'Querencia respeta tu privacidad',
+      text:      'Usamos cookies para mejorar tu experiencia manteniendo tus datos seguros — sin anuncios, sin venta de datos.',
+      learn:     'Más información',
+      customize: 'Personalizar',
+      decline:   'Rechazar',
+      allow:     'Permitir',
+      settings:  'Configuración de cookies',
+      necessary: 'Necesarias (siempre activas)',
+      analytics: 'Cookies analíticas',
+      marketing: 'Cookies de marketing (desactivadas por defecto)',
+      cancel:    'Cancelar',
+      save:      'Guardar preferencias',
+    },
+  };
+
+  function cbApplyLang() {
+    const t = CB_T[CB_LANG] || CB_T.en;
+    const set = (id, val) => { const el = document.getElementById(id); if(el) el.textContent = val; };
+    set('cb-title',         t.title);
+    set('cb-text',          t.text);
+    set('cb-learn',         t.learn);
+    set('cb-customize',     t.customize);
+    set('cb-decline',       t.decline);
+    set('cb-allow',         t.allow);
+    set('cb-settings-title',t.settings);
+    set('cb-necessary',     t.necessary);
+    set('cb-analytics',     t.analytics);
+    set('cb-marketing',     t.marketing);
+    set('cb-cancel',        t.cancel);
+    set('cb-save',          t.save);
+  }
+
+
+  const KEY = "querencia_cookie_consent";
+
+  const existing = localStorage.getItem(KEY);
+
+  if (existing) {
+    document.getElementById("cookie-banner").style.display = "none";
+  }
+
+  // Apply language immediately
+  cbApplyLang();
+
+  function saveConsent(data) {
+    const payload = {
+      ...data,
+      timestamp: Date.now()
+    };
+    localStorage.setItem(KEY, JSON.stringify(payload));
+  }
+
+  function hideBanner() {
+    const b = document.getElementById("cookie-banner");
+    b.style.opacity = "0";
+    b.style.transform = "translateX(-50%) translateY(20px)";
+    setTimeout(() => b.style.display = "none", 300);
+  }
+
+  window.cookieAccept = function () {
+    saveConsent({
+      necessary: true,
+      analytics: true,
+      marketing: false
+    });
+    hideBanner();
+  };
+
+  window.cookieDeny = function () {
+    saveConsent({
+      necessary: true,
+      analytics: false,
+      marketing: false
+    });
+    hideBanner();
+  };
+
+  window.openCookieSettings = function () {
+    document.getElementById("cookie-modal").classList.remove("hidden");
+  };
+
+  window.closeCookieSettings = function () {
+    document.getElementById("cookie-modal").classList.add("hidden");
+  };
+
+  window.saveCookieSettings = function () {
+    const analytics = document.getElementById("analytics-toggle").checked;
+    const marketing = document.getElementById("marketing-toggle").checked;
+
+    saveConsent({
+      necessary: true,
+      analytics,
+      marketing
+    });
+
+    closeCookieSettings();
+    hideBanner();
+  };
+
+
+  // Re-apply language if user changes it on Querencia while banner is still visible
+  window.addEventListener('storage', function(e) {
+    if (e.key === 'querencia_lang') cbApplyLang();
+  });
+
+})();
+</script>
+<!-- ================= END ================= -->

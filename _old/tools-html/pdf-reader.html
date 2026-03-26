@@ -1,0 +1,837 @@
+<!DOCTYPE html>
+<html lang="vi">
+<head>
+  <meta charset="UTF-8"/>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>PDF Reader · Querencia</title>
+  <link rel="shortcut icon" type="image/svg+xml" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 120 120'><circle cx='55' cy='55' r='38' fill='none' stroke='%234a7c59' stroke-width='7' stroke-linecap='round'/><line x1='81' y1='79' x2='98' y2='98' stroke='%234a7c59' stroke-width='7' stroke-linecap='round'/><polyline points='20,55 28,38 35,68 43,32 51,60 58,43 66,70 74,48 90,55' fill='none' stroke='%234a7c59' stroke-width='3' stroke-linecap='round' stroke-linejoin='round'/></svg>"/>
+  <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:ital,wght@0,300;0,400;0,500;0,600;0,700;1,400&display=swap" rel="stylesheet"/>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/pdf.js/3.11.174/pdf.min.js"></script>
+  <style>
+    :root {
+      --sage:#4a7c59; --sage-pale:#ddeee3; --sage-dark:#2f5c3e;
+      --black:#111; --gray:#555; --gray-light:#999;
+      --border:#e0e0e0; --white:#fff;
+      --font:'Plus Jakarta Sans',sans-serif;
+      --hl-yellow:rgba(255,220,50,0.45);
+      --hl-green:rgba(74,200,120,0.38);
+      --hl-blue:rgba(80,160,255,0.38);
+      --hl-pink:rgba(255,100,150,0.38);
+    }
+    *,*::before,*::after{box-sizing:border-box;margin:0;padding:0}
+    body{font-family:var(--font);background:#f5f5f3;color:var(--black);height:100vh;display:flex;flex-direction:column;overflow:hidden}
+    @keyframes fadeUp{from{opacity:0;transform:translateY(8px)}to{opacity:1;transform:none}}
+    @keyframes pop{0%{transform:scale(0.9);opacity:0}70%{transform:scale(1.04)}100%{transform:scale(1);opacity:1}}
+    @keyframes spin{to{transform:rotate(360deg)}}
+
+    /* ── TOPBAR ── */
+    .topbar{
+      height:52px;background:var(--white);border-bottom:1px solid var(--border);
+      display:flex;align-items:center;gap:0;flex-shrink:0;z-index:200;
+    }
+    .topbar-logo{padding:0 20px;display:flex;align-items:center;gap:6px;border-right:1px solid var(--border);height:100%;text-decoration:none;flex-shrink:0}
+    .topbar-logo span{font-weight:700;font-size:1rem}
+    .topbar-file{flex:1;padding:0 16px;display:flex;align-items:center;gap:12px;overflow:hidden}
+    .topbar-filename{font-size:0.82rem;font-weight:600;color:var(--black);white-space:nowrap;overflow:hidden;text-overflow:ellipsis;max-width:300px}
+    .topbar-meta{font-size:0.72rem;color:var(--gray-light)}
+    .topbar-open{background:var(--sage);color:#fff;border:none;padding:6px 16px;border-radius:20px;font-family:var(--font);font-size:0.78rem;font-weight:600;cursor:pointer;white-space:nowrap;transition:background 0.2s;position:relative;overflow:hidden}
+    .topbar-open input{position:absolute;inset:0;opacity:0;cursor:pointer}
+    .topbar-open:hover{background:var(--sage-dark)}
+
+    /* ── TOOLBAR ── */
+    .toolbar{
+      height:42px;background:var(--white);border-bottom:1px solid var(--border);
+      display:flex;align-items:center;gap:4px;padding:0 12px;flex-shrink:0;
+    }
+    .tb-sep{width:1px;height:24px;background:var(--border);margin:0 6px}
+    .tb-btn{background:none;border:none;cursor:pointer;padding:5px 10px;border-radius:6px;font-family:var(--font);font-size:0.78rem;color:var(--gray);transition:all 0.15s;display:flex;align-items:center;gap:5px;white-space:nowrap}
+    .tb-btn:hover{background:#f0f0ee;color:var(--black)}
+    .tb-btn.active{background:var(--sage-pale);color:var(--sage)}
+    .tb-btn:disabled{opacity:0.35;cursor:not-allowed}
+    .tb-input{border:1.5px solid var(--border);border-radius:6px;padding:3px 8px;font-family:var(--font);font-size:0.78rem;color:var(--black);outline:none;width:52px;text-align:center}
+    .tb-input:focus{border-color:var(--sage)}
+    .tb-label{font-size:0.72rem;color:var(--gray-light)}
+
+    /* Highlight color picker */
+    .hl-colors{display:flex;gap:4px;align-items:center}
+    .hl-dot{width:18px;height:18px;border-radius:50%;cursor:pointer;border:2px solid transparent;transition:all 0.15s}
+    .hl-dot:hover,.hl-dot.active{border-color:var(--black);transform:scale(1.15)}
+    .hl-dot.yellow{background:#ffd932}
+    .hl-dot.green{background:#4cc878}
+    .hl-dot.blue{background:#50a0ff}
+    .hl-dot.pink{background:#ff6496}
+
+    /* ── MAIN LAYOUT ── */
+    .main{display:flex;flex:1;overflow:hidden}
+
+    /* ── PDF VIEWER ── */
+    .viewer-wrap{flex:1;overflow-y:auto;overflow-x:auto;display:flex;flex-direction:column;align-items:center;padding:24px 16px;background:#f0f0ee;position:relative}
+    .viewer-wrap::-webkit-scrollbar{width:8px}
+    .viewer-wrap::-webkit-scrollbar-thumb{background:var(--border);border-radius:4px}
+
+    /* LANDING */
+    .landing{display:flex;flex-direction:column;align-items:center;justify-content:center;min-height:60vh;text-align:center;gap:16px;animation:fadeUp 0.5s both}
+    .landing-icon{font-size:3.5rem;opacity:0.3}
+    .landing h2{font-size:1.3rem;font-weight:600;color:var(--gray)}
+    .landing p{font-size:0.85rem;color:var(--gray-light);line-height:1.7;max-width:300px}
+    .landing-btn{background:var(--sage);color:#fff;border:none;padding:11px 28px;border-radius:30px;font-family:var(--font);font-size:0.88rem;font-weight:600;cursor:pointer;position:relative;overflow:hidden;transition:background 0.2s}
+    .landing-btn input{position:absolute;inset:0;opacity:0;cursor:pointer}
+    .landing-btn:hover{background:var(--sage-dark)}
+
+    /* PAGE CONTAINER */
+    .page-container{position:relative;margin-bottom:16px;box-shadow:0 2px 16px rgba(0,0,0,0.12);border-radius:4px;overflow:hidden;background:var(--white)}
+    .page-container canvas{display:block}
+
+    /* TEXT LAYER */
+    .textLayer{
+      position:absolute;inset:0;overflow:hidden;
+      line-height:1;cursor:text;
+    }
+    .textLayer span{
+      position:absolute;transform-origin:0 0;white-space:pre;
+      color:transparent;cursor:text;
+    }
+    .textLayer .highlight{
+      background:var(--hl-yellow);
+      border-radius:2px;
+      cursor:pointer;
+    }
+    .textLayer .highlight.green{background:var(--hl-green)}
+    .textLayer .highlight.blue{background:var(--hl-blue)}
+    .textLayer .highlight.pink{background:var(--hl-pink)}
+
+    /* ANNOTATION LAYER */
+    .annotLayer{position:absolute;inset:0;pointer-events:none}
+    .note-pin{
+      position:absolute;pointer-events:all;cursor:pointer;
+      width:24px;height:24px;border-radius:50%;
+      background:var(--sage);color:#fff;
+      display:flex;align-items:center;justify-content:center;
+      font-size:0.7rem;box-shadow:0 2px 8px rgba(0,0,0,0.2);
+      transition:transform 0.15s;z-index:10;
+      border:none;font-family:var(--font);
+    }
+    .note-pin:hover{transform:scale(1.15)}
+
+    /* LOADING */
+    .loading-wrap{display:none;flex-direction:column;align-items:center;gap:12px;padding:48px}
+    .spinner{width:36px;height:36px;border:3px solid var(--sage-pale);border-top-color:var(--sage);border-radius:50%;animation:spin 0.8s linear infinite}
+
+    /* ── CONTEXT MENU ── */
+    .ctx-menu{
+      display:none;position:fixed;z-index:1000;
+      background:var(--white);border:1.5px solid var(--border);
+      border-radius:10px;box-shadow:0 8px 32px rgba(0,0,0,0.12);
+      padding:6px;min-width:180px;animation:pop 0.15s both;
+    }
+    .ctx-item{padding:8px 12px;border-radius:6px;cursor:pointer;font-size:0.82rem;display:flex;align-items:center;gap:8px;transition:background 0.15s}
+    .ctx-item:hover{background:var(--sage-pale);color:var(--sage-dark)}
+    .ctx-sep{height:1px;background:var(--border);margin:4px 0}
+
+    /* ── NOTE POPUP ── */
+    .note-popup{
+      display:none;position:fixed;z-index:1000;width:260px;
+      background:var(--white);border:1.5px solid var(--border);
+      border-radius:12px;box-shadow:0 8px 32px rgba(0,0,0,0.12);
+      animation:pop 0.2s both;
+    }
+    .note-popup-header{padding:10px 14px;border-bottom:1px solid var(--border);display:flex;justify-content:space-between;align-items:center}
+    .note-popup-title{font-size:0.78rem;font-weight:600;color:var(--sage)}
+    .note-close{background:none;border:none;cursor:pointer;font-size:0.9rem;color:var(--gray-light);padding:2px 5px}
+    .note-popup textarea{width:100%;padding:10px 14px;border:none;font-family:var(--font);font-size:0.82rem;resize:none;outline:none;min-height:80px;color:var(--black)}
+    .note-popup-footer{padding:8px 14px;border-top:1px solid var(--border);display:flex;justify-content:flex-end;gap:8px}
+    .note-save{background:var(--sage);color:#fff;border:none;padding:5px 14px;border-radius:14px;font-family:var(--font);font-size:0.75rem;font-weight:600;cursor:pointer}
+    .note-del{background:none;border:none;color:var(--gray-light);font-size:0.75rem;cursor:pointer;padding:5px 8px}
+
+    /* ── SIDEBAR ── */
+    .sidebar{
+      width:280px;border-left:1px solid var(--border);background:var(--white);
+      display:flex;flex-direction:column;flex-shrink:0;overflow:hidden;
+    }
+    .sidebar-tabs{display:flex;border-bottom:1px solid var(--border)}
+    .stab{flex:1;padding:10px 4px;background:none;border:none;cursor:pointer;font-family:var(--font);font-size:0.72rem;font-weight:600;color:var(--gray-light);border-bottom:2px solid transparent;margin-bottom:-1px;transition:all 0.2s}
+    .stab.active{color:var(--sage);border-bottom-color:var(--sage)}
+    .sidebar-panel{display:none;flex:1;overflow-y:auto;padding:16px}
+    .sidebar-panel.active{display:block}
+    .sidebar-panel::-webkit-scrollbar{width:4px}
+    .sidebar-panel::-webkit-scrollbar-thumb{background:var(--border)}
+
+    /* SIDEBAR: HIGHLIGHTS */
+    .hl-item{padding:10px;border-radius:8px;background:#fafaf9;border:1px solid var(--border);margin-bottom:8px;cursor:pointer;transition:background 0.15s}
+    .hl-item:hover{background:var(--sage-pale)}
+    .hl-text{font-size:0.78rem;color:var(--black);line-height:1.5;margin-bottom:4px}
+    .hl-meta{font-size:0.68rem;color:var(--gray-light)}
+    .hl-bar{width:28px;height:4px;border-radius:2px;margin-bottom:6px}
+    .hl-del{float:right;background:none;border:none;font-size:0.75rem;color:var(--gray-light);cursor:pointer;padding:0 2px}
+    .hl-del:hover{color:#c0392b}
+
+    /* SIDEBAR: NOTES */
+    .note-item{padding:10px;border-radius:8px;background:#fafaf9;border:1px solid var(--border);margin-bottom:8px;cursor:pointer;transition:background 0.15s}
+    .note-item:hover{background:var(--sage-pale)}
+    .note-text{font-size:0.78rem;color:var(--black);line-height:1.5;margin-bottom:4px}
+    .note-meta{font-size:0.68rem;color:var(--gray-light)}
+
+    /* SIDEBAR: VOCABULARY */
+    .vocab-item{padding:10px 12px;border-radius:8px;background:#fafaf9;border:1px solid var(--border);margin-bottom:8px;position:relative}
+    .vocab-word{font-size:0.88rem;font-weight:700;color:var(--sage-dark);margin-bottom:4px}
+    .vocab-def{font-size:0.75rem;color:var(--gray);line-height:1.5}
+    .vocab-del{position:absolute;top:8px;right:8px;background:none;border:none;color:var(--gray-light);cursor:pointer;font-size:0.75rem}
+    .vocab-del:hover{color:#c0392b}
+    .vocab-add-form{margin-bottom:12px;display:flex;flex-direction:column;gap:6px}
+    .vocab-input{padding:7px 10px;border:1.5px solid var(--border);border-radius:7px;font-family:var(--font);font-size:0.8rem;outline:none;transition:border-color 0.2s}
+    .vocab-input:focus{border-color:var(--sage)}
+    .vocab-add-btn{background:var(--sage);color:#fff;border:none;padding:7px;border-radius:7px;font-family:var(--font);font-size:0.78rem;font-weight:600;cursor:pointer}
+
+    /* Empty states */
+    .empty-state{text-align:center;padding:32px 16px;color:var(--gray-light)}
+    .empty-state-icon{font-size:2rem;margin-bottom:8px;opacity:0.35}
+    .empty-state p{font-size:0.78rem;line-height:1.6}
+
+    /* Toast */
+    .toast{display:none;position:fixed;bottom:24px;left:50%;transform:translateX(-50%);background:var(--black);color:#fff;padding:9px 20px;border-radius:30px;font-size:0.8rem;font-weight:500;z-index:2000;animation:fadeUp 0.3s both}
+
+    /* Dark */
+    body.dark{background:#1a1a1a;color:#eee}
+    body.dark .topbar,.dark .toolbar{background:#111;border-color:#2a2a2a}
+    body.dark .viewer-wrap{background:#222}
+    body.dark .page-container{box-shadow:0 2px 16px rgba(0,0,0,0.4)}
+    body.dark .sidebar{background:#111;border-color:#2a2a2a}
+    body.dark .sidebar-tabs{border-color:#2a2a2a}
+    body.dark .hl-item,.dark .note-item,.dark .vocab-item{background:#1a1a1a;border-color:#2a2a2a}
+    body.dark .hl-item:hover,.dark .note-item:hover{background:#1a3328}
+    body.dark .ctx-menu,.dark .note-popup{background:#1a1a1a;border-color:#333}
+    body.dark .note-popup textarea{background:#1a1a1a;color:#eee}
+    body.dark .vocab-input{background:#1a1a1a;border-color:#333;color:#eee}
+    body.dark .tb-btn{color:#aaa}
+    body.dark .tb-btn:hover{background:#222;color:#eee}
+    body.dark .tb-btn.active{background:#1a3328;color:#7ecf9a}
+    body.dark .tb-input{background:#1a1a1a;border-color:#333;color:#eee}
+    body.dark .landing h2{color:#aaa}
+  </style>
+</head>
+<body>
+
+<!-- TOPBAR -->
+<div class="topbar">
+  <a class="topbar-logo" href="https://querencia.com.vn">
+    <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 120 120" width="22" height="22" style="position:relative;top:2px;margin-right:-2px;flex-shrink:0">
+      <defs><clipPath id="qc"><circle cx="55" cy="55" r="32"/></clipPath></defs>
+      <circle cx="55" cy="55" r="38" fill="none" stroke="#4a7c59" stroke-width="7" stroke-linecap="round"/>
+      <line x1="81" y1="79" x2="98" y2="98" stroke="#4a7c59" stroke-width="7" stroke-linecap="round"/>
+      <polyline points="20,55 28,38 35,68 43,32 51,60 58,43 66,70 74,48 90,55" fill="none" stroke="#4a7c59" stroke-width="3" stroke-linecap="round" stroke-linejoin="round" clip-path="url(#qc)"/>
+    </svg>
+    <span><span style="color:#111">ueren</span><span style="color:#4a7c59">cia</span></span>
+  </a>
+  <div class="topbar-file">
+    <span class="topbar-filename" id="topFilename">Chưa mở file</span>
+    <span class="topbar-meta" id="topMeta"></span>
+  </div>
+  <div style="display:flex;align-items:center;gap:8px;padding:0 12px">
+    <button onclick="toggleDark()" style="background:none;border:none;cursor:pointer;font-size:1rem;color:var(--gray-light);padding:4px">◐</button>
+    <button class="topbar-open">
+      <input type="file" accept="application/pdf" onchange="openPDF(this.files[0])"/>
+      📂 Mở PDF
+    </button>
+  </div>
+</div>
+
+<!-- TOOLBAR -->
+<div class="toolbar">
+  <!-- Page nav -->
+  <button class="tb-btn" id="btnPrev" onclick="goPage(-1)" disabled>‹ Trước</button>
+  <input class="tb-input" id="pageInput" type="number" min="1" value="1" onchange="goToPage(parseInt(this.value))"/>
+  <span class="tb-label" id="pageTotal">/ —</span>
+  <button class="tb-btn" id="btnNext" onclick="goPage(1)" disabled>Sau ›</button>
+
+  <div class="tb-sep"></div>
+
+  <!-- Zoom -->
+  <button class="tb-btn" onclick="zoom(-0.25)">−</button>
+  <span class="tb-label" id="zoomLabel">100%</span>
+  <button class="tb-btn" onclick="zoom(0.25)">+</button>
+  <button class="tb-btn" onclick="fitWidth()">Fit</button>
+
+  <div class="tb-sep"></div>
+
+  <!-- Mode -->
+  <button class="tb-btn active" id="btnModeSelect" onclick="setMode('select')" title="Chế độ chọn văn bản">✍ Chọn & Highlight</button>
+  <button class="tb-btn" id="btnModeNote" onclick="setMode('note')" title="Chế độ ghi chú">📌 Ghi chú</button>
+
+  <div class="tb-sep"></div>
+
+  <!-- Highlight colors -->
+  <span class="tb-label">Màu:</span>
+  <div class="hl-colors">
+    <div class="hl-dot yellow active" title="Vàng" onclick="setHLColor('yellow',this)"></div>
+    <div class="hl-dot green" title="Xanh lá" onclick="setHLColor('green',this)"></div>
+    <div class="hl-dot blue" title="Xanh dương" onclick="setHLColor('blue',this)"></div>
+    <div class="hl-dot pink" title="Hồng" onclick="setHLColor('pink',this)"></div>
+  </div>
+
+  <div class="tb-sep"></div>
+  <button class="tb-btn" onclick="exportData()" title="Xuất ghi chú & highlight">⬇ Xuất ghi chú</button>
+</div>
+
+<!-- MAIN -->
+<div class="main">
+
+  <!-- VIEWER -->
+  <div class="viewer-wrap" id="viewerWrap">
+
+    <!-- Landing -->
+    <div class="landing" id="landing">
+      <div class="landing-icon">📖</div>
+      <h2>PDF Reader thông minh</h2>
+      <p>Highlight, ghi chú và lưu từ vựng ngay khi đọc. Dữ liệu được lưu tự động vào trình duyệt.</p>
+      <button class="landing-btn">
+        <input type="file" accept="application/pdf" onchange="openPDF(this.files[0])"/>
+        📂 Mở file PDF
+      </button>
+    </div>
+
+    <!-- Loading -->
+    <div class="loading-wrap" id="loadingWrap">
+      <div class="spinner"></div>
+      <span style="font-size:0.82rem;color:var(--gray-light)" id="loadingText">Đang tải...</span>
+    </div>
+
+    <!-- Pages will render here -->
+    <div id="pagesWrap"></div>
+  </div>
+
+  <!-- SIDEBAR -->
+  <div class="sidebar">
+    <div class="sidebar-tabs">
+      <button class="stab active" onclick="setSTab('highlights',this)">🖊 Highlight</button>
+      <button class="stab" onclick="setSTab('notes',this)">📌 Ghi chú</button>
+      <button class="stab" onclick="setSTab('vocab',this)">📚 Từ vựng</button>
+    </div>
+
+    <!-- HIGHLIGHTS -->
+    <div class="sidebar-panel active" id="spanel-highlights">
+      <div id="hlList">
+        <div class="empty-state"><div class="empty-state-icon">🖊</div><p>Chọn văn bản trong PDF rồi click "Highlight" để lưu.</p></div>
+      </div>
+    </div>
+
+    <!-- NOTES -->
+    <div class="sidebar-panel" id="spanel-notes">
+      <div id="noteList">
+        <div class="empty-state"><div class="empty-state-icon">📌</div><p>Chuyển sang chế độ Ghi chú rồi click vào trang PDF.</p></div>
+      </div>
+    </div>
+
+    <!-- VOCABULARY -->
+    <div class="sidebar-panel" id="spanel-vocab">
+      <div class="vocab-add-form">
+        <input class="vocab-input" id="vocabWord" placeholder="Từ / cụm từ..."/>
+        <input class="vocab-input" id="vocabDef" placeholder="Nghĩa / ghi chú..."/>
+        <button class="vocab-add-btn" onclick="addVocab()">+ Thêm từ vựng</button>
+      </div>
+      <div id="vocabList">
+        <div class="empty-state"><div class="empty-state-icon">📚</div><p>Lưu từ vựng khi đọc. Chọn văn bản → "Lưu từ vựng".</p></div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- CONTEXT MENU -->
+<div class="ctx-menu" id="ctxMenu">
+  <div class="ctx-item" onclick="ctxHighlight()"><span>🖊</span> Highlight</div>
+  <div class="ctx-item" onclick="ctxSaveVocab()"><span>📚</span> Lưu vào từ vựng</div>
+  <div class="ctx-sep"></div>
+  <div class="ctx-item" onclick="ctxCopy()"><span>📋</span> Sao chép</div>
+</div>
+
+<!-- NOTE POPUP -->
+<div class="note-popup" id="notePopup">
+  <div class="note-popup-header">
+    <span class="note-popup-title">📌 Ghi chú</span>
+    <button class="note-close" onclick="closeNotePopup()">✕</button>
+  </div>
+  <textarea id="noteText" placeholder="Gõ ghi chú của bạn..."></textarea>
+  <div class="note-popup-footer">
+    <button class="note-del" id="noteDelBtn" onclick="deleteCurrentNote()" style="display:none">Xóa</button>
+    <button class="note-save" onclick="saveNote()">Lưu</button>
+  </div>
+</div>
+
+<div class="toast" id="toast"></div>
+
+<script>
+pdfjsLib.GlobalWorkerOptions.workerSrc = 'https://cdnjs.cloudflare.com/ajax/libs/pdf.js/3.11.174/pdf.worker.min.js';
+
+// ── STATE ──
+let pdfDoc = null, currentPage = 1, scale = 1.2, mode = 'select', hlColor = 'yellow';
+let fileKey = '', data = { highlights: [], notes: [], vocab: [] };
+let selectedText = '', selectedRange = null;
+let currentNoteId = null, pendingNotePos = null;
+
+// ── DARK MODE ──
+if (localStorage.getItem('darkMode') === '1') document.body.classList.add('dark');
+function toggleDark() {
+  document.body.classList.toggle('dark');
+  localStorage.setItem('darkMode', document.body.classList.contains('dark') ? '1' : '0');
+}
+
+function toast(msg, dur=2000) {
+  const t = document.getElementById('toast');
+  t.textContent = msg; t.style.display = 'block';
+  clearTimeout(t._to); t._to = setTimeout(() => t.style.display = 'none', dur);
+}
+
+// ── OPEN PDF ──
+async function openPDF(file) {
+  if (!file) return;
+  fileKey = 'qpdf_' + file.name + '_' + file.size;
+  loadSavedData();
+
+  document.getElementById('landing').style.display = 'none';
+  document.getElementById('loadingWrap').style.display = 'flex';
+  document.getElementById('pagesWrap').innerHTML = '';
+
+  try {
+    const ab = await file.arrayBuffer();
+    pdfDoc = await pdfjsLib.getDocument({ data: ab }).promise;
+    document.getElementById('topFilename').textContent = file.name;
+    document.getElementById('topMeta').textContent = `${pdfDoc.numPages} trang`;
+    document.getElementById('pageTotal').textContent = '/ ' + pdfDoc.numPages;
+    document.getElementById('pageInput').max = pdfDoc.numPages;
+    document.getElementById('btnPrev').disabled = false;
+    document.getElementById('btnNext').disabled = false;
+
+    document.getElementById('loadingWrap').style.display = 'none';
+    await renderAllPages();
+    renderSidebar();
+  } catch(e) {
+    toast('Không thể mở file này: ' + e.message);
+    document.getElementById('loadingWrap').style.display = 'none';
+    document.getElementById('landing').style.display = 'flex';
+  }
+}
+
+// ── RENDER ──
+async function renderAllPages() {
+  const wrap = document.getElementById('pagesWrap');
+  wrap.innerHTML = '';
+  for (let i = 1; i <= pdfDoc.numPages; i++) {
+    const container = document.createElement('div');
+    container.className = 'page-container';
+    container.dataset.page = i;
+    wrap.appendChild(container);
+    await renderPage(i, container);
+  }
+}
+
+async function renderPage(pageNum, container) {
+  const page = await pdfDoc.getPage(pageNum);
+  const vp = page.getViewport({ scale });
+
+  // Canvas
+  const canvas = document.createElement('canvas');
+  canvas.width = vp.width; canvas.height = vp.height;
+  const ctx = canvas.getContext('2d');
+  await page.render({ canvasContext: ctx, viewport: vp }).promise;
+  container.appendChild(canvas);
+
+  // Text layer
+  const textDiv = document.createElement('div');
+  textDiv.className = 'textLayer';
+  textDiv.style.width = vp.width + 'px';
+  textDiv.style.height = vp.height + 'px';
+  container.appendChild(textDiv);
+
+  const textContent = await page.getTextContent();
+  pdfjsLib.renderTextLayer({
+    textContent,
+    container: textDiv,
+    viewport: vp,
+    textDivs: []
+  });
+
+  // Annotation layer
+  const annotDiv = document.createElement('div');
+  annotDiv.className = 'annotLayer';
+  annotDiv.style.width = vp.width + 'px';
+  annotDiv.style.height = vp.height + 'px';
+  container.appendChild(annotDiv);
+
+  // Re-apply saved highlights for this page
+  applyHighlightsToPage(pageNum, textDiv);
+
+  // Re-apply notes for this page
+  applyNotesToPage(pageNum, annotDiv);
+
+  // Click for note mode
+  container.addEventListener('click', e => {
+    if (mode !== 'note') return;
+    if (e.target.closest('.note-pin')) return;
+    const rect = container.getBoundingClientRect();
+    const xPct = (e.clientX - rect.left) / rect.width;
+    const yPct = (e.clientY - rect.top) / rect.height;
+    pendingNotePos = { page: pageNum, xPct, yPct };
+    currentNoteId = null;
+    document.getElementById('noteText').value = '';
+    document.getElementById('noteDelBtn').style.display = 'none';
+    showNotePopup(e.clientX, e.clientY);
+  });
+}
+
+// ── PAGE NAV ──
+function goPage(dir) {
+  currentPage = Math.max(1, Math.min(pdfDoc?.numPages || 1, currentPage + dir));
+  scrollToPage(currentPage);
+}
+
+function goToPage(n) {
+  if (!pdfDoc) return;
+  currentPage = Math.max(1, Math.min(pdfDoc.numPages, n));
+  scrollToPage(currentPage);
+}
+
+function scrollToPage(n) {
+  const el = document.querySelector(`.page-container[data-page="${n}"]`);
+  if (el) el.scrollIntoView({ behavior: 'smooth', block: 'start' });
+  document.getElementById('pageInput').value = n;
+}
+
+// Track current page on scroll
+document.getElementById('viewerWrap').addEventListener('scroll', () => {
+  if (!pdfDoc) return;
+  const containers = document.querySelectorAll('.page-container');
+  const vw = document.getElementById('viewerWrap');
+  const scrollMid = vw.scrollTop + vw.clientHeight / 2;
+  containers.forEach(c => {
+    if (c.offsetTop <= scrollMid) {
+      currentPage = parseInt(c.dataset.page);
+      document.getElementById('pageInput').value = currentPage;
+    }
+  });
+});
+
+// ── ZOOM ──
+async function zoom(delta) {
+  scale = Math.max(0.5, Math.min(3, scale + delta));
+  document.getElementById('zoomLabel').textContent = Math.round(scale * 100) + '%';
+  if (pdfDoc) await renderAllPages();
+}
+
+async function fitWidth() {
+  if (!pdfDoc) return;
+  const page = await pdfDoc.getPage(1);
+  const vp = page.getViewport({ scale: 1 });
+  const wrap = document.getElementById('viewerWrap');
+  scale = (wrap.clientWidth - 64) / vp.width;
+  document.getElementById('zoomLabel').textContent = Math.round(scale * 100) + '%';
+  await renderAllPages();
+}
+
+// ── MODE ──
+function setMode(m) {
+  mode = m;
+  document.getElementById('btnModeSelect').classList.toggle('active', m === 'select');
+  document.getElementById('btnModeNote').classList.toggle('active', m === 'note');
+  document.getElementById('viewerWrap').style.cursor = m === 'note' ? 'crosshair' : '';
+}
+
+// ── HIGHLIGHT COLOR ──
+function setHLColor(color, el) {
+  hlColor = color;
+  document.querySelectorAll('.hl-dot').forEach(d => d.classList.remove('active'));
+  el.classList.add('active');
+}
+
+// ── TEXT SELECTION → CONTEXT MENU ──
+document.addEventListener('mouseup', e => {
+  if (mode !== 'select') return;
+  const sel = window.getSelection();
+  if (!sel || sel.isCollapsed) {
+    hideCtx(); return;
+  }
+  const text = sel.toString().trim();
+  if (!text || text.length < 2) { hideCtx(); return; }
+  selectedText = text;
+  selectedRange = sel.getRangeAt(0).cloneRange();
+
+  // Find which page
+  const anchor = sel.anchorNode;
+  const pageContainer = anchor?.parentElement?.closest('.page-container');
+  if (!pageContainer) { hideCtx(); return; }
+
+  showCtx(e.clientX, e.clientY);
+});
+
+document.addEventListener('mousedown', e => {
+  if (!e.target.closest('#ctxMenu')) hideCtx();
+  if (!e.target.closest('#notePopup') && !e.target.closest('.note-pin')) closeNotePopup();
+});
+
+function showCtx(x, y) {
+  const menu = document.getElementById('ctxMenu');
+  menu.style.display = 'block';
+  const mw = 180, mh = 120;
+  menu.style.left = Math.min(x, window.innerWidth - mw - 8) + 'px';
+  menu.style.top = Math.min(y + 4, window.innerHeight - mh - 8) + 'px';
+}
+function hideCtx() { document.getElementById('ctxMenu').style.display = 'none'; }
+
+function ctxHighlight() {
+  hideCtx();
+  if (!selectedText) return;
+  const sel = window.getSelection();
+  const anchor = sel?.anchorNode?.parentElement?.closest('.page-container');
+  const pageNum = anchor ? parseInt(anchor.dataset.page) : currentPage;
+
+  const id = Date.now();
+  data.highlights.push({ id, text: selectedText, page: pageNum, color: hlColor, ts: new Date().toLocaleString('vi-VN') });
+  saveData();
+  applyHighlightsToPage(pageNum, anchor?.querySelector('.textLayer'));
+  renderSidebar();
+  window.getSelection()?.removeAllRanges();
+  toast('✓ Đã highlight!');
+}
+
+function ctxSaveVocab() {
+  hideCtx();
+  if (!selectedText) return;
+  document.getElementById('vocabWord').value = selectedText;
+  document.getElementById('vocabDef').value = '';
+  setSTab('vocab', document.querySelectorAll('.stab')[2]);
+  document.getElementById('vocabDef').focus();
+  toast('Điền nghĩa rồi nhấn Thêm từ vựng!', 3000);
+  window.getSelection()?.removeAllRanges();
+}
+
+function ctxCopy() {
+  hideCtx();
+  navigator.clipboard.writeText(selectedText).then(() => toast('✓ Đã sao chép!'));
+}
+
+// ── APPLY HIGHLIGHTS ──
+function applyHighlightsToPage(pageNum, textLayer) {
+  if (!textLayer) return;
+  // Remove existing highlights
+  textLayer.querySelectorAll('mark.hl-mark').forEach(m => {
+    const span = document.createElement('span');
+    span.textContent = m.textContent;
+    Object.assign(span.style, { position: m.style.position, left: m.style.left, top: m.style.top, fontSize: m.style.fontSize, transform: m.style.transform });
+    m.replaceWith(span);
+  });
+
+  const pageHLs = data.highlights.filter(h => h.page === pageNum);
+  if (!pageHLs.length) return;
+
+  const spans = textLayer.querySelectorAll('span');
+  const fullText = [...spans].map(s => s.textContent).join('');
+
+  pageHLs.forEach(hl => {
+    const idx = fullText.indexOf(hl.text);
+    if (idx === -1) return;
+    // Simple visual mark on the first matching span that contains the text
+    spans.forEach(span => {
+      if (span.textContent.includes(hl.text.substring(0, 10))) {
+        span.style.background = getHLCss(hl.color);
+        span.style.borderRadius = '2px';
+        span.style.cursor = 'pointer';
+        span.title = 'Highlight · Click để xóa';
+        span.onclick = () => {
+          if (confirm('Xóa highlight này?')) {
+            data.highlights = data.highlights.filter(h => h.id !== hl.id);
+            saveData();
+            renderAllPages();
+            renderSidebar();
+          }
+        };
+      }
+    });
+  });
+}
+
+function getHLCss(color) {
+  const map = { yellow:'rgba(255,220,50,0.45)', green:'rgba(74,200,120,0.38)', blue:'rgba(80,160,255,0.38)', pink:'rgba(255,100,150,0.38)' };
+  return map[color] || map.yellow;
+}
+
+// ── NOTES ──
+function showNotePopup(x, y) {
+  const popup = document.getElementById('notePopup');
+  popup.style.display = 'block';
+  const pw = 260, ph = 180;
+  popup.style.left = Math.min(x + 8, window.innerWidth - pw - 8) + 'px';
+  popup.style.top = Math.min(y + 8, window.innerHeight - ph - 8) + 'px';
+  setTimeout(() => document.getElementById('noteText').focus(), 50);
+}
+
+function closeNotePopup() {
+  document.getElementById('notePopup').style.display = 'none';
+  pendingNotePos = null; currentNoteId = null;
+}
+
+function saveNote() {
+  const text = document.getElementById('noteText').value.trim();
+  if (!text) { closeNotePopup(); return; }
+
+  if (currentNoteId) {
+    const note = data.notes.find(n => n.id === currentNoteId);
+    if (note) { note.text = text; note.ts = new Date().toLocaleString('vi-VN'); }
+  } else if (pendingNotePos) {
+    data.notes.push({ id: Date.now(), text, ...pendingNotePos, ts: new Date().toLocaleString('vi-VN') });
+  }
+
+  saveData();
+  closeNotePopup();
+  renderAllPages();
+  renderSidebar();
+  toast('✓ Đã lưu ghi chú!');
+}
+
+function deleteCurrentNote() {
+  if (!currentNoteId) return;
+  data.notes = data.notes.filter(n => n.id !== currentNoteId);
+  saveData();
+  closeNotePopup();
+  renderAllPages();
+  renderSidebar();
+  toast('Đã xóa ghi chú.');
+}
+
+function applyNotesToPage(pageNum, annotLayer) {
+  if (!annotLayer) return;
+  const pageNotes = data.notes.filter(n => n.page === pageNum);
+  const container = annotLayer.closest('.page-container');
+  const w = container?.querySelector('canvas')?.width || 600;
+  const h = container?.querySelector('canvas')?.height || 800;
+
+  pageNotes.forEach(note => {
+    const pin = document.createElement('button');
+    pin.className = 'note-pin';
+    pin.textContent = '✎';
+    pin.title = note.text;
+    pin.style.left = (note.xPct * w - 12) + 'px';
+    pin.style.top = (note.yPct * h - 12) + 'px';
+    pin.onclick = e => {
+      e.stopPropagation();
+      currentNoteId = note.id;
+      pendingNotePos = null;
+      document.getElementById('noteText').value = note.text;
+      document.getElementById('noteDelBtn').style.display = 'inline';
+      showNotePopup(e.clientX, e.clientY);
+    };
+    annotLayer.appendChild(pin);
+  });
+}
+
+// ── VOCABULARY ──
+function addVocab() {
+  const word = document.getElementById('vocabWord').value.trim();
+  const def  = document.getElementById('vocabDef').value.trim();
+  if (!word) { toast('Nhập từ vựng trước!'); return; }
+  data.vocab.push({ id: Date.now(), word, def, ts: new Date().toLocaleString('vi-VN') });
+  document.getElementById('vocabWord').value = '';
+  document.getElementById('vocabDef').value = '';
+  saveData();
+  renderSidebar();
+  toast('✓ Đã lưu từ vựng!');
+}
+
+function deleteVocab(id) {
+  data.vocab = data.vocab.filter(v => v.id !== id);
+  saveData();
+  renderSidebar();
+}
+
+// ── SIDEBAR RENDER ──
+function setSTab(tab, btn) {
+  document.querySelectorAll('.stab').forEach(b => b.classList.remove('active'));
+  btn.classList.add('active');
+  document.querySelectorAll('.sidebar-panel').forEach(p => p.classList.remove('active'));
+  document.getElementById('spanel-' + tab).classList.add('active');
+}
+
+function renderSidebar() {
+  renderHLPanel();
+  renderNotePanel();
+  renderVocabPanel();
+}
+
+function renderHLPanel() {
+  const wrap = document.getElementById('hlList');
+  if (!data.highlights.length) {
+    wrap.innerHTML = '<div class="empty-state"><div class="empty-state-icon">🖊</div><p>Chọn văn bản trong PDF rồi click "Highlight".</p></div>';
+    return;
+  }
+  wrap.innerHTML = data.highlights.map(h => `
+    <div class="hl-item" onclick="scrollToPage(${h.page})">
+      <div class="hl-bar" style="background:${getHLCss(h.color).replace('0.45','0.9').replace('0.38','0.8')}"></div>
+      <button class="hl-del" onclick="event.stopPropagation();deleteHL(${h.id})">✕</button>
+      <div class="hl-text">"${h.text.length > 80 ? h.text.substring(0,80)+'…' : h.text}"</div>
+      <div class="hl-meta">Trang ${h.page} · ${h.ts}</div>
+    </div>
+  `).join('');
+}
+
+function deleteHL(id) {
+  data.highlights = data.highlights.filter(h => h.id !== id);
+  saveData(); renderAllPages(); renderSidebar();
+}
+
+function renderNotePanel() {
+  const wrap = document.getElementById('noteList');
+  if (!data.notes.length) {
+    wrap.innerHTML = '<div class="empty-state"><div class="empty-state-icon">📌</div><p>Chuyển sang chế độ Ghi chú rồi click vào trang PDF.</p></div>';
+    return;
+  }
+  wrap.innerHTML = data.notes.map(n => `
+    <div class="note-item" onclick="scrollToPage(${n.page})">
+      <div class="note-text">${n.text.length > 100 ? n.text.substring(0,100)+'…' : n.text}</div>
+      <div class="note-meta">Trang ${n.page} · ${n.ts}</div>
+    </div>
+  `).join('');
+}
+
+function renderVocabPanel() {
+  const wrap = document.getElementById('vocabList');
+  if (!data.vocab.length) {
+    wrap.innerHTML = '<div class="empty-state"><div class="empty-state-icon">📚</div><p>Lưu từ vựng khi đọc. Chọn văn bản → "Lưu vào từ vựng".</p></div>';
+    return;
+  }
+  wrap.innerHTML = data.vocab.map(v => `
+    <div class="vocab-item">
+      <button class="vocab-del" onclick="deleteVocab(${v.id})">✕</button>
+      <div class="vocab-word">${v.word}</div>
+      ${v.def ? `<div class="vocab-def">${v.def}</div>` : ''}
+    </div>
+  `).join('');
+}
+
+// ── PERSIST DATA ──
+function saveData() {
+  if (!fileKey) return;
+  localStorage.setItem(fileKey, JSON.stringify(data));
+}
+
+function loadSavedData() {
+  const saved = localStorage.getItem(fileKey);
+  data = saved ? JSON.parse(saved) : { highlights: [], notes: [], vocab: [] };
+}
+
+// ── EXPORT ──
+function exportData() {
+  if (!pdfDoc) { toast('Mở file PDF trước!'); return; }
+  const out = {
+    file: document.getElementById('topFilename').textContent,
+    exported: new Date().toLocaleString('vi-VN'),
+    highlights: data.highlights,
+    notes: data.notes,
+    vocabulary: data.vocab,
+  };
+  const blob = new Blob([JSON.stringify(out, null, 2)], { type: 'application/json' });
+  const url = URL.createObjectURL(blob);
+  const a = document.createElement('a');
+  a.href = url; a.download = 'querencia-notes.json'; a.click();
+  URL.revokeObjectURL(url);
+  toast('✓ Đã xuất ghi chú!');
+}
+</script>
+</body>
+</html>

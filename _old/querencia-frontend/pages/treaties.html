@@ -1,0 +1,511 @@
+<!-- ============================================================
+     FILE: pages/treaties.html
+     SECTION: #treaties
+     Được load vào index.html qua fetch()
+     ============================================================ -->
+<section class="section" id="treaties" style="padding:0;display:flex;flex-direction:column">
+
+<style>
+  :root {
+    --tr-bg: #f7f9f7;
+    --tr-card: #ffffff;
+    --tr-border: #e8ede9;
+    --tr-hover: #f0f5f1;
+    --tr-sage: #4a7c59;
+    --tr-sage-dark: #2f5c3e;
+    --tr-sage-pale: #ddeee3;
+    --tr-black: #111;
+    --tr-gray: #555;
+    --tr-gray-light: #999;
+    --tr-gold: #b8860b;
+    --tr-gold-pale: #fdf8e8;
+  }
+  [data-theme="dark"] {
+    --tr-bg: #0f1410;
+    --tr-card: #1a1f1b;
+    --tr-border: #2a332b;
+    --tr-hover: #1f2720;
+    --tr-black: #f0f0f0;
+    --tr-gray: #aaa;
+    --tr-gray-light: #666;
+    --tr-gold-pale: #1a1a0a;
+  }
+
+  #treatiesApp {
+    min-height: calc(100vh - 56px);
+    background: var(--tr-bg);
+    padding: 0;
+  }
+
+  /* ── HERO ── */
+  .tr-hero {
+    background: linear-gradient(135deg, #1a2f20 0%, #2f5c3e 50%, #4a7c59 100%);
+    padding: 48px 24px 40px;
+    text-align: center;
+    color: #fff;
+  }
+  .tr-hero h1 {
+    font-size: 1.8rem; font-weight: 900;
+    margin-bottom: 8px; letter-spacing: -0.5px;
+  }
+  .tr-hero p {
+    font-size: 0.9rem; opacity: 0.8; margin-bottom: 28px;
+  }
+
+  /* ── SEARCH BOX ── */
+  .tr-search-box {
+    background: rgba(255,255,255,0.1);
+    backdrop-filter: blur(10px);
+    border: 1.5px solid rgba(255,255,255,0.2);
+    border-radius: 16px;
+    padding: 20px;
+    max-width: 700px;
+    margin: 0 auto;
+    display: flex;
+    flex-direction: column;
+    gap: 12px;
+  }
+  .tr-search-row {
+    display: flex; gap: 8px;
+  }
+  .tr-search-input {
+    flex: 1; padding: 10px 16px;
+    border: 1.5px solid rgba(255,255,255,0.3);
+    border-radius: 10px;
+    background: rgba(255,255,255,0.15);
+    color: #fff; font-family: inherit; font-size: 0.9rem;
+    outline: none;
+  }
+  .tr-search-input::placeholder { color: rgba(255,255,255,0.6); }
+  .tr-search-input:focus { border-color: rgba(255,255,255,0.6); background: rgba(255,255,255,0.2); }
+  .tr-search-btn {
+    padding: 10px 20px;
+    background: #fff; color: var(--tr-sage-dark);
+    border: none; border-radius: 10px;
+    font-family: inherit; font-size: 0.88rem; font-weight: 700;
+    cursor: pointer; transition: opacity 0.2s; white-space: nowrap;
+  }
+  .tr-search-btn:hover { opacity: 0.9; }
+  .tr-filter-row {
+    display: flex; gap: 8px; flex-wrap: wrap;
+  }
+  .tr-filter-select {
+    padding: 7px 12px;
+    background: rgba(255,255,255,0.15);
+    border: 1.5px solid rgba(255,255,255,0.25);
+    border-radius: 8px; color: #fff;
+    font-family: inherit; font-size: 0.82rem;
+    outline: none; cursor: pointer;
+  }
+  .tr-filter-select option { background: #2f5c3e; color: #fff; }
+
+  /* ── TAG PILLS ── */
+  .tr-tag-row {
+    display: flex; flex-wrap: wrap; gap: 6px;
+    padding: 16px 24px 0;
+    max-width: 900px; margin: 0 auto;
+  }
+  .tr-tag-pill {
+    padding: 4px 12px;
+    background: var(--tr-sage-pale); color: var(--tr-sage);
+    border: 1.5px solid transparent;
+    border-radius: 99px; font-size: 0.75rem; font-weight: 600;
+    cursor: pointer; transition: all 0.15s;
+  }
+  .tr-tag-pill:hover, .tr-tag-pill.active {
+    background: var(--tr-sage); color: #fff;
+  }
+
+  /* ── CONTENT ── */
+  .tr-content {
+    max-width: 900px; margin: 0 auto;
+    padding: 20px 24px 60px;
+  }
+
+  /* ── STATS BAR ── */
+  .tr-stats {
+    display: flex; align-items: center; justify-content: space-between;
+    margin-bottom: 16px;
+    font-size: 0.82rem; color: var(--tr-gray-light);
+  }
+
+  /* ── TREATY CARD ── */
+  .tr-card {
+    background: var(--tr-card);
+    border: 1px solid var(--tr-border);
+    border-radius: 16px;
+    margin-bottom: 16px;
+    overflow: hidden;
+    transition: box-shadow 0.2s, transform 0.15s;
+  }
+  .tr-card:hover { box-shadow: 0 6px 24px rgba(74,124,89,0.1); transform: translateY(-1px); }
+
+  .tr-card-header {
+    padding: 18px 20px 14px;
+    cursor: pointer;
+    display: flex; align-items: flex-start; gap: 14px;
+  }
+  .tr-card-chapter {
+    width: 42px; height: 42px; border-radius: 10px;
+    background: var(--tr-sage-pale); color: var(--tr-sage);
+    display: flex; align-items: center; justify-content: center;
+    font-weight: 900; font-size: 0.82rem; flex-shrink: 0;
+    font-family: serif;
+  }
+  .tr-card-title-wrap { flex: 1; min-width: 0; }
+  .tr-card-name {
+    font-weight: 800; font-size: 0.95rem; color: var(--tr-black);
+    line-height: 1.4; margin-bottom: 4px;
+  }
+  .tr-card-name-vi {
+    font-size: 0.8rem; color: var(--tr-gray); margin-bottom: 8px;
+  }
+  .tr-card-meta {
+    display: flex; flex-wrap: wrap; gap: 8px; align-items: center;
+  }
+  .tr-card-date {
+    font-size: 0.72rem; color: var(--tr-gray-light);
+    background: var(--tr-hover); padding: 2px 8px; border-radius: 6px;
+  }
+  .tr-card-tag {
+    font-size: 0.7rem; font-weight: 600; color: var(--tr-sage);
+    background: var(--tr-sage-pale); padding: 2px 8px; border-radius: 99px;
+  }
+  .tr-card-toggle {
+    color: var(--tr-gray-light); font-size: 1.1rem;
+    transition: transform 0.2s; flex-shrink: 0; padding-top: 2px;
+  }
+  .tr-card.open .tr-card-toggle { transform: rotate(180deg); }
+
+  /* ── 5 GOLDEN QA ── */
+  .tr-golden {
+    border-top: 1px solid var(--tr-border);
+    padding: 0 20px 20px;
+    display: none;
+  }
+  .tr-card.open .tr-golden { display: block; }
+
+  .tr-golden-title {
+    font-size: 0.72rem; font-weight: 700; color: var(--tr-gold);
+    text-transform: uppercase; letter-spacing: 0.5px;
+    padding: 14px 0 12px;
+    display: flex; align-items: center; gap: 6px;
+  }
+
+  .tr-qa-grid {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 10px;
+    margin-bottom: 14px;
+  }
+  @media (max-width: 600px) { .tr-qa-grid { grid-template-columns: 1fr; } }
+
+  .tr-qa-item {
+    background: var(--tr-gold-pale);
+    border: 1px solid rgba(184,134,11,0.15);
+    border-radius: 10px; padding: 12px 14px;
+  }
+  .tr-qa-label {
+    font-size: 0.7rem; font-weight: 800; color: var(--tr-gold);
+    text-transform: uppercase; letter-spacing: 0.5px;
+    margin-bottom: 5px; display: flex; align-items: center; gap: 4px;
+  }
+  .tr-qa-text {
+    font-size: 0.83rem; color: var(--tr-gray); line-height: 1.6;
+  }
+
+  .tr-qa-how {
+    background: var(--tr-sage-pale);
+    border: 1px solid rgba(74,124,89,0.2);
+    border-radius: 10px; padding: 12px 14px;
+    display: flex; align-items: center; justify-content: space-between; gap: 12px;
+  }
+  .tr-qa-how-text { font-size: 0.83rem; color: var(--tr-gray); line-height: 1.5; flex: 1; }
+  .tr-link-btn {
+    display: inline-flex; align-items: center; gap: 6px;
+    background: var(--tr-sage); color: #fff;
+    padding: 8px 16px; border-radius: 8px;
+    font-size: 0.8rem; font-weight: 700;
+    text-decoration: none; white-space: nowrap;
+    transition: background 0.2s;
+  }
+  .tr-link-btn:hover { background: var(--tr-sage-dark); }
+
+  /* ── SKELETON ── */
+  .tr-skeleton {
+    background: linear-gradient(90deg, var(--tr-border) 25%, var(--tr-hover) 50%, var(--tr-border) 75%);
+    background-size: 200% 100%;
+    animation: trSkel 1.4s infinite;
+    border-radius: 8px;
+  }
+  @keyframes trSkel { 0% { background-position: 200% 0 } 100% { background-position: -200% 0 } }
+
+  /* ── EMPTY ── */
+  .tr-empty {
+    text-align: center; padding: 60px 20px;
+    color: var(--tr-gray-light);
+  }
+  .tr-empty-icon { font-size: 3rem; margin-bottom: 12px; }
+</style>
+
+<div id="treatiesApp">
+
+  <!-- HERO + SEARCH -->
+  <div class="tr-hero">
+    <h1>⚖️ Công ước Quốc tế</h1>
+    <p>Tra cứu các Công ước Liên Hợp Quốc đang có hiệu lực — cô đọng, thực tế, có link nguồn gốc</p>
+    <div class="tr-search-box">
+      <div class="tr-search-row">
+        <input id="trSearchInput" class="tr-search-input" placeholder="🔍 Tìm tên công ước, từ khóa..."
+          oninput="trDebounce(this.value)" onkeydown="if(event.key==='Enter')trSearch()"/>
+        <button class="tr-search-btn" onclick="trSearch()">Tìm kiếm</button>
+        <button class="tr-search-btn" onclick="trReset()" style="background:rgba(255,255,255,0.2);color:#fff;border:1.5px solid rgba(255,255,255,0.3)">✕</button>
+      </div>
+      <div class="tr-filter-row">
+        <select id="trChapterFilter" class="tr-filter-select" onchange="trSearch()">
+          <option value="">📚 Tất cả chương</option>
+          <option value="1">I — Hiến chương LHQ</option>
+          <option value="2">II — Giải quyết tranh chấp</option>
+          <option value="3">III — Đặc quyền ngoại giao</option>
+          <option value="4">IV — Quyền con người</option>
+          <option value="5">V — Tị nạn</option>
+          <option value="6">VI — Phòng chống Ma túy</option>
+          <option value="7">VII — Buôn người</option>
+          <option value="9">IX — Y tế</option>
+          <option value="10">X — Thương mại quốc tế</option>
+          <option value="11">XI — Giao thông & Viễn thông</option>
+          <option value="12">XII — Hàng hải</option>
+          <option value="14">XIV — Giáo dục & Văn hóa</option>
+          <option value="16">XVI — Phụ nữ</option>
+          <option value="17">XVII — Tự do thông tin</option>
+          <option value="20">XX — Bảo vệ môi trường</option>
+          <option value="21">XXI — Luật Biển</option>
+          <option value="22">XXII — Trọng tài thương mại</option>
+          <option value="24">XXIV — Không gian vũ trụ</option>
+          <option value="25">XXV — Viễn thông</option>
+          <option value="27">XXVII — Môi trường</option>
+          <option value="28">XXVIII — Tài chính</option>
+        </select>
+        <select id="trYearFilter" class="tr-filter-select" onchange="trSearch()">
+          <option value="">📅 Tất cả thời gian</option>
+          <option value="pre1900">Trước 1900</option>
+          <option value="1900-1950">1900 – 1950</option>
+          <option value="1951-1970">1951 – 1970</option>
+          <option value="1971-1990">1971 – 1990</option>
+          <option value="1991-2000">1991 – 2000</option>
+          <option value="2001-2010">2001 – 2010</option>
+          <option value="2011-now">2011 – nay</option>
+        </select>
+        <select id="trSortFilter" class="tr-filter-select" onchange="trSearch()">
+          <option value="newest">Mới nhất trước</option>
+          <option value="oldest">Cũ nhất trước</option>
+          <option value="alpha">A → Z</option>
+        </select>
+      </div>
+    </div>
+  </div>
+
+  <!-- TAG PILLS -->
+  <div class="tr-tag-row" id="trTagRow">
+    <span class="tr-tag-pill active" onclick="trTagFilter('',this)">Tất cả</span>
+    <span class="tr-tag-pill" onclick="trTagFilter('#Human_Rights',this)">#Human_Rights</span>
+    <span class="tr-tag-pill" onclick="trTagFilter('#Commercial_Law',this)">#Commercial_Law</span>
+    <span class="tr-tag-pill" onclick="trTagFilter('#Global_Trade',this)">#Global_Trade</span>
+    <span class="tr-tag-pill" onclick="trTagFilter('#Environment',this)">#Environment</span>
+    <span class="tr-tag-pill" onclick="trTagFilter('#Maritime_Law',this)">#Maritime_Law</span>
+    <span class="tr-tag-pill" onclick="trTagFilter('#Crime_Justice',this)">#Crime_Justice</span>
+    <span class="tr-tag-pill" onclick="trTagFilter('#Health_Safety',this)">#Health_Safety</span>
+    <span class="tr-tag-pill" onclick="trTagFilter('#Diplomatic',this)">#Diplomatic</span>
+    <span class="tr-tag-pill" onclick="trTagFilter('#Tax_Fiscal',this)">#Tax_Fiscal</span>
+    <span class="tr-tag-pill" onclick="trTagFilter('#Data_Privacy',this)">#Data_Privacy</span>
+    <span class="tr-tag-pill" onclick="trTagFilter('#Telecomm',this)">#Telecomm</span>
+    <span class="tr-tag-pill" onclick="trTagFilter('#Social_Welfare',this)">#Social_Welfare</span>
+    <span class="tr-tag-pill" onclick="trTagFilter('#Investment',this)">#Investment</span>
+    <span class="tr-tag-pill" onclick="trTagFilter('#Logistics',this)">#Logistics</span>
+    <span class="tr-tag-pill" onclick="trTagFilter('#Energy',this)">#Energy</span>
+    <span class="tr-tag-pill" onclick="trTagFilter('#Space_Tech',this)">#Space_Tech</span>
+    <span class="tr-tag-pill" onclick="trTagFilter('#Banking_Finance',this)">#Banking_Finance</span>
+    <span class="tr-tag-pill" onclick="trTagFilter('#General',this)">#General</span>
+  </div>
+
+  <!-- CONTENT -->
+  <div class="tr-content">
+    <div class="tr-stats">
+      <span id="trStatsText">Đang tải...</span>
+    </div>
+    <div id="trList"></div>
+  </div>
+</div>
+
+<script>
+(function() {
+  const SB_URL  = 'https://adjamcmkwnevklmakjby.supabase.co';
+  const SB_KEY  = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6ImFkamFtY21rd25ldmtsbWFramJ5Iiwicm9sZSI6ImFub24iLCJpYXQiOjE3NzI4NDAwMTMsImV4cCI6MjA4ODQxNjAxM30.gp-ElmxeanPdQAOdQQsQzcggJ30JPS6lsJTkQJAfN78';
+
+  const ROMAN = ['','I','II','III','IV','V','VI','VII','VIII','IX','X','XI','XII','XIII','XIV','XV','XVI','XVII','XVIII','XIX','XX','XXI','XXII','XXIII','XXIV','XXV','XXVI','XXVII','XXVIII','XXIX'];
+
+  let trState = {
+    treaties: [],
+    filtered: [],
+    activeTag: '',
+    searchTimer: null,
+  };
+
+  async function trFetch(query = '') {
+    let url = `${SB_URL}/rest/v1/treaties?is_active=eq.true&order=signed_date.desc&limit=200`;
+    if (query) url += query;
+    const res = await fetch(url, {
+      headers: { 'apikey': SB_KEY, 'Authorization': 'Bearer ' + SB_KEY }
+    });
+    if (!res.ok) throw new Error('Supabase error');
+    return res.json();
+  }
+
+  async function trLoad() {
+    document.getElementById('trList').innerHTML = `
+      ${[1,2,3].map(() => `<div class="tr-card" style="pointer-events:none;padding:18px 20px">
+        <div class="tr-skeleton" style="height:14px;width:60%;margin-bottom:10px"></div>
+        <div class="tr-skeleton" style="height:11px;width:80%;margin-bottom:8px"></div>
+        <div class="tr-skeleton" style="height:11px;width:40%"></div>
+      </div>`).join('')}`;
+    try {
+      trState.treaties = await trFetch();
+      trState.filtered = trState.treaties;
+      trRender();
+    } catch {
+      document.getElementById('trList').innerHTML = '<div class="tr-empty"><div class="tr-empty-icon">⚠️</div><div>Không thể tải dữ liệu</div></div>';
+    }
+  }
+
+  function trRender() {
+    const list = document.getElementById('trList');
+    const stats = document.getElementById('trStatsText');
+    const data = trState.filtered;
+    stats.textContent = `${data.length} công ước${trState.activeTag ? ' · ' + trState.activeTag : ''}`;
+    if (!data.length) {
+      list.innerHTML = '<div class="tr-empty"><div class="tr-empty-icon">🔍</div><div>Không tìm thấy công ước nào</div></div>';
+      return;
+    }
+    list.innerHTML = data.map(t => trCardHtml(t)).join('');
+  }
+
+  function trCardHtml(t) {
+    const tags = Array.isArray(t.tags) ? t.tags : [];
+    const chapter = t.un_chapter ? ROMAN[t.un_chapter] || t.un_chapter : '?';
+    const signedYear = t.signed_date ? new Date(t.signed_date).getFullYear() : '';
+    return `<div class="tr-card" id="trCard_${t.id}">
+      <div class="tr-card-header" onclick="trToggle(${t.id})">
+        <div class="tr-card-chapter" title="Chương ${chapter}">${chapter}</div>
+        <div class="tr-card-title-wrap">
+          <div class="tr-card-name">${t.name}</div>
+          ${t.name_vi ? `<div class="tr-card-name-vi">${t.name_vi}</div>` : ''}
+          <div class="tr-card-meta">
+            ${signedYear ? `<span class="tr-card-date">📅 ${signedYear}</span>` : ''}
+            ${t.un_chapter_name ? `<span class="tr-card-date">📚 ${t.un_chapter_name}</span>` : ''}
+            ${tags.map(tag => `<span class="tr-card-tag">${tag}</span>`).join('')}
+          </div>
+        </div>
+        <span class="tr-card-toggle">▾</span>
+      </div>
+      <div class="tr-golden">
+        <div class="tr-golden-title">✦ Bộ khung 5 Câu hỏi Vàng</div>
+        <div class="tr-qa-grid">
+          ${t.who ? `<div class="tr-qa-item"><div class="tr-qa-label">👤 WHO — Đối tượng</div><div class="tr-qa-text">${t.who}</div></div>` : ''}
+          ${t.why ? `<div class="tr-qa-item"><div class="tr-qa-label">💡 WHY — Tại sao</div><div class="tr-qa-text">${t.why}</div></div>` : ''}
+          ${t.what ? `<div class="tr-qa-item"><div class="tr-qa-label">📋 WHAT — Nội dung cốt lõi</div><div class="tr-qa-text">${t.what}</div></div>` : ''}
+          ${t.where_scope ? `<div class="tr-qa-item"><div class="tr-qa-label">🌍 WHERE — Phạm vi</div><div class="tr-qa-text">${t.where_scope}</div></div>` : ''}
+        </div>
+        ${t.untc_link ? `<div class="tr-qa-how">
+          <div class="tr-qa-how-text"><strong style="color:var(--tr-sage)">🔗 HOW — Xem bản gốc:</strong><br/>Nhấn vào để xem văn bản chính thức tại UNTC (United Nations Treaty Collection)</div>
+          <a href="${t.untc_link}" target="_blank" rel="noopener" class="tr-link-btn">Xem nguồn gốc ↗</a>
+        </div>` : ''}
+      </div>
+    </div>`;
+  }
+
+  window.trToggle = function(id) {
+    const card = document.getElementById('trCard_' + id);
+    if (card) card.classList.toggle('open');
+  };
+
+  // ── SEARCH ──
+  window.trDebounce = function(val) {
+    clearTimeout(trState.searchTimer);
+    trState.searchTimer = setTimeout(() => trSearch(), 400);
+  };
+
+  window.trSearch = function() {
+    const q      = document.getElementById('trSearchInput').value.trim().toLowerCase();
+    const chapter = document.getElementById('trChapterFilter').value;
+    const year   = document.getElementById('trYearFilter').value;
+    const sort   = document.getElementById('trSortFilter').value;
+
+    let data = trState.treaties.filter(t => {
+      // text search
+      if (q) {
+        const haystack = `${t.name} ${t.name_vi || ''} ${t.who || ''} ${t.why || ''} ${t.what || ''} ${(t.tags||[]).join(' ')}`.toLowerCase();
+        if (!haystack.includes(q)) return false;
+      }
+      // chapter filter
+      if (chapter && t.un_chapter != chapter) return false;
+      // tag filter
+      if (trState.activeTag) {
+        const tags = Array.isArray(t.tags) ? t.tags : [];
+        if (!tags.includes(trState.activeTag)) return false;
+      }
+      // year filter
+      if (year && t.signed_date) {
+        const y = new Date(t.signed_date).getFullYear();
+        if (year === 'pre1900'   && y >= 1900) return false;
+        if (year === '1900-1950' && (y < 1900 || y > 1950)) return false;
+        if (year === '1951-1970' && (y < 1951 || y > 1970)) return false;
+        if (year === '1971-1990' && (y < 1971 || y > 1990)) return false;
+        if (year === '1991-2000' && (y < 1991 || y > 2000)) return false;
+        if (year === '2001-2010' && (y < 2001 || y > 2010)) return false;
+        if (year === '2011-now'  && y < 2011) return false;
+      }
+      return true;
+    });
+
+    // sort
+    if (sort === 'oldest') data.sort((a,b) => new Date(a.signed_date||0) - new Date(b.signed_date||0));
+    else if (sort === 'alpha') data.sort((a,b) => a.name.localeCompare(b.name));
+    else data.sort((a,b) => new Date(b.signed_date||0) - new Date(a.signed_date||0));
+
+    trState.filtered = data;
+    trRender();
+  };
+
+  window.trTagFilter = function(tag, el) {
+    trState.activeTag = tag;
+    document.querySelectorAll('.tr-tag-pill').forEach(p => p.classList.remove('active'));
+    if (el) el.classList.add('active');
+    trSearch();
+  };
+
+  window.trReset = function() {
+    document.getElementById('trSearchInput').value = '';
+    document.getElementById('trChapterFilter').value = '';
+    document.getElementById('trYearFilter').value = '';
+    document.getElementById('trSortFilter').value = 'newest';
+    trState.activeTag = '';
+    document.querySelectorAll('.tr-tag-pill').forEach(p => p.classList.remove('active'));
+    document.querySelector('.tr-tag-pill').classList.add('active');
+    trState.filtered = trState.treaties;
+    trRender();
+  };
+
+  // ── BOOT ── gọi thẳng vì section luôn visible khi được fetch vào
+  trLoad();
+})();
+</script>
+
+<footer><div class="footer-logo" style="display:flex;align-items:center;gap:0">
+  <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 120 120" width="22" height="22" style="position:relative;top:3px;margin-right:-3px">
+    <defs><clipPath id="qClipTr"><circle cx="55" cy="55" r="32"/></clipPath></defs>
+    <circle cx="55" cy="55" r="38" fill="none" stroke="#4a7c59" stroke-width="7" stroke-linecap="round"/>
+    <line x1="81" y1="79" x2="98" y2="98" stroke="#4a7c59" stroke-width="7" stroke-linecap="round"/>
+    <polyline points="20,55 28,38 35,68 43,32 51,60 58,43 66,70 74,48 90,55" fill="none" stroke="#4a7c59" stroke-width="3" stroke-linecap="round" stroke-linejoin="round" clip-path="url(#qClipTr)"/>
+  </svg><span style="font-family:var(--font-display);font-weight:700"><span style="color:#111">ueren</span><span style="color:#4a7c59">cia</span></span>
+</div><p data-i18n="footer_copy">© 2025 Querencia</p></footer>
+</section>

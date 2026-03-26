@@ -1,0 +1,352 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8"/>
+<meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+<title>Regex Tester — Querencia</title>
+<link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700&family=DM+Mono:wght@400;500&display=swap" rel="stylesheet"/>
+<style>
+*, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+:root {
+  --bg: #f7f5f2; --white: #fff; --panel: #f0ede8; --border: #e0dbd4;
+  --black: #1a1816; --gray: #8a7f74; --gray-light: #c0b8b0;
+  --accent: #4a7c59; --accent-pale: #e8f2ec; --accent-light: #6fa882;
+  --red: #c0392b; --yellow: #b87820; --match-bg: rgba(212,168,67,0.35);
+  --match-border: #d4a843; --group-colors: #c792ea,#82aaff,#89ddff,#52b87a;
+  --font: 'Plus Jakarta Sans', sans-serif; --mono: 'DM Mono', monospace;
+}
+body { font-family: var(--font); background: var(--bg); color: var(--black);
+  min-height: 100vh; display: grid; grid-template-rows: 52px 1fr; }
+.topbar { background: var(--white); border-bottom: 1.5px solid var(--border);
+  display: flex; align-items: center; padding: 0 20px; gap: 10px; }
+.logo { font-size: 0.88rem; font-weight: 700; }
+.logo span { color: var(--accent); }
+.sep { width: 1px; height: 22px; background: var(--border); }
+.topbar-right { margin-left: auto; display: flex; gap: 8px; align-items: center; }
+
+/* Match badge */
+.match-badge { padding: 4px 10px; border-radius: 6px; font-size: 0.72rem; font-weight: 700; }
+.match-badge.has-match { background: rgba(212,168,67,0.15); color: var(--yellow); border: 1px solid rgba(212,168,67,0.35); }
+.match-badge.no-match { background: rgba(192,57,43,0.1); color: var(--red); border: 1px solid rgba(192,57,43,0.25); }
+.match-badge.idle { background: var(--panel); color: var(--gray-light); border: 1px solid var(--border); }
+
+.main { display: flex; flex-direction: column; gap: 0; overflow: auto; padding: 20px; gap: 16px; }
+
+/* Regex input */
+.regex-card { background: var(--white); border: 1.5px solid var(--border); border-radius: 14px; overflow: hidden; }
+.regex-bar { display: flex; align-items: center; padding: 12px 16px; gap: 8px; border-bottom: 1px solid var(--border); }
+.regex-slash { font-family: var(--mono); font-size: 1.3rem; color: var(--gray-light); }
+#regexInput {
+  flex: 1; font-family: var(--mono); font-size: 1rem; background: none;
+  border: none; outline: none; color: var(--black); min-width: 0;
+}
+#regexInput::placeholder { color: var(--gray-light); }
+.flags-wrap { display: flex; gap: 4px; }
+.flag-btn { width: 26px; height: 26px; border-radius: 5px; border: 1.5px solid var(--border);
+  background: none; font-family: var(--mono); font-size: 0.75rem; font-weight: 700;
+  color: var(--gray); cursor: pointer; transition: all 0.13s; display: flex; align-items: center; justify-content: center; }
+.flag-btn:hover { border-color: var(--accent); color: var(--accent); }
+.flag-btn.active { background: var(--accent); border-color: var(--accent); color: #fff; }
+
+/* Error */
+.regex-error { padding: 8px 16px; background: rgba(192,57,43,0.06);
+  border-top: 1px solid rgba(192,57,43,0.15); font-family: var(--mono); font-size: 0.75rem; color: var(--red); display: none; }
+
+/* Test string */
+.test-card { background: var(--white); border: 1.5px solid var(--border); border-radius: 14px; overflow: hidden; }
+.card-header { padding: 10px 16px; background: var(--panel); border-bottom: 1px solid var(--border);
+  font-size: 0.65rem; font-weight: 700; letter-spacing: 0.12em; text-transform: uppercase;
+  color: var(--gray); display: flex; justify-content: space-between; align-items: center; }
+.small-btn { background: none; border: 1px solid var(--border); border-radius: 5px;
+  padding: 3px 8px; font-family: var(--font); font-size: 0.62rem; font-weight: 600;
+  color: var(--gray); cursor: pointer; transition: all 0.12s; }
+.small-btn:hover { border-color: var(--accent); color: var(--accent); }
+
+/* Highlighted test area */
+.test-area-wrap { position: relative; min-height: 120px; }
+#testDisplay {
+  position: absolute; inset: 0; padding: 14px 16px; font-family: var(--mono); font-size: 0.88rem;
+  line-height: 1.75; white-space: pre-wrap; word-break: break-all; pointer-events: none;
+  color: transparent; overflow: hidden;
+}
+#testInput {
+  position: relative; width: 100%; min-height: 120px; padding: 14px 16px;
+  font-family: var(--mono); font-size: 0.88rem; line-height: 1.75; background: transparent;
+  border: none; outline: none; color: var(--black); resize: vertical; white-space: pre-wrap;
+  word-break: break-all; caret-color: var(--black);
+}
+#testInput::placeholder { color: var(--gray-light); }
+
+/* Highlights */
+.hl { background: var(--match-bg); border-radius: 2px; border-bottom: 2px solid var(--match-border); }
+.hl-g0 { background: rgba(199,146,234,0.25); border-bottom-color: #c792ea; }
+.hl-g1 { background: rgba(130,170,255,0.25); border-bottom-color: #82aaff; }
+.hl-g2 { background: rgba(137,221,255,0.25); border-bottom-color: #89ddff; }
+
+/* Results */
+.results-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 16px; }
+.result-card { background: var(--white); border: 1.5px solid var(--border); border-radius: 14px; overflow: hidden; }
+.matches-list { max-height: 240px; overflow-y: auto; }
+.matches-list::-webkit-scrollbar { width: 3px; }
+.matches-list::-webkit-scrollbar-thumb { background: var(--border); }
+.match-item { padding: 10px 16px; border-bottom: 1px solid var(--border); }
+.match-item:last-child { border-bottom: none; }
+.match-index { font-size: 0.62rem; font-weight: 700; color: var(--gray-light); margin-bottom: 4px; }
+.match-val { font-family: var(--mono); font-size: 0.82rem; color: var(--black);
+  background: var(--match-bg); padding: 3px 7px; border-radius: 4px; display: inline-block;
+  max-width: 100%; word-break: break-all; }
+.match-pos { font-size: 0.62rem; color: var(--gray); margin-top: 4px; font-family: var(--mono); }
+.group-item { margin-top: 4px; }
+.group-label { font-size: 0.6rem; font-weight: 700; color: var(--gray-light); }
+.group-val { font-family: var(--mono); font-size: 0.75rem; color: #6677aa; }
+.no-matches { padding: 20px; text-align: center; font-size: 0.75rem; color: var(--gray-light); }
+
+/* Cheatsheet */
+.cheat-grid { display: grid; grid-template-columns: repeat(2, 1fr); gap: 1px;
+  background: var(--border); overflow: hidden; }
+.cheat-item { background: var(--white); padding: 8px 12px; display: flex; gap: 8px; align-items: center;
+  cursor: pointer; transition: background 0.12s; }
+.cheat-item:hover { background: var(--accent-pale); }
+.cheat-pat { font-family: var(--mono); font-size: 0.8rem; font-weight: 600;
+  color: var(--accent); min-width: 56px; flex-shrink: 0; }
+.cheat-desc { font-size: 0.72rem; color: var(--gray); }
+
+/* Replace section */
+.replace-bar { display: flex; align-items: center; padding: 10px 16px; gap: 8px; }
+#replaceInput { flex: 1; font-family: var(--mono); font-size: 0.85rem; background: var(--panel);
+  border: 1.5px solid var(--border); border-radius: 8px; padding: 7px 10px; outline: none; color: var(--black); }
+#replaceInput:focus { border-color: var(--accent); }
+#replaceOutput { padding: 10px 16px; font-family: var(--mono); font-size: 0.85rem;
+  color: var(--black); background: var(--accent-pale); border-top: 1px solid var(--border);
+  min-height: 40px; line-height: 1.7; white-space: pre-wrap; word-break: break-all; display: none; }
+</style>
+</head>
+<body>
+
+<div class="topbar">
+  <div class="logo">Regex <span>Tester</span></div>
+  <div class="sep"></div>
+  <span style="font-size:0.72rem;color:var(--gray)">JavaScript RegExp</span>
+  <div class="topbar-right">
+    <div class="match-badge idle" id="matchBadge">No pattern</div>
+  </div>
+</div>
+
+<div class="main">
+
+  <!-- Regex Input -->
+  <div class="regex-card">
+    <div class="regex-bar">
+      <span class="regex-slash">/</span>
+      <input type="text" id="regexInput" placeholder="Enter regular expression…" oninput="runTest()" spellcheck="false"/>
+      <span class="regex-slash">/</span>
+      <div class="flags-wrap">
+        <button class="flag-btn active" id="flag-g" onclick="toggleFlag('g')" title="Global">g</button>
+        <button class="flag-btn active" id="flag-i" onclick="toggleFlag('i')" title="Case-insensitive">i</button>
+        <button class="flag-btn" id="flag-m" onclick="toggleFlag('m')" title="Multiline">m</button>
+        <button class="flag-btn" id="flag-s" onclick="toggleFlag('s')" title="Dotall">s</button>
+      </div>
+    </div>
+    <div class="regex-error" id="regexError"></div>
+  </div>
+
+  <!-- Test String -->
+  <div class="test-card">
+    <div class="card-header">
+      Test String
+      <button class="small-btn" onclick="loadSample()">Load Sample</button>
+    </div>
+    <div class="test-area-wrap">
+      <div id="testDisplay" aria-hidden="true"></div>
+      <textarea id="testInput" placeholder="Enter test string here…" oninput="runTest()" spellcheck="false"></textarea>
+    </div>
+  </div>
+
+  <!-- Results + Cheatsheet -->
+  <div class="results-grid">
+
+    <!-- Matches -->
+    <div class="result-card">
+      <div class="card-header">Matches</div>
+      <div class="matches-list" id="matchesList">
+        <div class="no-matches">Enter a pattern above to see matches</div>
+      </div>
+    </div>
+
+    <!-- Cheatsheet -->
+    <div class="result-card">
+      <div class="card-header">Quick Reference <span style="font-weight:400;color:var(--gray-light);letter-spacing:0">(click to insert)</span></div>
+      <div class="cheat-grid" id="cheatGrid"></div>
+    </div>
+
+  </div>
+
+  <!-- Replace -->
+  <div class="test-card">
+    <div class="card-header">Replace</div>
+    <div class="replace-bar">
+      <input type="text" id="replaceInput" placeholder="Replacement string ($1, $2 for groups)…" oninput="runReplace()" spellcheck="false"/>
+    </div>
+    <div id="replaceOutput"></div>
+  </div>
+
+</div>
+
+<script>
+const CHEAT = [
+  ['.', 'Any character'],       ['\\d', 'Digit [0-9]'],
+  ['\\D', 'Non-digit'],         ['\\w', 'Word char [a-zA-Z0-9_]'],
+  ['\\W', 'Non-word'],          ['\\s', 'Whitespace'],
+  ['\\S', 'Non-whitespace'],    ['\\b', 'Word boundary'],
+  ['^', 'Start of string'],     ['$', 'End of string'],
+  ['*', '0 or more'],           ['+', '1 or more'],
+  ['?', '0 or 1'],              ['{n,m}', 'Between n and m'],
+  ['[abc]', 'Character class'], ['[^abc]', 'Negated class'],
+  ['(abc)', 'Capture group'],   ['(?:abc)', 'Non-capturing'],
+  ['a|b', 'Alternation'],       ['(?=abc)', 'Lookahead'],
+  ['(?!abc)', 'Neg. lookahead'],['(?<=abc)', 'Lookbehind'],
+];
+
+let flags = { g: true, i: true, m: false, s: false };
+
+window.addEventListener('DOMContentLoaded', () => {
+  renderCheatsheet();
+});
+
+function toggleFlag(f) {
+  flags[f] = !flags[f];
+  document.getElementById('flag-' + f).classList.toggle('active', flags[f]);
+  runTest();
+}
+
+function getFlags() { return Object.entries(flags).filter(([,v])=>v).map(([k])=>k).join(''); }
+
+function runTest() {
+  const pattern = document.getElementById('regexInput').value;
+  const text    = document.getElementById('testInput').value;
+  const errBox  = document.getElementById('regexError');
+
+  if (!pattern) {
+    document.getElementById('testDisplay').innerHTML = escHtml(text);
+    document.getElementById('matchesList').innerHTML = '<div class="no-matches">Enter a pattern above to see matches</div>';
+    document.getElementById('matchBadge').className = 'match-badge idle';
+    document.getElementById('matchBadge').textContent = 'No pattern';
+    errBox.style.display = 'none';
+    runReplace(); return;
+  }
+
+  let regex;
+  try {
+    regex = new RegExp(pattern, getFlags());
+    errBox.style.display = 'none';
+  } catch(e) {
+    errBox.style.display = 'block';
+    errBox.textContent = '⚠ ' + e.message;
+    document.getElementById('matchBadge').className = 'match-badge no-match';
+    document.getElementById('matchBadge').textContent = 'Invalid';
+    document.getElementById('testDisplay').innerHTML = escHtml(text);
+    return;
+  }
+
+  const matches = [...text.matchAll(new RegExp(pattern, getFlags().replace('g','') + 'g'))];
+
+  // Badge
+  const badge = document.getElementById('matchBadge');
+  if (matches.length) {
+    badge.className = 'match-badge has-match';
+    badge.textContent = matches.length + ' match' + (matches.length > 1 ? 'es' : '');
+  } else {
+    badge.className = 'match-badge no-match';
+    badge.textContent = 'No matches';
+  }
+
+  // Highlight
+  renderHighlights(text, matches);
+
+  // Match list
+  renderMatchList(matches);
+
+  // Replace
+  runReplace();
+}
+
+function renderHighlights(text, matches) {
+  if (!matches.length) { document.getElementById('testDisplay').innerHTML = escHtml(text); return; }
+
+  let html = '';
+  let last = 0;
+  matches.forEach(m => {
+    html += escHtml(text.slice(last, m.index));
+    html += `<span class="hl">${escHtml(m[0])}</span>`;
+    last = m.index + m[0].length;
+  });
+  html += escHtml(text.slice(last));
+  document.getElementById('testDisplay').innerHTML = html;
+}
+
+function renderMatchList(matches) {
+  const list = document.getElementById('matchesList');
+  if (!matches.length) { list.innerHTML = '<div class="no-matches">No matches found</div>'; return; }
+
+  list.innerHTML = matches.map((m, i) => {
+    const groups = m.slice(1).map((g, gi) =>
+      `<div class="group-item"><span class="group-label">Group ${gi+1}: </span><span class="group-val">${g !== undefined ? '"' + escHtml(g) + '"' : 'undefined'}</span></div>`
+    ).join('');
+    return `
+      <div class="match-item">
+        <div class="match-index">Match #${i+1}</div>
+        <div class="match-val">${escHtml(m[0])}</div>
+        <div class="match-pos">Index ${m.index}–${m.index + m[0].length}</div>
+        ${groups}
+      </div>
+    `;
+  }).join('');
+}
+
+function runReplace() {
+  const pattern = document.getElementById('regexInput').value;
+  const replacement = document.getElementById('replaceInput').value;
+  const text = document.getElementById('testInput').value;
+  const out = document.getElementById('replaceOutput');
+
+  if (!pattern || replacement === '') { out.style.display = 'none'; return; }
+
+  try {
+    const regex = new RegExp(pattern, getFlags());
+    const result = text.replace(regex, replacement);
+    out.style.display = 'block';
+    out.textContent = result;
+  } catch(e) { out.style.display = 'none'; }
+}
+
+function renderCheatsheet() {
+  const grid = document.getElementById('cheatGrid');
+  grid.innerHTML = CHEAT.map(([pat, desc]) => `
+    <div class="cheat-item" onclick="insertPattern('${pat.replace(/'/g,"\\'")}')" title="Insert into pattern">
+      <span class="cheat-pat">${escHtml(pat)}</span>
+      <span class="cheat-desc">${desc}</span>
+    </div>
+  `).join('');
+}
+
+function insertPattern(pat) {
+  const input = document.getElementById('regexInput');
+  const s = input.selectionStart, e = input.selectionEnd;
+  input.value = input.value.slice(0,s) + pat + input.value.slice(e);
+  input.selectionStart = input.selectionEnd = s + pat.length;
+  input.focus();
+  runTest();
+}
+
+function loadSample() {
+  document.getElementById('regexInput').value = '[a-zA-Z0-9._%+\\-]+@[a-zA-Z0-9.\\-]+\\.[a-zA-Z]{2,}';
+  document.getElementById('testInput').value = `Contact us at hello@querencia.com.vn or support@querencia.vn
+Invalid: notanemail@, @nodomain.com, plain-text
+Also valid: user.name+tag@example.co.uk`;
+  runTest();
+}
+
+function escHtml(s) { return String(s).replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;'); }
+</script>
+</body>
+</html>

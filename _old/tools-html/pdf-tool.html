@@ -1,0 +1,800 @@
+<!DOCTYPE html>
+<html lang="vi">
+<head>
+  <meta charset="UTF-8"/>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <meta name="description" content="Querencia PDF Tool — Cắt & Ghép PDF miễn phí"/>
+  <title>PDF Tool · Querencia Tools</title>
+
+  <link rel="shortcut icon" type="image/svg+xml" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 120 120'><circle cx='55' cy='55' r='38' fill='none' stroke='%234a7c59' stroke-width='7' stroke-linecap='round'/><line x1='81' y1='79' x2='98' y2='98' stroke='%234a7c59' stroke-width='7' stroke-linecap='round'/><polyline points='20,55 28,38 35,68 43,32 51,60 58,43 66,70 74,48 90,55' fill='none' stroke='%234a7c59' stroke-width='3' stroke-linecap='round' stroke-linejoin='round'/></svg>"/>
+  <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:ital,wght@0,300;0,400;0,500;0,600;0,700;1,400&display=swap" rel="stylesheet"/>
+
+  <!-- PDF-lib -->
+  <script src="https://unpkg.com/pdf-lib@1.17.1/dist/pdf-lib.min.js"></script>
+
+  <style>
+    :root {
+      --sage:#4a7c59; --sage-light:#6fa882; --sage-pale:#ddeee3;
+      --sage-dark:#2f5c3e; --black:#111; --gray:#555;
+      --gray-light:#999; --border:#e0e0e0; --white:#fff;
+      --font-display:'Plus Jakarta Sans',sans-serif;
+      --font-body:'Plus Jakarta Sans',sans-serif;
+    }
+    *,*::before,*::after{box-sizing:border-box;margin:0;padding:0}
+    html{scroll-behavior:smooth}
+    body{font-family:var(--font-body);color:var(--black);background:var(--white);min-height:100vh;overflow-x:hidden}
+    @keyframes fadeUp{from{opacity:0;transform:translateY(16px)}to{opacity:1;transform:translateY(0)}}
+    @keyframes spin{0%{transform:rotate(0deg)}100%{transform:rotate(360deg)}}
+    @keyframes pulse{0%,100%{opacity:1}50%{opacity:0.4}}
+
+    /* NAV */
+    nav{position:sticky;top:0;z-index:100;display:flex;align-items:center;justify-content:space-between;padding:0 32px;height:64px;background:rgba(255,255,255,0.94);backdrop-filter:blur(12px);border-bottom:1px solid var(--border)}
+    .nav-logo{display:flex;flex-direction:column;align-items:flex-start;text-decoration:none;cursor:pointer;gap:1px}
+    .nav-logo-inner{display:flex;align-items:center}
+    .nav-tagline{font-size:0.65rem;font-weight:600;letter-spacing:0.06em;color:var(--sage)}
+    .nav-back{display:flex;align-items:center;gap:6px;font-size:0.82rem;color:var(--gray);text-decoration:none;padding:6px 14px;border:1.5px solid var(--border);border-radius:20px;transition:all 0.2s;cursor:pointer}
+    .nav-back:hover{border-color:var(--sage);color:var(--sage)}
+
+    /* HEADER */
+    .page-header{padding:64px 64px 48px;border-bottom:1px solid var(--border);animation:fadeUp 0.6s 0.1s both}
+    .page-label{font-size:0.7rem;letter-spacing:0.2em;text-transform:uppercase;color:var(--sage);font-weight:500;margin-bottom:12px}
+    .page-title{font-family:var(--font-display);font-size:clamp(2rem,4vw,3rem);font-weight:700;letter-spacing:-0.5px;line-height:1.15}
+    .page-title em{font-style:italic;color:var(--sage)}
+    .page-desc{margin-top:14px;font-size:0.92rem;color:var(--gray);max-width:500px;line-height:1.7}
+    .badge-free{display:inline-block;font-size:0.65rem;font-weight:600;letter-spacing:0.1em;text-transform:uppercase;padding:3px 8px;border-radius:4px;margin-left:12px;background:var(--sage-pale);color:var(--sage-dark);vertical-align:middle}
+
+    /* TAB SWITCHER */
+    .tab-bar{display:flex;border-bottom:1px solid var(--border);padding:0 64px}
+    .tab-btn{padding:18px 0;margin-right:32px;font-size:0.88rem;font-weight:600;color:var(--gray-light);background:none;border:none;border-bottom:2px solid transparent;cursor:pointer;transition:all 0.2s;margin-bottom:-1px}
+    .tab-btn.active{color:var(--sage);border-bottom-color:var(--sage)}
+    .tab-btn:hover{color:var(--black)}
+
+    /* PANELS */
+    .tab-content{display:none;animation:fadeUp 0.3s both}
+    .tab-content.active{display:block}
+
+    /* ── GHÉP PDF ── */
+    .merge-wrap{display:grid;grid-template-columns:1fr 1fr;min-height:calc(100vh - 320px)}
+    .panel-left{padding:48px 48px 48px 64px;border-right:1px solid var(--border)}
+    .panel-right{padding:48px 64px 48px 48px;display:flex;flex-direction:column}
+    .panel-title{font-size:0.7rem;letter-spacing:0.15em;text-transform:uppercase;color:var(--gray-light);font-weight:500;margin-bottom:20px}
+
+    /* Drop zone */
+    .drop-zone{border:2px dashed var(--border);border-radius:16px;padding:40px 32px;text-align:center;cursor:pointer;transition:all 0.25s;position:relative;background:#fafaf9}
+    .drop-zone:hover,.drop-zone.drag-over{border-color:var(--sage);background:var(--sage-pale)}
+    .drop-zone input[type="file"]{position:absolute;inset:0;opacity:0;cursor:pointer;width:100%;height:100%}
+    .drop-icon{font-size:2.4rem;margin-bottom:12px;opacity:0.5;transition:opacity 0.2s,transform 0.2s}
+    .drop-zone:hover .drop-icon{opacity:0.8;transform:scale(1.05)}
+    .drop-zone h3{font-family:var(--font-display);font-size:1rem;font-weight:600;margin-bottom:6px}
+    .drop-zone p{font-size:0.8rem;color:var(--gray-light);line-height:1.6}
+    .browse-link{color:var(--sage);text-decoration:underline;font-weight:500}
+
+    /* File list */
+    .file-list{margin-top:20px;display:flex;flex-direction:column;gap:8px}
+    .file-item{display:flex;align-items:center;gap:12px;padding:12px 16px;border:1.5px solid var(--border);border-radius:10px;background:var(--white);transition:background 0.2s}
+    .file-item:hover{background:var(--sage-pale)}
+    .file-item-icon{font-size:1.3rem;flex-shrink:0}
+    .file-item-info{flex:1;min-width:0}
+    .file-item-name{font-size:0.83rem;font-weight:600;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+    .file-item-size{font-size:0.72rem;color:var(--gray-light);margin-top:2px}
+    .file-item-actions{display:flex;gap:6px;flex-shrink:0}
+    .icon-btn{background:none;border:none;cursor:pointer;padding:4px 6px;border-radius:6px;font-size:1rem;color:var(--gray-light);transition:all 0.15s}
+    .icon-btn:hover{background:var(--sage-pale);color:var(--sage)}
+    .icon-btn.del:hover{background:#fdecea;color:#c0392b}
+    .drag-handle{cursor:grab;font-size:0.9rem;color:var(--gray-light)}
+    .drag-handle:active{cursor:grabbing}
+
+    /* File count badge */
+    .file-count{display:inline-flex;align-items:center;justify-content:center;width:20px;height:20px;background:var(--sage);color:#fff;border-radius:50%;font-size:0.65rem;font-weight:700;margin-left:8px}
+
+    /* Buttons */
+    .btn-primary{background:var(--sage);color:var(--white);border:none;padding:13px 28px;border-radius:30px;font-family:var(--font-body);font-size:0.88rem;font-weight:500;cursor:pointer;letter-spacing:0.02em;transition:background 0.2s,transform 0.15s}
+    .btn-primary:hover{background:var(--sage-dark);transform:translateY(-1px)}
+    .btn-primary:disabled{background:var(--border);color:var(--gray-light);cursor:not-allowed;transform:none}
+    .btn-outline{background:transparent;color:var(--black);border:1.5px solid var(--border);padding:9px 18px;border-radius:30px;font-family:var(--font-body);font-size:0.82rem;font-weight:500;cursor:pointer;transition:border-color 0.2s,transform 0.15s}
+    .btn-outline:hover{border-color:var(--sage);color:var(--sage);transform:translateY(-1px)}
+    .action-row{margin-top:24px;display:flex;gap:12px;align-items:center;flex-wrap:wrap}
+
+    /* Preview area */
+    .preview-empty{flex:1;display:flex;flex-direction:column;align-items:center;justify-content:center;text-align:center;color:var(--gray-light);min-height:280px}
+    .preview-empty-icon{font-size:2.5rem;margin-bottom:14px;opacity:0.35}
+    .preview-empty p{font-size:0.85rem;line-height:1.7;max-width:260px}
+    .merge-summary{flex:1;display:none;flex-direction:column;gap:16px}
+    .summary-card{padding:20px 24px;border:1.5px solid var(--border);border-radius:12px;background:#fafaf9}
+    .summary-label{font-size:0.7rem;letter-spacing:0.12em;text-transform:uppercase;color:var(--gray-light);font-weight:500;margin-bottom:8px}
+    .summary-value{font-family:var(--font-display);font-size:1.8rem;font-weight:700;color:var(--sage)}
+    .summary-sub{font-size:0.78rem;color:var(--gray);margin-top:4px}
+    .order-list{display:flex;flex-direction:column;gap:6px;max-height:280px;overflow-y:auto}
+    .order-item{display:flex;align-items:center;gap:10px;padding:8px 12px;border-radius:8px;background:var(--sage-pale);font-size:0.82rem}
+    .order-num{width:22px;height:22px;background:var(--sage);color:#fff;border-radius:50%;display:flex;align-items:center;justify-content:center;font-size:0.65rem;font-weight:700;flex-shrink:0}
+
+    /* ── CẮT PDF ── */
+    .split-wrap{display:grid;grid-template-columns:1fr 1fr;min-height:calc(100vh - 320px)}
+
+    /* Page range input */
+    .range-section{margin-top:24px}
+    .range-title{font-size:0.82rem;font-weight:600;color:var(--black);margin-bottom:12px}
+    .range-modes{display:flex;gap:8px;margin-bottom:16px;flex-wrap:wrap}
+    .range-mode-btn{padding:6px 14px;border:1.5px solid var(--border);border-radius:20px;font-size:0.78rem;font-weight:500;cursor:pointer;background:none;color:var(--gray);transition:all 0.2s}
+    .range-mode-btn.active{background:var(--sage);color:#fff;border-color:var(--sage)}
+    .range-inputs{display:flex;flex-direction:column;gap:10px}
+    .range-row{display:flex;align-items:center;gap:10px}
+    .range-row label{font-size:0.78rem;color:var(--gray);width:80px;flex-shrink:0}
+    .range-input{padding:8px 12px;border:1.5px solid var(--border);border-radius:8px;font-family:var(--font-body);font-size:0.85rem;color:var(--black);outline:none;transition:border-color 0.2s;width:100px}
+    .range-input:focus{border-color:var(--sage)}
+    .range-hint{font-size:0.75rem;color:var(--gray-light);line-height:1.6}
+
+    /* Page preview chips */
+    .page-chips{display:flex;flex-wrap:wrap;gap:6px;margin-top:12px;max-height:120px;overflow-y:auto}
+    .page-chip{width:36px;height:36px;display:flex;align-items:center;justify-content:center;border:1.5px solid var(--border);border-radius:6px;font-size:0.75rem;font-weight:500;cursor:pointer;transition:all 0.15s;background:var(--white)}
+    .page-chip:hover{border-color:var(--sage);color:var(--sage)}
+    .page-chip.selected{background:var(--sage);color:#fff;border-color:var(--sage)}
+
+    /* Progress */
+    .progress-wrap{display:none;flex-direction:column;gap:12px;align-items:center;justify-content:center;padding:40px;text-align:center}
+    .progress-spinner{width:44px;height:44px;border:3px solid var(--sage-pale);border-top-color:var(--sage);border-radius:50%;animation:spin 0.9s linear infinite}
+    .progress-text{font-size:0.85rem;color:var(--gray);animation:pulse 1.5s ease-in-out infinite}
+    .progress-bar-wrap{width:200px;height:4px;background:var(--sage-pale);border-radius:4px;overflow:hidden}
+    .progress-bar{height:100%;background:var(--sage);border-radius:4px;width:0%;transition:width 0.3s ease}
+
+    /* Result download */
+    .result-download{display:none;flex-direction:column;gap:12px;padding:24px;border:1.5px solid var(--sage);border-radius:12px;background:var(--sage-pale);align-items:flex-start}
+    .result-download h4{font-family:var(--font-display);font-size:1rem;font-weight:600;color:var(--sage-dark)}
+    .result-download p{font-size:0.82rem;color:var(--gray)}
+
+    /* TIPS */
+    .tips-section{border-top:1px solid var(--border);display:grid;grid-template-columns:repeat(3,1fr);gap:1px;background:var(--border)}
+    .tip-card{background:var(--white);padding:32px}
+    .tip-icon{font-size:1.4rem;margin-bottom:12px}
+    .tip-card h4{font-family:var(--font-display);font-size:0.95rem;font-weight:600;margin-bottom:8px}
+    .tip-card p{font-size:0.82rem;color:var(--gray);line-height:1.65}
+
+    /* FOOTER */
+    footer{display:flex;align-items:center;justify-content:space-between;padding:24px 64px;border-top:1px solid var(--border);font-size:0.8rem;color:var(--gray-light)}
+
+    /* Toast */
+    .toast{display:none;position:fixed;bottom:28px;left:50%;transform:translateX(-50%);background:var(--black);color:#fff;padding:10px 20px;border-radius:30px;font-size:0.82rem;font-weight:500;z-index:999;animation:fadeUp 0.3s both}
+
+    /* DARK MODE */
+    body.dark{background:#0f0f0f;color:#eee}
+    body.dark nav{background:rgba(15,15,15,0.94);border-bottom-color:#222}
+    body.dark .drop-zone{background:#1a1a1a;border-color:#333}
+    body.dark .drop-zone:hover,.drop-zone.drag-over{background:#1a3328;border-color:var(--sage)}
+    body.dark .file-item{background:#1a1a1a;border-color:#333}
+    body.dark .file-item:hover{background:#1a3328}
+    body.dark .summary-card{background:#1a1a1a;border-color:#333}
+    body.dark .order-item{background:#1a3328}
+    body.dark .range-input{background:#1a1a1a;border-color:#333;color:#eee}
+    body.dark .page-chip{background:#1a1a1a;border-color:#333;color:#eee}
+    body.dark .page-chip.selected{background:var(--sage);color:#fff}
+    body.dark .result-download{background:#1a3328;border-color:var(--sage)}
+    body.dark .tips-section{background:#222}
+    body.dark .tip-card{background:#0f0f0f}
+    body.dark footer{border-top-color:#222;background:#0f0f0f}
+    body.dark .nav-back{border-color:#333;color:#aaa}
+    body.dark .page-label{color:#7ecf9a}
+    body.dark .tab-btn.active{color:#7ecf9a;border-bottom-color:#7ecf9a}
+    body.dark .btn-outline{border-color:#333;color:#eee}
+    body.dark .nav-back:hover{border-color:var(--sage);color:#7ecf9a}
+
+    /* RESPONSIVE */
+    @media(max-width:900px){
+      .merge-wrap,.split-wrap{grid-template-columns:1fr}
+      .panel-left{border-right:none;border-bottom:1px solid var(--border);padding:32px 24px}
+      .panel-right{padding:32px 24px}
+      .page-header,.tab-bar{padding-left:24px;padding-right:24px}
+      .tips-section{grid-template-columns:1fr}
+      footer{padding:20px 24px}
+      nav{padding:0 16px}
+    }
+  </style>
+</head>
+<body>
+
+<!-- NAV -->
+<nav>
+  <a class="nav-logo" href="https://querencia.com.vn">
+    <div class="nav-logo-inner">
+      <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 120 120" width="28" height="28" style="position:relative;top:3px;margin-right:-3px;flex-shrink:0">
+        <defs><clipPath id="qClip"><circle cx="55" cy="55" r="32"/></clipPath></defs>
+        <circle cx="55" cy="55" r="38" fill="none" stroke="#4a7c59" stroke-width="7" stroke-linecap="round"/>
+        <line x1="81" y1="79" x2="98" y2="98" stroke="#4a7c59" stroke-width="7" stroke-linecap="round"/>
+        <polyline points="20,55 28,38 35,68 43,32 51,60 58,43 66,70 74,48 90,55" fill="none" stroke="#4a7c59" stroke-width="3" stroke-linecap="round" stroke-linejoin="round" clip-path="url(#qClip)"/>
+      </svg>
+      <span style="font-family:var(--font-display);font-weight:700;font-size:1.4rem"><span style="color:#111">ueren</span><span style="color:#4a7c59">cia</span></span>
+    </div>
+    <small class="nav-tagline">Tech and more</small>
+  </a>
+  <div style="display:flex;align-items:center;gap:12px">
+    <button onclick="toggleDark()" title="Dark mode" style="background:none;border:none;cursor:pointer;font-size:1.1rem;color:var(--gray-light);padding:4px 8px">◐</button>
+    <a class="nav-back" href="https://querencia.com.vn">← Về trang chủ</a>
+  </div>
+</nav>
+
+<!-- HEADER -->
+<div class="page-header">
+  <p class="page-label">Tools · PDF</p>
+  <h1 class="page-title">Cắt &amp; Ghép <em>PDF</em> <span class="badge-free">Free</span></h1>
+  <p class="page-desc">Ghép nhiều file PDF thành một, hoặc cắt lấy những trang bạn cần — tất cả ngay trên trình duyệt, không upload lên server.</p>
+</div>
+
+<!-- TABS -->
+<div class="tab-bar">
+  <button class="tab-btn active" onclick="switchTab('merge')">
+    🔗 Ghép PDF
+    <span class="file-count" id="mergeCount" style="display:none">0</span>
+  </button>
+  <button class="tab-btn" onclick="switchTab('split')">✂️ Cắt PDF</button>
+</div>
+
+<!-- ══ TAB GHÉP ══ -->
+<div class="tab-content active" id="tab-merge">
+  <div class="merge-wrap">
+
+    <!-- LEFT -->
+    <div class="panel-left">
+      <p class="panel-title">Chọn file PDF cần ghép</p>
+
+      <div class="drop-zone" id="mergeDropZone">
+        <input type="file" id="mergeFileInput" accept="application/pdf" multiple onchange="addMergeFiles(this.files)"/>
+        <div class="drop-icon">📄</div>
+        <h3>Kéo thả file PDF vào đây</h3>
+        <p>hoặc <span class="browse-link">click để chọn</span><br/>Có thể chọn nhiều file cùng lúc</p>
+      </div>
+
+      <div class="file-list" id="mergeFileList"></div>
+
+      <div class="action-row">
+        <button class="btn-primary" id="btnMerge" onclick="doMerge()" disabled>🔗 Ghép lại</button>
+        <button class="btn-outline" onclick="clearMerge()" id="btnClearMerge" style="display:none">Xóa tất cả</button>
+      </div>
+    </div>
+
+    <!-- RIGHT -->
+    <div class="panel-right">
+      <p class="panel-title">Kết quả</p>
+
+      <div class="preview-empty" id="mergeEmpty">
+        <div class="preview-empty-icon">📋</div>
+        <p>Thêm ít nhất 2 file PDF rồi nhấn "Ghép lại" để bắt đầu.</p>
+      </div>
+
+      <div class="progress-wrap" id="mergeProgress">
+        <div class="progress-spinner"></div>
+        <p class="progress-text">Đang ghép file...</p>
+        <div class="progress-bar-wrap"><div class="progress-bar" id="mergeProgressBar"></div></div>
+      </div>
+
+      <div class="merge-summary" id="mergeSummary">
+        <div style="display:flex;gap:12px">
+          <div class="summary-card" style="flex:1">
+            <div class="summary-label">Số file ghép</div>
+            <div class="summary-value" id="summaryFiles">0</div>
+            <div class="summary-sub">file PDF</div>
+          </div>
+          <div class="summary-card" style="flex:1">
+            <div class="summary-label">Tổng trang</div>
+            <div class="summary-value" id="summaryPages">0</div>
+            <div class="summary-sub">trang</div>
+          </div>
+        </div>
+
+        <div>
+          <p class="panel-title" style="margin-bottom:12px">Thứ tự các file</p>
+          <div class="order-list" id="summaryOrder"></div>
+        </div>
+
+        <div class="result-download" id="mergeDownload">
+          <h4>✓ Ghép thành công!</h4>
+          <p id="mergeDownloadInfo">—</p>
+          <button class="btn-primary" id="btnDownloadMerge">⬇ Tải về PDF</button>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- ══ TAB CẮT ══ -->
+<div class="tab-content" id="tab-split">
+  <div class="split-wrap">
+
+    <!-- LEFT -->
+    <div class="panel-left">
+      <p class="panel-title">Chọn file PDF cần cắt</p>
+
+      <div class="drop-zone" id="splitDropZone">
+        <input type="file" id="splitFileInput" accept="application/pdf" onchange="loadSplitFile(this.files[0])"/>
+        <div class="drop-icon">✂️</div>
+        <h3>Kéo thả file PDF vào đây</h3>
+        <p>hoặc <span class="browse-link">click để chọn</span></p>
+      </div>
+
+      <!-- Loaded file info -->
+      <div id="splitFileInfo" style="display:none;margin-top:16px">
+        <div class="file-item">
+          <span class="file-item-icon">📄</span>
+          <div class="file-item-info">
+            <div class="file-item-name" id="splitFileName">—</div>
+            <div class="file-item-size" id="splitFileSize">—</div>
+          </div>
+          <button class="icon-btn del" onclick="clearSplit()" title="Xóa">✕</button>
+        </div>
+      </div>
+
+      <!-- Range options -->
+      <div class="range-section" id="rangeSection" style="display:none">
+        <div class="range-title">Chọn kiểu cắt</div>
+        <div class="range-modes">
+          <button class="range-mode-btn active" onclick="setRangeMode('range')" id="mode-range">Khoảng trang</button>
+          <button class="range-mode-btn" onclick="setRangeMode('pick')" id="mode-pick">Chọn từng trang</button>
+          <button class="range-mode-btn" onclick="setRangeMode('every')" id="mode-every">Tách từng trang</button>
+        </div>
+
+        <!-- Khoảng trang -->
+        <div id="input-range" class="range-inputs">
+          <div class="range-row">
+            <label>Trang bắt đầu</label>
+            <input type="number" class="range-input" id="pageFrom" min="1" placeholder="1" oninput="updateSplitPreview()"/>
+          </div>
+          <div class="range-row">
+            <label>Trang kết thúc</label>
+            <input type="number" class="range-input" id="pageTo" min="1" placeholder="5" oninput="updateSplitPreview()"/>
+          </div>
+          <p class="range-hint" id="rangeHint">Nhập khoảng trang muốn lấy. Ví dụ: trang 2 đến 8.</p>
+        </div>
+
+        <!-- Chọn từng trang -->
+        <div id="input-pick" style="display:none">
+          <p class="range-hint" style="margin-bottom:10px">Click để chọn/bỏ chọn các trang muốn giữ lại:</p>
+          <div class="page-chips" id="pageChips"></div>
+        </div>
+
+        <!-- Tách từng trang -->
+        <div id="input-every" style="display:none">
+          <p class="range-hint">Mỗi trang trong file sẽ được tách thành một file PDF riêng. Bạn sẽ tải về file .zip.</p>
+        </div>
+      </div>
+
+      <div class="action-row">
+        <button class="btn-primary" id="btnSplit" onclick="doSplit()" disabled>✂️ Cắt PDF</button>
+      </div>
+    </div>
+
+    <!-- RIGHT -->
+    <div class="panel-right">
+      <p class="panel-title">Xem trước</p>
+
+      <div class="preview-empty" id="splitEmpty">
+        <div class="preview-empty-icon">✂️</div>
+        <p>Tải file PDF lên và chọn trang muốn cắt.</p>
+      </div>
+
+      <div class="progress-wrap" id="splitProgress">
+        <div class="progress-spinner"></div>
+        <p class="progress-text" id="splitProgressText">Đang xử lý...</p>
+      </div>
+
+      <div id="splitSummary" style="display:none;flex-direction:column;gap:16px;flex:1">
+        <div style="display:flex;gap:12px">
+          <div class="summary-card" style="flex:1">
+            <div class="summary-label">Tổng trang</div>
+            <div class="summary-value" id="splitTotalPages">0</div>
+          </div>
+          <div class="summary-card" style="flex:1">
+            <div class="summary-label">Trang được chọn</div>
+            <div class="summary-value" id="splitSelectedPages" style="color:var(--sage)">0</div>
+          </div>
+        </div>
+
+        <div class="result-download" id="splitDownload" style="display:none">
+          <h4>✓ Cắt thành công!</h4>
+          <p id="splitDownloadInfo">—</p>
+          <button class="btn-primary" id="btnDownloadSplit">⬇ Tải về PDF</button>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- TIPS -->
+<div class="tips-section">
+  <div class="tip-card">
+    <div class="tip-icon">🔒</div>
+    <h4>File không rời khỏi máy</h4>
+    <p>Toàn bộ xử lý diễn ra ngay trên trình duyệt. File PDF của bạn không được gửi lên bất kỳ server nào.</p>
+  </div>
+  <div class="tip-card">
+    <div class="tip-icon">📦</div>
+    <h4>Không giới hạn số trang</h4>
+    <p>Ghép file có hàng trăm trang, hoặc cắt lấy bất kỳ trang nào bạn muốn mà không bị giới hạn.</p>
+  </div>
+  <div class="tip-card">
+    <div class="tip-icon">↕️</div>
+    <h4>Sắp xếp thứ tự khi ghép</h4>
+    <p>Kéo thả để sắp xếp thứ tự các file trước khi ghép. File nào ở trên sẽ xuất hiện trước trong PDF kết quả.</p>
+  </div>
+</div>
+
+<!-- FOOTER -->
+<footer>
+  <div style="display:flex;align-items:center;gap:0">
+    <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 120 120" width="20" height="20" style="position:relative;top:3px;margin-right:-2px">
+      <defs><clipPath id="qClipF"><circle cx="55" cy="55" r="32"/></clipPath></defs>
+      <circle cx="55" cy="55" r="38" fill="none" stroke="#4a7c59" stroke-width="7" stroke-linecap="round"/>
+      <line x1="81" y1="79" x2="98" y2="98" stroke="#4a7c59" stroke-width="7" stroke-linecap="round"/>
+      <polyline points="20,55 28,38 35,68 43,32 51,60 58,43 66,70 74,48 90,55" fill="none" stroke="#4a7c59" stroke-width="3" stroke-linecap="round" stroke-linejoin="round" clip-path="url(#qClipF)"/>
+    </svg>
+    <span style="font-family:var(--font-display);font-weight:700;font-size:0.9rem"><span style="color:#111">ueren</span><span style="color:#4a7c59">cia</span></span>
+  </div>
+  <span>© 2025 Querencia · All rights reserved</span>
+</footer>
+
+<div class="toast" id="toast"></div>
+
+<script>
+// ── DARK MODE ──
+if (localStorage.getItem('darkMode') === '1') document.body.classList.add('dark');
+function toggleDark() {
+  document.body.classList.toggle('dark');
+  localStorage.setItem('darkMode', document.body.classList.contains('dark') ? '1' : '0');
+}
+
+// ── TABS ──
+function switchTab(tab) {
+  document.querySelectorAll('.tab-btn').forEach((b,i) => b.classList.toggle('active', ['merge','split'][i] === tab));
+  document.querySelectorAll('.tab-content').forEach(c => c.classList.remove('active'));
+  document.getElementById('tab-' + tab).classList.add('active');
+}
+
+function showToast(msg) {
+  const t = document.getElementById('toast');
+  t.textContent = msg; t.style.display = 'block';
+  setTimeout(() => t.style.display = 'none', 2500);
+}
+
+// ════════════════════════════════
+//  GHÉP PDF
+// ════════════════════════════════
+let mergeFiles = [];
+
+// Drag & drop
+const mDrop = document.getElementById('mergeDropZone');
+mDrop.addEventListener('dragover', e => { e.preventDefault(); mDrop.classList.add('drag-over'); });
+mDrop.addEventListener('dragleave', () => mDrop.classList.remove('drag-over'));
+mDrop.addEventListener('drop', e => {
+  e.preventDefault(); mDrop.classList.remove('drag-over');
+  const pdfs = [...e.dataTransfer.files].filter(f => f.type === 'application/pdf');
+  if (pdfs.length) addMergeFiles(pdfs);
+});
+
+function addMergeFiles(files) {
+  [...files].forEach(f => {
+    if (f.type !== 'application/pdf') return;
+    mergeFiles.push(f);
+  });
+  renderMergeList();
+}
+
+function renderMergeList() {
+  const list = document.getElementById('mergeFileList');
+  const count = document.getElementById('mergeCount');
+  list.innerHTML = '';
+
+  if (mergeFiles.length === 0) {
+    count.style.display = 'none';
+    document.getElementById('btnMerge').disabled = true;
+    document.getElementById('btnClearMerge').style.display = 'none';
+    return;
+  }
+
+  count.textContent = mergeFiles.length;
+  count.style.display = 'inline-flex';
+  document.getElementById('btnMerge').disabled = mergeFiles.length < 2;
+  document.getElementById('btnClearMerge').style.display = mergeFiles.length ? 'block' : 'none';
+
+  mergeFiles.forEach((f, i) => {
+    const el = document.createElement('div');
+    el.className = 'file-item';
+    el.draggable = true;
+    el.dataset.idx = i;
+    el.innerHTML = `
+      <span class="drag-handle" title="Kéo để sắp xếp">⠿</span>
+      <span class="file-item-icon">📄</span>
+      <div class="file-item-info">
+        <div class="file-item-name">${f.name}</div>
+        <div class="file-item-size">${(f.size/1024).toFixed(0)} KB</div>
+      </div>
+      <div class="file-item-actions">
+        <button class="icon-btn" onclick="moveMergeFile(${i},-1)" title="Lên" ${i===0?'disabled':''}>↑</button>
+        <button class="icon-btn" onclick="moveMergeFile(${i},1)" title="Xuống" ${i===mergeFiles.length-1?'disabled':''}>↓</button>
+        <button class="icon-btn del" onclick="removeMergeFile(${i})" title="Xóa">✕</button>
+      </div>
+    `;
+    list.appendChild(el);
+  });
+}
+
+function moveMergeFile(idx, dir) {
+  const newIdx = idx + dir;
+  if (newIdx < 0 || newIdx >= mergeFiles.length) return;
+  [mergeFiles[idx], mergeFiles[newIdx]] = [mergeFiles[newIdx], mergeFiles[idx]];
+  renderMergeList();
+}
+
+function removeMergeFile(idx) {
+  mergeFiles.splice(idx, 1);
+  renderMergeList();
+  if (mergeFiles.length === 0) {
+    document.getElementById('mergeEmpty').style.display = 'flex';
+    document.getElementById('mergeSummary').style.display = 'none';
+  }
+}
+
+function clearMerge() {
+  mergeFiles = [];
+  document.getElementById('mergeFileInput').value = '';
+  renderMergeList();
+  document.getElementById('mergeEmpty').style.display = 'flex';
+  document.getElementById('mergeSummary').style.display = 'none';
+}
+
+let mergedPdfBytes = null;
+
+async function doMerge() {
+  if (mergeFiles.length < 2) return;
+
+  document.getElementById('mergeEmpty').style.display = 'none';
+  document.getElementById('mergeSummary').style.display = 'none';
+  document.getElementById('mergeProgress').style.display = 'flex';
+  document.getElementById('mergeDownload').style.display = 'none';
+  document.getElementById('btnMerge').disabled = true;
+
+  try {
+    const { PDFDocument } = PDFLib;
+    const mergedPdf = await PDFDocument.create();
+    let totalPages = 0;
+    const bar = document.getElementById('mergeProgressBar');
+
+    for (let i = 0; i < mergeFiles.length; i++) {
+      bar.style.width = Math.round((i / mergeFiles.length) * 80) + '%';
+      const bytes = await mergeFiles[i].arrayBuffer();
+      const pdf = await PDFDocument.load(bytes);
+      const pages = await mergedPdf.copyPages(pdf, pdf.getPageIndices());
+      pages.forEach(p => mergedPdf.addPage(p));
+      totalPages += pdf.getPageCount();
+    }
+
+    bar.style.width = '100%';
+    mergedPdfBytes = await mergedPdf.save();
+
+    // Show summary
+    document.getElementById('mergeProgress').style.display = 'none';
+    document.getElementById('mergeSummary').style.display = 'flex';
+    document.getElementById('summaryFiles').textContent = mergeFiles.length;
+    document.getElementById('summaryPages').textContent = totalPages;
+
+    const orderList = document.getElementById('summaryOrder');
+    orderList.innerHTML = mergeFiles.map((f, i) => `
+      <div class="order-item">
+        <span class="order-num">${i+1}</span>
+        <span style="font-size:0.82rem;overflow:hidden;text-overflow:ellipsis;white-space:nowrap">${f.name}</span>
+      </div>
+    `).join('');
+
+    const sizekb = (mergedPdfBytes.length / 1024).toFixed(0);
+    document.getElementById('mergeDownloadInfo').textContent = `${totalPages} trang · ${sizekb} KB`;
+    document.getElementById('mergeDownload').style.display = 'flex';
+    document.getElementById('btnDownloadMerge').onclick = downloadMerged;
+
+  } catch(err) {
+    document.getElementById('mergeProgress').style.display = 'none';
+    document.getElementById('mergeEmpty').style.display = 'flex';
+    document.getElementById('mergeEmpty').innerHTML = `<div class="preview-empty-icon">⚠️</div><p>Lỗi: ${err.message}. Vui lòng thử lại.</p>`;
+  }
+
+  document.getElementById('btnMerge').disabled = false;
+}
+
+function downloadMerged() {
+  if (!mergedPdfBytes) return;
+  const blob = new Blob([mergedPdfBytes], { type: 'application/pdf' });
+  const url = URL.createObjectURL(blob);
+  const a = document.createElement('a');
+  a.href = url; a.download = 'querencia-merged.pdf';
+  a.click(); URL.revokeObjectURL(url);
+  showToast('✓ Đã tải về!');
+}
+
+// ════════════════════════════════
+//  CẮT PDF
+// ════════════════════════════════
+let splitFile = null;
+let splitTotalPages = 0;
+let splitMode = 'range';
+let selectedPages = new Set();
+let splitResultBytes = null;
+
+const sDrop = document.getElementById('splitDropZone');
+sDrop.addEventListener('dragover', e => { e.preventDefault(); sDrop.classList.add('drag-over'); });
+sDrop.addEventListener('dragleave', () => sDrop.classList.remove('drag-over'));
+sDrop.addEventListener('drop', e => {
+  e.preventDefault(); sDrop.classList.remove('drag-over');
+  const f = e.dataTransfer.files[0];
+  if (f && f.type === 'application/pdf') loadSplitFile(f);
+});
+
+async function loadSplitFile(file) {
+  if (!file || file.type !== 'application/pdf') return;
+  splitFile = file;
+
+  document.getElementById('splitFileInfo').style.display = 'block';
+  document.getElementById('splitFileName').textContent = file.name;
+  document.getElementById('splitFileSize').textContent = (file.size/1024).toFixed(0) + ' KB';
+  document.getElementById('splitDropZone').style.display = 'none';
+
+  // Count pages
+  try {
+    const { PDFDocument } = PDFLib;
+    const bytes = await file.arrayBuffer();
+    const pdf = await PDFDocument.load(bytes);
+    splitTotalPages = pdf.getPageCount();
+
+    document.getElementById('rangeSection').style.display = 'block';
+    document.getElementById('splitEmpty').style.display = 'none';
+    document.getElementById('splitSummary').style.display = 'flex';
+    document.getElementById('splitTotalPages').textContent = splitTotalPages;
+    document.getElementById('splitSelectedPages').textContent = 0;
+    document.getElementById('pageTo').placeholder = splitTotalPages;
+    document.getElementById('rangeHint').textContent = `File có ${splitTotalPages} trang. Nhập khoảng trang muốn giữ lại.`;
+
+    // Build page chips
+    buildPageChips();
+    document.getElementById('btnSplit').disabled = false;
+    updateSplitPreview();
+
+  } catch(e) {
+    showToast('Không thể đọc file PDF này');
+    clearSplit();
+  }
+}
+
+function clearSplit() {
+  splitFile = null; splitTotalPages = 0; selectedPages.clear();
+  document.getElementById('splitFileInput').value = '';
+  document.getElementById('splitFileInfo').style.display = 'none';
+  document.getElementById('splitDropZone').style.display = 'block';
+  document.getElementById('rangeSection').style.display = 'none';
+  document.getElementById('splitEmpty').style.display = 'flex';
+  document.getElementById('splitSummary').style.display = 'none';
+  document.getElementById('splitDownload').style.display = 'none';
+  document.getElementById('btnSplit').disabled = true;
+}
+
+function setRangeMode(mode) {
+  splitMode = mode;
+  document.querySelectorAll('.range-mode-btn').forEach(b => b.classList.remove('active'));
+  document.getElementById('mode-' + mode).classList.add('active');
+  document.getElementById('input-range').style.display = mode === 'range' ? 'flex' : 'none';
+  document.getElementById('input-pick').style.display = mode === 'pick' ? 'block' : 'none';
+  document.getElementById('input-every').style.display = mode === 'every' ? 'block' : 'none';
+  updateSplitPreview();
+}
+
+function buildPageChips() {
+  const wrap = document.getElementById('pageChips');
+  wrap.innerHTML = '';
+  for (let i = 1; i <= splitTotalPages; i++) {
+    const chip = document.createElement('div');
+    chip.className = 'page-chip';
+    chip.textContent = i;
+    chip.onclick = () => {
+      if (selectedPages.has(i)) selectedPages.delete(i);
+      else selectedPages.add(i);
+      chip.classList.toggle('selected', selectedPages.has(i));
+      updateSplitPreview();
+    };
+    wrap.appendChild(chip);
+  }
+}
+
+function updateSplitPreview() {
+  let count = 0;
+  if (splitMode === 'range') {
+    const from = parseInt(document.getElementById('pageFrom').value) || 1;
+    const to = parseInt(document.getElementById('pageTo').value) || splitTotalPages;
+    count = Math.max(0, Math.min(to, splitTotalPages) - Math.max(from, 1) + 1);
+  } else if (splitMode === 'pick') {
+    count = selectedPages.size;
+  } else {
+    count = splitTotalPages;
+  }
+  document.getElementById('splitSelectedPages').textContent = count;
+}
+
+async function doSplit() {
+  if (!splitFile) return;
+  document.getElementById('splitSummary').style.display = 'none';
+  document.getElementById('splitProgress').style.display = 'flex';
+  document.getElementById('splitDownload').style.display = 'none';
+  document.getElementById('btnSplit').disabled = true;
+
+  try {
+    const { PDFDocument } = PDFLib;
+    const bytes = await splitFile.arrayBuffer();
+    const srcPdf = await PDFDocument.load(bytes);
+
+    if (splitMode === 'every') {
+      // Tách từng trang — tải lần lượt
+      document.getElementById('splitProgressText').textContent = 'Đang tách từng trang...';
+      for (let i = 0; i < splitTotalPages; i++) {
+        const newPdf = await PDFDocument.create();
+        const [page] = await newPdf.copyPages(srcPdf, [i]);
+        newPdf.addPage(page);
+        const pdfBytes = await newPdf.save();
+        const blob = new Blob([pdfBytes], { type: 'application/pdf' });
+        const url = URL.createObjectURL(blob);
+        const a = document.createElement('a');
+        a.href = url; a.download = `trang-${i+1}.pdf`;
+        a.click(); URL.revokeObjectURL(url);
+        await new Promise(r => setTimeout(r, 200));
+      }
+      document.getElementById('splitProgress').style.display = 'none';
+      document.getElementById('splitSummary').style.display = 'flex';
+      showToast(`✓ Đã tải về ${splitTotalPages} file PDF!`);
+      document.getElementById('btnSplit').disabled = false;
+      return;
+    }
+
+    // Range hoặc pick
+    let pageIndices = [];
+    if (splitMode === 'range') {
+      const from = Math.max(1, parseInt(document.getElementById('pageFrom').value) || 1) - 1;
+      const to = Math.min(splitTotalPages, parseInt(document.getElementById('pageTo').value) || splitTotalPages) - 1;
+      for (let i = from; i <= to; i++) pageIndices.push(i);
+    } else {
+      pageIndices = [...selectedPages].sort((a,b) => a-b).map(p => p-1);
+    }
+
+    if (pageIndices.length === 0) {
+      showToast('Chưa chọn trang nào!');
+      document.getElementById('splitProgress').style.display = 'none';
+      document.getElementById('splitSummary').style.display = 'flex';
+      document.getElementById('btnSplit').disabled = false;
+      return;
+    }
+
+    const newPdf = await PDFDocument.create();
+    const pages = await newPdf.copyPages(srcPdf, pageIndices);
+    pages.forEach(p => newPdf.addPage(p));
+    splitResultBytes = await newPdf.save();
+
+    document.getElementById('splitProgress').style.display = 'none';
+    document.getElementById('splitSummary').style.display = 'flex';
+    document.getElementById('splitSelectedPages').textContent = pageIndices.length;
+
+    const sizekb = (splitResultBytes.length / 1024).toFixed(0);
+    document.getElementById('splitDownloadInfo').textContent = `${pageIndices.length} trang · ${sizekb} KB`;
+    document.getElementById('splitDownload').style.display = 'flex';
+    document.getElementById('btnDownloadSplit').onclick = downloadSplit;
+
+  } catch(err) {
+    document.getElementById('splitProgress').style.display = 'none';
+    document.getElementById('splitEmpty').style.display = 'flex';
+    document.getElementById('splitEmpty').innerHTML = `<div class="preview-empty-icon">⚠️</div><p>Lỗi: ${err.message}</p>`;
+  }
+
+  document.getElementById('btnSplit').disabled = false;
+}
+
+function downloadSplit() {
+  if (!splitResultBytes) return;
+  const blob = new Blob([splitResultBytes], { type: 'application/pdf' });
+  const url = URL.createObjectURL(blob);
+  const a = document.createElement('a');
+  a.href = url; a.download = 'querencia-split.pdf';
+  a.click(); URL.revokeObjectURL(url);
+  showToast('✓ Đã tải về!');
+}
+</script>
+</body>
+</html>

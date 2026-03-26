@@ -1,0 +1,282 @@
+<style>
+* { box-sizing: border-box; margin: 0; padding: 0; }
+body { font-family: var(--font-sans); }
+#app { padding: 1.5rem 1rem; max-width: 800px; margin: 0 auto; }
+#stats { display: grid; grid-template-columns: repeat(4, 1fr); gap: 8px; margin-bottom: 1.5rem; }
+.stat { background: var(--color-background-secondary); border-radius: var(--border-radius-md); padding: 0.75rem; text-align: center; }
+.stat-val { font-size: 22px; font-weight: 500; color: var(--color-text-primary); }
+.stat-lbl { font-size: 12px; color: var(--color-text-secondary); margin-top: 2px; }
+#lesson-select { display: flex; gap: 8px; flex-wrap: wrap; margin-bottom: 1rem; }
+.lesson-btn { font-size: 12px; padding: 5px 12px; border-radius: var(--border-radius-md); border: 0.5px solid var(--color-border-secondary); background: var(--color-background-primary); color: var(--color-text-secondary); cursor: pointer; }
+.lesson-btn.active { background: #1D9E75; color: #fff; border-color: #1D9E75; }
+#text-display { background: var(--color-background-secondary); border-radius: var(--border-radius-lg); padding: 1.25rem; font-size: 18px; font-family: var(--font-mono); line-height: 2; letter-spacing: 0.5px; margin-bottom: 1rem; min-height: 80px; word-break: break-all; }
+.char-done { color: #1D9E75; }
+.char-error { color: #E24B4A; background: #FCEBEB; border-radius: 2px; }
+.char-current { background: #1D9E75; color: #fff; border-radius: 3px; }
+.char-pending { color: var(--color-text-secondary); }
+#input-area { width: 100%; font-size: 16px; padding: 10px 14px; border-radius: var(--border-radius-md); border: 1.5px solid var(--color-border-secondary); background: var(--color-background-primary); color: var(--color-text-primary); font-family: var(--font-mono); outline: none; }
+#input-area:focus { border-color: #1D9E75; }
+#keyboard { margin-top: 1.5rem; }
+.kb-row { display: flex; justify-content: center; gap: 5px; margin-bottom: 5px; }
+.key { min-width: 38px; height: 38px; border-radius: 6px; border: 0.5px solid var(--color-border-secondary); background: var(--color-background-secondary); display: flex; align-items: center; justify-content: center; font-size: 12px; font-weight: 500; color: var(--color-text-primary); position: relative; transition: background 0.1s; }
+.key.wide { min-width: 56px; }
+.key.wider { min-width: 72px; }
+.key.widest { min-width: 200px; }
+.key.active { background: #1D9E75; color: #fff; border-color: #1D9E75; }
+.key.error { background: #E24B4A; color: #fff; border-color: #E24B4A; }
+.finger-L1 { background: #EEEDFE; }
+.finger-L2 { background: #E6F1FB; }
+.finger-L3 { background: #EAF3DE; }
+.finger-L4 { background: #E1F5EE; }
+.finger-R4 { background: #E1F5EE; }
+.finger-R3 { background: #EAF3DE; }
+.finger-R2 { background: #E6F1FB; }
+.finger-R1 { background: #EEEDFE; }
+.key.active, .key.error { background: unset; }
+.key.active { background: #1D9E75 !important; color: #fff; }
+.key.error { background: #E24B4A !important; color: #fff; }
+#hint { font-size: 13px; color: var(--color-text-secondary); text-align: center; margin-top: 0.75rem; min-height: 20px; }
+#progress-bar { height: 4px; background: var(--color-border-tertiary); border-radius: 2px; margin-bottom: 1rem; }
+#progress-fill { height: 4px; background: #1D9E75; border-radius: 2px; width: 0%; transition: width 0.2s; }
+#result { display: none; text-align: center; padding: 2rem; }
+.result-big { font-size: 36px; font-weight: 500; color: var(--color-text-primary); }
+.result-sub { font-size: 14px; color: var(--color-text-secondary); margin-top: 8px; }
+#restart-btn { margin-top: 1.5rem; padding: 10px 28px; border-radius: var(--border-radius-md); background: #1D9E75; color: #fff; border: none; font-size: 15px; cursor: pointer; }
+</style>
+
+<div id="app">
+  <div id="stats">
+    <div class="stat"><div class="stat-val" id="wpm">0</div><div class="stat-lbl">WPM</div></div>
+    <div class="stat"><div class="stat-val" id="acc">100%</div><div class="stat-lbl">Chính xác</div></div>
+    <div class="stat"><div class="stat-val" id="timer">0s</div><div class="stat-lbl">Thời gian</div></div>
+    <div class="stat"><div class="stat-val" id="errors">0</div><div class="stat-lbl">Lỗi</div></div>
+  </div>
+
+  <div id="lesson-select"></div>
+  <div id="progress-bar"><div id="progress-fill"></div></div>
+  <div id="text-display"></div>
+  <input id="input-area" type="text" placeholder="Nhấp vào đây và bắt đầu gõ..." autocomplete="off" autocorrect="off" spellcheck="false" />
+
+  <div id="keyboard"></div>
+  <div id="hint"></div>
+
+  <div id="result">
+    <div class="result-big" id="result-wpm"></div>
+    <div class="result-sub" id="result-detail"></div>
+    <button id="restart-btn" onclick="restartLesson()">Luyện lại</button>
+  </div>
+</div>
+
+<script>
+const LESSONS = [
+  { name: "Hàng giữa", text: "asdf jkl; asdf jkl; asd fgh jkl asd fjk las dfjk las dfj kla sdf jkl asdf jkl;" },
+  { name: "Hàng trên", text: "qwer tyui qwer tyui qwe rty uio qwe rty uio wert yui ower tyui qwer tyui" },
+  { name: "Hàng dưới", text: "zxcv bnm, zxcv bnm, zxc vbn m,. zxc vbn m,. xcvb nm, zxcv bnm, zxcv bnm," },
+  { name: "Từ cơ bản", text: "the and for are but not you all can had her was one our out day get has him how" },
+  { name: "Câu đơn", text: "the quick brown fox jumps over the lazy dog pack my box with five dozen liquor jugs" },
+  { name: "Số & ký tự", text: "1234 5678 90 1a2b 3c4d 5e6f 7g8h 9i0j abc123 def456 ghi789 jkl012" },
+];
+
+const FINGER_MAP = {
+  '`':  'L4','1':'L4','2':'L3','3':'L2','4':'L1','5':'L1','6':'R1','7':'R1','8':'R2','9':'R3','0':'R4','-':'R4','=':'R4',
+  'q':  'L4','w':'L3','e':'L2','r':'L1','t':'L1','y':'R1','u':'R1','i':'R2','o':'R3','p':'R4','[':'R4',']':'R4',
+  'a':  'L4','s':'L3','d':'L2','f':'L1','g':'L1','h':'R1','j':'R1','k':'R2','l':'R3',';':'R4',"'":'R4',
+  'z':  'L4','x':'L3','c':'L2','v':'L1','b':'L1','n':'R1','m':'R1',',':'R2','.':'R3','/':'R4',
+  ' ':  'thumb'
+};
+
+const FINGER_NAMES = {
+  'L4': 'Ngón út trái', 'L3': 'Ngón áp út trái', 'L2': 'Ngón giữa trái', 'L1': 'Ngón trỏ trái',
+  'R1': 'Ngón trỏ phải', 'R2': 'Ngón giữa phải', 'R3': 'Ngón áp út phải', 'R4': 'Ngón út phải',
+  'thumb': 'Ngón cái'
+};
+
+const KB_ROWS = [
+  ['`','1','2','3','4','5','6','7','8','9','0','-','=','⌫'],
+  ['Tab','q','w','e','r','t','y','u','i','o','p','[',']','\\'],
+  ['Caps','a','s','d','f','g','h','j','k','l',';',"'",'↵'],
+  ['Shift','z','x','c','v','b','n','m',',','.','/','Shift'],
+  ['Space']
+];
+
+const WIDE_KEYS = new Set(['Tab','Caps','Shift','⌫','↵']);
+const WIDER_KEYS = new Set(['\\']);
+const WIDEST_KEYS = new Set(['Space']);
+
+let currentLesson = 0;
+let text = '';
+let typed = '';
+let errors = 0;
+let startTime = null;
+let timerInterval = null;
+let isRunning = false;
+
+function buildLessonButtons() {
+  const container = document.getElementById('lesson-select');
+  LESSONS.forEach((l, i) => {
+    const btn = document.createElement('button');
+    btn.className = 'lesson-btn' + (i === 0 ? ' active' : '');
+    btn.textContent = l.name;
+    btn.onclick = () => selectLesson(i);
+    container.appendChild(btn);
+  });
+}
+
+function selectLesson(i) {
+  currentLesson = i;
+  document.querySelectorAll('.lesson-btn').forEach((b, j) => b.classList.toggle('active', j === i));
+  restartLesson();
+}
+
+function buildKeyboard() {
+  const kb = document.getElementById('keyboard');
+  KB_ROWS.forEach(row => {
+    const rowEl = document.createElement('div');
+    rowEl.className = 'kb-row';
+    row.forEach(k => {
+      const el = document.createElement('div');
+      const kl = k.toLowerCase();
+      const finger = FINGER_MAP[kl] || '';
+      el.className = 'key';
+      if (WIDEST_KEYS.has(k)) el.classList.add('widest');
+      else if (WIDER_KEYS.has(k)) el.classList.add('wider');
+      else if (WIDE_KEYS.has(k)) el.classList.add('wide');
+      if (finger && finger !== 'thumb') el.classList.add('finger-' + finger);
+      el.textContent = k;
+      el.dataset.key = kl;
+      rowEl.appendChild(el);
+    });
+    kb.appendChild(rowEl);
+  });
+}
+
+function renderText() {
+  const display = document.getElementById('text-display');
+  let html = '';
+  for (let i = 0; i < text.length; i++) {
+    const ch = text[i] === ' ' ? '&nbsp;' : text[i];
+    if (i < typed.length) {
+      if (typed[i] === text[i]) html += `<span class="char-done">${ch}</span>`;
+      else html += `<span class="char-error">${ch}</span>`;
+    } else if (i === typed.length) {
+      html += `<span class="char-current">${ch}</span>`;
+    } else {
+      html += `<span class="char-pending">${ch}</span>`;
+    }
+  }
+  display.innerHTML = html;
+  const fill = Math.round((typed.length / text.length) * 100);
+  document.getElementById('progress-fill').style.width = fill + '%';
+}
+
+function highlightKey(ch) {
+  document.querySelectorAll('.key').forEach(k => {
+    k.classList.remove('active', 'error');
+    const f = FINGER_MAP[k.dataset.key] || '';
+    if (f && f !== 'thumb') {
+      k.style.background = '';
+    }
+  });
+  if (!ch) return;
+  const kl = ch.toLowerCase();
+  document.querySelectorAll('.key').forEach(k => {
+    if (k.dataset.key === kl || (kl === ' ' && k.dataset.key === 'space')) {
+      k.classList.add('active');
+    }
+  });
+  const finger = FINGER_MAP[kl];
+  if (finger) {
+    document.getElementById('hint').textContent = FINGER_NAMES[finger] ? 'Dùng: ' + FINGER_NAMES[finger] : '';
+  }
+}
+
+function updateStats() {
+  if (!startTime) return;
+  const elapsed = (Date.now() - startTime) / 1000;
+  const words = typed.length / 5;
+  const wpm = elapsed > 0 ? Math.round((words / elapsed) * 60) : 0;
+  const acc = typed.length > 0 ? Math.round(((typed.length - errors) / typed.length) * 100) : 100;
+  document.getElementById('wpm').textContent = wpm;
+  document.getElementById('acc').textContent = acc + '%';
+  document.getElementById('timer').textContent = Math.round(elapsed) + 's';
+  document.getElementById('errors').textContent = errors;
+}
+
+function showResult() {
+  clearInterval(timerInterval);
+  const elapsed = (Date.now() - startTime) / 1000;
+  const words = text.length / 5;
+  const wpm = Math.round((words / elapsed) * 60);
+  const acc = typed.length > 0 ? Math.round(((typed.length - errors) / typed.length) * 100) : 100;
+  document.getElementById('text-display').style.display = 'none';
+  document.getElementById('input-area').style.display = 'none';
+  document.getElementById('keyboard').style.display = 'none';
+  document.getElementById('hint').style.display = 'none';
+  document.getElementById('result').style.display = 'block';
+  document.getElementById('result-wpm').textContent = wpm + ' WPM';
+  document.getElementById('result-detail').textContent = `Chính xác: ${acc}% · Thời gian: ${Math.round(elapsed)}s · Lỗi: ${errors}`;
+}
+
+function restartLesson() {
+  clearInterval(timerInterval);
+  text = LESSONS[currentLesson].text;
+  typed = '';
+  errors = 0;
+  startTime = null;
+  isRunning = false;
+  document.getElementById('text-display').style.display = '';
+  document.getElementById('input-area').style.display = '';
+  document.getElementById('keyboard').style.display = '';
+  document.getElementById('hint').style.display = '';
+  document.getElementById('result').style.display = 'none';
+  document.getElementById('input-area').value = '';
+  document.getElementById('wpm').textContent = '0';
+  document.getElementById('acc').textContent = '100%';
+  document.getElementById('timer').textContent = '0s';
+  document.getElementById('errors').textContent = '0';
+  document.getElementById('progress-fill').style.width = '0%';
+  renderText();
+  const nextChar = text[0];
+  highlightKey(nextChar);
+  document.getElementById('input-area').focus();
+}
+
+document.getElementById('input-area').addEventListener('input', function(e) {
+  const val = this.value;
+  if (!isRunning && val.length > 0) {
+    isRunning = true;
+    startTime = Date.now();
+    timerInterval = setInterval(updateStats, 500);
+  }
+  typed = val;
+  let errCount = 0;
+  for (let i = 0; i < typed.length; i++) {
+    if (typed[i] !== text[i]) errCount++;
+  }
+  errors = errCount;
+  renderText();
+  updateStats();
+  if (typed.length >= text.length) {
+    showResult();
+    return;
+  }
+  const nextChar = text[typed.length];
+  highlightKey(nextChar);
+});
+
+document.getElementById('input-area').addEventListener('keydown', function(e) {
+  const kl = e.key.toLowerCase();
+  const allKeys = document.querySelectorAll('.key');
+  allKeys.forEach(k => k.classList.remove('error'));
+  const nextChar = text[typed.length];
+  if (nextChar && e.key !== nextChar && e.key !== 'Backspace' && e.key !== 'Shift' && e.key !== 'CapsLock') {
+    document.querySelectorAll('.key').forEach(k => {
+      if (k.dataset.key === kl) k.classList.add('error');
+    });
+  }
+});
+
+buildLessonButtons();
+buildKeyboard();
+restartLesson();
+</script>

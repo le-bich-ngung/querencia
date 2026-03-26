@@ -1,0 +1,698 @@
+<!DOCTYPE html>
+<html lang="vi">
+<head>
+  <meta charset="UTF-8"/>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>Flashcards — Querencia</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com"/>
+  <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700&display=swap" rel="stylesheet"/>
+  <style>
+    :root {
+      --sage:#4a7c59; --sage-light:#6fa882; --sage-pale:#ddeee3; --sage-dark:#2f5c3e;
+      --black:#111; --gray:#555; --gray-light:#999; --border:#e0e0e0;
+      --white:#fff; --font:'Plus Jakarta Sans',sans-serif;
+      --radius:12px; --shadow:0 2px 12px rgba(0,0,0,0.08);
+    }
+    *,*::before,*::after{box-sizing:border-box;margin:0;padding:0}
+    body{font-family:var(--font);color:var(--black);background:#f7f9f7;min-height:100vh}
+
+    /* ── NAV ── */
+    nav{display:flex;align-items:center;justify-content:space-between;padding:0 32px;height:56px;background:rgba(255,255,255,0.95);backdrop-filter:blur(8px);border-bottom:1px solid var(--border);position:sticky;top:0;z-index:100}
+    .nav-left{display:flex;align-items:center;gap:10px;text-decoration:none;color:inherit}
+    .nav-logo{width:28px;height:28px}
+    .nav-title{font-weight:700;font-size:0.95rem;letter-spacing:-0.3px}
+    .nav-back{font-size:0.82rem;color:var(--gray);text-decoration:none;display:flex;align-items:center;gap:4px;padding:6px 12px;border-radius:8px;transition:background 0.15s}
+    .nav-back:hover{background:var(--sage-pale);color:var(--sage)}
+
+    /* ── LAYOUT ── */
+    .container{max-width:900px;margin:0 auto;padding:32px 24px}
+
+    /* ── VIEWS ── */
+    .view{display:none}
+    .view.active{display:block}
+
+    /* ── HOME VIEW ── */
+    .home-header{display:flex;align-items:center;justify-content:space-between;margin-bottom:28px;flex-wrap:wrap;gap:12px}
+    .home-header h1{font-size:1.5rem;font-weight:700;letter-spacing:-0.5px}
+    .btn-primary{background:var(--sage);color:#fff;border:none;padding:10px 20px;border-radius:10px;font-family:var(--font);font-size:0.88rem;font-weight:600;cursor:pointer;transition:background 0.2s,transform 0.1s;display:inline-flex;align-items:center;gap:6px}
+    .btn-primary:hover{background:var(--sage-dark)}
+    .btn-primary:active{transform:scale(0.97)}
+    .btn-outline{background:none;border:1.5px solid var(--border);color:var(--black);padding:9px 18px;border-radius:10px;font-family:var(--font);font-size:0.88rem;font-weight:500;cursor:pointer;transition:all 0.2s}
+    .btn-outline:hover{border-color:var(--sage);color:var(--sage)}
+
+    /* Deck grid */
+    .deck-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(240px,1fr));gap:16px}
+    .deck-card{background:#fff;border-radius:var(--radius);border:1.5px solid var(--border);padding:20px;cursor:pointer;transition:all 0.2s;position:relative}
+    .deck-card:hover{border-color:var(--sage);transform:translateY(-2px);box-shadow:var(--shadow)}
+    .deck-card-icon{width:40px;height:40px;background:var(--sage-pale);border-radius:10px;display:flex;align-items:center;justify-content:center;font-size:1.2rem;margin-bottom:12px}
+    .deck-card-name{font-weight:700;font-size:1rem;margin-bottom:4px}
+    .deck-card-count{font-size:0.8rem;color:var(--gray-light)}
+    .deck-card-actions{position:absolute;top:12px;right:12px;display:flex;gap:4px;opacity:0;transition:opacity 0.15s}
+    .deck-card:hover .deck-card-actions{opacity:1}
+    .deck-action-btn{background:none;border:none;cursor:pointer;padding:4px 6px;border-radius:6px;font-size:0.85rem;color:var(--gray);transition:background 0.15s}
+    .deck-action-btn:hover{background:var(--sage-pale);color:var(--sage-dark)}
+
+    .empty-state{text-align:center;padding:80px 24px;color:var(--gray-light)}
+    .empty-state .empty-icon{font-size:3rem;margin-bottom:16px;opacity:0.4}
+    .empty-state p{font-size:0.95rem;margin-bottom:20px}
+
+    /* ── MODAL ── */
+    .modal-overlay{display:none;position:fixed;inset:0;background:rgba(0,0,0,0.4);backdrop-filter:blur(4px);z-index:200;align-items:center;justify-content:center;padding:16px}
+    .modal-overlay.open{display:flex}
+    .modal{background:#fff;border-radius:16px;padding:32px;width:100%;max-width:460px;position:relative}
+    .modal h2{font-size:1.2rem;font-weight:700;margin-bottom:20px}
+    .modal-close{position:absolute;top:16px;right:16px;background:none;border:none;font-size:1.1rem;cursor:pointer;color:var(--gray-light);line-height:1;padding:4px}
+    .modal-close:hover{color:var(--black)}
+    .form-group{margin-bottom:16px}
+    .form-group label{display:block;font-size:0.78rem;font-weight:600;text-transform:uppercase;letter-spacing:0.5px;color:var(--gray);margin-bottom:6px}
+    .form-group input,.form-group textarea,.form-group select{width:100%;padding:10px 14px;border:1.5px solid var(--border);border-radius:8px;font-family:var(--font);font-size:0.9rem;outline:none;transition:border-color 0.2s;background:#fff}
+    .form-group input:focus,.form-group textarea:focus{border-color:var(--sage)}
+    .form-group textarea{resize:vertical;min-height:80px}
+    .modal-actions{display:flex;gap:10px;justify-content:flex-end;margin-top:20px}
+
+    /* ── EDITOR VIEW ── */
+    .editor-header{display:flex;align-items:center;gap:16px;margin-bottom:24px;flex-wrap:wrap}
+    .editor-deck-name{font-size:1.3rem;font-weight:700;letter-spacing:-0.3px;flex:1}
+    .cards-list{display:flex;flex-direction:column;gap:10px;margin-bottom:24px}
+    .card-item{background:#fff;border:1.5px solid var(--border);border-radius:var(--radius);display:grid;grid-template-columns:1fr 1fr auto;gap:12px;align-items:center;padding:14px 16px;transition:border-color 0.2s}
+    .card-item:hover{border-color:var(--sage-light)}
+    .card-item-field{font-size:0.88rem}
+    .card-item-label{font-size:0.7rem;color:var(--gray-light);margin-bottom:3px;font-weight:600;text-transform:uppercase;letter-spacing:0.3px}
+    .card-item-value{color:var(--black);line-height:1.4}
+    .card-delete-btn{background:none;border:none;cursor:pointer;color:var(--gray-light);padding:6px;border-radius:6px;transition:all 0.15s;font-size:1rem}
+    .card-delete-btn:hover{background:#fdecea;color:#c0392b}
+    .add-card-form{background:#fff;border:1.5px dashed var(--border);border-radius:var(--radius);padding:16px;display:grid;grid-template-columns:1fr 1fr auto;gap:12px;align-items:end}
+    .add-card-form input{padding:9px 13px;border:1.5px solid var(--border);border-radius:8px;font-family:var(--font);font-size:0.88rem;outline:none;transition:border-color 0.2s}
+    .add-card-form input:focus{border-color:var(--sage)}
+    .add-btn{background:var(--sage);color:#fff;border:none;padding:9px 16px;border-radius:8px;font-family:var(--font);font-size:0.88rem;font-weight:600;cursor:pointer;white-space:nowrap;transition:background 0.2s}
+    .add-btn:hover{background:var(--sage-dark)}
+
+    /* ── STUDY VIEW ── */
+    .study-header{display:flex;align-items:center;justify-content:space-between;margin-bottom:32px}
+    .study-title{font-size:1.1rem;font-weight:700}
+    .study-progress{font-size:0.82rem;color:var(--gray-light)}
+    .progress-bar{width:100%;height:4px;background:var(--border);border-radius:99px;margin-bottom:40px;overflow:hidden}
+    .progress-fill{height:100%;background:var(--sage);border-radius:99px;transition:width 0.4s ease}
+
+    /* Flashcard 3D flip */
+    .card-scene{perspective:1000px;width:100%;max-width:560px;height:280px;margin:0 auto 32px}
+    .card-3d{width:100%;height:100%;position:relative;transform-style:preserve-3d;transition:transform 0.55s cubic-bezier(0.4,0,0.2,1);cursor:pointer}
+    .card-3d.flipped{transform:rotateY(180deg)}
+    .card-face{position:absolute;inset:0;backface-visibility:hidden;border-radius:20px;display:flex;flex-direction:column;align-items:center;justify-content:center;padding:32px;text-align:center}
+    .card-face-front{background:#fff;border:2px solid var(--border);box-shadow:0 8px 32px rgba(0,0,0,0.08)}
+    .card-face-back{background:var(--sage);color:#fff;transform:rotateY(180deg);box-shadow:0 8px 32px rgba(74,124,89,0.3)}
+    .card-face-label{font-size:0.72rem;font-weight:700;text-transform:uppercase;letter-spacing:1px;opacity:0.45;margin-bottom:16px}
+    .card-face-text{font-size:1.3rem;font-weight:600;line-height:1.5;letter-spacing:-0.2px}
+    .card-face-back .card-face-label{color:rgba(255,255,255,0.6)}
+    .card-hint{text-align:center;font-size:0.8rem;color:var(--gray-light);margin-bottom:28px}
+
+    .study-controls{display:flex;gap:12px;justify-content:center;flex-wrap:wrap}
+    .btn-wrong{background:#fdecea;color:#c0392b;border:none;padding:11px 24px;border-radius:10px;font-family:var(--font);font-size:0.88rem;font-weight:600;cursor:pointer;transition:all 0.15s}
+    .btn-wrong:hover{background:#f5c6c6}
+    .btn-correct{background:var(--sage-pale);color:var(--sage-dark);border:none;padding:11px 24px;border-radius:10px;font-family:var(--font);font-size:0.88rem;font-weight:600;cursor:pointer;transition:all 0.15s}
+    .btn-correct:hover{background:#c0dfc9}
+    .btn-flip{background:#fff;border:1.5px solid var(--border);color:var(--black);padding:11px 24px;border-radius:10px;font-family:var(--font);font-size:0.88rem;font-weight:500;cursor:pointer;transition:all 0.15s}
+    .btn-flip:hover{border-color:var(--sage);color:var(--sage)}
+
+    /* ── RESULT VIEW ── */
+    .result-wrap{text-align:center;padding:60px 24px}
+    .result-icon{font-size:3.5rem;margin-bottom:20px}
+    .result-title{font-size:1.6rem;font-weight:700;margin-bottom:8px;letter-spacing:-0.5px}
+    .result-sub{color:var(--gray);margin-bottom:32px;font-size:0.95rem}
+    .result-stats{display:flex;gap:24px;justify-content:center;margin-bottom:36px;flex-wrap:wrap}
+    .stat-box{background:#fff;border:1.5px solid var(--border);border-radius:12px;padding:20px 28px;min-width:100px}
+    .stat-num{font-size:1.8rem;font-weight:700;color:var(--sage)}
+    .stat-label{font-size:0.78rem;color:var(--gray-light);margin-top:4px}
+    .result-actions{display:flex;gap:12px;justify-content:center;flex-wrap:wrap}
+
+    /* ── SAVE BANNER ── */
+    .save-banner{position:fixed;bottom:24px;left:50%;transform:translateX(-50%);background:#fff;border:1.5px solid var(--border);border-radius:14px;padding:14px 20px;box-shadow:0 8px 32px rgba(0,0,0,0.12);display:flex;align-items:center;gap:14px;z-index:300;animation:slideUp 0.3s ease;max-width:420px;width:calc(100% - 48px)}
+    .save-banner-text{font-size:0.85rem;color:var(--gray);flex:1}
+    .save-banner-text strong{color:var(--black);display:block;margin-bottom:2px}
+    .btn-login-banner{background:var(--sage);color:#fff;border:none;padding:8px 16px;border-radius:8px;font-family:var(--font);font-size:0.82rem;font-weight:600;cursor:pointer;white-space:nowrap}
+    .btn-dismiss{background:none;border:none;color:var(--gray-light);cursor:pointer;font-size:1rem;padding:2px}
+    @keyframes slideUp{from{opacity:0;transform:translateX(-50%) translateY(16px)}to{opacity:1;transform:translateX(-50%) translateY(0)}}
+
+    /* ── DARK MODE ── */
+    body.dark{background:#0f0f0f;color:#eee}
+    body.dark nav{background:rgba(15,15,15,0.95);border-bottom-color:#222}
+    body.dark .deck-card,.dark .modal,.dark .card-face-front,.dark .add-card-form,.dark .card-item,.dark .stat-box,.dark .save-banner{background:#1a1a1a;border-color:#2a2a2a;color:#eee}
+    body.dark .card-face-front{border-color:#2a2a2a}
+    body.dark .form-group input,.dark .form-group textarea,.dark .add-card-form input{background:#111;border-color:#333;color:#eee}
+    body.dark .btn-outline{border-color:#333;color:#eee}
+    body.dark .btn-flip{background:#1a1a1a;border-color:#333;color:#eee}
+    body.dark .progress-bar{background:#222}
+    body.dark .deck-card-icon{background:#1a3328}
+    body.dark .save-banner-text{color:#aaa}
+    body.dark .save-banner-text strong{color:#eee}
+
+    @media(max-width:640px){
+      .container{padding:20px 16px}
+      nav{padding:0 16px}
+      .card-scene{height:220px}
+      .card-face-text{font-size:1.1rem}
+      .card-item{grid-template-columns:1fr;gap:8px}
+      .add-card-form{grid-template-columns:1fr;gap:8px}
+    }
+  </style>
+</head>
+<body>
+
+<!-- NAV -->
+<nav>
+  <a class="nav-left" href="/">
+    <svg class="nav-logo" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 120 120">
+      <circle cx="55" cy="55" r="38" fill="none" stroke="#4a7c59" stroke-width="7" stroke-linecap="round"/>
+      <line x1="81" y1="79" x2="98" y2="98" stroke="#4a7c59" stroke-width="7" stroke-linecap="round"/>
+    </svg>
+    <span class="nav-title">Flashcards</span>
+  </a>
+  <a class="nav-back" href="/">← Querencia</a>
+</nav>
+
+<!-- ══════════════════════════════════════════
+     VIEW 1: HOME — danh sách bộ thẻ
+═══════════════════════════════════════════ -->
+<div class="view active" id="viewHome">
+  <div class="container">
+    <div class="home-header">
+      <h1>Bộ thẻ của bạn</h1>
+      <button class="btn-primary" onclick="openCreateDeck()">＋ Tạo bộ thẻ</button>
+    </div>
+    <div class="deck-grid" id="deckGrid"></div>
+    <div class="empty-state" id="emptyState" style="display:none">
+      <div class="empty-icon">🃏</div>
+      <p>Chưa có bộ thẻ nào.<br/>Tạo bộ thẻ đầu tiên để bắt đầu học!</p>
+      <button class="btn-primary" onclick="openCreateDeck()">＋ Tạo bộ thẻ</button>
+    </div>
+  </div>
+</div>
+
+<!-- ══════════════════════════════════════════
+     VIEW 2: EDITOR — thêm/sửa thẻ trong bộ
+═══════════════════════════════════════════ -->
+<div class="view" id="viewEditor">
+  <div class="container">
+    <div class="editor-header">
+      <button class="btn-outline" onclick="goHome()" style="padding:8px 14px;font-size:0.82rem">← Quay lại</button>
+      <div class="editor-deck-name" id="editorDeckName"></div>
+      <button class="btn-primary" id="studyBtn" onclick="startStudy()">▶ Học ngay</button>
+    </div>
+    <div class="cards-list" id="cardsList"></div>
+    <div class="add-card-form" id="addCardForm">
+      <div>
+        <div style="font-size:0.7rem;font-weight:600;text-transform:uppercase;letter-spacing:0.3px;color:var(--gray-light);margin-bottom:5px">Mặt trước</div>
+        <input type="text" id="inputFront" placeholder="Từ, câu hỏi..." onkeydown="if(event.key==='Tab'){event.preventDefault();document.getElementById('inputBack').focus()}"/>
+      </div>
+      <div>
+        <div style="font-size:0.7rem;font-weight:600;text-transform:uppercase;letter-spacing:0.3px;color:var(--gray-light);margin-bottom:5px">Mặt sau</div>
+        <input type="text" id="inputBack" placeholder="Nghĩa, câu trả lời..." onkeydown="if(event.key==='Enter')addCard()"/>
+      </div>
+      <button class="add-btn" onclick="addCard()">＋ Thêm</button>
+    </div>
+    <p style="font-size:0.78rem;color:var(--gray-light);margin-top:10px">Tab để chuyển ô · Enter để thêm thẻ</p>
+  </div>
+</div>
+
+<!-- ══════════════════════════════════════════
+     VIEW 3: STUDY — học bộ thẻ
+═══════════════════════════════════════════ -->
+<div class="view" id="viewStudy">
+  <div class="container">
+    <div class="study-header">
+      <div>
+        <div class="study-title" id="studyDeckName"></div>
+        <div class="study-progress" id="studyProgress"></div>
+      </div>
+      <button class="btn-outline" onclick="goEditor()" style="padding:7px 14px;font-size:0.82rem">✕ Dừng</button>
+    </div>
+    <div class="progress-bar"><div class="progress-fill" id="progressFill"></div></div>
+    <div class="card-scene">
+      <div class="card-3d" id="card3d" onclick="flipCard()">
+        <div class="card-face card-face-front">
+          <div class="card-face-label">Mặt trước</div>
+          <div class="card-face-text" id="cardFront"></div>
+        </div>
+        <div class="card-face card-face-back">
+          <div class="card-face-label">Mặt sau</div>
+          <div class="card-face-text" id="cardBack"></div>
+        </div>
+      </div>
+    </div>
+    <p class="card-hint">Nhấn vào thẻ để lật</p>
+    <div class="study-controls">
+      <button class="btn-wrong" onclick="markCard(false)">✗ Chưa nhớ</button>
+      <button class="btn-flip" onclick="flipCard()">↺ Lật thẻ</button>
+      <button class="btn-correct" onclick="markCard(true)">✓ Đã nhớ</button>
+    </div>
+  </div>
+</div>
+
+<!-- ══════════════════════════════════════════
+     VIEW 4: RESULT — kết quả sau khi học
+═══════════════════════════════════════════ -->
+<div class="view" id="viewResult">
+  <div class="container">
+    <div class="result-wrap">
+      <div class="result-icon" id="resultIcon"></div>
+      <div class="result-title" id="resultTitle"></div>
+      <div class="result-sub" id="resultSub"></div>
+      <div class="result-stats">
+        <div class="stat-box"><div class="stat-num" id="statCorrect"></div><div class="stat-label">Đã nhớ</div></div>
+        <div class="stat-box"><div class="stat-num" id="statWrong" style="color:#e74c3c"></div><div class="stat-label">Chưa nhớ</div></div>
+        <div class="stat-box"><div class="stat-num" id="statTotal"></div><div class="stat-label">Tổng thẻ</div></div>
+      </div>
+      <div class="result-actions">
+        <button class="btn-outline" onclick="goHome()">← Về trang chủ</button>
+        <button class="btn-primary" onclick="startStudy()">↺ Học lại</button>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- MODAL tạo bộ thẻ -->
+<div class="modal-overlay" id="modalCreateDeck">
+  <div class="modal">
+    <button class="modal-close" onclick="closeModal('modalCreateDeck')">✕</button>
+    <h2>Tạo bộ thẻ mới</h2>
+    <div class="form-group">
+      <label>Tên bộ thẻ</label>
+      <input type="text" id="inputDeckName" placeholder="VD: Tiếng Anh B1, Lịch sử..." onkeydown="if(event.key==='Enter')createDeck()"/>
+    </div>
+    <div class="form-group">
+      <label>Biểu tượng (emoji)</label>
+      <input type="text" id="inputDeckEmoji" placeholder="📚" maxlength="2" style="width:80px"/>
+    </div>
+    <div class="modal-actions">
+      <button class="btn-outline" onclick="closeModal('modalCreateDeck')">Hủy</button>
+      <button class="btn-primary" onclick="createDeck()">Tạo bộ thẻ</button>
+    </div>
+  </div>
+</div>
+
+<!-- SAVE BANNER (hiện khi dùng không đăng nhập) -->
+<div class="save-banner" id="saveBanner" style="display:none">
+  <div class="save-banner-text">
+    <strong>Đăng nhập để lưu vĩnh viễn</strong>
+    Bộ thẻ này chỉ lưu trên máy bạn. Đăng nhập để không bao giờ mất dữ liệu.
+  </div>
+  <button class="btn-login-banner" onclick="window.location.href='/?login=1'">Đăng nhập</button>
+  <button class="btn-dismiss" onclick="dismissBanner()">✕</button>
+</div>
+
+<script>
+// ══════════════════════════════════════════════
+// CONFIG
+// ══════════════════════════════════════════════
+const TOOLS_API = 'https://querencia-tools.fly.dev';
+
+// ══════════════════════════════════════════════
+// STATE
+// ══════════════════════════════════════════════
+const STORAGE_KEY = 'querencia_flashcards';
+let decks = [];          // [{id, name, emoji, cards:[{id,front,back}]}]
+let currentDeckId = null;
+let studyQueue = [];
+let studyIndex = 0;
+let studyCorrect = 0;
+let studyWrong = 0;
+let isFlipped = false;
+let bannerShown = false;
+let isLoggedIn = !!localStorage.getItem('token');
+
+// ── Auth header ──
+function authHeaders() {
+  const token = localStorage.getItem('token');
+  return token ? { 'Authorization': `Bearer ${token}`, 'Content-Type': 'application/json' } : { 'Content-Type': 'application/json' };
+}
+
+// ── Đọc từ localStorage ──
+function loadData() {
+  try {
+    const raw = localStorage.getItem(STORAGE_KEY);
+    decks = raw ? JSON.parse(raw) : [];
+  } catch { decks = []; }
+}
+
+// ── Ghi vào localStorage ──
+function saveData() {
+  localStorage.setItem(STORAGE_KEY, JSON.stringify(decks));
+  // Hiện banner nếu chưa đăng nhập và chưa từng hiện
+  if (!bannerShown && !isLoggedIn) {
+    setTimeout(showSaveBanner, 1500);
+    bannerShown = true;
+  }
+}
+
+// ══════════════════════════════════════════════
+// API — gọi backend khi đã đăng nhập
+// ══════════════════════════════════════════════
+
+// Lấy tất cả bộ thẻ từ server → ghi đè local
+async function apiLoadDecks() {
+  try {
+    const res = await fetch(`${TOOLS_API}/flashcards`, { headers: authHeaders() });
+    if (!res.ok) return;
+    const data = await res.json();
+    decks = data;
+    saveLocal();
+  } catch {}
+}
+
+// Chỉ ghi local, không show banner
+function saveLocal() {
+  localStorage.setItem(STORAGE_KEY, JSON.stringify(decks));
+}
+
+// Tạo bộ thẻ trên server
+async function apiCreateDeck(deck) {
+  try {
+    const res = await fetch(`${TOOLS_API}/flashcards`, {
+      method: 'POST', headers: authHeaders(),
+      body: JSON.stringify({ name: deck.name, emoji: deck.emoji })
+    });
+    if (!res.ok) return null;
+    return await res.json(); // trả về deck với id từ server
+  } catch { return null; }
+}
+
+// Xóa bộ thẻ trên server
+async function apiDeleteDeck(deckId) {
+  try {
+    await fetch(`${TOOLS_API}/flashcards/${deckId}`, { method: 'DELETE', headers: authHeaders() });
+  } catch {}
+}
+
+// Đổi tên bộ thẻ trên server
+async function apiUpdateDeck(deckId, name, emoji) {
+  try {
+    await fetch(`${TOOLS_API}/flashcards/${deckId}`, {
+      method: 'PUT', headers: authHeaders(),
+      body: JSON.stringify({ name, emoji })
+    });
+  } catch {}
+}
+
+// Thêm thẻ trên server
+async function apiAddCard(deckId, front, back) {
+  try {
+    const res = await fetch(`${TOOLS_API}/flashcards/${deckId}/cards`, {
+      method: 'POST', headers: authHeaders(),
+      body: JSON.stringify({ front, back })
+    });
+    if (!res.ok) return null;
+    return await res.json();
+  } catch { return null; }
+}
+
+// Xóa thẻ trên server
+async function apiDeleteCard(deckId, cardId) {
+  try {
+    await fetch(`${TOOLS_API}/flashcards/${deckId}/cards/${cardId}`, {
+      method: 'DELETE', headers: authHeaders()
+    });
+  } catch {}
+}
+
+// Sync local lên server khi mới đăng nhập
+async function apiSync() {
+  try {
+    const localDecks = JSON.parse(localStorage.getItem(STORAGE_KEY) || '[]');
+    if (localDecks.length === 0) return;
+    const res = await fetch(`${TOOLS_API}/flashcards/sync`, {
+      method: 'POST', headers: authHeaders(),
+      body: JSON.stringify({ decks: localDecks })
+    });
+    if (!res.ok) return;
+    const data = await res.json();
+    decks = data;
+    saveLocal();
+  } catch {}
+}
+
+function getDeck(id) { return decks.find(d => d.id === id); }
+function uid() { return Date.now().toString(36) + Math.random().toString(36).slice(2,6); }
+
+// ══════════════════════════════════════════════
+// VIEWS
+// ══════════════════════════════════════════════
+function showView(id) {
+  document.querySelectorAll('.view').forEach(v => v.classList.remove('active'));
+  document.getElementById(id).classList.add('active');
+  window.scrollTo(0, 0);
+}
+
+function goHome() { renderHome(); showView('viewHome'); }
+function goEditor() { renderEditor(currentDeckId); showView('viewEditor'); }
+
+// ══════════════════════════════════════════════
+// HOME
+// ══════════════════════════════════════════════
+function renderHome() {
+  const grid = document.getElementById('deckGrid');
+  const empty = document.getElementById('emptyState');
+  if (decks.length === 0) {
+    grid.innerHTML = '';
+    empty.style.display = 'block';
+    return;
+  }
+  empty.style.display = 'none';
+  grid.innerHTML = decks.map(d => `
+    <div class="deck-card" onclick="openDeck('${d.id}')">
+      <div class="deck-card-actions">
+        <button class="deck-action-btn" title="Đổi tên" onclick="event.stopPropagation();renameDeck('${d.id}')">✏️</button>
+        <button class="deck-action-btn" title="Xóa" onclick="event.stopPropagation();deleteDeck('${d.id}')">🗑️</button>
+      </div>
+      <div class="deck-card-icon">${d.emoji || '📚'}</div>
+      <div class="deck-card-name">${esc(d.name)}</div>
+      <div class="deck-card-count">${d.cards.length} thẻ</div>
+    </div>
+  `).join('');
+}
+
+// ══════════════════════════════════════════════
+// TẠO / XÓA / ĐỔI TÊN BỘ THẺ
+// ══════════════════════════════════════════════
+function openCreateDeck() {
+  document.getElementById('inputDeckName').value = '';
+  document.getElementById('inputDeckEmoji').value = '';
+  openModal('modalCreateDeck');
+  setTimeout(() => document.getElementById('inputDeckName').focus(), 100);
+}
+
+async function createDeck() {
+  const name = document.getElementById('inputDeckName').value.trim();
+  if (!name) { document.getElementById('inputDeckName').focus(); return; }
+  const emoji = document.getElementById('inputDeckEmoji').value.trim() || '📚';
+  let deck = { id: uid(), name, emoji, cards: [] };
+
+  if (isLoggedIn) {
+    const serverDeck = await apiCreateDeck(deck);
+    if (serverDeck) deck = { ...serverDeck, cards: [] };
+  }
+
+  decks.unshift(deck);
+  saveData();
+  closeModal('modalCreateDeck');
+  openDeck(deck.id);
+}
+
+async function deleteDeck(id) {
+  if (!confirm('Xóa bộ thẻ này? Không thể hoàn tác.')) return;
+  if (isLoggedIn) await apiDeleteDeck(id);
+  decks = decks.filter(d => d.id !== id);
+  saveData();
+  renderHome();
+}
+
+async function renameDeck(id) {
+  const deck = getDeck(id);
+  const name = prompt('Tên mới:', deck.name);
+  if (!name || !name.trim()) return;
+  deck.name = name.trim();
+  if (isLoggedIn) await apiUpdateDeck(id, deck.name, deck.emoji);
+  saveData();
+  renderHome();
+}
+
+function openDeck(id) {
+  currentDeckId = id;
+  renderEditor(id);
+  showView('viewEditor');
+}
+
+// ══════════════════════════════════════════════
+// EDITOR
+// ══════════════════════════════════════════════
+function renderEditor(deckId) {
+  const deck = getDeck(deckId);
+  if (!deck) { goHome(); return; }
+  document.getElementById('editorDeckName').textContent = deck.emoji + ' ' + deck.name;
+  document.getElementById('studyBtn').disabled = deck.cards.length === 0;
+
+  const list = document.getElementById('cardsList');
+  if (deck.cards.length === 0) {
+    list.innerHTML = '<p style="color:var(--gray-light);font-size:0.88rem;padding:8px 0">Chưa có thẻ nào. Thêm thẻ đầu tiên bên dưới!</p>';
+    return;
+  }
+  list.innerHTML = deck.cards.map((c,i) => `
+    <div class="card-item">
+      <div class="card-item-field">
+        <div class="card-item-label">Mặt trước</div>
+        <div class="card-item-value">${esc(c.front)}</div>
+      </div>
+      <div class="card-item-field">
+        <div class="card-item-label">Mặt sau</div>
+        <div class="card-item-value">${esc(c.back)}</div>
+      </div>
+      <button class="card-delete-btn" onclick="deleteCard('${deckId}','${c.id}')" title="Xóa thẻ">✕</button>
+    </div>
+  `).join('');
+}
+
+async function addCard() {
+  const front = document.getElementById('inputFront').value.trim();
+  const back  = document.getElementById('inputBack').value.trim();
+  if (!front || !back) {
+    if (!front) document.getElementById('inputFront').focus();
+    else document.getElementById('inputBack').focus();
+    return;
+  }
+  const deck = getDeck(currentDeckId);
+  let card = { id: uid(), front, back };
+
+  if (isLoggedIn) {
+    const serverCard = await apiAddCard(currentDeckId, front, back);
+    if (serverCard) card = serverCard;
+  }
+
+  deck.cards.push(card);
+  saveData();
+  document.getElementById('inputFront').value = '';
+  document.getElementById('inputBack').value = '';
+  document.getElementById('inputFront').focus();
+  renderEditor(currentDeckId);
+}
+
+async function deleteCard(deckId, cardId) {
+  if (isLoggedIn) await apiDeleteCard(deckId, cardId);
+  const deck = getDeck(deckId);
+  deck.cards = deck.cards.filter(c => c.id !== cardId);
+  saveData();
+  renderEditor(deckId);
+}
+
+// ══════════════════════════════════════════════
+// STUDY
+// ══════════════════════════════════════════════
+function startStudy() {
+  const deck = getDeck(currentDeckId);
+  if (!deck || deck.cards.length === 0) return;
+  // Shuffle
+  studyQueue = [...deck.cards].sort(() => Math.random() - 0.5);
+  studyIndex = 0;
+  studyCorrect = 0;
+  studyWrong = 0;
+  document.getElementById('studyDeckName').textContent = deck.emoji + ' ' + deck.name;
+  showView('viewStudy');
+  showCard();
+}
+
+function showCard() {
+  const card = studyQueue[studyIndex];
+  isFlipped = false;
+  document.getElementById('card3d').classList.remove('flipped');
+  document.getElementById('cardFront').textContent = card.front;
+  document.getElementById('cardBack').textContent  = card.back;
+  updateProgress();
+}
+
+function updateProgress() {
+  const total = studyQueue.length;
+  const done  = studyIndex;
+  document.getElementById('studyProgress').textContent = `${done} / ${total} thẻ`;
+  document.getElementById('progressFill').style.width = (done / total * 100) + '%';
+}
+
+function flipCard() {
+  isFlipped = !isFlipped;
+  document.getElementById('card3d').classList.toggle('flipped', isFlipped);
+}
+
+function markCard(correct) {
+  if (correct) studyCorrect++; else studyWrong++;
+  studyIndex++;
+  if (studyIndex >= studyQueue.length) {
+    showResult();
+  } else {
+    showCard();
+  }
+}
+
+// ══════════════════════════════════════════════
+// RESULT
+// ══════════════════════════════════════════════
+function showResult() {
+  const total = studyQueue.length;
+  const pct   = Math.round(studyCorrect / total * 100);
+  document.getElementById('statCorrect').textContent = studyCorrect;
+  document.getElementById('statWrong').textContent   = studyWrong;
+  document.getElementById('statTotal').textContent   = total;
+
+  let icon, title, sub;
+  if (pct === 100) { icon='🎉'; title='Hoàn hảo!'; sub='Bạn nhớ tất cả các thẻ. Xuất sắc!'; }
+  else if (pct >= 70) { icon='😊'; title='Tốt lắm!'; sub=`Bạn nhớ ${pct}% số thẻ. Tiếp tục cố gắng!`; }
+  else if (pct >= 40) { icon='💪'; title='Cần luyện thêm'; sub=`Bạn nhớ ${pct}% số thẻ. Thử học lại nhé!`; }
+  else { icon='📖'; title='Hãy ôn tập thêm'; sub=`Bạn nhớ ${pct}% số thẻ. Đừng nản, học tiếp nào!`; }
+
+  document.getElementById('resultIcon').textContent  = icon;
+  document.getElementById('resultTitle').textContent = title;
+  document.getElementById('resultSub').textContent   = sub;
+  showView('viewResult');
+}
+
+// ══════════════════════════════════════════════
+// MODAL
+// ══════════════════════════════════════════════
+function openModal(id) { document.getElementById(id).classList.add('open'); }
+function closeModal(id) { document.getElementById(id).classList.remove('open'); }
+document.querySelectorAll('.modal-overlay').forEach(m => {
+  m.addEventListener('click', e => { if (e.target === m) m.classList.remove('open'); });
+});
+document.addEventListener('keydown', e => {
+  if (e.key === 'Escape') document.querySelectorAll('.modal-overlay.open').forEach(m => m.classList.remove('open'));
+});
+
+// ══════════════════════════════════════════════
+// SAVE BANNER
+// ══════════════════════════════════════════════
+function showSaveBanner() {
+  if (localStorage.getItem('banner_dismissed')) return;
+  document.getElementById('saveBanner').style.display = 'flex';
+}
+function dismissBanner() {
+  document.getElementById('saveBanner').style.display = 'none';
+  localStorage.setItem('banner_dismissed', '1');
+}
+
+// ══════════════════════════════════════════════
+// UTILS
+// ══════════════════════════════════════════════
+function esc(s) {
+  return String(s).replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;').replace(/"/g,'&quot;');
+}
+
+// Dark mode sync với Querencia
+if (localStorage.getItem('darkMode') === 'true') document.body.classList.add('dark');
+
+// ── INIT ──
+loadData();
+if (isLoggedIn) {
+  // Sync local lên server trước, rồi load lại từ server
+  apiSync().then(() => apiLoadDecks()).then(() => renderHome());
+} else {
+  renderHome();
+}
+</script>
+</body>
+</html>

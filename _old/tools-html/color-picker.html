@@ -1,0 +1,946 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8"/>
+<meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+<title>Color Picker — Querencia</title>
+<link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@300;400;500;600;700&family=DM+Mono:wght@400;500&display=swap" rel="stylesheet"/>
+<style>
+*, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+:root {
+  --bg: #0d0d0d;
+  --panel: #161616;
+  --panel2: #1e1e1e;
+  --border: #282828;
+  --white: #f0f0ee;
+  --gray: #777;
+  --gray-light: #444;
+  --accent: #4a7c59;
+  --accent-light: #6fa882;
+  --font: 'Plus Jakarta Sans', sans-serif;
+  --mono: 'DM Mono', monospace;
+}
+
+body {
+  font-family: var(--font);
+  background: var(--bg);
+  color: var(--white);
+  min-height: 100vh;
+  display: grid;
+  grid-template-rows: 52px 1fr;
+}
+
+/* ── TOPBAR ─────────────────────────────────────── */
+.topbar {
+  background: var(--panel);
+  border-bottom: 1px solid var(--border);
+  display: flex;
+  align-items: center;
+  padding: 0 24px;
+  gap: 8px;
+}
+.topbar-logo { font-size: 0.88rem; font-weight: 700; margin-right: 8px; }
+.topbar-logo span { color: var(--accent-light); }
+
+/* ── MAIN ───────────────────────────────────────── */
+.main {
+  display: grid;
+  grid-template-columns: 320px 1fr;
+  overflow: hidden;
+  height: calc(100vh - 52px);
+}
+
+/* ── LEFT: PICKER ───────────────────────────────── */
+.picker-panel {
+  background: var(--panel);
+  border-right: 1px solid var(--border);
+  overflow-y: auto;
+  padding: 20px;
+  display: flex;
+  flex-direction: column;
+  gap: 16px;
+}
+.picker-panel::-webkit-scrollbar { width: 3px; }
+.picker-panel::-webkit-scrollbar-thumb { background: #333; }
+
+.section-title {
+  font-size: 0.65rem;
+  font-weight: 700;
+  letter-spacing: 0.14em;
+  text-transform: uppercase;
+  color: var(--gray);
+  margin-bottom: 10px;
+}
+
+/* Color canvas */
+.color-canvas-wrap {
+  position: relative;
+  width: 100%;
+  padding-bottom: 75%;
+  border-radius: 12px;
+  overflow: hidden;
+  cursor: crosshair;
+  flex-shrink: 0;
+}
+#colorCanvas {
+  position: absolute;
+  inset: 0;
+  width: 100%;
+  height: 100%;
+  border-radius: 12px;
+}
+.canvas-cursor {
+  position: absolute;
+  width: 14px; height: 14px;
+  border-radius: 50%;
+  border: 2px solid #fff;
+  box-shadow: 0 0 0 1px rgba(0,0,0,0.4);
+  transform: translate(-50%, -50%);
+  pointer-events: none;
+  transition: left 0.05s, top 0.05s;
+}
+
+/* Hue slider */
+.hue-wrap {
+  position: relative;
+  height: 16px;
+  border-radius: 8px;
+  background: linear-gradient(to right,
+    #ff0000,#ff8000,#ffff00,#00ff00,
+    #00ffff,#0000ff,#ff00ff,#ff0000);
+  cursor: pointer;
+  flex-shrink: 0;
+}
+.hue-thumb {
+  position: absolute;
+  top: 50%;
+  transform: translate(-50%, -50%);
+  width: 20px; height: 20px;
+  border-radius: 50%;
+  border: 2px solid #fff;
+  box-shadow: 0 1px 4px rgba(0,0,0,0.5);
+  pointer-events: none;
+  background: #fff;
+}
+
+/* Alpha slider */
+.alpha-wrap {
+  position: relative;
+  height: 16px;
+  border-radius: 8px;
+  cursor: pointer;
+  flex-shrink: 0;
+  background-image:
+    linear-gradient(45deg, #666 25%, transparent 25%),
+    linear-gradient(-45deg, #666 25%, transparent 25%),
+    linear-gradient(45deg, transparent 75%, #666 75%),
+    linear-gradient(-45deg, transparent 75%, #666 75%);
+  background-size: 8px 8px;
+  background-position: 0 0, 0 4px, 4px -4px, -4px 0px;
+  background-color: #333;
+}
+.alpha-gradient {
+  position: absolute;
+  inset: 0;
+  border-radius: 8px;
+}
+.alpha-thumb {
+  position: absolute;
+  top: 50%;
+  transform: translate(-50%, -50%);
+  width: 20px; height: 20px;
+  border-radius: 50%;
+  border: 2px solid #fff;
+  box-shadow: 0 1px 4px rgba(0,0,0,0.5);
+  pointer-events: none;
+}
+
+/* Color preview + values */
+.color-preview-row {
+  display: flex;
+  gap: 10px;
+  align-items: stretch;
+}
+.color-swatch-big {
+  width: 56px;
+  border-radius: 10px;
+  flex-shrink: 0;
+  cursor: pointer;
+  position: relative;
+  transition: transform 0.15s;
+  border: 1px solid rgba(255,255,255,0.08);
+}
+.color-swatch-big:hover { transform: scale(1.04); }
+.color-swatch-big .copy-hint {
+  position: absolute;
+  bottom: 6px;
+  left: 50%;
+  transform: translateX(-50%);
+  font-size: 0.55rem;
+  font-weight: 700;
+  color: rgba(255,255,255,0.7);
+  letter-spacing: 0.05em;
+  white-space: nowrap;
+}
+
+.color-values { flex: 1; display: flex; flex-direction: column; gap: 6px; }
+.val-row {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  background: var(--panel2);
+  border-radius: 8px;
+  padding: 7px 10px;
+  cursor: pointer;
+  transition: background 0.15s;
+  border: 1px solid var(--border);
+}
+.val-row:hover { background: #252525; border-color: var(--accent); }
+.val-label {
+  font-size: 0.65rem;
+  font-weight: 700;
+  letter-spacing: 0.1em;
+  color: var(--gray);
+  width: 32px;
+  flex-shrink: 0;
+}
+.val-text {
+  font-family: var(--mono);
+  font-size: 0.78rem;
+  color: var(--white);
+  flex: 1;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+.copy-icon { font-size: 0.7rem; color: var(--gray); flex-shrink: 0; }
+.val-row:hover .copy-icon { color: var(--accent-light); }
+
+/* Saved colors */
+.saved-grid {
+  display: grid;
+  grid-template-columns: repeat(8, 1fr);
+  gap: 5px;
+}
+.saved-swatch {
+  aspect-ratio: 1;
+  border-radius: 6px;
+  cursor: pointer;
+  transition: transform 0.15s;
+  border: 1.5px solid rgba(255,255,255,0.06);
+  position: relative;
+}
+.saved-swatch:hover { transform: scale(1.12); z-index: 1; }
+.saved-swatch.empty {
+  border: 1.5px dashed var(--border);
+  background: none !important;
+  cursor: pointer;
+  display: flex; align-items: center; justify-content: center;
+  color: var(--gray-light);
+  font-size: 0.8rem;
+}
+.saved-swatch.empty:hover { border-color: var(--accent); color: var(--accent-light); }
+
+/* ── RIGHT: PALETTE ─────────────────────────────── */
+.palette-panel {
+  background: var(--bg);
+  overflow-y: auto;
+  padding: 24px;
+  display: flex;
+  flex-direction: column;
+  gap: 24px;
+}
+.palette-panel::-webkit-scrollbar { width: 3px; }
+.palette-panel::-webkit-scrollbar-thumb { background: #222; }
+
+/* Generate palette */
+.palette-header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  margin-bottom: 12px;
+}
+.gen-btns { display: flex; gap: 6px; }
+.gen-btn {
+  padding: 6px 12px;
+  border-radius: 7px;
+  border: 1px solid var(--border);
+  background: var(--panel);
+  color: var(--gray);
+  font-family: var(--font);
+  font-size: 0.72rem;
+  font-weight: 600;
+  cursor: pointer;
+  transition: all 0.15s;
+}
+.gen-btn:hover, .gen-btn.active { border-color: var(--accent); color: var(--accent-light); background: rgba(74,124,89,0.08); }
+
+/* Palette strip */
+.palette-strip {
+  display: flex;
+  height: 80px;
+  border-radius: 14px;
+  overflow: hidden;
+  box-shadow: 0 4px 24px rgba(0,0,0,0.3);
+  margin-bottom: 10px;
+}
+.palette-strip-item {
+  flex: 1;
+  cursor: pointer;
+  position: relative;
+  transition: flex 0.2s;
+}
+.palette-strip-item:hover { flex: 1.5; }
+.palette-strip-item:hover .swatch-hex {
+  opacity: 1;
+}
+.swatch-hex {
+  position: absolute;
+  bottom: 8px;
+  left: 50%;
+  transform: translateX(-50%);
+  font-family: var(--mono);
+  font-size: 0.6rem;
+  font-weight: 500;
+  color: rgba(255,255,255,0.85);
+  text-shadow: 0 1px 3px rgba(0,0,0,0.5);
+  opacity: 0;
+  transition: opacity 0.15s;
+  white-space: nowrap;
+}
+
+/* Palette list */
+.palette-list { display: flex; flex-direction: column; gap: 8px; }
+.palette-row {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  padding: 10px 12px;
+  background: var(--panel);
+  border-radius: 10px;
+  border: 1px solid var(--border);
+  transition: border-color 0.15s;
+}
+.palette-row:hover { border-color: var(--border); }
+.palette-swatch {
+  width: 32px; height: 32px;
+  border-radius: 7px;
+  flex-shrink: 0;
+  cursor: pointer;
+  border: 1px solid rgba(255,255,255,0.06);
+  transition: transform 0.15s;
+}
+.palette-swatch:hover { transform: scale(1.1); }
+.palette-info { flex: 1; min-width: 0; }
+.palette-hex {
+  font-family: var(--mono);
+  font-size: 0.82rem;
+  color: var(--white);
+  font-weight: 500;
+}
+.palette-name {
+  font-size: 0.68rem;
+  color: var(--gray);
+  margin-top: 1px;
+}
+.palette-copy-row { display: flex; gap: 5px; }
+.mini-copy {
+  padding: 4px 8px;
+  border-radius: 5px;
+  border: 1px solid var(--border);
+  background: none;
+  color: var(--gray);
+  font-family: var(--mono);
+  font-size: 0.62rem;
+  cursor: pointer;
+  transition: all 0.12s;
+}
+.mini-copy:hover { border-color: var(--accent); color: var(--accent-light); }
+
+/* Export */
+.export-row {
+  display: flex;
+  gap: 8px;
+  padding-top: 8px;
+  border-top: 1px solid var(--border);
+}
+.export-btn {
+  flex: 1;
+  padding: 10px;
+  border-radius: 9px;
+  border: 1px solid var(--border);
+  background: var(--panel);
+  color: var(--gray);
+  font-family: var(--font);
+  font-size: 0.75rem;
+  font-weight: 600;
+  cursor: pointer;
+  transition: all 0.15s;
+}
+.export-btn:hover { border-color: var(--accent); color: var(--accent-light); background: rgba(74,124,89,0.08); }
+
+/* Toast */
+.toast {
+  position: fixed;
+  bottom: 24px;
+  left: 50%;
+  transform: translateX(-50%) translateY(80px);
+  background: var(--panel);
+  border: 1px solid var(--border);
+  border-radius: 10px;
+  padding: 10px 18px;
+  font-size: 0.78rem;
+  font-weight: 600;
+  color: var(--accent-light);
+  box-shadow: 0 8px 32px rgba(0,0,0,0.4);
+  transition: transform 0.25s cubic-bezier(0.34,1.56,0.64,1);
+  z-index: 999;
+  pointer-events: none;
+}
+.toast.show { transform: translateX(-50%) translateY(0); }
+</style>
+</head>
+<body>
+
+<!-- TOPBAR -->
+<div class="topbar">
+  <div class="topbar-logo">Color <span>Picker</span></div>
+</div>
+
+<div class="main">
+
+  <!-- ── LEFT: PICKER ─────────────────────────────── -->
+  <div class="picker-panel">
+
+    <div>
+      <div class="section-title">Color Picker</div>
+      <div class="color-canvas-wrap" id="colorCanvasWrap">
+        <canvas id="colorCanvas"></canvas>
+        <div class="canvas-cursor" id="canvasCursor"></div>
+      </div>
+    </div>
+
+    <div class="hue-wrap" id="hueWrap">
+      <div class="hue-thumb" id="hueThumb"></div>
+    </div>
+
+    <div class="alpha-wrap" id="alphaWrap">
+      <div class="alpha-gradient" id="alphaGradient"></div>
+      <div class="alpha-thumb" id="alphaThumb"></div>
+    </div>
+
+    <!-- Preview + values -->
+    <div class="color-preview-row">
+      <div class="color-swatch-big" id="mainSwatch" onclick="copyColor('hex')" title="Click to copy HEX">
+        <span class="copy-hint">COPY</span>
+      </div>
+      <div class="color-values">
+        <div class="val-row" onclick="copyColor('hex')">
+          <span class="val-label">HEX</span>
+          <span class="val-text" id="val-hex">#4a7c59</span>
+          <span class="copy-icon">⎘</span>
+        </div>
+        <div class="val-row" onclick="copyColor('rgb')">
+          <span class="val-label">RGB</span>
+          <span class="val-text" id="val-rgb">rgb(74,124,89)</span>
+          <span class="copy-icon">⎘</span>
+        </div>
+        <div class="val-row" onclick="copyColor('hsl')">
+          <span class="val-label">HSL</span>
+          <span class="val-text" id="val-hsl">hsl(139,25%,39%)</span>
+          <span class="copy-icon">⎘</span>
+        </div>
+        <div class="val-row" onclick="copyColor('css')">
+          <span class="val-label">CSS</span>
+          <span class="val-text" id="val-css">rgba(74,124,89,1)</span>
+          <span class="copy-icon">⎘</span>
+        </div>
+      </div>
+    </div>
+
+    <!-- Add to palette btn -->
+    <button onclick="addToPalette()" style="width:100%;padding:10px;background:var(--accent);border:none;border-radius:9px;font-family:var(--font);font-size:0.82rem;font-weight:700;color:#fff;cursor:pointer;transition:background 0.15s" onmouseover="this.style.background='#3d6b4a'" onmouseout="this.style.background='var(--accent)'">
+      + Add to Palette
+    </button>
+
+    <!-- Saved -->
+    <div>
+      <div class="section-title">Saved Colors</div>
+      <div class="saved-grid" id="savedGrid"></div>
+    </div>
+
+    <!-- From image -->
+    <div>
+      <div class="section-title">Pick from Image</div>
+      <label style="display:block;padding:10px;border:1.5px dashed var(--border);border-radius:9px;text-align:center;cursor:pointer;font-size:0.78rem;color:var(--gray);transition:all 0.15s" onmouseover="this.style.borderColor='var(--accent)';this.style.color='var(--accent-light)'" onmouseout="this.style.borderColor='var(--border)';this.style.color='var(--gray)'">
+        🖼 Upload image to pick colors
+        <input type="file" accept="image/*" style="display:none" onchange="loadImagePicker(this)"/>
+      </label>
+      <canvas id="imgPickerCanvas" style="display:none;width:100%;border-radius:8px;margin-top:8px;cursor:crosshair"></canvas>
+    </div>
+
+  </div>
+
+  <!-- ── RIGHT: PALETTE ───────────────────────────── -->
+  <div class="palette-panel">
+
+    <div>
+      <div class="palette-header">
+        <div class="section-title" style="margin-bottom:0">Generate Palette</div>
+        <div class="gen-btns">
+          <button class="gen-btn active" id="gen-complementary" onclick="generatePalette('complementary')">Complementary</button>
+          <button class="gen-btn" id="gen-analogous" onclick="generatePalette('analogous')">Analogous</button>
+          <button class="gen-btn" id="gen-triadic" onclick="generatePalette('triadic')">Triadic</button>
+          <button class="gen-btn" id="gen-shades" onclick="generatePalette('shades')">Shades</button>
+        </div>
+      </div>
+    </div>
+
+    <!-- Strip -->
+    <div class="palette-strip" id="paletteStrip"></div>
+
+    <!-- List -->
+    <div class="palette-list" id="paletteList"></div>
+
+    <!-- Export -->
+    <div class="export-row">
+      <button class="export-btn" onclick="exportCSS()">Export CSS</button>
+      <button class="export-btn" onclick="exportJSON()">Export JSON</button>
+      <button class="export-btn" onclick="exportSVG()">Export SVG</button>
+    </div>
+
+  </div>
+</div>
+
+<!-- Toast -->
+<div class="toast" id="toast">Copied!</div>
+
+<script>
+// ============================================================
+// STATE
+// ============================================================
+let hue = 139, sat = 0.40, val = 0.49, alpha = 1;
+let palette = [];
+let savedColors = JSON.parse(localStorage.getItem('qcolor_saved') || '[]');
+let currentPaletteType = 'complementary';
+let isDraggingCanvas = false, isDraggingHue = false, isDraggingAlpha = false;
+
+// ============================================================
+// INIT
+// ============================================================
+window.addEventListener('DOMContentLoaded', () => {
+  initCanvas();
+  initHueSlider();
+  initAlphaSlider();
+  renderSaved();
+  updateAll();
+  generatePalette('complementary');
+});
+
+// ============================================================
+// CANVAS (Saturation/Value picker)
+// ============================================================
+function initCanvas() {
+  const wrap = document.getElementById('colorCanvasWrap');
+  const canvas = document.getElementById('colorCanvas');
+  canvas.width = wrap.offsetWidth || 280;
+  canvas.height = Math.round(canvas.width * 0.75);
+  drawCanvas();
+
+  canvas.addEventListener('mousedown', e => { isDraggingCanvas = true; pickFromCanvas(e); });
+  canvas.addEventListener('mousemove', e => { if (isDraggingCanvas) pickFromCanvas(e); });
+  window.addEventListener('mouseup', () => { isDraggingCanvas = false; isDraggingHue = false; isDraggingAlpha = false; });
+
+  canvas.addEventListener('touchstart', e => { isDraggingCanvas = true; pickFromCanvas(e.touches[0]); e.preventDefault(); }, {passive:false});
+  canvas.addEventListener('touchmove', e => { if (isDraggingCanvas) pickFromCanvas(e.touches[0]); e.preventDefault(); }, {passive:false});
+}
+
+function drawCanvas() {
+  const canvas = document.getElementById('colorCanvas');
+  const ctx = canvas.getContext('2d');
+  const W = canvas.width, H = canvas.height;
+
+  // White → hue gradient (left to right)
+  const hueRgb = hsvToRgb(hue, 1, 1);
+  const gradH = ctx.createLinearGradient(0, 0, W, 0);
+  gradH.addColorStop(0, '#fff');
+  gradH.addColorStop(1, `rgb(${hueRgb.r},${hueRgb.g},${hueRgb.b})`);
+  ctx.fillStyle = gradH;
+  ctx.fillRect(0, 0, W, H);
+
+  // Transparent → black gradient (top to bottom)
+  const gradV = ctx.createLinearGradient(0, 0, 0, H);
+  gradV.addColorStop(0, 'rgba(0,0,0,0)');
+  gradV.addColorStop(1, 'rgba(0,0,0,1)');
+  ctx.fillStyle = gradV;
+  ctx.fillRect(0, 0, W, H);
+
+  // Update cursor
+  const cx = sat * W;
+  const cy = (1 - val) * H;
+  const cursor = document.getElementById('canvasCursor');
+  cursor.style.left = cx + 'px';
+  cursor.style.top = cy + 'px';
+}
+
+function pickFromCanvas(e) {
+  const canvas = document.getElementById('colorCanvas');
+  const rect = canvas.getBoundingClientRect();
+  const x = Math.max(0, Math.min(canvas.width, (e.clientX - rect.left) * (canvas.width / rect.width)));
+  const y = Math.max(0, Math.min(canvas.height, (e.clientY - rect.top) * (canvas.height / rect.height)));
+  sat = x / canvas.width;
+  val = 1 - y / canvas.height;
+  drawCanvas();
+  updateAll();
+}
+
+// ============================================================
+// HUE SLIDER
+// ============================================================
+function initHueSlider() {
+  const wrap = document.getElementById('hueWrap');
+  wrap.addEventListener('mousedown', e => { isDraggingHue = true; pickHue(e); });
+  wrap.addEventListener('mousemove', e => { if (isDraggingHue) pickHue(e); });
+  wrap.addEventListener('touchstart', e => { isDraggingHue = true; pickHue(e.touches[0]); e.preventDefault(); }, {passive:false});
+  wrap.addEventListener('touchmove', e => { if (isDraggingHue) pickHue(e.touches[0]); e.preventDefault(); }, {passive:false});
+}
+
+function pickHue(e) {
+  const wrap = document.getElementById('hueWrap');
+  const rect = wrap.getBoundingClientRect();
+  const pct = Math.max(0, Math.min(1, (e.clientX - rect.left) / rect.width));
+  hue = Math.round(pct * 360);
+  document.getElementById('hueThumb').style.left = (pct * 100) + '%';
+  drawCanvas();
+  updateAll();
+}
+
+// ============================================================
+// ALPHA SLIDER
+// ============================================================
+function initAlphaSlider() {
+  const wrap = document.getElementById('alphaWrap');
+  wrap.addEventListener('mousedown', e => { isDraggingAlpha = true; pickAlpha(e); });
+  wrap.addEventListener('mousemove', e => { if (isDraggingAlpha) pickAlpha(e); });
+  wrap.addEventListener('touchstart', e => { isDraggingAlpha = true; pickAlpha(e.touches[0]); e.preventDefault(); }, {passive:false});
+  wrap.addEventListener('touchmove', e => { if (isDraggingAlpha) pickAlpha(e.touches[0]); e.preventDefault(); }, {passive:false});
+  updateAlphaSlider();
+}
+
+function pickAlpha(e) {
+  const wrap = document.getElementById('alphaWrap');
+  const rect = wrap.getBoundingClientRect();
+  alpha = Math.max(0, Math.min(1, (e.clientX - rect.left) / rect.width));
+  document.getElementById('alphaThumb').style.left = (alpha * 100) + '%';
+  updateAll();
+}
+
+function updateAlphaSlider() {
+  const rgb = currentRgb();
+  document.getElementById('alphaGradient').style.background =
+    `linear-gradient(to right, rgba(${rgb.r},${rgb.g},${rgb.b},0), rgb(${rgb.r},${rgb.g},${rgb.b}))`;
+  document.getElementById('alphaThumb').style.left = (alpha * 100) + '%';
+  document.getElementById('alphaThumb').style.background = `rgba(${rgb.r},${rgb.g},${rgb.b},${alpha})`;
+}
+
+// ============================================================
+// UPDATE ALL
+// ============================================================
+function updateAll() {
+  const rgb = currentRgb();
+  const hex = rgbToHex(rgb.r, rgb.g, rgb.b);
+  const hsl = rgbToHsl(rgb.r, rgb.g, rgb.b);
+
+  document.getElementById('mainSwatch').style.background = `rgba(${rgb.r},${rgb.g},${rgb.b},${alpha})`;
+  document.getElementById('val-hex').textContent = hex;
+  document.getElementById('val-rgb').textContent = `rgb(${rgb.r}, ${rgb.g}, ${rgb.b})`;
+  document.getElementById('val-hsl').textContent = `hsl(${hsl.h}, ${hsl.s}%, ${hsl.l}%)`;
+  document.getElementById('val-css').textContent = `rgba(${rgb.r}, ${rgb.g}, ${rgb.b}, ${alpha.toFixed(2)})`;
+
+  updateAlphaSlider();
+  document.getElementById('hueThumb').style.left = (hue / 360 * 100) + '%';
+  document.getElementById('hueThumb').style.background = `hsl(${hue}, 100%, 50%)`;
+
+  generatePalette(currentPaletteType, false);
+}
+
+function currentRgb() { return hsvToRgb(hue, sat, val); }
+
+// ============================================================
+// PALETTE GENERATION
+// ============================================================
+function generatePalette(type, rerender = true) {
+  currentPaletteType = type;
+  document.querySelectorAll('.gen-btn').forEach(b => b.classList.toggle('active', b.id === 'gen-' + type));
+
+  const colors = [];
+
+  if (type === 'complementary') {
+    colors.push(
+      { h: hue, s: sat, v: val },
+      { h: hue, s: sat * 0.5, v: Math.min(1, val * 1.3) },
+      { h: hue, s: sat * 0.3, v: Math.min(1, val * 1.6) },
+      { h: (hue + 180) % 360, s: sat, v: val },
+      { h: (hue + 180) % 360, s: sat * 0.6, v: Math.min(1, val * 1.2) },
+    );
+  } else if (type === 'analogous') {
+    [-40, -20, 0, 20, 40].forEach(offset => {
+      colors.push({ h: (hue + offset + 360) % 360, s: sat, v: val });
+    });
+  } else if (type === 'triadic') {
+    [0, 120, 240].forEach(offset => {
+      const h = (hue + offset) % 360;
+      colors.push({ h, s: sat, v: val });
+      colors.push({ h, s: sat * 0.5, v: Math.min(1, val * 1.3) });
+    });
+    colors.splice(5);
+  } else if (type === 'shades') {
+    [0.2, 0.35, 0.5, 0.65, 0.85].forEach(v => {
+      colors.push({ h: hue, s: sat, v });
+    });
+  }
+
+  palette = colors.map(c => {
+    const rgb = hsvToRgb(c.h, c.s, c.v);
+    const hex = rgbToHex(rgb.r, rgb.g, rgb.b);
+    return { h: c.h, s: c.s, v: c.v, rgb, hex };
+  });
+
+  renderPalette();
+}
+
+function renderPalette() {
+  // Strip
+  const strip = document.getElementById('paletteStrip');
+  strip.innerHTML = palette.map(c => `
+    <div class="palette-strip-item" style="background:${c.hex}" onclick="setColorFromHex('${c.hex}')" title="${c.hex}">
+      <span class="swatch-hex">${c.hex}</span>
+    </div>
+  `).join('');
+
+  // List
+  const list = document.getElementById('paletteList');
+  list.innerHTML = palette.map((c, i) => {
+    const hsl = rgbToHsl(c.rgb.r, c.rgb.g, c.rgb.b);
+    const name = colorName(c.h, c.s, c.v);
+    return `
+      <div class="palette-row">
+        <div class="palette-swatch" style="background:${c.hex}" onclick="setColorFromHex('${c.hex}')"></div>
+        <div class="palette-info">
+          <div class="palette-hex">${c.hex}</div>
+          <div class="palette-name">${name}</div>
+        </div>
+        <div class="palette-copy-row">
+          <button class="mini-copy" onclick="copyText('${c.hex}')">HEX</button>
+          <button class="mini-copy" onclick="copyText('rgb(${c.rgb.r},${c.rgb.g},${c.rgb.b})')">RGB</button>
+          <button class="mini-copy" onclick="copyText('hsl(${hsl.h},${hsl.s}%,${hsl.l}%)')">HSL</button>
+        </div>
+      </div>
+    `;
+  }).join('');
+}
+
+function colorName(h, s, v) {
+  if (v < 0.15) return 'Near Black';
+  if (v > 0.95 && s < 0.08) return 'Near White';
+  if (s < 0.12) return 'Gray';
+  const names = ['Red','Orange','Yellow','Yellow-Green','Green','Teal','Cyan','Sky Blue','Blue','Indigo','Violet','Magenta','Rose'];
+  const idx = Math.round((h / 360) * (names.length - 1));
+  const lightness = v < 0.4 ? 'Dark ' : v > 0.8 ? 'Light ' : '';
+  return lightness + names[Math.min(idx, names.length - 1)];
+}
+
+// ============================================================
+// SAVED COLORS
+// ============================================================
+function addToPalette() {
+  const rgb = currentRgb();
+  const hex = rgbToHex(rgb.r, rgb.g, rgb.b);
+  if (!savedColors.includes(hex)) {
+    savedColors.unshift(hex);
+    if (savedColors.length > 24) savedColors.pop();
+    localStorage.setItem('qcolor_saved', JSON.stringify(savedColors));
+    renderSaved();
+    showToast('Added to saved colors');
+  }
+}
+
+function renderSaved() {
+  const grid = document.getElementById('savedGrid');
+  const slots = 16;
+  let html = savedColors.slice(0, slots).map(hex => `
+    <div class="saved-swatch" style="background:${hex}" title="${hex}" onclick="setColorFromHex('${hex}')"></div>
+  `).join('');
+  const empty = slots - Math.min(savedColors.length, slots);
+  for (let i = 0; i < Math.min(empty, 4); i++) {
+    html += `<div class="saved-swatch empty" onclick="document.querySelector('.color-swatch-big').click()">+</div>`;
+  }
+  grid.innerHTML = html;
+}
+
+// ============================================================
+// SET COLOR FROM HEX
+// ============================================================
+function setColorFromHex(hex) {
+  const rgb = hexToRgb(hex);
+  if (!rgb) return;
+  const hsv = rgbToHsv(rgb.r, rgb.g, rgb.b);
+  hue = hsv.h; sat = hsv.s; val = hsv.v;
+  drawCanvas();
+  updateAll();
+}
+
+// ============================================================
+// IMAGE PICKER
+// ============================================================
+function loadImagePicker(input) {
+  const file = input.files[0];
+  if (!file) return;
+  const reader = new FileReader();
+  reader.onload = e => {
+    const img = new Image();
+    img.onload = () => {
+      const canvas = document.getElementById('imgPickerCanvas');
+      canvas.style.display = 'block';
+      canvas.width = img.naturalWidth;
+      canvas.height = img.naturalHeight;
+      const ctx = canvas.getContext('2d');
+      ctx.drawImage(img, 0, 0);
+      canvas.onclick = ev => {
+        const rect = canvas.getBoundingClientRect();
+        const x = Math.round((ev.clientX - rect.left) * (canvas.width / rect.width));
+        const y = Math.round((ev.clientY - rect.top) * (canvas.height / rect.height));
+        const px = ctx.getImageData(x, y, 1, 1).data;
+        const hsv = rgbToHsv(px[0], px[1], px[2]);
+        hue = hsv.h; sat = hsv.s; val = hsv.v;
+        drawCanvas();
+        updateAll();
+        showToast('Color picked!');
+      };
+    };
+    img.src = e.target.result;
+  };
+  reader.readAsDataURL(file);
+}
+
+// ============================================================
+// COPY
+// ============================================================
+function copyColor(fmt) {
+  const texts = {
+    hex: document.getElementById('val-hex').textContent,
+    rgb: document.getElementById('val-rgb').textContent,
+    hsl: document.getElementById('val-hsl').textContent,
+    css: document.getElementById('val-css').textContent,
+  };
+  copyText(texts[fmt] || texts.hex);
+}
+
+function copyText(text) {
+  navigator.clipboard.writeText(text).then(() => showToast('Copied: ' + text));
+}
+
+// ============================================================
+// EXPORT
+// ============================================================
+function exportCSS() {
+  const lines = palette.map((c, i) => `  --color-${i+1}: ${c.hex};`).join('\n');
+  const css = `:root {\n${lines}\n}`;
+  downloadText(css, 'palette.css');
+}
+
+function exportJSON() {
+  const data = palette.map((c, i) => ({
+    name: `color-${i+1}`,
+    hex: c.hex,
+    rgb: `rgb(${c.rgb.r},${c.rgb.g},${c.rgb.b})`,
+  }));
+  downloadText(JSON.stringify(data, null, 2), 'palette.json');
+}
+
+function exportSVG() {
+  const w = 80, h = 80;
+  const rects = palette.map((c, i) => `<rect x="${i*w}" y="0" width="${w}" height="${h}" fill="${c.hex}"/>`).join('');
+  const svg = `<svg xmlns="http://www.w3.org/2000/svg" width="${palette.length*w}" height="${h}">${rects}</svg>`;
+  downloadText(svg, 'palette.svg');
+}
+
+function downloadText(text, filename) {
+  const a = document.createElement('a');
+  a.href = URL.createObjectURL(new Blob([text], {type:'text/plain'}));
+  a.download = filename;
+  a.click();
+  showToast('Exported ' + filename);
+}
+
+// ============================================================
+// TOAST
+// ============================================================
+let toastTimer;
+function showToast(msg) {
+  const t = document.getElementById('toast');
+  t.textContent = msg;
+  t.classList.add('show');
+  clearTimeout(toastTimer);
+  toastTimer = setTimeout(() => t.classList.remove('show'), 2000);
+}
+
+// ============================================================
+// COLOR MATH
+// ============================================================
+function hsvToRgb(h, s, v) {
+  let r, g, b;
+  const i = Math.floor(h / 60) % 6;
+  const f = h / 60 - Math.floor(h / 60);
+  const p = v * (1 - s), q = v * (1 - f * s), t = v * (1 - (1 - f) * s);
+  switch(i) {
+    case 0: r=v;g=t;b=p; break; case 1: r=q;g=v;b=p; break;
+    case 2: r=p;g=v;b=t; break; case 3: r=p;g=q;b=v; break;
+    case 4: r=t;g=p;b=v; break; case 5: r=v;g=p;b=q; break;
+  }
+  return { r: Math.round(r*255), g: Math.round(g*255), b: Math.round(b*255) };
+}
+
+function rgbToHsv(r, g, b) {
+  r/=255; g/=255; b/=255;
+  const max=Math.max(r,g,b), min=Math.min(r,g,b), d=max-min;
+  let h=0, s=max===0?0:d/max, v=max;
+  if(d!==0){
+    if(max===r) h=((g-b)/d+6)%6;
+    else if(max===g) h=(b-r)/d+2;
+    else h=(r-g)/d+4;
+    h*=60;
+  }
+  return {h:Math.round(h), s, v};
+}
+
+function rgbToHex(r,g,b) {
+  return '#'+[r,g,b].map(x=>x.toString(16).padStart(2,'0')).join('');
+}
+
+function hexToRgb(hex) {
+  const m = hex.replace('#','').match(/.{2}/g);
+  if(!m) return null;
+  return {r:parseInt(m[0],16), g:parseInt(m[1],16), b:parseInt(m[2],16)};
+}
+
+function rgbToHsl(r,g,b) {
+  r/=255;g/=255;b/=255;
+  const max=Math.max(r,g,b),min=Math.min(r,g,b);
+  let h,s,l=(max+min)/2;
+  if(max===min){h=s=0;}
+  else{
+    const d=max-min;
+    s=l>0.5?d/(2-max-min):d/(max+min);
+    switch(max){
+      case r:h=((g-b)/d+(g<b?6:0))/6;break;
+      case g:h=((b-r)/d+2)/6;break;
+      case b:h=((r-g)/d+4)/6;break;
+    }
+  }
+  return {h:Math.round(h*360),s:Math.round(s*100),l:Math.round(l*100)};
+}
+</script>
+</body>
+</html>

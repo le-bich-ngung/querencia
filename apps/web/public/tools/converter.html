@@ -1,0 +1,788 @@
+<!DOCTYPE html>
+<html lang="vi">
+<head>
+  <meta charset="UTF-8"/>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <meta name="description" content="Querencia Converter — Chuyển đổi PDF ↔ JPG miễn phí"/>
+  <title>Converter · Querencia Tools</title>
+
+  <link rel="shortcut icon" type="image/svg+xml" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 120 120'><circle cx='55' cy='55' r='38' fill='none' stroke='%234a7c59' stroke-width='7' stroke-linecap='round'/><line x1='81' y1='79' x2='98' y2='98' stroke='%234a7c59' stroke-width='7' stroke-linecap='round'/><polyline points='20,55 28,38 35,68 43,32 51,60 58,43 66,70 74,48 90,55' fill='none' stroke='%234a7c59' stroke-width='3' stroke-linecap='round' stroke-linejoin='round'/></svg>"/>
+  <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:ital,wght@0,300;0,400;0,500;0,600;0,700;1,400&display=swap" rel="stylesheet"/>
+
+  <!-- pdf.js for PDF→JPG -->
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/pdf.js/3.11.174/pdf.min.js"></script>
+  <!-- pdf-lib for JPG→PDF -->
+  <script src="https://unpkg.com/pdf-lib@1.17.1/dist/pdf-lib.min.js"></script>
+  <!-- JSZip for downloading multiple files -->
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/jszip/3.10.1/jszip.min.js"></script>
+
+  <style>
+    :root {
+      --sage:#4a7c59; --sage-light:#6fa882; --sage-pale:#ddeee3;
+      --sage-dark:#2f5c3e; --black:#111; --gray:#555;
+      --gray-light:#999; --border:#e0e0e0; --white:#fff;
+      --font-display:'Plus Jakarta Sans',sans-serif;
+      --font-body:'Plus Jakarta Sans',sans-serif;
+    }
+    *,*::before,*::after{box-sizing:border-box;margin:0;padding:0}
+    html{scroll-behavior:smooth}
+    body{font-family:var(--font-body);color:var(--black);background:var(--white);min-height:100vh}
+
+    @keyframes fadeUp{from{opacity:0;transform:translateY(14px)}to{opacity:1;transform:none}}
+    @keyframes spin{to{transform:rotate(360deg)}}
+    @keyframes pop{0%{transform:scale(0.9);opacity:0}60%{transform:scale(1.03)}100%{transform:scale(1);opacity:1}}
+
+    /* NAV */
+    nav{position:sticky;top:0;z-index:100;display:flex;align-items:center;justify-content:space-between;padding:0 32px;height:64px;background:rgba(255,255,255,0.94);backdrop-filter:blur(12px);border-bottom:1px solid var(--border)}
+    .nav-logo{display:flex;flex-direction:column;align-items:flex-start;text-decoration:none;gap:1px}
+    .nav-logo-inner{display:flex;align-items:center}
+    .nav-tagline{font-size:0.65rem;font-weight:600;letter-spacing:0.06em;color:var(--sage)}
+    .nav-back{display:flex;align-items:center;gap:6px;font-size:0.82rem;color:var(--gray);text-decoration:none;padding:6px 14px;border:1.5px solid var(--border);border-radius:20px;transition:all 0.2s}
+    .nav-back:hover{border-color:var(--sage);color:var(--sage)}
+
+    /* HEADER */
+    .page-header{padding:64px 64px 48px;border-bottom:1px solid var(--border);animation:fadeUp 0.6s 0.1s both}
+    .page-label{font-size:0.7rem;letter-spacing:0.2em;text-transform:uppercase;color:var(--sage);font-weight:500;margin-bottom:12px}
+    .page-title{font-family:var(--font-display);font-size:clamp(2rem,4vw,3rem);font-weight:700;letter-spacing:-0.5px;line-height:1.15}
+    .page-title em{font-style:italic;color:var(--sage)}
+    .page-desc{margin-top:14px;font-size:0.92rem;color:var(--gray);max-width:520px;line-height:1.7}
+    .badge-free{display:inline-block;font-size:0.65rem;font-weight:600;letter-spacing:0.1em;text-transform:uppercase;padding:3px 8px;border-radius:4px;margin-left:12px;background:var(--sage-pale);color:var(--sage-dark);vertical-align:middle}
+
+    /* TABS */
+    .tab-bar{display:flex;border-bottom:1px solid var(--border);padding:0 64px}
+    .tab-btn{padding:18px 0;margin-right:32px;font-size:0.88rem;font-weight:600;color:var(--gray-light);background:none;border:none;border-bottom:2px solid transparent;cursor:pointer;transition:all 0.2s;margin-bottom:-1px;display:flex;align-items:center;gap:8px}
+    .tab-btn.active{color:var(--sage);border-bottom-color:var(--sage)}
+    .tab-btn:hover{color:var(--black)}
+    .tab-badge{font-size:0.6rem;background:var(--sage-pale);color:var(--sage-dark);padding:2px 7px;border-radius:10px;font-weight:600;letter-spacing:0.06em}
+
+    /* CONTENT */
+    .tab-content{display:none;animation:fadeUp 0.3s both}
+    .tab-content.active{display:block}
+
+    /* MAIN GRID */
+    .tool-wrap{display:grid;grid-template-columns:1fr 1.2fr;min-height:calc(100vh - 300px)}
+    .panel-left{padding:48px 48px 48px 64px;border-right:1px solid var(--border)}
+    .panel-right{padding:48px 64px 48px 48px;background:#fafaf9}
+    .panel-title{font-size:0.7rem;letter-spacing:0.15em;text-transform:uppercase;color:var(--gray-light);font-weight:500;margin-bottom:20px}
+
+    /* DROP ZONE */
+    .drop-zone{border:2px dashed var(--border);border-radius:16px;padding:48px 32px;text-align:center;cursor:pointer;transition:all 0.25s;position:relative;background:var(--white)}
+    .drop-zone:hover,.drop-zone.over{border-color:var(--sage);background:var(--sage-pale)}
+    .drop-zone input{position:absolute;inset:0;opacity:0;cursor:pointer;width:100%;height:100%}
+    .drop-icon{font-size:2.6rem;margin-bottom:14px;opacity:0.5;transition:transform 0.2s}
+    .drop-zone:hover .drop-icon{transform:scale(1.07);opacity:0.75}
+    .drop-zone h3{font-family:var(--font-display);font-size:1rem;font-weight:600;margin-bottom:6px}
+    .drop-zone p{font-size:0.8rem;color:var(--gray-light);line-height:1.6}
+    .browse{color:var(--sage);text-decoration:underline;font-weight:500}
+
+    /* OPTIONS */
+    .options-wrap{margin-top:28px;display:flex;flex-direction:column;gap:16px}
+    .opt-group{display:flex;flex-direction:column;gap:8px}
+    .opt-label{font-size:0.72rem;letter-spacing:0.12em;text-transform:uppercase;color:var(--gray);font-weight:500}
+    .opt-row{display:flex;gap:8px;flex-wrap:wrap}
+    .opt-btn{padding:6px 14px;border:1.5px solid var(--border);border-radius:20px;font-size:0.78rem;font-weight:500;cursor:pointer;background:none;color:var(--gray);transition:all 0.2s;font-family:var(--font-body)}
+    .opt-btn:hover{border-color:var(--sage);color:var(--sage)}
+    .opt-btn.active{background:var(--sage);color:#fff;border-color:var(--sage)}
+
+    /* Quality slider */
+    .slider-row{display:flex;align-items:center;gap:12px}
+    input[type=range]{flex:1;accent-color:var(--sage)}
+    .slider-val{font-size:0.82rem;font-weight:600;color:var(--sage);min-width:36px;text-align:right}
+
+    /* BUTTONS */
+    .btn-primary{background:var(--sage);color:#fff;border:none;padding:13px 28px;border-radius:30px;font-family:var(--font-body);font-size:0.9rem;font-weight:600;cursor:pointer;transition:background 0.2s,transform 0.15s;width:100%;margin-top:24px}
+    .btn-primary:hover{background:var(--sage-dark);transform:translateY(-1px)}
+    .btn-primary:disabled{background:var(--border);color:var(--gray-light);cursor:not-allowed;transform:none}
+    .btn-outline{background:transparent;color:var(--black);border:1.5px solid var(--border);padding:8px 18px;border-radius:30px;font-family:var(--font-body);font-size:0.8rem;font-weight:500;cursor:pointer;transition:all 0.2s}
+    .btn-outline:hover{border-color:var(--sage);color:var(--sage)}
+
+    /* PROGRESS */
+    .progress-wrap{display:none;flex-direction:column;align-items:center;gap:14px;padding:40px;text-align:center}
+    .spinner{width:40px;height:40px;border:3px solid var(--sage-pale);border-top-color:var(--sage);border-radius:50%;animation:spin 0.85s linear infinite}
+    .progress-text{font-size:0.85rem;color:var(--gray)}
+    .progress-bar-wrap{width:220px;height:4px;background:var(--sage-pale);border-radius:4px;overflow:hidden}
+    .progress-bar{height:100%;background:var(--sage);border-radius:4px;width:0%;transition:width 0.3s}
+
+    /* EMPTY STATE */
+    .result-empty{display:flex;flex-direction:column;align-items:center;justify-content:center;min-height:320px;text-align:center;color:var(--gray-light)}
+    .result-empty-icon{font-size:2.8rem;margin-bottom:14px;opacity:0.3}
+    .result-empty p{font-size:0.85rem;line-height:1.7;max-width:240px}
+
+    /* RESULT GRID (images) */
+    .result-box{display:none}
+    .result-header{display:flex;align-items:center;justify-content:space-between;margin-bottom:16px}
+    .result-stats{display:flex;gap:10px;flex-wrap:wrap}
+    .stat-chip{font-size:0.72rem;color:var(--gray);background:var(--sage-pale);padding:4px 10px;border-radius:20px;font-weight:500}
+
+    .img-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(140px,1fr));gap:10px;max-height:440px;overflow-y:auto;padding:2px}
+    .img-thumb{position:relative;border-radius:8px;overflow:hidden;border:1.5px solid var(--border);cursor:pointer;transition:all 0.2s;background:#f5f5f5}
+    .img-thumb:hover{border-color:var(--sage);transform:translateY(-2px);box-shadow:0 4px 16px rgba(74,124,89,0.15)}
+    .img-thumb img{width:100%;aspect-ratio:3/4;object-fit:cover;display:block}
+    .img-thumb-label{padding:6px 8px;font-size:0.68rem;color:var(--gray);font-weight:500;background:var(--white);border-top:1px solid var(--border)}
+    .img-thumb-dl{position:absolute;top:6px;right:6px;background:rgba(255,255,255,0.9);border:none;border-radius:6px;padding:4px 7px;font-size:0.7rem;cursor:pointer;opacity:0;transition:opacity 0.2s;font-family:var(--font-body)}
+    .img-thumb:hover .img-thumb-dl{opacity:1}
+
+    /* PDF result */
+    .pdf-result{display:none;flex-direction:column;gap:12px}
+    .pdf-preview{border:1.5px solid var(--border);border-radius:12px;overflow:hidden;background:#f5f5f5;text-align:center;padding:32px;display:flex;flex-direction:column;align-items:center;gap:12px}
+    .pdf-icon{font-size:3.5rem}
+    .pdf-name{font-size:0.88rem;font-weight:600;color:var(--black)}
+    .pdf-meta{font-size:0.78rem;color:var(--gray-light)}
+
+    .dl-actions{display:flex;gap:10px;flex-wrap:wrap;margin-top:4px}
+
+    /* TIPS */
+    .tips-section{border-top:1px solid var(--border);display:grid;grid-template-columns:repeat(3,1fr);gap:1px;background:var(--border)}
+    .tip-card{background:var(--white);padding:32px}
+    .tip-icon{font-size:1.4rem;margin-bottom:12px}
+    .tip-card h4{font-family:var(--font-display);font-size:0.95rem;font-weight:600;margin-bottom:8px}
+    .tip-card p{font-size:0.82rem;color:var(--gray);line-height:1.65}
+
+    /* FOOTER */
+    footer{display:flex;align-items:center;justify-content:space-between;padding:24px 64px;border-top:1px solid var(--border);font-size:0.8rem;color:var(--gray-light)}
+
+    /* TOAST */
+    .toast{display:none;position:fixed;bottom:28px;left:50%;transform:translateX(-50%);background:var(--black);color:#fff;padding:10px 20px;border-radius:30px;font-size:0.82rem;font-weight:500;z-index:999;animation:fadeUp 0.3s both}
+
+    /* DARK */
+    body.dark{background:#0f0f0f;color:#eee}
+    body.dark nav{background:rgba(15,15,15,0.94);border-bottom-color:#222}
+    body.dark .drop-zone{background:#1a1a1a;border-color:#333}
+    body.dark .drop-zone:hover,.dark .drop-zone.over{background:#1a3328;border-color:var(--sage)}
+    body.dark .panel-right{background:#0a0a0a}
+    body.dark .img-thumb{border-color:#333;background:#222}
+    body.dark .img-thumb-label{background:#1a1a1a;border-top-color:#333;color:#aaa}
+    body.dark .pdf-preview{background:#1a1a1a;border-color:#333}
+    body.dark .pdf-name{color:#eee}
+    body.dark .tips-section{background:#222}
+    body.dark .tip-card{background:#0f0f0f}
+    body.dark footer{border-top-color:#222;background:#0f0f0f}
+    body.dark .nav-back{border-color:#333;color:#aaa}
+    body.dark .page-label{color:#7ecf9a}
+    body.dark .tab-btn.active{color:#7ecf9a;border-bottom-color:#7ecf9a}
+    body.dark .btn-outline{border-color:#333;color:#eee}
+
+    @media(max-width:900px){
+      .tool-wrap{grid-template-columns:1fr}
+      .panel-left{border-right:none;border-bottom:1px solid var(--border);padding:32px 24px}
+      .panel-right{padding:32px 24px;background:var(--white)}
+      .page-header,.tab-bar{padding-left:24px;padding-right:24px}
+      .tips-section{grid-template-columns:1fr}
+      footer{padding:20px 24px;flex-direction:column;gap:8px}
+      nav{padding:0 16px}
+      .img-grid{grid-template-columns:repeat(auto-fill,minmax(110px,1fr))}
+    }
+  </style>
+</head>
+<body>
+
+<!-- NAV -->
+<nav>
+  <a class="nav-logo" href="https://querencia.com.vn">
+    <div class="nav-logo-inner">
+      <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 120 120" width="28" height="28" style="position:relative;top:3px;margin-right:-3px;flex-shrink:0">
+        <defs><clipPath id="qClip"><circle cx="55" cy="55" r="32"/></clipPath></defs>
+        <circle cx="55" cy="55" r="38" fill="none" stroke="#4a7c59" stroke-width="7" stroke-linecap="round"/>
+        <line x1="81" y1="79" x2="98" y2="98" stroke="#4a7c59" stroke-width="7" stroke-linecap="round"/>
+        <polyline points="20,55 28,38 35,68 43,32 51,60 58,43 66,70 74,48 90,55" fill="none" stroke="#4a7c59" stroke-width="3" stroke-linecap="round" stroke-linejoin="round" clip-path="url(#qClip)"/>
+      </svg>
+      <span style="font-family:var(--font-display);font-weight:700;font-size:1.4rem"><span style="color:#111">ueren</span><span style="color:#4a7c59">cia</span></span>
+    </div>
+    <small class="nav-tagline">Tech and more</small>
+  </a>
+  <div style="display:flex;align-items:center;gap:12px">
+    <button onclick="toggleDark()" style="background:none;border:none;cursor:pointer;font-size:1.1rem;color:var(--gray-light);padding:4px 8px">◐</button>
+    <a class="nav-back" href="https://querencia.com.vn">← Về trang chủ</a>
+  </div>
+</nav>
+
+<!-- HEADER -->
+<div class="page-header">
+  <p class="page-label">Tools · Converter</p>
+  <h1 class="page-title">Chuyển đổi <em>PDF ↔ Ảnh</em> <span class="badge-free">Free</span></h1>
+  <p class="page-desc">Chuyển PDF thành ảnh JPG từng trang, hoặc gộp nhiều ảnh thành một file PDF — tất cả ngay trên trình duyệt, không upload lên server.</p>
+</div>
+
+<!-- TABS -->
+<div class="tab-bar">
+  <button class="tab-btn active" onclick="switchTab('pdf2img')">
+    PDF → Ảnh <span class="tab-badge">JPG · PNG · WEBP</span>
+  </button>
+  <button class="tab-btn" onclick="switchTab('img2pdf')">
+    Ảnh → PDF <span class="tab-badge">JPG · PNG · WEBP</span>
+  </button>
+</div>
+
+<!-- ══════════════════════════════
+     TAB 1: PDF → ẢNH
+════════════════════════════════ -->
+<div class="tab-content active" id="tab-pdf2img">
+  <div class="tool-wrap">
+
+    <!-- LEFT -->
+    <div class="panel-left">
+      <p class="panel-title">Chọn file PDF</p>
+
+      <div class="drop-zone" id="p2iDrop">
+        <input type="file" id="p2iInput" accept="application/pdf" onchange="loadPDF(this.files[0])"/>
+        <div class="drop-icon">📄</div>
+        <h3>Kéo thả file PDF vào đây</h3>
+        <p>hoặc <span class="browse">click để chọn</span></p>
+      </div>
+
+      <div id="p2iFileInfo" style="display:none;margin-top:14px;padding:12px 16px;border:1.5px solid var(--border);border-radius:10px;display:none;align-items:center;gap:10px">
+        <span style="font-size:1.4rem">📄</span>
+        <div style="flex:1;min-width:0">
+          <div style="font-size:0.83rem;font-weight:600;overflow:hidden;text-overflow:ellipsis;white-space:nowrap" id="p2iFileName">—</div>
+          <div style="font-size:0.72rem;color:var(--gray-light)" id="p2iFileMeta">—</div>
+        </div>
+        <button class="btn-outline" style="flex-shrink:0;font-size:0.72rem;padding:5px 12px" onclick="resetP2I()">✕</button>
+      </div>
+
+      <div class="options-wrap" id="p2iOptions" style="display:none">
+        <div class="opt-group">
+          <span class="opt-label">Định dạng xuất</span>
+          <div class="opt-row">
+            <button class="opt-btn active" onclick="setOpt(this,'p2iFormat','jpeg')">JPG</button>
+            <button class="opt-btn" onclick="setOpt(this,'p2iFormat','png')">PNG</button>
+            <button class="opt-btn" onclick="setOpt(this,'p2iFormat','webp')">WEBP</button>
+          </div>
+        </div>
+        <div class="opt-group">
+          <span class="opt-label">Chất lượng ảnh</span>
+          <div class="slider-row">
+            <input type="range" min="0.5" max="3" step="0.5" value="1.5" id="p2iScale"
+              oninput="document.getElementById('p2iScaleVal').textContent=(['Thấp','TB','Cao','Rất cao','Tối đa'][Math.round((this.value-0.5)/0.5)])"/>
+            <span class="slider-val" id="p2iScaleVal">Cao</span>
+          </div>
+        </div>
+        <div class="opt-group">
+          <span class="opt-label">Trang muốn xuất</span>
+          <div class="opt-row">
+            <button class="opt-btn active" onclick="setOpt(this,'p2iPages','all')">Tất cả</button>
+            <button class="opt-btn" onclick="setOpt(this,'p2iPages','range')">Khoảng trang</button>
+          </div>
+          <div id="p2iRangeInput" style="display:none;margin-top:10px;display:none">
+            <input type="text" id="p2iRange" placeholder="Ví dụ: 1,3,5-8" style="width:100%;padding:9px 12px;border:1.5px solid var(--border);border-radius:8px;font-family:var(--font-body);font-size:0.85rem;outline:none" onfocus="this.style.borderColor='var(--sage)'" onblur="this.style.borderColor='var(--border)'"/>
+            <p style="font-size:0.72rem;color:var(--gray-light);margin-top:5px">Dùng dấu phẩy và gạch ngang. Ví dụ: 1,3,5-8</p>
+          </div>
+        </div>
+      </div>
+
+      <button class="btn-primary" id="btnConvertP2I" onclick="convertP2I()" disabled>🖼 Chuyển sang ảnh</button>
+    </div>
+
+    <!-- RIGHT -->
+    <div class="panel-right">
+      <div id="p2iEmpty" class="result-empty">
+        <div class="result-empty-icon">🖼️</div>
+        <p>Tải file PDF lên để xem trước và xuất ảnh.</p>
+      </div>
+
+      <div class="progress-wrap" id="p2iProgress">
+        <div class="spinner"></div>
+        <p class="progress-text" id="p2iProgressText">Đang xử lý...</p>
+        <div class="progress-bar-wrap"><div class="progress-bar" id="p2iBar"></div></div>
+      </div>
+
+      <div class="result-box" id="p2iResult">
+        <div class="result-header">
+          <p class="panel-title" style="margin-bottom:0">Kết quả</p>
+          <div class="result-stats" id="p2iStats"></div>
+        </div>
+        <div class="img-grid" id="p2iGrid"></div>
+        <div class="dl-actions" style="margin-top:16px">
+          <button class="btn-primary" style="width:auto;padding:11px 24px;margin-top:0" onclick="downloadAllImages()">⬇ Tải tất cả (.zip)</button>
+          <button class="btn-outline" onclick="resetP2I()">Xóa</button>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- ══════════════════════════════
+     TAB 2: ẢNH → PDF
+════════════════════════════════ -->
+<div class="tab-content" id="tab-img2pdf">
+  <div class="tool-wrap">
+
+    <!-- LEFT -->
+    <div class="panel-left">
+      <p class="panel-title">Chọn ảnh (nhiều ảnh cùng lúc)</p>
+
+      <div class="drop-zone" id="i2pDrop">
+        <input type="file" id="i2pInput" accept="image/jpeg,image/png,image/webp" multiple onchange="addImages(this.files)"/>
+        <div class="drop-icon">🖼️</div>
+        <h3>Kéo thả ảnh vào đây</h3>
+        <p>hoặc <span class="browse">click để chọn</span><br/>Hỗ trợ JPG, PNG, WEBP</p>
+      </div>
+
+      <div id="i2pFileList" style="margin-top:16px;display:flex;flex-direction:column;gap:8px"></div>
+
+      <div class="options-wrap" id="i2pOptions" style="display:none">
+        <div class="opt-group">
+          <span class="opt-label">Kích cỡ trang</span>
+          <div class="opt-row">
+            <button class="opt-btn active" onclick="setOpt(this,'i2pSize','fit')">Vừa khít ảnh</button>
+            <button class="opt-btn" onclick="setOpt(this,'i2pSize','a4')">A4</button>
+            <button class="opt-btn" onclick="setOpt(this,'i2pSize','letter')">Letter</button>
+          </div>
+        </div>
+        <div class="opt-group">
+          <span class="opt-label">Chiều trang</span>
+          <div class="opt-row">
+            <button class="opt-btn active" onclick="setOpt(this,'i2pOrient','auto')">Tự động</button>
+            <button class="opt-btn" onclick="setOpt(this,'i2pOrient','portrait')">Dọc</button>
+            <button class="opt-btn" onclick="setOpt(this,'i2pOrient','landscape')">Ngang</button>
+          </div>
+        </div>
+        <div class="opt-group">
+          <span class="opt-label">Lề trang (px)</span>
+          <div class="opt-row">
+            <button class="opt-btn active" onclick="setOpt(this,'i2pMargin','0')">Không lề</button>
+            <button class="opt-btn" onclick="setOpt(this,'i2pMargin','20')">Nhỏ</button>
+            <button class="opt-btn" onclick="setOpt(this,'i2pMargin','40')">Vừa</button>
+          </div>
+        </div>
+      </div>
+
+      <button class="btn-primary" id="btnConvertI2P" onclick="convertI2P()" disabled>📄 Tạo file PDF</button>
+    </div>
+
+    <!-- RIGHT -->
+    <div class="panel-right">
+      <div id="i2pEmpty" class="result-empty">
+        <div class="result-empty-icon">📄</div>
+        <p>Thêm ảnh vào để xem trước thứ tự trước khi xuất PDF.</p>
+      </div>
+
+      <div class="progress-wrap" id="i2pProgress">
+        <div class="spinner"></div>
+        <p class="progress-text">Đang tạo PDF...</p>
+      </div>
+
+      <div class="pdf-result" id="i2pResult">
+        <p class="panel-title">Kết quả</p>
+        <div class="pdf-preview">
+          <div class="pdf-icon">📄</div>
+          <div class="pdf-name" id="i2pPdfName">output.pdf</div>
+          <div class="pdf-meta" id="i2pPdfMeta">—</div>
+        </div>
+        <div class="dl-actions">
+          <button class="btn-primary" style="width:auto;padding:11px 24px;margin-top:0" id="btnDlPdf">⬇ Tải về PDF</button>
+          <button class="btn-outline" onclick="resetI2P()">Xóa</button>
+        </div>
+      </div>
+
+      <!-- Image order preview -->
+      <div id="i2pPreviewList" style="display:none;margin-top:20px">
+        <p class="panel-title">Thứ tự ảnh trong PDF</p>
+        <div id="i2pThumbRow" style="display:flex;flex-wrap:wrap;gap:10px"></div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- TIPS -->
+<div class="tips-section">
+  <div class="tip-card">
+    <div class="tip-icon">🔒</div>
+    <h4>Hoàn toàn riêng tư</h4>
+    <p>File của bạn không rời khỏi máy. Mọi xử lý diễn ra ngay trong trình duyệt — không server, không lưu trữ.</p>
+  </div>
+  <div class="tip-card">
+    <div class="tip-icon">⚡</div>
+    <h4>Nhanh và không giới hạn</h4>
+    <p>Không cần đăng ký, không giới hạn số trang hay số file. Chuyển đổi bao nhiêu tùy ý.</p>
+  </div>
+  <div class="tip-card">
+    <div class="tip-icon">🗜️</div>
+    <h4>Mẹo chất lượng tốt</h4>
+    <p>Chọn scale "Rất cao" cho PDF văn bản sắc nét. Với ảnh → PDF, dùng PNG để giữ chất lượng tối đa.</p>
+  </div>
+</div>
+
+<!-- FOOTER -->
+<footer>
+  <div style="display:flex;align-items:center">
+    <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 120 120" width="20" height="20" style="position:relative;top:3px;margin-right:-2px">
+      <defs><clipPath id="qClipF"><circle cx="55" cy="55" r="32"/></clipPath></defs>
+      <circle cx="55" cy="55" r="38" fill="none" stroke="#4a7c59" stroke-width="7" stroke-linecap="round"/>
+      <line x1="81" y1="79" x2="98" y2="98" stroke="#4a7c59" stroke-width="7" stroke-linecap="round"/>
+      <polyline points="20,55 28,38 35,68 43,32 51,60 58,43 66,70 74,48 90,55" fill="none" stroke="#4a7c59" stroke-width="3" stroke-linecap="round" stroke-linejoin="round" clip-path="url(#qClipF)"/>
+    </svg>
+    <span style="font-family:var(--font-display);font-weight:700;font-size:0.9rem"><span style="color:#111">ueren</span><span style="color:#4a7c59">cia</span></span>
+  </div>
+  <span>© 2025 Querencia · All rights reserved</span>
+</footer>
+
+<div class="toast" id="toast"></div>
+
+<script>
+// ── SETUP ──
+pdfjsLib.GlobalWorkerOptions.workerSrc = 'https://cdnjs.cloudflare.com/ajax/libs/pdf.js/3.11.174/pdf.worker.min.js';
+
+if (localStorage.getItem('darkMode') === '1') document.body.classList.add('dark');
+function toggleDark() {
+  document.body.classList.toggle('dark');
+  localStorage.setItem('darkMode', document.body.classList.contains('dark') ? '1' : '0');
+}
+
+function switchTab(tab) {
+  document.querySelectorAll('.tab-btn').forEach((b,i) => b.classList.toggle('active', ['pdf2img','img2pdf'][i] === tab));
+  document.querySelectorAll('.tab-content').forEach(c => c.classList.remove('active'));
+  document.getElementById('tab-' + tab).classList.add('active');
+}
+
+function showToast(msg) {
+  const t = document.getElementById('toast');
+  t.textContent = msg; t.style.display = 'block';
+  setTimeout(() => t.style.display = 'none', 2500);
+}
+
+// ── OPTIONS ──
+const opts = { p2iFormat: 'jpeg', p2iPages: 'all', p2iSize: 'fit', i2pSize: 'fit', i2pOrient: 'auto', i2pMargin: '0' };
+
+function setOpt(btn, key, val) {
+  opts[key] = val;
+  btn.closest('.opt-row').querySelectorAll('.opt-btn').forEach(b => b.classList.remove('active'));
+  btn.classList.add('active');
+  if (key === 'p2iPages') {
+    document.getElementById('p2iRangeInput').style.display = val === 'range' ? 'block' : 'none';
+  }
+}
+
+// ════════════════════════════════
+// PDF → ẢNH
+// ════════════════════════════════
+let pdfDoc = null;
+let renderedImages = [];
+
+// Drag drop
+const p2iDrop = document.getElementById('p2iDrop');
+p2iDrop.addEventListener('dragover', e => { e.preventDefault(); p2iDrop.classList.add('over'); });
+p2iDrop.addEventListener('dragleave', () => p2iDrop.classList.remove('over'));
+p2iDrop.addEventListener('drop', e => {
+  e.preventDefault(); p2iDrop.classList.remove('over');
+  const f = e.dataTransfer.files[0];
+  if (f?.type === 'application/pdf') loadPDF(f);
+});
+
+async function loadPDF(file) {
+  if (!file) return;
+  try {
+    const ab = await file.arrayBuffer();
+    pdfDoc = await pdfjsLib.getDocument({ data: ab }).promise;
+
+    // Show file info
+    const info = document.getElementById('p2iFileInfo');
+    info.style.display = 'flex';
+    document.getElementById('p2iFileName').textContent = file.name;
+    document.getElementById('p2iFileMeta').textContent = `${pdfDoc.numPages} trang · ${(file.size/1024).toFixed(0)} KB`;
+    document.getElementById('p2iDrop').style.display = 'none';
+    document.getElementById('p2iOptions').style.display = 'flex';
+    document.getElementById('btnConvertP2I').disabled = false;
+  } catch(e) {
+    showToast('Không thể đọc file PDF. Thử file khác nhé!');
+  }
+}
+
+function resetP2I() {
+  pdfDoc = null; renderedImages = [];
+  document.getElementById('p2iInput').value = '';
+  document.getElementById('p2iDrop').style.display = 'block';
+  document.getElementById('p2iFileInfo').style.display = 'none';
+  document.getElementById('p2iOptions').style.display = 'none';
+  document.getElementById('btnConvertP2I').disabled = true;
+  document.getElementById('p2iEmpty').style.display = 'flex';
+  document.getElementById('p2iResult').style.display = 'none';
+  document.getElementById('p2iProgress').style.display = 'none';
+}
+
+function parsePageRange(str, total) {
+  const pages = new Set();
+  str.split(',').forEach(part => {
+    part = part.trim();
+    if (part.includes('-')) {
+      const [a, b] = part.split('-').map(Number);
+      for (let i = Math.max(1,a); i <= Math.min(total,b); i++) pages.add(i);
+    } else {
+      const n = parseInt(part);
+      if (n >= 1 && n <= total) pages.add(n);
+    }
+  });
+  return [...pages].sort((a,b) => a-b);
+}
+
+async function convertP2I() {
+  if (!pdfDoc) return;
+
+  const scale = parseFloat(document.getElementById('p2iScale').value) || 1.5;
+  const format = opts.p2iFormat;
+  const mimeType = format === 'png' ? 'image/png' : format === 'webp' ? 'image/webp' : 'image/jpeg';
+  const quality = format === 'png' ? 1 : 0.92;
+  const ext = format === 'webp' ? 'webp' : format === 'png' ? 'png' : 'jpg';
+
+  let pageNums;
+  if (opts.p2iPages === 'range') {
+    const raw = document.getElementById('p2iRange').value.trim();
+    pageNums = raw ? parsePageRange(raw, pdfDoc.numPages) : [];
+    if (!pageNums.length) { showToast('Nhập khoảng trang hợp lệ!'); return; }
+  } else {
+    pageNums = Array.from({length: pdfDoc.numPages}, (_, i) => i + 1);
+  }
+
+  // Show progress
+  document.getElementById('p2iEmpty').style.display = 'none';
+  document.getElementById('p2iResult').style.display = 'none';
+  document.getElementById('p2iProgress').style.display = 'flex';
+  document.getElementById('btnConvertP2I').disabled = true;
+  renderedImages = [];
+
+  try {
+    for (let idx = 0; idx < pageNums.length; idx++) {
+      const pageNum = pageNums[idx];
+      document.getElementById('p2iProgressText').textContent = `Đang xuất trang ${pageNum} / ${pageNums.length}...`;
+      document.getElementById('p2iBar').style.width = Math.round((idx / pageNums.length) * 100) + '%';
+
+      const page = await pdfDoc.getPage(pageNum);
+      const vp = page.getViewport({ scale });
+      const canvas = document.createElement('canvas');
+      canvas.width = vp.width; canvas.height = vp.height;
+      const ctx = canvas.getContext('2d');
+      await page.render({ canvasContext: ctx, viewport: vp }).promise;
+      const dataUrl = canvas.toDataURL(mimeType, quality);
+      renderedImages.push({ dataUrl, name: `trang-${pageNum}.${ext}`, page: pageNum });
+    }
+
+    document.getElementById('p2iBar').style.width = '100%';
+
+    // Render grid
+    const grid = document.getElementById('p2iGrid');
+    grid.innerHTML = '';
+    renderedImages.forEach((img, i) => {
+      const thumb = document.createElement('div');
+      thumb.className = 'img-thumb';
+      thumb.innerHTML = `
+        <img src="${img.dataUrl}" alt="Trang ${img.page}" loading="lazy"/>
+        <div class="img-thumb-label">Trang ${img.page}</div>
+        <button class="img-thumb-dl" onclick="downloadSingleImage(${i})">⬇</button>
+      `;
+      grid.appendChild(thumb);
+    });
+
+    document.getElementById('p2iStats').innerHTML = `
+      <span class="stat-chip">${renderedImages.length} ảnh</span>
+      <span class="stat-chip">${ext.toUpperCase()}</span>
+      <span class="stat-chip">Scale ×${scale}</span>
+    `;
+
+    document.getElementById('p2iProgress').style.display = 'none';
+    document.getElementById('p2iResult').style.display = 'block';
+
+  } catch(e) {
+    document.getElementById('p2iProgress').style.display = 'none';
+    document.getElementById('p2iEmpty').style.display = 'flex';
+    document.getElementById('p2iEmpty').innerHTML = `<div class="result-empty-icon">⚠️</div><p>Lỗi: ${e.message}</p>`;
+  }
+
+  document.getElementById('btnConvertP2I').disabled = false;
+}
+
+function downloadSingleImage(idx) {
+  const img = renderedImages[idx];
+  const a = document.createElement('a');
+  a.href = img.dataUrl; a.download = img.name; a.click();
+}
+
+async function downloadAllImages() {
+  if (!renderedImages.length) return;
+  if (renderedImages.length === 1) { downloadSingleImage(0); return; }
+
+  showToast('Đang nén file...');
+  const zip = new JSZip();
+  renderedImages.forEach(img => {
+    const base64 = img.dataUrl.split(',')[1];
+    zip.file(img.name, base64, { base64: true });
+  });
+  const blob = await zip.generateAsync({ type: 'blob' });
+  const url = URL.createObjectURL(blob);
+  const a = document.createElement('a');
+  a.href = url; a.download = 'querencia-images.zip'; a.click();
+  URL.revokeObjectURL(url);
+  showToast('✓ Đã tải về!');
+}
+
+// ════════════════════════════════
+// ẢNH → PDF
+// ════════════════════════════════
+let imgFiles = [];
+
+const i2pDrop = document.getElementById('i2pDrop');
+i2pDrop.addEventListener('dragover', e => { e.preventDefault(); i2pDrop.classList.add('over'); });
+i2pDrop.addEventListener('dragleave', () => i2pDrop.classList.remove('over'));
+i2pDrop.addEventListener('drop', e => {
+  e.preventDefault(); i2pDrop.classList.remove('over');
+  const files = [...e.dataTransfer.files].filter(f => f.type.startsWith('image/'));
+  if (files.length) addImages(files);
+});
+
+function addImages(files) {
+  [...files].forEach(f => { if (f.type.startsWith('image/')) imgFiles.push(f); });
+  renderImageList();
+}
+
+function renderImageList() {
+  const list = document.getElementById('i2pFileList');
+  const preview = document.getElementById('i2pPreviewList');
+  const thumbRow = document.getElementById('i2pThumbRow');
+
+  list.innerHTML = '';
+  if (imgFiles.length === 0) {
+    document.getElementById('i2pOptions').style.display = 'none';
+    document.getElementById('btnConvertI2P').disabled = true;
+    preview.style.display = 'none';
+    return;
+  }
+
+  document.getElementById('i2pOptions').style.display = 'flex';
+  document.getElementById('btnConvertI2P').disabled = false;
+  preview.style.display = 'block';
+  document.getElementById('i2pEmpty').style.display = 'none';
+
+  imgFiles.forEach((f, i) => {
+    const el = document.createElement('div');
+    el.style.cssText = 'display:flex;align-items:center;gap:10px;padding:10px 14px;border:1.5px solid var(--border);border-radius:10px;background:var(--white)';
+    el.innerHTML = `
+      <span style="font-size:1.2rem">🖼️</span>
+      <div style="flex:1;min-width:0">
+        <div style="font-size:0.82rem;font-weight:600;overflow:hidden;text-overflow:ellipsis;white-space:nowrap">${f.name}</div>
+        <div style="font-size:0.7rem;color:var(--gray-light)">${(f.size/1024).toFixed(0)} KB</div>
+      </div>
+      <div style="display:flex;gap:4px">
+        <button onclick="moveImg(${i},-1)" style="background:none;border:1px solid var(--border);border-radius:6px;padding:3px 8px;cursor:pointer;font-size:0.8rem" ${i===0?'disabled':''}>↑</button>
+        <button onclick="moveImg(${i},1)" style="background:none;border:1px solid var(--border);border-radius:6px;padding:3px 8px;cursor:pointer;font-size:0.8rem" ${i===imgFiles.length-1?'disabled':''}>↓</button>
+        <button onclick="removeImg(${i})" style="background:none;border:1px solid var(--border);border-radius:6px;padding:3px 8px;cursor:pointer;font-size:0.8rem;color:#c0392b">✕</button>
+      </div>
+    `;
+    list.appendChild(el);
+  });
+
+  // Thumbs preview
+  thumbRow.innerHTML = '';
+  imgFiles.forEach((f, i) => {
+    const url = URL.createObjectURL(f);
+    const div = document.createElement('div');
+    div.style.cssText = 'display:flex;flex-direction:column;align-items:center;gap:4px';
+    div.innerHTML = `
+      <img src="${url}" style="width:72px;height:88px;object-fit:cover;border-radius:6px;border:1.5px solid var(--border)" onload="URL.revokeObjectURL(this.src)"/>
+      <span style="font-size:0.65rem;color:var(--gray-light)">${i+1}</span>
+    `;
+    thumbRow.appendChild(div);
+  });
+}
+
+function moveImg(idx, dir) {
+  const ni = idx + dir;
+  if (ni < 0 || ni >= imgFiles.length) return;
+  [imgFiles[idx], imgFiles[ni]] = [imgFiles[ni], imgFiles[idx]];
+  renderImageList();
+}
+
+function removeImg(idx) {
+  imgFiles.splice(idx, 1);
+  renderImageList();
+  if (!imgFiles.length) {
+    document.getElementById('i2pEmpty').style.display = 'flex';
+    document.getElementById('i2pResult').style.display = 'none';
+  }
+}
+
+function resetI2P() {
+  imgFiles = [];
+  document.getElementById('i2pInput').value = '';
+  document.getElementById('i2pFileList').innerHTML = '';
+  document.getElementById('i2pOptions').style.display = 'none';
+  document.getElementById('btnConvertI2P').disabled = true;
+  document.getElementById('i2pEmpty').style.display = 'flex';
+  document.getElementById('i2pResult').style.display = 'none';
+  document.getElementById('i2pPreviewList').style.display = 'none';
+}
+
+let pdfBytes = null;
+
+async function convertI2P() {
+  if (!imgFiles.length) return;
+
+  document.getElementById('i2pEmpty').style.display = 'none';
+  document.getElementById('i2pResult').style.display = 'none';
+  document.getElementById('i2pPreviewList').style.display = 'none';
+  document.getElementById('i2pProgress').style.display = 'flex';
+  document.getElementById('btnConvertI2P').disabled = true;
+
+  try {
+    const { PDFDocument } = PDFLib;
+    const pdf = await PDFDocument.create();
+    const margin = parseInt(opts.i2pMargin) || 0;
+
+    // A4: 595x842pt, Letter: 612x792pt
+    const pageSizes = { a4: [595, 842], letter: [612, 792] };
+
+    for (const file of imgFiles) {
+      const ab = await file.arrayBuffer();
+      let img;
+      if (file.type === 'image/png') {
+        img = await pdf.embedPng(ab);
+      } else {
+        img = await pdf.embedJpg(ab);
+      }
+
+      const { width: iw, height: ih } = img;
+      let pw, ph;
+
+      if (opts.i2pSize === 'fit') {
+        pw = iw + margin * 2;
+        ph = ih + margin * 2;
+      } else {
+        [pw, ph] = pageSizes[opts.i2pSize] || [iw, ih];
+        if (opts.i2pOrient === 'landscape' || (opts.i2pOrient === 'auto' && iw > ih)) {
+          [pw, ph] = [Math.max(pw,ph), Math.min(pw,ph)];
+        }
+      }
+
+      const page = pdf.addPage([pw, ph]);
+      const scale = Math.min((pw - margin*2) / iw, (ph - margin*2) / ih);
+      const dw = iw * scale, dh = ih * scale;
+      const x = (pw - dw) / 2, y = (ph - dh) / 2;
+      page.drawImage(img, { x, y, width: dw, height: dh });
+    }
+
+    pdfBytes = await pdf.save();
+    const sizekb = (pdfBytes.length / 1024).toFixed(0);
+
+    document.getElementById('i2pProgress').style.display = 'none';
+    document.getElementById('i2pResult').style.display = 'flex';
+    document.getElementById('i2pPreviewList').style.display = 'block';
+    document.getElementById('i2pPdfName').textContent = 'querencia-output.pdf';
+    document.getElementById('i2pPdfMeta').textContent = `${imgFiles.length} trang · ${sizekb} KB`;
+    document.getElementById('btnDlPdf').onclick = () => {
+      const blob = new Blob([pdfBytes], { type: 'application/pdf' });
+      const url = URL.createObjectURL(blob);
+      const a = document.createElement('a'); a.href = url; a.download = 'querencia-output.pdf'; a.click();
+      URL.revokeObjectURL(url);
+      showToast('✓ Đã tải về!');
+    };
+
+    renderImageList();
+
+  } catch(e) {
+    document.getElementById('i2pProgress').style.display = 'none';
+    document.getElementById('i2pEmpty').style.display = 'flex';
+    document.getElementById('i2pEmpty').innerHTML = `<div class="result-empty-icon">⚠️</div><p>Lỗi: ${e.message}</p>`;
+  }
+
+  document.getElementById('btnConvertI2P').disabled = false;
+}
+</script>
+</body>
+</html>

@@ -1,0 +1,16 @@
+/tools/extract-table-from-image    /tools/extract-table-from-image.html    200
+/tools/extract-table-from-pdf      /tools/extract-table-from-pdf.html      200
+/tools/extract-table-from-url      /tools/extract-table-from-url.html      200
+/tools/convert-table-to-excel      /tools/convert-table-to-excel.html      200
+/tools/convert-table-to-csv        /tools/convert-table-to-csv.html        200
+/tools/convert-table-to-json       /tools/convert-table-to-json.html       200
+/tools/convert-table-to-markdown   /tools/convert-table-to-markdown.html   200
+/tools/smart-table-extractor       /tools/smart-table-extractor.html       200
+/tools/crop-image                  /pages/crop-image.html                  200
+/tools/resize-image                /pages/resize-image.html                200
+/tools/compress-image              /pages/compress-image.html              200
+/tools/rotate-image                /pages/rotate-image.html                200
+/tools/convert-image               /pages/convert-image.html               200
+/tools/add-watermark               /pages/add-watermark.html               200
+/tools/image-editor                /pages/image-editor.html                200
+/*                                 /index.html                             200

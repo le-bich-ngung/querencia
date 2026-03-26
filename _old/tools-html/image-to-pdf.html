@@ -1,0 +1,421 @@
+<!DOCTYPE html>
+<html lang="vi">
+<head>
+  <meta charset="UTF-8"/>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>Ảnh → PDF — Querencia</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com"/>
+  <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700&display=swap" rel="stylesheet"/>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js"></script>
+  <style>
+    :root {
+      --sage:#4a7c59; --sage-light:#6fa882; --sage-pale:#ddeee3; --sage-dark:#2f5c3e;
+      --black:#111; --gray:#555; --gray-light:#999; --border:#e0e0e0;
+      --white:#fff; --font:'Plus Jakarta Sans',sans-serif;
+      --radius:12px;
+    }
+    *,*::before,*::after{box-sizing:border-box;margin:0;padding:0}
+    body{font-family:var(--font);color:var(--black);background:#f7f9f7;min-height:100vh}
+
+    /* ── NAV ── */
+    nav{display:flex;align-items:center;justify-content:space-between;padding:0 32px;height:56px;background:rgba(255,255,255,0.95);backdrop-filter:blur(8px);border-bottom:1px solid var(--border);position:sticky;top:0;z-index:100}
+    .nav-left{display:flex;align-items:center;gap:10px;text-decoration:none;color:inherit}
+    .nav-logo{width:28px;height:28px}
+    .nav-title{font-weight:700;font-size:0.95rem;letter-spacing:-0.3px}
+    .nav-back{font-size:0.82rem;color:var(--gray);text-decoration:none;display:flex;align-items:center;gap:4px;padding:6px 12px;border-radius:8px;transition:background 0.15s}
+    .nav-back:hover{background:var(--sage-pale);color:var(--sage)}
+
+    /* ── LAYOUT ── */
+    .container{max-width:800px;margin:0 auto;padding:40px 24px}
+    .page-title{font-size:1.6rem;font-weight:700;letter-spacing:-0.5px;margin-bottom:6px}
+    .page-sub{font-size:0.88rem;color:var(--gray-light);margin-bottom:36px}
+
+    /* ── DROP ZONE ── */
+    .drop-zone{border:2px dashed var(--border);border-radius:16px;padding:48px 24px;text-align:center;cursor:pointer;transition:all 0.2s;background:#fff;position:relative}
+    .drop-zone:hover,.drop-zone.dragover{border-color:var(--sage);background:var(--sage-pale)}
+    .drop-zone input[type=file]{position:absolute;inset:0;opacity:0;cursor:pointer;width:100%;height:100%}
+    .drop-icon{font-size:2.5rem;margin-bottom:12px;display:block}
+    .drop-title{font-weight:700;font-size:1rem;margin-bottom:4px}
+    .drop-sub{font-size:0.82rem;color:var(--gray-light)}
+
+    /* ── IMAGE LIST ── */
+    .img-list{margin-top:24px;display:grid;grid-template-columns:repeat(auto-fill,minmax(140px,1fr));gap:12px}
+    .img-item{background:#fff;border:1.5px solid var(--border);border-radius:var(--radius);overflow:hidden;position:relative;cursor:grab;transition:all 0.2s}
+    .img-item:hover{border-color:var(--sage);box-shadow:0 4px 12px rgba(0,0,0,0.08)}
+    .img-item.dragging{opacity:0.4;transform:scale(0.95)}
+    .img-item.drag-over{border-color:var(--sage);border-style:solid;background:var(--sage-pale)}
+    .img-item img{width:100%;height:110px;object-fit:cover;display:block;pointer-events:none}
+    .img-item-info{padding:8px 10px}
+    .img-item-name{font-size:0.72rem;color:var(--gray-light);white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+    .img-item-size{font-size:0.7rem;color:var(--gray-light)}
+    .img-item-num{position:absolute;top:6px;left:6px;background:rgba(0,0,0,0.55);color:#fff;font-size:0.7rem;font-weight:700;padding:2px 7px;border-radius:99px}
+    .img-item-del{position:absolute;top:6px;right:6px;background:rgba(0,0,0,0.55);color:#fff;border:none;border-radius:50%;width:22px;height:22px;font-size:0.75rem;cursor:pointer;display:flex;align-items:center;justify-content:center;transition:background 0.15s}
+    .img-item-del:hover{background:#e74c3c}
+
+    /* ── OPTIONS ── */
+    .options-bar{background:#fff;border:1.5px solid var(--border);border-radius:var(--radius);padding:16px 20px;margin-top:16px;display:flex;align-items:center;gap:20px;flex-wrap:wrap}
+    .opt-group{display:flex;align-items:center;gap:8px}
+    .opt-label{font-size:0.8rem;font-weight:600;color:var(--gray);white-space:nowrap}
+    .opt-select{padding:6px 10px;border:1.5px solid var(--border);border-radius:7px;font-family:var(--font);font-size:0.82rem;outline:none;background:#fff;cursor:pointer;transition:border-color 0.2s}
+    .opt-select:focus{border-color:var(--sage)}
+
+    /* ── FOOTER ACTIONS ── */
+    .actions-bar{margin-top:20px;display:flex;align-items:center;justify-content:space-between;flex-wrap:wrap;gap:12px}
+    .actions-info{font-size:0.85rem;color:var(--gray-light)}
+    .actions-info strong{color:var(--black)}
+    .actions-btns{display:flex;gap:10px;flex-wrap:wrap}
+
+    .btn-primary{display:inline-flex;align-items:center;gap:8px;background:var(--sage);color:#fff;border:none;padding:11px 24px;border-radius:10px;font-family:var(--font);font-size:0.9rem;font-weight:600;cursor:pointer;transition:all 0.2s}
+    .btn-primary:hover{background:var(--sage-dark)}
+    .btn-primary:active{transform:scale(0.97)}
+    .btn-primary:disabled{opacity:0.5;cursor:not-allowed;transform:none}
+    .btn-outline{display:inline-flex;align-items:center;gap:8px;background:#fff;color:var(--black);border:1.5px solid var(--border);padding:10px 18px;border-radius:10px;font-family:var(--font);font-size:0.88rem;font-weight:500;cursor:pointer;transition:all 0.2s}
+    .btn-outline:hover{border-color:var(--sage);color:var(--sage)}
+
+    /* ── PROGRESS ── */
+    .progress-wrap{display:none;margin-top:16px;background:#fff;border:1.5px solid var(--border);border-radius:var(--radius);padding:16px 20px}
+    .progress-wrap.visible{display:block}
+    .progress-bar{width:100%;height:6px;background:var(--border);border-radius:99px;overflow:hidden;margin-top:8px}
+    .progress-fill{height:100%;background:var(--sage);border-radius:99px;transition:width 0.3s ease;width:0%}
+    .progress-text{font-size:0.82rem;color:var(--gray);display:flex;justify-content:space-between}
+
+    /* ── HINT ── */
+    .drag-hint{font-size:0.78rem;color:var(--gray-light);margin-top:10px;text-align:center}
+
+    /* ── DARK MODE ── */
+    body.dark{background:#0f0f0f;color:#eee}
+    body.dark nav{background:rgba(15,15,15,0.95);border-bottom-color:#222}
+    body.dark .drop-zone{background:#1a1a1a;border-color:#333}
+    body.dark .drop-zone:hover,.dark .drop-zone.dragover{background:#1a3328;border-color:var(--sage)}
+    body.dark .img-item{background:#1a1a1a;border-color:#2a2a2a}
+    body.dark .options-bar,.dark .progress-wrap{background:#1a1a1a;border-color:#2a2a2a}
+    body.dark .opt-select{background:#1a1a1a;border-color:#333;color:#eee}
+    body.dark .btn-outline{background:#1a1a1a;border-color:#333;color:#eee}
+
+    @keyframes fadeUp{from{opacity:0;transform:translateY(10px)}to{opacity:1;transform:translateY(0)}}
+
+    @media(max-width:600px){
+      nav{padding:0 16px}
+      .container{padding:24px 16px}
+      .img-list{grid-template-columns:repeat(auto-fill,minmax(110px,1fr))}
+      .options-bar{gap:12px}
+    }
+  </style>
+</head>
+<body>
+
+<nav>
+  <a class="nav-left" href="/">
+    <svg class="nav-logo" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 120 120">
+      <circle cx="55" cy="55" r="38" fill="none" stroke="#4a7c59" stroke-width="7" stroke-linecap="round"/>
+      <line x1="81" y1="79" x2="98" y2="98" stroke="#4a7c59" stroke-width="7" stroke-linecap="round"/>
+    </svg>
+    <span class="nav-title">Ảnh → PDF</span>
+  </a>
+  <a class="nav-back" href="/">← Querencia</a>
+</nav>
+
+<div class="container">
+  <h1 class="page-title">Ảnh → PDF</h1>
+  <p class="page-sub">Ghép nhiều ảnh thành 1 file PDF · Miễn phí · Xử lý trên máy bạn</p>
+
+  <!-- DROP ZONE -->
+  <div class="drop-zone" id="dropZone">
+    <input type="file" id="fileInput" accept="image/jpeg,image/png,image/webp,image/gif" multiple onchange="handleFiles(this.files)"/>
+    <span class="drop-icon">🖼️</span>
+    <div class="drop-title">Kéo thả ảnh vào đây</div>
+    <div class="drop-sub">Hoặc click để chọn · JPG, PNG, WebP · Nhiều ảnh cùng lúc</div>
+  </div>
+
+  <!-- IMAGE LIST -->
+  <div class="img-list" id="imgList"></div>
+  <p class="drag-hint" id="dragHint" style="display:none">💡 Kéo thả để sắp xếp thứ tự trang</p>
+
+  <!-- OPTIONS -->
+  <div class="options-bar" id="optionsBar" style="display:none">
+    <div class="opt-group">
+      <span class="opt-label">Kích thước trang</span>
+      <select class="opt-select" id="pageSize">
+        <option value="a4">A4</option>
+        <option value="a3">A3</option>
+        <option value="letter">Letter</option>
+        <option value="fit">Vừa ảnh</option>
+      </select>
+    </div>
+    <div class="opt-group">
+      <span class="opt-label">Chiều</span>
+      <select class="opt-select" id="orientation">
+        <option value="auto">Tự động</option>
+        <option value="portrait">Dọc</option>
+        <option value="landscape">Ngang</option>
+      </select>
+    </div>
+    <div class="opt-group">
+      <span class="opt-label">Lề</span>
+      <select class="opt-select" id="margin">
+        <option value="0">Không có</option>
+        <option value="10" selected>Nhỏ (10mm)</option>
+        <option value="20">Vừa (20mm)</option>
+      </select>
+    </div>
+  </div>
+
+  <!-- ACTIONS -->
+  <div class="actions-bar" id="actionsBar" style="display:none">
+    <div class="actions-info">
+      <strong id="imgCount">0</strong> ảnh · Thêm ảnh hoặc kéo để sắp xếp lại
+    </div>
+    <div class="actions-btns">
+      <button class="btn-outline" onclick="clearAll()">✕ Xóa tất cả</button>
+      <button class="btn-primary" id="convertBtn" onclick="convertToPDF()">📄 Tạo PDF & Tải về</button>
+    </div>
+  </div>
+
+  <!-- PROGRESS -->
+  <div class="progress-wrap" id="progressWrap">
+    <div class="progress-text">
+      <span id="progressLabel">Đang xử lý...</span>
+      <span id="progressPct">0%</span>
+    </div>
+    <div class="progress-bar"><div class="progress-fill" id="progressFill"></div></div>
+  </div>
+</div>
+
+<script>
+const { jsPDF } = window.jspdf;
+
+let images = []; // [{file, url, name, size}]
+let dragSrcIndex = null;
+
+// ══════════════════════════════════════════════
+// HANDLE FILES
+// ══════════════════════════════════════════════
+function handleFiles(files) {
+  const allowed = ['image/jpeg','image/png','image/webp','image/gif'];
+  for (const file of files) {
+    if (!allowed.includes(file.type)) continue;
+    const url = URL.createObjectURL(file);
+    images.push({ file, url, name: file.name, size: file.size });
+  }
+  renderList();
+}
+
+function formatSize(bytes) {
+  if (bytes < 1024 * 1024) return (bytes / 1024).toFixed(0) + ' KB';
+  return (bytes / 1024 / 1024).toFixed(1) + ' MB';
+}
+
+// ══════════════════════════════════════════════
+// RENDER LIST
+// ══════════════════════════════════════════════
+function renderList() {
+  const list = document.getElementById('imgList');
+  const hint = document.getElementById('dragHint');
+  const opts = document.getElementById('optionsBar');
+  const acts = document.getElementById('actionsBar');
+
+  if (images.length === 0) {
+    list.innerHTML = '';
+    hint.style.display = 'none';
+    opts.style.display = 'none';
+    acts.style.display = 'none';
+    return;
+  }
+
+  list.innerHTML = images.map((img, i) => `
+    <div class="img-item" draggable="true" data-index="${i}"
+      ondragstart="onDragStart(event,${i})"
+      ondragover="onDragOver(event,${i})"
+      ondrop="onDrop(event,${i})"
+      ondragend="onDragEnd()"
+      style="animation:fadeUp 0.2s ease">
+      <span class="img-item-num">${i + 1}</span>
+      <button class="img-item-del" onclick="removeImage(${i})" title="Xóa">✕</button>
+      <img src="${img.url}" alt="${esc(img.name)}" loading="lazy"/>
+      <div class="img-item-info">
+        <div class="img-item-name">${esc(img.name)}</div>
+        <div class="img-item-size">${formatSize(img.size)}</div>
+      </div>
+    </div>
+  `).join('');
+
+  document.getElementById('imgCount').textContent = images.length;
+  hint.style.display = images.length > 1 ? 'block' : 'none';
+  opts.style.display = 'flex';
+  acts.style.display = 'flex';
+}
+
+function removeImage(index) {
+  URL.revokeObjectURL(images[index].url);
+  images.splice(index, 1);
+  renderList();
+}
+
+function clearAll() {
+  images.forEach(img => URL.revokeObjectURL(img.url));
+  images = [];
+  document.getElementById('fileInput').value = '';
+  renderList();
+  document.getElementById('progressWrap').classList.remove('visible');
+}
+
+// ══════════════════════════════════════════════
+// DRAG & DROP SẮP XẾP
+// ══════════════════════════════════════════════
+function onDragStart(e, index) {
+  dragSrcIndex = index;
+  e.currentTarget.classList.add('dragging');
+  e.dataTransfer.effectAllowed = 'move';
+}
+
+function onDragOver(e, index) {
+  e.preventDefault();
+  e.dataTransfer.dropEffect = 'move';
+  document.querySelectorAll('.img-item').forEach(el => el.classList.remove('drag-over'));
+  if (index !== dragSrcIndex) e.currentTarget.classList.add('drag-over');
+}
+
+function onDrop(e, index) {
+  e.preventDefault();
+  if (dragSrcIndex === null || dragSrcIndex === index) return;
+  const moved = images.splice(dragSrcIndex, 1)[0];
+  images.splice(index, 0, moved);
+  renderList();
+}
+
+function onDragEnd() {
+  dragSrcIndex = null;
+  document.querySelectorAll('.img-item').forEach(el => {
+    el.classList.remove('dragging','drag-over');
+  });
+}
+
+// ── Drop zone từ ngoài vào ──
+const dropZone = document.getElementById('dropZone');
+dropZone.addEventListener('dragover', e => { e.preventDefault(); dropZone.classList.add('dragover'); });
+dropZone.addEventListener('dragleave', () => dropZone.classList.remove('dragover'));
+dropZone.addEventListener('drop', e => {
+  e.preventDefault();
+  dropZone.classList.remove('dragover');
+  handleFiles(e.dataTransfer.files);
+});
+
+// ══════════════════════════════════════════════
+// CONVERT TO PDF
+// ══════════════════════════════════════════════
+async function convertToPDF() {
+  if (images.length === 0) return;
+
+  const btn = document.getElementById('convertBtn');
+  btn.disabled = true;
+  btn.textContent = '⏳ Đang tạo PDF...';
+
+  const progressWrap = document.getElementById('progressWrap');
+  const progressFill = document.getElementById('progressFill');
+  const progressLabel = document.getElementById('progressLabel');
+  const progressPct = document.getElementById('progressPct');
+  progressWrap.classList.add('visible');
+
+  const pageSize  = document.getElementById('pageSize').value;
+  const orientOpt = document.getElementById('orientation').value;
+  const marginMM  = parseInt(document.getElementById('margin').value);
+
+  try {
+    let pdf = null;
+
+    for (let i = 0; i < images.length; i++) {
+      progressLabel.textContent = `Đang xử lý ảnh ${i + 1}/${images.length}...`;
+      const pct = Math.round((i / images.length) * 100);
+      progressFill.style.width = pct + '%';
+      progressPct.textContent = pct + '%';
+
+      const imgData = await loadImageAsDataURL(images[i].file);
+      const imgDims = await getImageDimensions(images[i].url);
+
+      // Xác định chiều trang
+      let orient = orientOpt;
+      if (orient === 'auto') {
+        orient = imgDims.width >= imgDims.height ? 'landscape' : 'portrait';
+      }
+
+      // Kích thước trang PDF (mm)
+      let pageW, pageH;
+      if (pageSize === 'a4') { pageW = 210; pageH = 297; }
+      else if (pageSize === 'a3') { pageW = 297; pageH = 420; }
+      else if (pageSize === 'letter') { pageW = 215.9; pageH = 279.4; }
+      else { // fit — tính theo tỷ lệ ảnh
+        const dpi = 96;
+        pageW = imgDims.width / dpi * 25.4;
+        pageH = imgDims.height / dpi * 25.4;
+        orient = 'portrait';
+      }
+
+      if (orient === 'landscape') [pageW, pageH] = [pageH, pageW];
+
+      if (i === 0) {
+        pdf = new jsPDF({ orientation: orient, unit: 'mm', format: pageSize === 'fit' ? [pageW, pageH] : pageSize });
+      } else {
+        pdf.addPage(pageSize === 'fit' ? [pageW, pageH] : pageSize, orient);
+      }
+
+      // Tính kích thước ảnh trong trang (giữ tỷ lệ)
+      const availW = pageW - marginMM * 2;
+      const availH = pageH - marginMM * 2;
+      const ratio  = Math.min(availW / imgDims.width, availH / imgDims.height);
+      const drawW  = imgDims.width * ratio;
+      const drawH  = imgDims.height * ratio;
+      const x = marginMM + (availW - drawW) / 2;
+      const y = marginMM + (availH - drawH) / 2;
+
+      const fmt = images[i].file.type === 'image/png' ? 'PNG' : 'JPEG';
+      pdf.addImage(imgData, fmt, x, y, drawW, drawH);
+
+      // Nhả luồng cho UI cập nhật
+      await new Promise(r => setTimeout(r, 10));
+    }
+
+    progressFill.style.width = '100%';
+    progressPct.textContent = '100%';
+    progressLabel.textContent = '✓ Hoàn tất!';
+
+    pdf.save('querencia-images.pdf');
+
+    btn.textContent = '✓ Đã tạo PDF!';
+    setTimeout(() => { btn.textContent = '📄 Tạo PDF & Tải về'; btn.disabled = false; }, 3000);
+
+  } catch (err) {
+    console.error(err);
+    progressLabel.textContent = '✗ Có lỗi xảy ra';
+    btn.textContent = '📄 Tạo PDF & Tải về';
+    btn.disabled = false;
+  }
+}
+
+function loadImageAsDataURL(file) {
+  return new Promise((resolve, reject) => {
+    const reader = new FileReader();
+    reader.onload = e => resolve(e.target.result);
+    reader.onerror = reject;
+    reader.readAsDataURL(file);
+  });
+}
+
+function getImageDimensions(url) {
+  return new Promise((resolve, reject) => {
+    const img = new Image();
+    img.onload = () => resolve({ width: img.naturalWidth, height: img.naturalHeight });
+    img.onerror = reject;
+    img.src = url;
+  });
+}
+
+// ── UTILS ──
+function esc(s) {
+  return String(s).replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;');
+}
+
+// Dark mode
+if (localStorage.getItem('darkMode') === 'true') document.body.classList.add('dark');
+</script>
+</body>
+</html>

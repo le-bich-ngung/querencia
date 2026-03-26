@@ -1,0 +1,287 @@
+<!DOCTYPE html>
+<html lang="vi">
+<head>
+  <meta charset="UTF-8"/>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>QR Generator — Querencia</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com"/>
+  <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700&display=swap" rel="stylesheet"/>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/qrcodejs/1.0.0/qrcode.min.js"></script>
+  <style>
+    :root {
+      --sage:#4a7c59; --sage-light:#6fa882; --sage-pale:#ddeee3; --sage-dark:#2f5c3e;
+      --black:#111; --gray:#555; --gray-light:#999; --border:#e0e0e0;
+      --white:#fff; --font:'Plus Jakarta Sans',sans-serif;
+      --radius:12px;
+    }
+    *,*::before,*::after{box-sizing:border-box;margin:0;padding:0}
+    body{font-family:var(--font);color:var(--black);background:#f7f9f7;min-height:100vh}
+
+    /* ── NAV ── */
+    nav{display:flex;align-items:center;justify-content:space-between;padding:0 32px;height:56px;background:rgba(255,255,255,0.95);backdrop-filter:blur(8px);border-bottom:1px solid var(--border);position:sticky;top:0;z-index:100}
+    .nav-left{display:flex;align-items:center;gap:10px;text-decoration:none;color:inherit}
+    .nav-logo{width:28px;height:28px}
+    .nav-title{font-weight:700;font-size:0.95rem;letter-spacing:-0.3px}
+    .nav-back{font-size:0.82rem;color:var(--gray);text-decoration:none;display:flex;align-items:center;gap:4px;padding:6px 12px;border-radius:8px;transition:background 0.15s}
+    .nav-back:hover{background:var(--sage-pale);color:var(--sage)}
+
+    /* ── LAYOUT ── */
+    .container{max-width:720px;margin:0 auto;padding:40px 24px}
+    .page-title{font-size:1.6rem;font-weight:700;letter-spacing:-0.5px;margin-bottom:6px}
+    .page-sub{font-size:0.88rem;color:var(--gray-light);margin-bottom:36px}
+
+    /* ── TABS ── */
+    .tabs{display:flex;gap:4px;background:#efefef;padding:4px;border-radius:10px;margin-bottom:28px;width:fit-content}
+    .tab{padding:7px 16px;border:none;background:none;border-radius:7px;font-family:var(--font);font-size:0.83rem;font-weight:600;cursor:pointer;color:var(--gray);transition:all 0.18s}
+    .tab.active{background:#fff;color:var(--black);box-shadow:0 1px 4px rgba(0,0,0,0.08)}
+
+    /* ── FORM ── */
+    .form-group{margin-bottom:16px}
+    .form-group label{display:block;font-size:0.78rem;font-weight:600;text-transform:uppercase;letter-spacing:0.5px;color:var(--gray);margin-bottom:6px}
+    .form-group input,.form-group select{width:100%;padding:11px 14px;border:1.5px solid var(--border);border-radius:8px;font-family:var(--font);font-size:0.9rem;outline:none;transition:border-color 0.2s;background:#fff;color:var(--black)}
+    .form-group input:focus,.form-group select:focus{border-color:var(--sage)}
+    .form-row{display:grid;grid-template-columns:1fr 1fr;gap:12px}
+    .btn-generate{width:100%;padding:12px;background:var(--sage);color:#fff;border:none;border-radius:10px;font-family:var(--font);font-size:0.95rem;font-weight:700;cursor:pointer;transition:background 0.2s,transform 0.1s;margin-top:4px}
+    .btn-generate:hover{background:var(--sage-dark)}
+    .btn-generate:active{transform:scale(0.98)}
+
+    /* ── QR OUTPUT ── */
+    .qr-section{display:none;margin-top:36px;text-align:center}
+    .qr-section.visible{display:block;animation:fadeUp 0.3s ease}
+    .qr-box{display:inline-block;background:#fff;border:1.5px solid var(--border);border-radius:16px;padding:24px;box-shadow:0 4px 20px rgba(0,0,0,0.06)}
+    .qr-box canvas,.qr-box img{display:block!important}
+    .qr-label{font-size:0.8rem;color:var(--gray-light);margin-top:14px;word-break:break-all;max-width:260px;margin-left:auto;margin-right:auto}
+    .qr-actions{display:flex;gap:10px;justify-content:center;margin-top:20px}
+    .btn-download{display:inline-flex;align-items:center;gap:8px;background:var(--sage);color:#fff;border:none;padding:10px 22px;border-radius:10px;font-family:var(--font);font-size:0.88rem;font-weight:600;cursor:pointer;transition:background 0.2s}
+    .btn-download:hover{background:var(--sage-dark)}
+    .btn-copy{display:inline-flex;align-items:center;gap:8px;background:#fff;color:var(--black);border:1.5px solid var(--border);padding:10px 22px;border-radius:10px;font-family:var(--font);font-size:0.88rem;font-weight:500;cursor:pointer;transition:all 0.2s}
+    .btn-copy:hover{border-color:var(--sage);color:var(--sage)}
+
+    /* ── DARK MODE ── */
+    body.dark{background:#0f0f0f;color:#eee}
+    body.dark nav{background:rgba(15,15,15,0.95);border-bottom-color:#222}
+    body.dark .tabs{background:#1a1a1a}
+    body.dark .tab.active{background:#2a2a2a;color:#eee}
+    body.dark .tab{color:#777}
+    body.dark .form-group input,.dark .form-group select{background:#1a1a1a;border-color:#333;color:#eee}
+    body.dark .qr-box{background:#1a1a1a;border-color:#2a2a2a}
+    body.dark .btn-copy{background:#1a1a1a;border-color:#333;color:#eee}
+
+    @keyframes fadeUp{from{opacity:0;transform:translateY(12px)}to{opacity:1;transform:translateY(0)}}
+    @media(max-width:600px){
+      nav{padding:0 16px}
+      .container{padding:28px 16px}
+      .form-row{grid-template-columns:1fr}
+      .tabs{width:100%;justify-content:stretch}
+      .tab{flex:1;text-align:center}
+    }
+  </style>
+</head>
+<body>
+
+<nav>
+  <a class="nav-left" href="/">
+    <svg class="nav-logo" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 120 120">
+      <circle cx="55" cy="55" r="38" fill="none" stroke="#4a7c59" stroke-width="7" stroke-linecap="round"/>
+      <line x1="81" y1="79" x2="98" y2="98" stroke="#4a7c59" stroke-width="7" stroke-linecap="round"/>
+    </svg>
+    <span class="nav-title">QR Generator</span>
+  </a>
+  <a class="nav-back" href="/">← Querencia</a>
+</nav>
+
+<div class="container">
+  <h1 class="page-title">QR Generator</h1>
+  <p class="page-sub">Tạo mã QR miễn phí — không cần đăng nhập</p>
+
+  <!-- TABS -->
+  <div class="tabs">
+    <button class="tab active" onclick="switchTab('url')">🔗 Link</button>
+    <button class="tab" onclick="switchTab('text')">📝 Text</button>
+    <button class="tab" onclick="switchTab('wifi')">📶 WiFi</button>
+  </div>
+
+  <!-- FORM URL -->
+  <div id="formUrl">
+    <div class="form-group">
+      <label>URL / Link</label>
+      <input type="url" id="inputUrl" placeholder="https://querencia.com.vn" oninput="onInput()"/>
+    </div>
+    <button class="btn-generate" onclick="generate()">Tạo QR Code</button>
+  </div>
+
+  <!-- FORM TEXT -->
+  <div id="formText" style="display:none">
+    <div class="form-group">
+      <label>Nội dung</label>
+      <input type="text" id="inputText" placeholder="Nhập bất kỳ đoạn chữ nào..." oninput="onInput()"/>
+    </div>
+    <button class="btn-generate" onclick="generate()">Tạo QR Code</button>
+  </div>
+
+  <!-- FORM WIFI -->
+  <div id="formWifi" style="display:none">
+    <div class="form-group">
+      <label>Tên mạng WiFi (SSID)</label>
+      <input type="text" id="inputWifiSSID" placeholder="Tên mạng WiFi" oninput="onInput()"/>
+    </div>
+    <div class="form-row">
+      <div class="form-group" style="margin-bottom:0">
+        <label>Mật khẩu</label>
+        <input type="text" id="inputWifiPass" placeholder="Mật khẩu WiFi" oninput="onInput()"/>
+      </div>
+      <div class="form-group" style="margin-bottom:0">
+        <label>Bảo mật</label>
+        <select id="inputWifiSec">
+          <option value="WPA">WPA/WPA2</option>
+          <option value="WEP">WEP</option>
+          <option value="">Không có</option>
+        </select>
+      </div>
+    </div>
+    <button class="btn-generate" onclick="generate()" style="margin-top:16px">Tạo QR Code</button>
+  </div>
+
+  <!-- QR OUTPUT -->
+  <div class="qr-section" id="qrSection">
+    <div class="qr-box">
+      <div id="qrCanvas"></div>
+      <p class="qr-label" id="qrLabel"></p>
+    </div>
+    <div class="qr-actions">
+      <button class="btn-download" onclick="downloadQR()">⬇ Tải về PNG</button>
+      <button class="btn-copy" id="copyBtn" onclick="copyQR()">⎘ Sao chép ảnh</button>
+    </div>
+  </div>
+</div>
+
+<script>
+let currentTab = 'url';
+let qrInstance = null;
+
+// ── TABS ──
+function switchTab(tab) {
+  currentTab = tab;
+  ['url','text','wifi'].forEach(t => {
+    document.getElementById('form' + t.charAt(0).toUpperCase() + t.slice(1)).style.display = t === tab ? 'block' : 'none';
+  });
+  document.querySelectorAll('.tab').forEach((el, i) => {
+    el.classList.toggle('active', ['url','text','wifi'][i] === tab);
+  });
+  // Ẩn QR cũ khi đổi tab
+  document.getElementById('qrSection').classList.remove('visible');
+}
+
+// ── LẤY GIÁ TRỊ INPUT ──
+function getQRContent() {
+  if (currentTab === 'url') {
+    const val = document.getElementById('inputUrl').value.trim();
+    return val;
+  }
+  if (currentTab === 'text') {
+    return document.getElementById('inputText').value.trim();
+  }
+  if (currentTab === 'wifi') {
+    const ssid = document.getElementById('inputWifiSSID').value.trim();
+    const pass = document.getElementById('inputWifiPass').value.trim();
+    const sec  = document.getElementById('inputWifiSec').value;
+    if (!ssid) return '';
+    // WiFi QR format chuẩn
+    return `WIFI:T:${sec};S:${ssid};P:${pass};;`;
+  }
+  return '';
+}
+
+function getLabel() {
+  if (currentTab === 'url') return document.getElementById('inputUrl').value.trim();
+  if (currentTab === 'text') return document.getElementById('inputText').value.trim();
+  if (currentTab === 'wifi') return '📶 ' + document.getElementById('inputWifiSSID').value.trim();
+  return '';
+}
+
+function onInput() {
+  // Ẩn QR cũ khi user gõ lại
+  document.getElementById('qrSection').classList.remove('visible');
+}
+
+// ── GENERATE ──
+function generate() {
+  const content = getQRContent();
+  if (!content) {
+    const inputs = { url: 'inputUrl', text: 'inputText', wifi: 'inputWifiSSID' };
+    document.getElementById(inputs[currentTab]).focus();
+    return;
+  }
+
+  const container = document.getElementById('qrCanvas');
+  container.innerHTML = '';
+
+  qrInstance = new QRCode(container, {
+    text: content,
+    width: 240,
+    height: 240,
+    colorDark: '#111111',
+    colorLight: '#ffffff',
+    correctLevel: QRCode.CorrectLevel.H
+  });
+
+  document.getElementById('qrLabel').textContent = getLabel();
+  document.getElementById('qrSection').classList.add('visible');
+  document.getElementById('qrSection').scrollIntoView({ behavior: 'smooth', block: 'nearest' });
+}
+
+// ── DOWNLOAD ──
+function getCanvas() {
+  return document.querySelector('#qrCanvas canvas');
+}
+
+function downloadQR() {
+  const canvas = getCanvas();
+  if (!canvas) return;
+
+  // Tạo canvas mới với padding và background trắng
+  const size = canvas.width;
+  const pad  = 24;
+  const out  = document.createElement('canvas');
+  out.width  = size + pad * 2;
+  out.height = size + pad * 2;
+  const ctx  = out.getContext('2d');
+  ctx.fillStyle = '#ffffff';
+  ctx.fillRect(0, 0, out.width, out.height);
+  ctx.drawImage(canvas, pad, pad);
+
+  const link = document.createElement('a');
+  link.download = 'qr-querencia.png';
+  link.href = out.toDataURL('image/png');
+  link.click();
+}
+
+// ── COPY ──
+async function copyQR() {
+  const canvas = getCanvas();
+  if (!canvas) return;
+  try {
+    canvas.toBlob(async blob => {
+      await navigator.clipboard.write([new ClipboardItem({ 'image/png': blob })]);
+      const btn = document.getElementById('copyBtn');
+      btn.textContent = '✓ Đã sao chép!';
+      setTimeout(() => btn.textContent = '⎘ Sao chép ảnh', 2000);
+    });
+  } catch {
+    // Fallback nếu browser không hỗ trợ
+    const btn = document.getElementById('copyBtn');
+    btn.textContent = '✗ Không hỗ trợ';
+    setTimeout(() => btn.textContent = '⎘ Sao chép ảnh', 2000);
+  }
+}
+
+// Enter để generate
+document.addEventListener('keydown', e => {
+  if (e.key === 'Enter') generate();
+});
+
+// Dark mode
+if (localStorage.getItem('darkMode') === 'true') document.body.classList.add('dark');
+</script>
+</body>
+</html>
