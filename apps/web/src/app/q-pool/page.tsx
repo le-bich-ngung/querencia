@@ -34,14 +34,22 @@ export default function QPoolPage() {
   async function handleClaim(id: string) {
     if (!session) return;
     setLoading(id);
-    const res = await fetch(\`/api/v1/q-pool/\${poolId}/claim\`, {
-      method: 'POST',
-      headers: { Authorization: \`Bearer \${token}\` },
-    });
-    return res.ok ? res.json() : null;
+
+    // Dùng mock cho đến khi có API thật
     await new Promise(r => setTimeout(r, 800));
     setClaimed(c => [...c, id]);
     setLoading(null);
+
+    // TODO: khi có API thật, uncomment đoạn này
+    // const token = (session as any).accessToken;
+    // const res = await fetch(`/api/v1/q-pool/${id}/claim`, {
+    //   method: 'POST',
+    //   headers: { Authorization: `Bearer ${token}` },
+    // });
+    // if (res.ok) {
+    //   setClaimed(c => [...c, id]);
+    // }
+    // setLoading(null);
   }
 
   const available = MOCK_POOL.filter(p => !claimed.includes(p.id));
