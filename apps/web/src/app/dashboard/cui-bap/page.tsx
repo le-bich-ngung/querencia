@@ -7,8 +7,8 @@
 import { useState, useRef, useCallback } from 'react';
 import Link from 'next/link';
 import { useSession } from 'next-auth/react';
-import { useCuiBap } from '@/components/cui-bap/useCuiBap';
-import type { CBMessage, CBConversation, CBGroup } from '@/components/cui-bap/useCuiBap';
+import { useCuiBap } from '../../../components/cui-bap/useCuiBap';
+import type { CBMessage, CBConversation, CBGroup } from '../../../components/cui-bap/useCuiBap';
 
 // ── Constants ──────────────────────────────────────────────────
 const SAGE       = '#4a7c59';

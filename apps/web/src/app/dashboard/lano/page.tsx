@@ -7,8 +7,8 @@
 import { useState, useRef, useEffect, useCallback } from 'react';
 import { useSession } from 'next-auth/react';
 import Link from 'next/link';
-import { lanoHistory } from '@/lib/smart-history';
-import { gameStats }   from '@/lib/gamification';
+import { lanoHistory } from '../../../lib/smart-history';
+import { gameStats }   from '../../../lib/gamification';
 
 const SAGE = '#4a7c59';
 

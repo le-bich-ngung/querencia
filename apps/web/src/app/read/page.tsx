@@ -6,7 +6,7 @@
  */
 import { useState, useEffect } from 'react';
 import Link from 'next/link';
-import { readHistory } from '@/lib/smart-history';
+import { readHistory } from '../../lib/smart-history';
 
 const SAGE = '#4a7c59';
 

@@ -7,8 +7,8 @@
 import { useState } from 'react';
 import Link from 'next/link';
 import { useSession } from 'next-auth/react';
-import { TOOLS, CATEGORIES, getFreeTools, getPaidTools } from '@/lib/tools-registry';
-import type { Tool } from '@/lib/tools-registry';
+import { TOOLS, CATEGORIES, getFreeTools, getPaidTools } from '../../lib/tools-registry';
+import type { Tool } from '../../lib/tools-registry';
 
 export default function ToolsPage() {
   const { data: session } = useSession();
