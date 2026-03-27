@@ -6,7 +6,7 @@
 import { useState, useEffect } from 'react';
 import Link from 'next/link';
 import { useSession } from 'next-auth/react';
-import { useProfile } from '@/hooks/use-profile';
+import { useProfile } from '../../hooks/use-profile';
 
 const SAGE = '#4a7c59';
 

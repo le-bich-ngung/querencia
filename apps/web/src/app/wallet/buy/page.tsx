@@ -9,7 +9,7 @@ import { useEffect, useState, Suspense } from 'react';
 import { useSearchParams, useRouter } from 'next/navigation';
 import Link from 'next/link';
 import { useSession } from 'next-auth/react';
-import { useProfile } from '@/hooks/use-profile';
+import { useProfile } from '../../../hooks/use-profile';
 
 declare global {
   interface Window { Paddle?: any; }

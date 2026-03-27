@@ -4,7 +4,7 @@
  * Tool HTML được serve từ /public/tools/*.html
  */
 import { notFound } from 'next/navigation';
-import { getToolBySlug, TOOLS } from '@/lib/tools-registry';
+import { getToolBySlug, TOOLS } from '../../../lib/tools-registry';
 import { ToolFrame } from './tool-frame';
 
 // Static params cho tất cả 44 tools

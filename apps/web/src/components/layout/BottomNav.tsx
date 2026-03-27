@@ -10,7 +10,7 @@ import { useState }    from 'react';
 import Link            from 'next/link';
 import { usePathname } from 'next/navigation';
 import { useSession, signOut } from 'next-auth/react';
-import { useProfile }  from '@/hooks/use-profile';
+import { useProfile }  from '../../hooks/use-profile';
 
 // ── Icons ─────────────────────────────────────────────────────
 type IconProps = { active: boolean };

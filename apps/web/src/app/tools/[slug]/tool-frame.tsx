@@ -1,7 +1,7 @@
 'use client';
 import { useSession } from 'next-auth/react';
 import Link from 'next/link';
-import type { Tool } from '@/lib/tools-registry';
+import type { Tool } from '../../../lib/tools-registry';
 
 interface Props { tool: Tool }
 

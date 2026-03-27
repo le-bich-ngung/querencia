@@ -7,7 +7,7 @@
 import { useState }    from 'react';
 import Link            from 'next/link';
 import { useSession, signOut } from 'next-auth/react';
-import { useProfile }  from '@/hooks/use-profile';
+import { useProfile }  from '../hooks/use-profile';
 import { usePathname } from 'next/navigation';
 
 const Logo = () => (
