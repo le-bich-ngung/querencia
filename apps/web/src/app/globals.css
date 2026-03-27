@@ -1,0 +1,42 @@
+*, *::before, *::after {
+  box-sizing: border-box;
+  margin: 0;
+  padding: 0;
+}
+
+:root {
+  --bg: #ffffff;
+  --bg-surface: #f5f5f4;
+  --border: #e5e7eb;
+  --text: #1a1a1a;
+  --text-secondary: #6b7280;
+  --gray: #9ca3af;
+  --green: #4a7c59;
+}
+
+@media (prefers-color-scheme: dark) {
+  :root {
+    --bg: #0f0f0f;
+    --bg-surface: #1a1a1a;
+    --border: #2d2d2d;
+    --text: #f5f5f4;
+    --text-secondary: #9ca3af;
+    --gray: #6b7280;
+  }
+}
+
+html, body {
+  height: 100%;
+  font-family: 'Plus Jakarta Sans', sans-serif;
+  background: var(--bg);
+  color: var(--text);
+  -webkit-font-smoothing: antialiased;
+}
+
+a {
+  color: inherit;
+}
+
+button {
+  cursor: pointer;
+}

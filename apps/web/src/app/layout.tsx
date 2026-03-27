@@ -3,7 +3,7 @@ import { Providers }  from '../components/providers';
 import { Navbar }     from '../components/navbar';
 import { BottomNav }  from '../components/layout/BottomNav';
 import { LumenProvider } from '../components/ui/LumenMode';
-import '@/styles/globals.css';
+import './globals.css';
 
 export const metadata: Metadata = {
   title:       { default: 'Querencia', template: '%s — Querencia' },
