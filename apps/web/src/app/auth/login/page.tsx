@@ -10,7 +10,7 @@
 import { useState, useRef } from 'react';
 import { signIn }            from 'next-auth/react';
 import Link                  from 'next/link';
-import { useRouter, useSearchParams } from 'next/navigation';
+import { useRouter, useSearchParams, Suspense } from 'next/navigation';
 import { AuthCard }    from '../../../components/auth/AuthCard';
 import { AuthInput }   from '../../../components/auth/AuthInput';
 import { AuthMessage } from '../../../components/auth/AuthMessage';
@@ -33,7 +33,7 @@ type MFAState = {
   expires:  number; // timestamp
 };
 
-export default function LoginPage() {
+function LoginContent() {
   const router       = useRouter();
   const searchParams = useSearchParams();
   const callbackUrl  = searchParams.get('callbackUrl') ?? '/';
@@ -358,4 +358,8 @@ function SpinnerIcon() {
         strokeDasharray="31.4" strokeDashoffset="10" strokeLinecap="round"/>
     </svg>
   );
+}
+
+export default function LoginPage() {
+  return <Suspense><LoginContent /></Suspense>;
 }
