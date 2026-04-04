@@ -11,10 +11,6 @@ const SAGE = '#4a7c59';
 function AnimatedLogo({ size = 80 }: { size?: number }) {
   return (
     <svg xmlns="http://www.w3.org/2000/svg" viewBox="14 14 88 88" width={size} height={size}>
-      <style>{`
-        @keyframes waveRun { 0%{stroke-dashoffset:160} 100%{stroke-dashoffset:-160} }
-        .qw { stroke-dasharray:160; animation:waveRun 2s linear infinite; }
-      `}</style>
       <defs><clipPath id="qClipHome"><circle cx="55" cy="55" r="32"/></clipPath></defs>
       <circle cx="55" cy="55" r="38" fill="none" stroke={SAGE} strokeWidth="7" strokeLinecap="round"/>
       <line x1="81" y1="79" x2="98" y2="98" stroke={SAGE} strokeWidth="7" strokeLinecap="round"/>
@@ -153,20 +149,6 @@ export default function HomePage() {
 
   return (
     <>
-      <style>{`
-        * { box-sizing: border-box; margin: 0; padding: 0; }
-        body { font-family: 'DM Sans', sans-serif; overflow-x: hidden; }
-        @keyframes blink { 0%,100%{opacity:1} 50%{opacity:0} }
-        @keyframes scrollLeft {
-          0% { transform: translateX(0); }
-          100% { transform: translateX(-50%); }
-        }
-        @keyframes float { 0%,100%{transform:translateY(0)} 50%{transform:translateY(-6px)} }
-        @keyframes orb { 0%,100%{transform:translate(0,0)} 50%{transform:translate(20px,-15px)} }
-        @keyframes fadeIn { from{opacity:0;transform:translateY(12px)} to{opacity:1;transform:translateY(0)} }
-        .ticker-inner { display:flex; gap:32px; animation:scrollLeft 30s linear infinite; white-space:nowrap; }
-        .ticker-inner:hover { animation-play-state:paused; }
-      `}</style>
 
       {/* ── FLOATING NAV ────────────────────────────────────── */}
       <nav style={{
@@ -179,7 +161,6 @@ export default function HomePage() {
         {/* Logo */}
         <Link href="/" style={{ display: 'flex', alignItems: 'center', gap: 5, textDecoration: 'none' }}>
           <svg xmlns="http://www.w3.org/2000/svg" viewBox="14 14 88 88" width={20} height={20}>
-            <style>{`.qwn{stroke-dasharray:160;animation:waveRun 2s linear infinite}`}</style>
             <defs><clipPath id="qcn"><circle cx="55" cy="55" r="32"/></clipPath></defs>
             <circle cx="55" cy="55" r="38" fill="none" stroke={SAGE} strokeWidth="7" strokeLinecap="round"/>
             <line x1="81" y1="79" x2="98" y2="98" stroke={SAGE} strokeWidth="7" strokeLinecap="round"/>

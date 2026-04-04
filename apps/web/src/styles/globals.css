@@ -99,3 +99,18 @@ body > [aria-hidden="true"] { pointer-events: none; }
     scroll-behavior: auto !important;
   }
 }
+
+/* Homepage animations */
+@keyframes blink { 0%,100%{opacity:1} 50%{opacity:0} }
+@keyframes scrollLeft {
+  0% { transform: translateX(0); }
+  100% { transform: translateX(-50%); }
+}
+@keyframes float { 0%,100%{transform:translateY(0)} 50%{transform:translateY(-6px)} }
+@keyframes orb { 0%,100%{transform:translate(0,0)} 50%{transform:translate(20px,-15px)} }
+@keyframes fadeIn { from{opacity:0;transform:translateY(12px)} to{opacity:1;transform:translateY(0)} }
+@keyframes waveRun { 0%{stroke-dashoffset:160} 100%{stroke-dashoffset:-160} }
+.qw { stroke-dasharray:160; animation:waveRun 2s linear infinite; }
+.qwn { stroke-dasharray:160; animation:waveRun 2s linear infinite; }
+.ticker-inner { display:flex; gap:32px; animation:scrollLeft 30s linear infinite; white-space:nowrap; }
+.ticker-inner:hover { animation-play-state:paused; }
