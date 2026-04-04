@@ -1,12 +1,20 @@
 import { useState, useCallback } from 'react';
 
 export interface CuiBapMessage {
-  id:        string;
-  content:   string;
-  type:      string;
-  sentAt:    string;
-  sender:    { id: string; name: string };
-  isOut:     boolean;
+  id:           string;
+  content:      string;
+  type:         string;
+  msgType?:     string;
+  sentAt:       string;
+  sender:       { id: string; name: string; avatarUrl?: string };
+  isOut:        boolean;
+  is_deleted?:  boolean;
+  replyTo?:     CuiBapMessage | null;
+  reactions?:   { emoji: string; count: number; byMe: boolean }[];
+  fileUrl?:     string;
+  fileName?:    string;
+  fileSize?:    number;
+  location?:    { lat: number; lng: number; label?: string };
 }
 
 // Aliases used by dashboard page
