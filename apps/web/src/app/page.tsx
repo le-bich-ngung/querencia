@@ -7,7 +7,7 @@ type Theme = 'mixed' | 'light' | 'dark';
 
 function AnimatedLogo({ size = 36, color = '#4a7c59' }: { size?: number; color?: string }) {
   return (
-    <svg xmlns="http://www.w3.org/2000/svg" viewBox="15 15 90 90" width={size} height={size}>
+    <svg xmlns="http://www.w3.org/2000/svg" viewBox="14 14 88 88" width={size} height={size}>
       <style>{`
         @keyframes wavePulse {
           0%   { stroke-dashoffset: 120; }
