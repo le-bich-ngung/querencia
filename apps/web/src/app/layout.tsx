@@ -9,6 +9,13 @@ export const metadata: Metadata = {
   title:       { default: 'Querencia', template: '%s — Querencia' },
   description: 'Nope · Cùi Bắp · LàNo · Tools — Một hệ sinh thái, một tài khoản.',
   themeColor:  '#4a7c59',
+  icons: {
+    icon:  [
+      { url: '/favicon.ico',  sizes: '32x32' },
+      { url: '/favicon.svg',  type: 'image/svg+xml' },
+    ],
+    apple: '/apple-touch-icon.png',
+  },
 };
 
 export default function RootLayout({ children }: { children: React.ReactNode }) {
