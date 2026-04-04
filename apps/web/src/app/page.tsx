@@ -106,7 +106,7 @@ export default function HomePage() {
   }, []);
 
   useEffect(() => {
-    const h = (e: MouseEvent) => { if (langRef.current && !langRef.current.contains(e.target as Node)) setLangOpen(false); };
+    const h = (e) => { if (langRef.current && !langRef.current.contains(e.target)) setLangOpen(false); };
     document.addEventListener('mousedown', h);
     return () => document.removeEventListener('mousedown', h);
   }, []);
