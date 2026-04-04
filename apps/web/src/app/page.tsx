@@ -1,3 +1,4 @@
+// v2
 'use client';
 import { useEffect, useRef, useState } from 'react';
 import Link from 'next/link';
@@ -52,7 +53,7 @@ function Typewriter({ text }: { text: string }) {
   );
 }
 
-function Reveal({ children, delay = 0 }: { children: React.ReactNode; delay?: number }) {
+function Reveal({ children, delay = 0 }: { children: any; delay?: number }) {
   const ref = useRef<HTMLDivElement>(null);
   const [v, setV] = useState(false);
   useEffect(() => {

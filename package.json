@@ -2,14 +2,17 @@
   "name": "querencia",
   "version": "0.1.0",
   "private": true,
-  "description": "Querencia ecosystem — Nope · Cùi Bắp · LàNo · Tools",
-  "workspaces": ["apps/*", "packages/*"],
+  "description": "Querencia ecosystem \u2014 Nope \u00b7 C\u00f9i B\u1eafp \u00b7 L\u00e0No \u00b7 Tools",
+  "workspaces": [
+    "apps/*",
+    "packages/*"
+  ],
   "scripts": {
     "dev": "turbo dev",
     "dev:web": "turbo dev --filter=@querencia/web",
     "dev:api": "turbo dev --filter=@querencia/api",
     "dev:ai": "turbo dev --filter=@querencia/ai-service",
-    "build": "turbo build",
+    "build": "turbo build \"--filter=@querencia/web\" --force",
     "test": "turbo test",
     "lint": "turbo lint",
     "typecheck": "turbo typecheck",
