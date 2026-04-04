@@ -1,4 +1,3 @@
-// useCuiBap — hook cho web chat widget (simplified version)
 import { useState, useCallback } from 'react';
 
 export interface CuiBapMessage {
@@ -8,6 +7,26 @@ export interface CuiBapMessage {
   sentAt:    string;
   sender:    { id: string; name: string };
   isOut:     boolean;
+}
+
+// Aliases used by dashboard page
+export type CBMessage      = CuiBapMessage;
+export interface CBConversation {
+  id:           string;
+  userAId:      string;
+  userBId:      string;
+  lastMessageAt: string;
+  other?: { id: string; name: string; avatarUrl?: string };
+  unread?: number;
+  lastMessage?: string;
+}
+export interface CBGroup {
+  id:        string;
+  name:      string;
+  avatarUrl?: string;
+  memberCount?: number;
+  unread?: number;
+  lastMessage?: string;
 }
 
 export function useCuiBap(convId: string, token?: string) {
