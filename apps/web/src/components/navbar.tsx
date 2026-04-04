@@ -4,7 +4,8 @@
  * Chỉ còn: Logo | [Q balance nếu logged in] | Auth button
  * Gọn, không chiếm không gian
  */
-import { useState }    from 'react';
+import { useState, useRef, useEffect } from 'react';
+import { useI18n, LOCALES, type Locale } from '../lib/i18n';
 import Link            from 'next/link';
 import { useSession, signOut } from 'next-auth/react';
 import { useProfile }  from '../hooks/use-profile';
@@ -27,6 +28,17 @@ export function Navbar() {
   const { data: session, status } = useSession();
   const { user, quota }    = useProfile();
   const [dropOpen, setDrop] = useState(false);
+  const { locale, setLocale, t } = useI18n();
+  const [langOpen, setLangOpen] = useState(false);
+  const langRef = useRef<HTMLDivElement>(null);
+
+  useEffect(() => {
+    const handler = (e: MouseEvent) => {
+      if (langRef.current && !langRef.current.contains(e.target as Node)) setLangOpen(false);
+    };
+    document.addEventListener('mousedown', handler);
+    return () => document.removeEventListener('mousedown', handler);
+  }, []);
 
   // Ẩn hoàn toàn ở auth pages (auth card có logo riêng)
   if (pathname.startsWith('/auth')) return null;
@@ -62,6 +74,39 @@ export function Navbar() {
 
       {/* Right side */}
       <div style={{ display: 'flex', alignItems: 'center', gap: 10 }}>
+        {/* Language switcher */}
+        <div ref={langRef} style={{ position: 'relative' }}>
+          <button onClick={() => setLangOpen(o => !o)} style={{
+            display: 'flex', alignItems: 'center', gap: 4,
+            background: 'none', border: '1px solid var(--border, rgba(0,0,0,0.08))',
+            borderRadius: 8, padding: '5px 10px', cursor: 'pointer',
+            fontSize: '0.8rem', color: 'var(--text-secondary)',
+            transition: 'all 0.15s',
+          }}>
+            🌐 {LOCALES.find(l => l.code === locale)?.flag}
+          </button>
+          {langOpen && (
+            <div style={{
+              position: 'absolute', top: '110%', right: 0,
+              background: 'var(--bg, #fff)', border: '1px solid var(--border, rgba(0,0,0,0.08))',
+              borderRadius: 10, boxShadow: '0 8px 24px rgba(0,0,0,0.1)',
+              padding: 6, zIndex: 200, minWidth: 160,
+            }}>
+              {LOCALES.map(l => (
+                <button key={l.code} onClick={() => { setLocale(l.code); setLangOpen(false); }} style={{
+                  display: 'flex', alignItems: 'center', gap: 8, width: '100%',
+                  padding: '8px 12px', background: locale === l.code ? 'rgba(74,124,89,0.08)' : 'none',
+                  border: 'none', borderRadius: 7, cursor: 'pointer',
+                  fontSize: '0.83rem', color: locale === l.code ? '#4a7c59' : 'var(--text)',
+                  fontWeight: locale === l.code ? 600 : 400, textAlign: 'left',
+                }}>
+                  <span>{l.flag}</span><span>{l.label}</span>
+                </button>
+              ))}
+            </div>
+          )}
+        </div>
+
         {/* Pricing link */}
         <Link href="/pricing" style={{
           fontSize: '0.8rem', color: 'var(--text-secondary)',
