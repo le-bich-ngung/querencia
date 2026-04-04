@@ -11,11 +11,9 @@ function AnimatedLogo({ size = 36, color = '#4a7c59' }: { size?: number; color?:
       <style>{`
         @keyframes waveAnim {
           0%   { stroke-dashoffset: 160; }
-          40%  { stroke-dashoffset: 0; }
-          70%  { stroke-dashoffset: 0; }
           100% { stroke-dashoffset: -160; }
         }
-        .qwave { stroke-dasharray: 160; animation: waveAnim 2.4s ease-in-out infinite; }
+        .qwave { stroke-dasharray: 160; animation: waveAnim 2s linear infinite; }
       `}</style>
       <defs><clipPath id="qClipMain"><circle cx="55" cy="55" r="32"/></clipPath></defs>
       <circle cx="55" cy="55" r="38" fill="none" stroke={color} strokeWidth="7" strokeLinecap="round"/>
