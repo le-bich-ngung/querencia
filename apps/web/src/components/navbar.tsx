@@ -50,7 +50,7 @@ export function Navbar() {
     }}>
       {/* Logo */}
       <Link href="/" style={{
-        display: 'flex', alignItems: 'center', gap: 2,
+        display: 'flex', alignItems: 'center', gap: 0,
         textDecoration: 'none', color: 'inherit',
       }}>
         <Logo />
