@@ -25,7 +25,7 @@ function AnimatedLogo({ size = 36, color = '#4a7c59' }: { size?: number; color?:
       <circle cx="55" cy="55" r="38" fill="none" stroke={color} strokeWidth="7" strokeLinecap="round"/>
       <line x1="81" y1="79" x2="98" y2="98" stroke={color} strokeWidth="7" strokeLinecap="round"/>
       <polyline className="qwave-init" points="20,55 28,38 35,68 43,32 51,60 58,43 66,70 74,48 90,55"
-        fill="none" stroke={color} strokeWidth="3.5" strokeLinecap="round" strokeLinejoin="round" clipPath="url(#qClipMain)"/>
+        fill="none" stroke={color} strokeWidth="3" strokeLinecap="round" strokeLinejoin="round" clipPath="url(#qClipMain)"/>
     </svg>
   );
 }
@@ -137,7 +137,7 @@ export default function HomePage() {
         borderBottom:'1px solid rgba(255,255,255,0.05)',
       }}>
         <Link href="/" style={{ display:'flex', alignItems:'center', gap:4, textDecoration:'none' }}>
-          <AnimatedLogo size={28} color={sage} />
+          <AnimatedLogo size={22} color={sage} />
           <span style={{ fontWeight:700, fontSize:'0.95rem', color:'#f0efeb', letterSpacing:-0.3 }}>
             <span style={{ opacity:0.5 }}>ueren</span><span style={{ color:sage }}>cia</span>
           </span>
