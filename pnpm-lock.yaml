@@ -328,6 +328,9 @@ importers:
       tailwind-merge:
         specifier: ^2.3.0
         version: 2.6.1
+      typescript:
+        specifier: ^5.4.0
+        version: 5.9.3
     devDependencies:
       '@types/node':
         specifier: ^20.0.0
@@ -347,9 +350,6 @@ importers:
       tailwindcss:
         specifier: ^3.4.0
         version: 3.4.19
-      typescript:
-        specifier: ^5.4.0
-        version: 5.9.3
 
   packages/db:
     dependencies:
