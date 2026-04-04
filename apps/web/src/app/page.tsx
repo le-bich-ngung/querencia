@@ -9,22 +9,18 @@ function AnimatedLogo({ size = 36, color = '#4a7c59' }: { size?: number; color?:
   return (
     <svg xmlns="http://www.w3.org/2000/svg" viewBox="14 14 88 88" width={size} height={size}>
       <style>{`
-        @keyframes wavePulse {
-          0%   { stroke-dashoffset: 120; }
-          60%  { stroke-dashoffset: 0; }
-          100% { stroke-dashoffset: 0; }
+        @keyframes waveAnim {
+          0%   { stroke-dashoffset: 160; }
+          40%  { stroke-dashoffset: 0; }
+          70%  { stroke-dashoffset: 0; }
+          100% { stroke-dashoffset: -160; }
         }
-        @keyframes waveLoop {
-          0%, 100% { stroke-dashoffset: 0; }
-          50%       { stroke-dashoffset: 60; }
-        }
-        .qwave-init { stroke-dasharray: 120; stroke-dashoffset: 120; animation: wavePulse 1.4s ease forwards; }
-        .qwave-loop { stroke-dasharray: 120; stroke-dashoffset: 0; animation: waveLoop 3s ease-in-out 1.4s infinite; }
+        .qwave { stroke-dasharray: 160; animation: waveAnim 2.4s ease-in-out infinite; }
       `}</style>
       <defs><clipPath id="qClipMain"><circle cx="55" cy="55" r="32"/></clipPath></defs>
       <circle cx="55" cy="55" r="38" fill="none" stroke={color} strokeWidth="7" strokeLinecap="round"/>
       <line x1="81" y1="79" x2="98" y2="98" stroke={color} strokeWidth="7" strokeLinecap="round"/>
-      <polyline className="qwave-init" points="20,55 28,38 35,68 43,32 51,60 58,43 66,70 74,48 90,55"
+      <polyline className="qwave" points="20,55 28,38 35,68 43,32 51,60 58,43 66,70 74,48 90,55"
         fill="none" stroke={color} strokeWidth="3" strokeLinecap="round" strokeLinejoin="round" clipPath="url(#qClipMain)"/>
     </svg>
   );
