@@ -11,8 +11,8 @@ import { useProfile }  from '../hooks/use-profile';
 import { usePathname } from 'next/navigation';
 
 const Logo = () => (
-  <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 120 120" width="26" height="26"
-    style={{ flexShrink: 0, position: 'relative', top: 1 }}>
+  <svg xmlns="http://www.w3.org/2000/svg" viewBox="14 14 88 88" width="22" height="22"
+    style={{ flexShrink: 0, position: 'relative', top: 0 }}>
     <defs><clipPath id="qClipTopNav"><circle cx="55" cy="55" r="32"/></clipPath></defs>
     <circle cx="55" cy="55" r="38" fill="none" stroke="#4a7c59" strokeWidth="7" strokeLinecap="round"/>
     <line x1="81" y1="79" x2="98" y2="98" stroke="#4a7c59" strokeWidth="7" strokeLinecap="round"/>
@@ -50,7 +50,7 @@ export function Navbar() {
     }}>
       {/* Logo */}
       <Link href="/" style={{
-        display: 'flex', alignItems: 'center', gap: 0,
+        display: 'flex', alignItems: 'center', gap: -2,
         textDecoration: 'none', color: 'inherit',
       }}>
         <Logo />
