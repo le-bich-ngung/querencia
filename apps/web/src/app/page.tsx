@@ -114,7 +114,7 @@ export default function HomePage() {
   const currentQuote = QUOTES[quoteIdx];
   const currentLaw = LAW_QUOTES[lawIdx];
   const currentApp = APPS[appIdx];
-  const waveStyle = { strokeDasharray: 160, animation: 'waveRun 2s linear infinite' } as React.CSSProperties;
+  const waveStyle = { strokeDasharray: 160, animation: 'waveRun 2s linear infinite' };
 
   return (
     <div>
@@ -183,7 +183,7 @@ export default function HomePage() {
             <span style={{ opacity: 0.35 }}>ueren</span><span style={{ color: SAGE }}>cia</span>
           </h1>
 
-          <p style={{ fontSize: '0.8rem', fontWeight: 500, letterSpacing: '0.2em', textTransform: 'uppercase' as const, color: SAGE, opacity: 0.7, marginBottom: 48 }}>Tech and more</p>
+          <p style={{ fontSize: '0.8rem', fontWeight: 500, letterSpacing: '0.2em', textTransform: 'uppercase', color: SAGE, opacity: 0.7, marginBottom: 48 }}>Tech and more</p>
 
           <div style={{ fontFamily: 'Instrument Serif, Georgia, serif', fontSize: 'clamp(1rem, 2.5vw, 1.4rem)', color: 'rgba(240,239,235,0.45)', lineHeight: 1.7, maxWidth: 620, fontStyle: 'italic', minHeight: 80 }}>
             <Typewriter text='"It\'s not that the world is too dark but that we\'ve grown used to not lighting ourselves up."' />
@@ -219,7 +219,7 @@ export default function HomePage() {
       <section style={{ background: '#fafaf8', padding: '80px 24px', minHeight: 360, display: 'flex', alignItems: 'center' }}>
         <div style={{ maxWidth: 720, margin: '0 auto', textAlign: 'center', width: '100%' }}>
           <Reveal>
-            <p style={{ fontSize: '0.7rem', fontWeight: 700, letterSpacing: '0.12em', textTransform: 'uppercase' as const, color: '#999', marginBottom: 32 }}>From Read</p>
+            <p style={{ fontSize: '0.7rem', fontWeight: 700, letterSpacing: '0.12em', textTransform: 'uppercase', color: '#999', marginBottom: 32 }}>From Read</p>
           </Reveal>
           <div style={{ opacity: quoteVisible ? 1 : 0, transform: quoteVisible ? 'translateY(0)' : 'translateY(10px)', transition: 'opacity 0.6s ease, transform 0.6s ease', minHeight: 140 }}>
             <blockquote style={{ fontFamily: 'Instrument Serif, Georgia, serif', fontSize: 'clamp(1.4rem, 3vw, 2rem)', fontWeight: 400, fontStyle: 'italic', color: '#111', lineHeight: 1.55, letterSpacing: -0.3, marginBottom: 20 }}>
@@ -239,7 +239,7 @@ export default function HomePage() {
           <Reveal>
             <div style={{ display: 'flex', alignItems: 'center', gap: 10, marginBottom: 32 }}>
               <span style={{ fontSize: '1.2rem' }}>⚖️</span>
-              <span style={{ fontSize: '0.7rem', fontWeight: 700, letterSpacing: '0.12em', textTransform: 'uppercase' as const, color: 'rgba(240,239,235,0.3)' }}>Law and Justice · From Read</span>
+              <span style={{ fontSize: '0.7rem', fontWeight: 700, letterSpacing: '0.12em', textTransform: 'uppercase', color: 'rgba(240,239,235,0.3)' }}>Law and Justice · From Read</span>
             </div>
           </Reveal>
           <div style={{ opacity: lawVisible ? 1 : 0, transform: lawVisible ? 'translateY(0)' : 'translateY(10px)', transition: 'opacity 0.6s ease, transform 0.6s ease', minHeight: 140 }}>
@@ -255,7 +255,7 @@ export default function HomePage() {
       <section style={{ background: '#fafaf8', padding: '80px 24px', minHeight: 400, display: 'flex', alignItems: 'center' }}>
         <div style={{ maxWidth: 800, margin: '0 auto', width: '100%' }}>
           <Reveal>
-            <p style={{ fontSize: '0.7rem', fontWeight: 700, letterSpacing: '0.12em', textTransform: 'uppercase' as const, color: '#999', marginBottom: 40 }}>The ecosystem</p>
+            <p style={{ fontSize: '0.7rem', fontWeight: 700, letterSpacing: '0.12em', textTransform: 'uppercase', color: '#999', marginBottom: 40 }}>The ecosystem</p>
           </Reveal>
           <div style={{ opacity: appVisible ? 1 : 0, transform: appVisible ? 'translateY(0)' : 'translateY(8px)', transition: 'opacity 0.5s ease, transform 0.5s ease' }}>
             <div style={{ display: 'flex', alignItems: 'center', gap: 20, marginBottom: 20 }}>
