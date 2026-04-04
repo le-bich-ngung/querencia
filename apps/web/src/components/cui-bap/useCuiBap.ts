@@ -5,36 +5,40 @@ export interface CuiBapMessage {
   content:      string;
   type:         string;
   msgType?:     string;
-  sentAt:       string;
-  sender:       { id: string; name: string; avatarUrl?: string };
-  isOut:        boolean;
+  sent_at?:     string;
+  sentAt?:      string;
+  sender?:      { id: string; name: string; avatarUrl?: string };
+  isOut?:       boolean;
   is_deleted?:  boolean;
-  replyTo?:     CuiBapMessage | null;
-  reactions?:   { emoji: string; count: number; byMe: boolean }[];
-  fileUrl?:     string;
-  fileName?:    string;
-  fileSize?:    number;
-  location?:    { lat: number; lng: number; label?: string };
+  is_edited?:   boolean;
+  reply_to_id?: string | null;
+  reactions?:   Record<string, number>;
+  file_url?:    string;
+  file_name?:   string;
+  file_size?:   number;
 }
 
-// Aliases used by dashboard page
-export type CBMessage      = CuiBapMessage;
+export type CBMessage = CuiBapMessage;
+
 export interface CBConversation {
-  id:           string;
-  userAId:      string;
-  userBId:      string;
-  lastMessageAt: string;
-  other?: { id: string; name: string; avatarUrl?: string };
-  unread?: number;
-  lastMessage?: string;
+  id:            string;
+  userAId?:      string;
+  userBId?:      string;
+  lastMessageAt?: string;
+  other_user?:   { id: string; name: string; avatarUrl?: string };
+  is_online?:    boolean;
+  last_message?: string;
+  unread?:       number;
 }
+
 export interface CBGroup {
-  id:        string;
-  name:      string;
-  avatarUrl?: string;
-  memberCount?: number;
-  unread?: number;
-  lastMessage?: string;
+  id:            string;
+  name:          string;
+  avatarUrl?:    string;
+  member_count?: number;
+  memberCount?:  number;
+  last_message?: string;
+  unread?:       number;
 }
 
 export function useCuiBap(convId: string, token?: string) {
