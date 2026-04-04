@@ -14,9 +14,10 @@ function AnimatedLogo({ size = 80 }: { size?: number }) {
       <defs><clipPath id="qClipHome"><circle cx="55" cy="55" r="32"/></clipPath></defs>
       <circle cx="55" cy="55" r="38" fill="none" stroke={SAGE} strokeWidth="7" strokeLinecap="round"/>
       <line x1="81" y1="79" x2="98" y2="98" stroke={SAGE} strokeWidth="7" strokeLinecap="round"/>
-      <polyline className="qw" points="20,55 28,38 35,68 43,32 51,60 58,43 66,70 74,48 90,55"
+      <polyline points="20,55 28,38 35,68 43,32 51,60 58,43 66,70 74,48 90,55"
         fill="none" stroke={SAGE} strokeWidth="3" strokeLinecap="round" strokeLinejoin="round"
-        clipPath="url(#qClipHome)"/>
+        clipPath="url(#qClipHome)"
+        style={{ strokeDasharray: 160, animation: 'waveRun 2s linear infinite' }}/>
     </svg>
   );
 }
@@ -150,7 +151,7 @@ export default function HomePage() {
   return (
     <>
 
-      {/* ── FLOATING NAV ────────────────────────────────────── */}
+      {/* -- FLOATING NAV -------------------------------------- */}
       <nav style={{
         position: 'fixed', top: 16, left: '50%', transform: 'translateX(-50%)',
         zIndex: 200, display: 'flex', alignItems: 'center', gap: 12,
@@ -164,8 +165,9 @@ export default function HomePage() {
             <defs><clipPath id="qcn"><circle cx="55" cy="55" r="32"/></clipPath></defs>
             <circle cx="55" cy="55" r="38" fill="none" stroke={SAGE} strokeWidth="7" strokeLinecap="round"/>
             <line x1="81" y1="79" x2="98" y2="98" stroke={SAGE} strokeWidth="7" strokeLinecap="round"/>
-            <polyline className="qwn" points="20,55 28,38 35,68 43,32 51,60 58,43 66,70 74,48 90,55"
-              fill="none" stroke={SAGE} strokeWidth="3" strokeLinecap="round" strokeLinejoin="round" clipPath="url(#qcn)"/>
+            <polyline points="20,55 28,38 35,68 43,32 51,60 58,43 66,70 74,48 90,55"
+              fill="none" stroke={SAGE} strokeWidth="3" strokeLinecap="round" strokeLinejoin="round" clipPath="url(#qcn)"
+              style={{ strokeDasharray: 160, animation: 'waveRun 2s linear infinite' }}/>
           </svg>
           <div style={{ display: 'flex', flexDirection: 'column', lineHeight: 1, gap: 0 }}>
             <span style={{ fontWeight: 700, fontSize: '0.88rem', letterSpacing: -0.3, color: '#f0efeb' }}>
@@ -231,7 +233,7 @@ export default function HomePage() {
         )}
       </nav>
 
-      {/* ── 1. HERO ─────────────────────────────────────────── */}
+      {/* -- 1. HERO ------------------------------------------- */}
       <section style={{
         minHeight: '100vh', background: '#070908', position: 'relative',
         display: 'flex', flexDirection: 'column', alignItems: 'center', justifyContent: 'center',
@@ -282,7 +284,7 @@ export default function HomePage() {
         </div>
       </section>
 
-      {/* ── 2. TOOLS TICKER ─────────────────────────────────── */}
+      {/* -- 2. TOOLS TICKER ----------------------------------- */}
       <section style={{ background: '#111814', padding: '40px 0', overflow: 'hidden' }}>
         <div style={{ overflow: 'hidden', position: 'relative' }}>
           {/* Fade edges */}
@@ -312,7 +314,7 @@ export default function HomePage() {
         </div>
       </section>
 
-      {/* ── 3. QUOTE FROM READ ──────────────────────────────── */}
+      {/* -- 3. QUOTE FROM READ -------------------------------- */}
       <section style={{ background: '#fafaf8', padding: '80px 24px', minHeight: 360, display: 'flex', alignItems: 'center' }}>
         <div style={{ maxWidth: 720, margin: '0 auto', textAlign: 'center', width: '100%' }}>
           <Reveal>
@@ -342,7 +344,7 @@ export default function HomePage() {
         </div>
       </section>
 
-      {/* ── 4. LAW SECTION ──────────────────────────────────── */}
+      {/* -- 4. LAW SECTION ------------------------------------ */}
       <section style={{
         background: '#0c0e0c', padding: '80px 24px', minHeight: 360,
         display: 'flex', alignItems: 'center', position: 'relative', overflow: 'hidden',
@@ -377,7 +379,7 @@ export default function HomePage() {
         </div>
       </section>
 
-      {/* ── 5. APPS ROTATING ────────────────────────────────── */}
+      {/* -- 5. APPS ROTATING ---------------------------------- */}
       <section style={{ background: '#fafaf8', padding: '80px 24px', minHeight: 400, display: 'flex', alignItems: 'center' }}>
         <div style={{ maxWidth: 800, margin: '0 auto', width: '100%' }}>
           <Reveal>
@@ -421,7 +423,7 @@ export default function HomePage() {
         </div>
       </section>
 
-      {/* ── 6. FINAL CTA ────────────────────────────────────── */}
+      {/* -- 6. FINAL CTA -------------------------------------- */}
       <section style={{
         background: '#070908', padding: '100px 24px',
         textAlign: 'center', position: 'relative', overflow: 'hidden',
@@ -452,7 +454,7 @@ export default function HomePage() {
         </Reveal>
       </section>
 
-      {/* ── FOOTER ──────────────────────────────────────────── */}
+      {/* -- FOOTER -------------------------------------------- */}
       <footer style={{ background: '#070908', borderTop: '1px solid rgba(255,255,255,0.05)', padding: '28px 24px' }}>
         <div style={{ maxWidth: 1100, margin: '0 auto', display: 'flex', alignItems: 'center', justifyContent: 'space-between', flexWrap: 'wrap', gap: 12 }}>
           <div style={{ display: 'flex', alignItems: 'center', gap: 6 }}>
