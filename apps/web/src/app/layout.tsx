@@ -1,6 +1,5 @@
 import type { Metadata } from 'next';
 import { Providers }  from '../components/providers';
-import { Navbar }     from '../components/navbar';
 import { BottomNav }     from '../components/layout/BottomNav';
 import { GlobalFooter } from '../components/layout/GlobalFooter';
 import { LumenProvider } from '../components/ui/LumenMode';
@@ -31,7 +30,6 @@ export default function RootLayout({ children }: { children: React.ReactNode }) 
       <body>
         <Providers>
           <LumenProvider>
-            <Navbar />
             <main style={{ minHeight: '100vh' }}>{children}</main>
             <GlobalFooter />
             <BottomNav />

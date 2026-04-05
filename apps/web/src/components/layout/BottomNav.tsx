@@ -105,12 +105,12 @@ export function BottomNav() {
   return (
     <>
       {/* Spacer */}
-      <div style={{ height: 72 }}/>
+      <div style={{ height: 52 }}/>
 
       {/* Q strip — chỉ hiện khi logged in và có Q */}
       {session && totalQ > 0 && (
         <div style={{
-          position: 'fixed', bottom: 72, left: 0, right: 0,
+          position: 'fixed', bottom: 52, left: 0, right: 0,
           display: 'flex', justifyContent: 'center', zIndex: 99,
           pointerEvents: 'none',
         }}>
@@ -155,7 +155,7 @@ export function BottomNav() {
       {/* Apps drawer */}
       {appsOpen && (
         <div style={{
-          position: 'fixed', bottom: 80, left: '50%',
+          position: 'fixed', bottom: 58, left: '50%',
           transform: 'translateX(-50%)',
           zIndex: 102, width: 'min(340px, calc(100vw - 32px))',
           background: 'var(--bg)',
@@ -218,7 +218,7 @@ export function BottomNav() {
       {/* Account drawer */}
       {acctOpen && (
         <div style={{
-          position: 'fixed', bottom: 80, left: '50%',
+          position: 'fixed', bottom: 58, left: '50%',
           transform: 'translateX(-50%)',
           zIndex: 102, width: 'min(340px, calc(100vw - 32px))',
           background: 'var(--bg)',
@@ -367,7 +367,7 @@ export function BottomNav() {
 
       {/* ── Bottom nav bar ── */}
       <nav style={{
-        position: 'fixed', bottom: 0, left: 0, right: 0, height: 72,
+        position: 'fixed', bottom: 0, left: 0, right: 0, height: 52,
         background: 'rgba(255,255,255,0.94)',
         backdropFilter: 'blur(16px) saturate(180%)',
         WebkitBackdropFilter: 'blur(16px) saturate(180%)',
@@ -442,9 +442,6 @@ function TabLink({ href, label, active, onClick, icon }: {
     }}>
       {active && <ActiveBar/>}
       {icon}
-      <span style={{ fontSize: '0.6rem', fontWeight: active ? 700 : 500 }}>
-        {label}
-      </span>
     </Link>
   );
 }
@@ -476,9 +473,6 @@ function TabButton({ label, active, onClick, icon, showDot }: {
           }}/>
         )}
       </div>
-      <span style={{ fontSize: '0.6rem', fontWeight: active ? 700 : 500 }}>
-        {label}
-      </span>
     </button>
   );
 }
