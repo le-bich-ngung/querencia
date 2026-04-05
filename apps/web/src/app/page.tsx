@@ -124,14 +124,16 @@ export default function HomePage() {
   var companyQuote = COMPANY_QUOTES[locale] || COMPANY_QUOTES.en;
 
   var LogoSVG = function(props) {
-    var animStyle = props.animated ? { strokeDasharray: 160, strokeDashoffset: 0, animation: 'waveRun 2s linear infinite' } : {};
+    var sz = props.size || 22;
+    var col = props.color || SAGE;
+    var animStyle = props.animated ? { strokeDasharray: 40, animation: 'waveRun 2s linear infinite' } : {};
     return (
-      <svg xmlns="http://www.w3.org/2000/svg" viewBox="22 22 72 72" width={props.size || 22} height={props.size || 22} style={{ flexShrink: 0, display: 'block' }}>
-        <defs><clipPath id={"qc" + (props.id || "")}><circle cx="55" cy="55" r="26" /></clipPath></defs>
-        <circle cx="55" cy="55" r="30" fill="none" stroke={props.color || SAGE} strokeWidth="6" strokeLinecap="round" />
-        <line x1="75" y1="75" x2="88" y2="88" stroke={props.color || SAGE} strokeWidth="6" strokeLinecap="round" />
-        <polyline points="26,55 33,41 40,65 47,34 53,57 59,43 65,66 71,48 84,55"
-          fill="none" stroke={props.color || SAGE} strokeWidth="2.5"
+      <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" width={sz} height={sz} style={{ flexShrink: 0, display: 'inline-block', verticalAlign: 'middle' }}>
+        <clipPath id={"qc" + (props.id || "")}><circle cx="10" cy="10" r="7"/></clipPath>
+        <circle cx="10" cy="10" r="7" fill="none" stroke={col} strokeWidth="1.8"/>
+        <line x1="15" y1="15" x2="21" y2="21" stroke={col} strokeWidth="1.8" strokeLinecap="round"/>
+        <polyline points="4,10 6,7 8,13 10,5 12,10 14,7 16,12 17,9 20,10"
+          fill="none" stroke={col} strokeWidth="1.2"
           strokeLinecap="round" strokeLinejoin="round"
           clipPath={"url(#qc" + (props.id || "") + ")"}
           style={animStyle} />
@@ -186,10 +188,10 @@ export default function HomePage() {
         <div style={{ position: 'absolute', width: 600, height: 600, borderRadius: '50%', top: '5%', left: '15%', background: 'radial-gradient(circle, rgba(74,124,89,0.1) 0%, transparent 70%)', pointerEvents: 'none' }} />
         <div style={{ position: 'absolute', width: 400, height: 400, borderRadius: '50%', bottom: '10%', right: '10%', background: 'radial-gradient(circle, rgba(74,124,89,0.06) 0%, transparent 70%)', pointerEvents: 'none' }} />
 
-        {/* Logo lớn + wordmark trên cùng 1 dòng */}
-        <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'center', gap: 0, marginBottom: 16 }}>
-          <LogoSVG size={90} animated={true} id="hero" />
-          <h1 style={{ fontFamily: 'Georgia, serif', fontSize: 'clamp(3rem, 9vw, 7rem)', fontWeight: 400, letterSpacing: -3, lineHeight: 1, color: '#f0efeb', margin: 0 }}>
+        {/* Logo lớn + wordmark cùng hàng */}
+        <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'center', gap: 4, marginBottom: 16 }}>
+          <LogoSVG size={80} animated={true} id="hero" />
+          <h1 style={{ fontFamily: 'Georgia, serif', fontSize: 'clamp(3rem, 9vw, 7rem)', fontWeight: 400, letterSpacing: -3, lineHeight: 1, color: '#f0efeb', margin: 0, display: 'inline' }}>
             <span style={{ opacity: 0.3 }}>ueren</span><span style={{ color: SAGE }}>cia</span>
           </h1>
         </div>
