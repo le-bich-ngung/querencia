@@ -109,14 +109,8 @@ body > [aria-hidden="true"] { pointer-events: none; }
 @keyframes float { 0%,100%{transform:translateY(0)} 50%{transform:translateY(-6px)} }
 @keyframes orb { 0%,100%{transform:translate(0,0)} 50%{transform:translate(20px,-15px)} }
 @keyframes fadeIn { from{opacity:0;transform:translateY(12px)} to{opacity:1;transform:translateY(0)} }
- to { stroke-dashoffset: -160; } }
 .qw { stroke-dasharray:160; animation:waveRun 2s linear infinite; }
 .qwn { stroke-dasharray:160; animation:waveRun 2s linear infinite; }
 .ticker-inner { display:flex; gap:32px; animation:scrollLeft 30s linear infinite; white-space:nowrap; }
 .ticker-inner:hover { animation-play-state:paused; }
-
-/* Wave animation - seamless loop */
-@keyframes waveRun {
-  0% { stroke-dashoffset: 40; }
-  100% { stroke-dashoffset: 0; }
-}
+@keyframes waveRun { 0% { stroke-dashoffset: 40; } 100% { stroke-dashoffset: 0; } }
