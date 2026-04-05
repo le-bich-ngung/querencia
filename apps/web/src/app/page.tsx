@@ -53,7 +53,7 @@ function Typewriter({ text }: { text: string }) {
 }
 
 function Reveal({ children, delay = 0 }: { children: any; delay?: number }) {
-  const ref = useRef<HTMLDivElement>(null);
+  const ref = useRef(null);
   const [v, setV] = useState(false);
   useEffect(() => {
     const el = ref.current;
@@ -79,7 +79,7 @@ export default function HomePage() {
   const [quoteVisible, setQuoteVisible] = useState(true);
   const [lawVisible, setLawVisible] = useState(true);
   const [appVisible, setAppVisible] = useState(true);
-  const langRef = useRef<HTMLDivElement>(null);
+  const langRef = useRef(null);
 
   useEffect(() => {
     const timer = setInterval(() => {
