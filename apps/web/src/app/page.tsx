@@ -31,7 +31,7 @@ const APPS = [
 
 const TOOLS = ['Image Editor','PDF to Word','Flashcards','Self-destruct Link','Screenshot Translate','Password Generator','Grammar Check','QR Generator','CV Builder','Text Summarize','Pomodoro Timer','Image Compress'];
 
-function Typewriter({ text }: { text: string }) {
+function Typewriter({ text }) {
   const [displayed, setDisplayed] = useState('');
   const [done, setDone] = useState(false);
   useEffect(() => {
@@ -52,7 +52,7 @@ function Typewriter({ text }: { text: string }) {
   );
 }
 
-function Reveal({ children, delay = 0 }: { children: any; delay?: number }) {
+function Reveal({ children, delay = 0 }) {
   const ref = useRef(null);
   const [v, setV] = useState(false);
   useEffect(() => {
