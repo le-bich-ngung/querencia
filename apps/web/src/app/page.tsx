@@ -70,7 +70,7 @@ function LetterDrop() {
   useEffect(function() {
     var timer = setInterval(function() {
       setKey(function(k) { return k + 1; });
-    }, 30000);
+    }, 3000);
     return function() { clearInterval(timer); };
   }, []);
 
@@ -336,3 +336,4 @@ export default function HomePage() {
     </div>
   );
 }
+
