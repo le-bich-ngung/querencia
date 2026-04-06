@@ -90,7 +90,7 @@ function LetterDrop() {
             fontWeight: 400,
             color: isCia ? '#4a7c59' : '#f0efeb',
             opacity: isCia ? 1 : 0.3,
-            animation: 'letterFall 0.8s cubic-bezier(0.22,1,0.36,1) ' + fallDelay + 's both, shimmerStrong 2s ease ' + shimmerDelay + 's 1',
+            animation: 'letterFall 1.2s cubic-bezier(0.34,1,0.64,1) ' + fallDelay + 's both, shimmerStrong 2s ease ' + shimmerDelay + 's 1',
           }}>
             {letter}
           </span>
@@ -336,5 +336,6 @@ export default function HomePage() {
     </div>
   );
 }
+
 
 
