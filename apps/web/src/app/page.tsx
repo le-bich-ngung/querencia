@@ -70,7 +70,7 @@ function LetterDrop() {
   useEffect(function() {
     var timer = setInterval(function() {
       setKey(function(k) { return k + 1; });
-    }, 5000);
+    }, 30000);
     return function() { clearInterval(timer); };
   }, []);
 
@@ -90,7 +90,7 @@ function LetterDrop() {
             fontWeight: 400,
             color: isCia ? '#4a7c59' : '#f0efeb',
             opacity: isCia ? 1 : 0.3,
-            animation: 'letterSlide 1.2s cubic-bezier(0.34,1,0.64,1) ' + fallDelay + 's both, shimmerStrong 2s ease ' + shimmerDelay + 's 1',
+            animation: 'letterFall 0.8s cubic-bezier(0.22,1,0.36,1) ' + fallDelay + 's both, shimmerStrong 2s ease ' + shimmerDelay + 's 1',
           }}>
             {letter}
           </span>
@@ -163,20 +163,66 @@ export default function HomePage() {
   var currentApp = APPS[appIdx];
   var companyQuote = COMPANY_QUOTES[locale] || COMPANY_QUOTES.en;
 
+  var WavePolyline = function(props) {
+    var ref = useRef(null);
+    var offset = useRef(203);
+    var opacity = useRef(0);
+    var raf = useRef(null);
+
+    useEffect(function() {
+      var el = ref.current;
+      if (!el) return;
+      var duration = 4000;
+      var start = null;
+
+      function animate(ts) {
+        if (!start) start = ts;
+        var elapsed = (ts - start) % duration;
+        var progress = elapsed / duration;
+
+        // 0-5%: fade in, 5%-95%: move, 95-100%: fade out
+        var t = progress;
+        var op = 1;
+        if (t < 0.05) op = t / 0.05;
+        else if (t > 0.95) op = (1 - t) / 0.05;
+
+        var dashoffset = 203 + (t * (-406));
+        el.style.strokeDashoffset = dashoffset;
+        el.style.opacity = op;
+        raf.current = requestAnimationFrame(animate);
+      }
+
+      el.style.strokeDasharray = '203 9999';
+      el.style.opacity = 0;
+      raf.current = requestAnimationFrame(animate);
+      return function() { cancelAnimationFrame(raf.current); };
+    }, []);
+
+    return (
+      <polyline ref={ref} points="20,55 28,38 35,68 43,32 51,60 58,43 66,70 74,48 90,55"
+        fill="none" stroke={props.col} strokeWidth="3"
+        strokeLinecap="round" strokeLinejoin="round"
+        clipPath={props.clip}
+        style={{ strokeDasharray: '203 9999', opacity: 0 }} />
+    );
+  };
+
   var LogoSVG = function(props) {
     var sz = props.size || 22;
     var col = props.color || SAGE;
-    var animStyle = props.animated ? { strokeDasharray: '203 9999', animation: 'waveRun 4s linear infinite' } : {};
+    var animStyle = {};
     return (
       <svg xmlns="http://www.w3.org/2000/svg" viewBox="13 13 86 86" width={sz} height={sz} style={{ flexShrink: 0, display: 'inline-block', verticalAlign: 'middle' }}>
         <defs><clipPath id={"qc" + (props.id || "")}><circle cx="55" cy="55" r="32"/></clipPath></defs>
         <circle cx="55" cy="55" r="38" fill="none" stroke={col} strokeWidth="7" strokeLinecap="round"/>
         <line x1="81" y1="79" x2="98" y2="98" stroke={col} strokeWidth="7" strokeLinecap="round"/>
-        <polyline points="20,55 28,38 35,68 43,32 51,60 58,43 66,70 74,48 90,55"
-          fill="none" stroke={col} strokeWidth="3"
-          strokeLinecap="round" strokeLinejoin="round"
-          clipPath={"url(#qc" + (props.id || "") + ")"}
-          style={animStyle}/>
+        {props.animated
+          ? <WavePolyline col={col} clip={"url(#qc" + (props.id || "") + ")"} />
+          : <polyline points="20,55 28,38 35,68 43,32 51,60 58,43 66,70 74,48 90,55"
+              fill="none" stroke={col} strokeWidth="3"
+              strokeLinecap="round" strokeLinejoin="round"
+              clipPath={"url(#qc" + (props.id || "") + ")"}/>
+        }
       </svg>
     );
   };
@@ -336,17 +382,3 @@ export default function HomePage() {
     </div>
   );
 }
-
-
-
-
-
-
-
-
-
-
-
-
-
-
