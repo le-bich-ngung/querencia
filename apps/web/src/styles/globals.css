@@ -70,6 +70,7 @@ body {
 ::selection {
   background: var(--sage-pale);
   color: var(--sage-dark);
+}
 
 /* Focus visible — keyboard nav */
 :focus-visible {
@@ -115,3 +116,4 @@ body > [aria-hidden="true"] { pointer-events: none; }
   40%  { filter: brightness(2.5) drop-shadow(0 0 12px rgba(255,255,255,0.8)); }
   100% { filter: brightness(1); }
 }
+
