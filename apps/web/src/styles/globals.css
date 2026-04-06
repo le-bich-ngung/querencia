@@ -144,4 +144,4 @@ body > [aria-hidden="true"] { pointer-events: none; }
   from { opacity: 0; transform: translateX(60px); }
   to   { opacity: 1; transform: translateX(0); }
 }
-@keyframes waveRun { 0% { stroke-dashoffset: 203; opacity: 0; } 5% { opacity: 1; } 95% { opacity: 1; } 99% { stroke-dashoffset: -203; opacity: 0; } 100% { stroke-dashoffset: 203; opacity: 0; } }
+@keyframes waveRun { from { stroke-dashoffset: 203; } to { stroke-dashoffset: -203; } }
