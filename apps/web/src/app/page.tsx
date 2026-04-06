@@ -70,12 +70,12 @@ function LetterDrop() {
   useEffect(function() {
     var timer = setInterval(function() {
       setKey(function(k) { return k + 1; });
-    }, 30000);
+    }, 5000);
     return function() { clearInterval(timer); };
   }, []);
 
-  // M·ªói ch·ªØ r·ªõt c√°ch nhau 0.18s, shimmer sau khi t·∫•t c·∫£ ƒë√£ r·ªõt
-  // 8 ch·ªØ x 0.18s = 1.44s + 0.8s r·ªõt = 2.24s tr∆∞·ªõc shimmer
+  // Mﬂ+˘i chﬂ+ª rﬂ+¢t c+Ìch nhau 0.18s, shimmer sau khi tﬂ¶—t cﬂ¶˙ -Ê+˙ rﬂ+¢t
+  // 8 chﬂ+ª x 0.18s = 1.44s + 0.8s rﬂ+¢t = 2.24s tr¶¶ﬂ+¢c shimmer
   return (
     <div key={key} style={{ display: 'inline-flex', alignItems: 'baseline', letterSpacing: -3, lineHeight: 1 }}>
       {letters.map(function(letter, i) {
@@ -90,7 +90,7 @@ function LetterDrop() {
             fontWeight: 400,
             color: isCia ? '#4a7c59' : '#f0efeb',
             opacity: isCia ? 1 : 0.3,
-            animation: 'letterFall 0.8s cubic-bezier(0.22,1,0.36,1) ' + fallDelay + 's both, shimmerStrong 2s ease ' + shimmerDelay + 's 1',
+            animation: 'letterSlide 1.2s cubic-bezier(0.34,1,0.64,1) ' + fallDelay + 's both, shimmerStrong 2s ease ' + shimmerDelay + 's 1',
           }}>
             {letter}
           </span>
@@ -166,7 +166,7 @@ export default function HomePage() {
   var LogoSVG = function(props) {
     var sz = props.size || 22;
     var col = props.color || SAGE;
-    var animStyle = props.animated ? { strokeDasharray: '203 9999', animation: 'waveRun 4s linear infinite' } : {};
+    var animStyle = props.animated ? { strokeDasharray: 160, animation: 'waveRun 2s linear infinite' } : {};
     return (
       <svg xmlns="http://www.w3.org/2000/svg" viewBox="13 13 86 86" width={sz} height={sz} style={{ flexShrink: 0, display: 'inline-block', verticalAlign: 'middle' }}>
         <defs><clipPath id={"qc" + (props.id || "")}><circle cx="55" cy="55" r="32"/></clipPath></defs>
@@ -196,7 +196,7 @@ export default function HomePage() {
 
         <div ref={langRef} style={{ position: 'relative' }}>
           <button onClick={function() { setLangOpen(function(o) { return !o; }); }} style={{ background: 'none', border: 'none', cursor: 'pointer', fontSize: '0.85rem', color: 'rgba(240,239,235,0.55)', display: 'flex', alignItems: 'center', gap: 3, padding: '2px 4px' }}>
-            üåê {(LOCALES.find(function(l) { return l.code === locale; }) || {}).flag}
+            =ÉÓ… {(LOCALES.find(function(l) { return l.code === locale; }) || {}).flag}
           </button>
           {langOpen && (
             <div style={{ position: 'absolute', top: 'calc(100% + 8px)', left: '50%', transform: 'translateX(-50%)', background: '#1a1d1a', border: '1px solid rgba(255,255,255,0.08)', borderRadius: 10, padding: 4, zIndex: 300, minWidth: 150, boxShadow: '0 8px 32px rgba(0,0,0,0.5)' }}>
@@ -228,17 +228,9 @@ export default function HomePage() {
         <div style={{ position: 'absolute', width: 600, height: 600, borderRadius: '50%', top: '5%', left: '15%', background: 'radial-gradient(circle, rgba(74,124,89,0.1) 0%, transparent 70%)', pointerEvents: 'none' }} />
         <div style={{ position: 'absolute', width: 400, height: 400, borderRadius: '50%', bottom: '10%', right: '10%', background: 'radial-gradient(circle, rgba(74,124,89,0.06) 0%, transparent 70%)', pointerEvents: 'none' }} />
 
-        {/* Logo l·ªõn + wordmark c√πng h√†ng */}
+        {/* Logo lﬂ+¢n + wordmark c+¶ng h+·ng */}
         <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'center', gap: 4, marginBottom: 16 }}>
-          <svg xmlns="http://www.w3.org/2000/svg" viewBox="14 14 88 88" width={80} height={80} style={{ flexShrink: 0, display: 'inline-block', verticalAlign: 'middle' }}>
-            <defs><clipPath id="qchero"><circle cx="55" cy="55" r="32"/></clipPath></defs>
-            <circle cx="55" cy="55" r="38" fill="none" stroke={SAGE} strokeWidth="7" strokeLinecap="round"/>
-            <line x1="81" y1="79" x2="98" y2="98" stroke={SAGE} strokeWidth="7" strokeLinecap="round"/>
-            <polyline points="20,55 28,38 35,68 43,32 51,60 58,43 66,70 74,48 90,55"
-              fill="none" stroke={SAGE} strokeWidth="3" strokeLinecap="round" strokeLinejoin="round"
-              clipPath="url(#qchero)"
-              style={{ strokeDasharray: '203 9999', animation: 'waveRun 4s linear infinite' }}/>
-          </svg>
+          <svg xmlns="http://www.w3.org/2000/svg" viewBox="14 14 88 88" width={80} height={80} style={{ flexShrink: 0, display: "inline-block", verticalAlign: "middle" }}><defs><clipPath id="qchero"><circle cx="55" cy="55" r="32"/></clipPath></defs><circle cx="55" cy="55" r="38" fill="none" stroke={SAGE} strokeWidth="7" strokeLinecap="round"/><line x1="81" y1="79" x2="98" y2="98" stroke={SAGE} strokeWidth="7" strokeLinecap="round"/><polyline points="20,55 28,38 35,68 43,32 51,60 58,43 66,70 74,48 90,55" fill="none" stroke={SAGE} strokeWidth="3" strokeLinecap="round" strokeLinejoin="round" clipPath="url(#qchero)" style={{ strokeDasharray: "203 9999", animation: "waveRun 4s linear infinite" }}/></svg>
           <h1 style={{ margin: 0, padding: 0, lineHeight: 1 }}>
             <LetterDrop />
           </h1>
@@ -246,7 +238,7 @@ export default function HomePage() {
 
         <p style={{ fontSize: '0.75rem', fontWeight: 500, letterSpacing: '0.22em', textTransform: 'uppercase', color: SAGE, opacity: 0.65, marginBottom: 44 }}>Tech and more</p>
 
-        {/* Typewriter quote - slogan ch√≠nh th·ª©c ƒë·ªïi theo ng√¥n ng·ªØ */}
+        {/* Typewriter quote - slogan ch+°nh thﬂ+¨c -Êﬂ+Úi theo ng+¶n ngﬂ+ª */}
         <div style={{ fontFamily: 'Georgia, serif', fontSize: 'clamp(0.95rem, 2.2vw, 1.25rem)', color: 'rgba(240,239,235,0.38)', lineHeight: 1.75, maxWidth: 580, fontStyle: 'italic', minHeight: 70 }}>
           <Typewriter text={'"' + companyQuote + '"'} />
         </div>
@@ -269,7 +261,7 @@ export default function HomePage() {
           </div>
         </div>
         <div style={{ textAlign: 'center', marginTop: 16 }}>
-          <Link href="/tools" style={{ fontSize: '0.75rem', color: SAGE, textDecoration: 'none', fontWeight: 500, opacity: 0.7 }}>44+ free tools ‚Üí</Link>
+          <Link href="/tools" style={{ fontSize: '0.75rem', color: SAGE, textDecoration: 'none', fontWeight: 500, opacity: 0.7 }}>44+ free tools GÂ∆</Link>
         </div>
       </section>
 
@@ -282,7 +274,7 @@ export default function HomePage() {
               "{currentQuote.text}"
             </blockquote>
             {currentQuote.author && (
-              <p style={{ fontSize: '0.8rem', color: SAGE, fontWeight: 600 }}>‚Äî {currentQuote.author}</p>
+              <p style={{ fontSize: '0.8rem', color: SAGE, fontWeight: 600 }}>G«ˆ {currentQuote.author}</p>
             )}
           </div>
         </div>
@@ -293,13 +285,13 @@ export default function HomePage() {
         <div style={{ position: 'absolute', inset: 0, background: 'radial-gradient(ellipse at 30% 50%, rgba(74,124,89,0.05) 0%, transparent 60%)', pointerEvents: 'none' }} />
         <div style={{ maxWidth: 800, margin: '0 auto', width: '100%', position: 'relative' }}>
           <div style={{ display: 'flex', alignItems: 'center', gap: 8, marginBottom: 24 }}>
-            <span>‚öñÔ∏è</span>
-            <span style={{ fontSize: '0.65rem', fontWeight: 700, letterSpacing: '0.14em', textTransform: 'uppercase', color: 'rgba(240,239,235,0.25)' }}>Law and Justice ¬∑ From Read</span>
+            <span>G‹˚n+≈</span>
+            <span style={{ fontSize: '0.65rem', fontWeight: 700, letterSpacing: '0.14em', textTransform: 'uppercase', color: 'rgba(240,239,235,0.25)' }}>Law and Justice -+ From Read</span>
           </div>
           <blockquote style={{ fontFamily: 'Georgia, serif', fontSize: 'clamp(1.2rem, 2.8vw, 2rem)', fontWeight: 400, fontStyle: 'italic', color: '#f0efeb', lineHeight: 1.55, marginBottom: 14, borderLeft: '3px solid ' + SAGE, paddingLeft: 22 }}>
             "{LAW_QUOTES[0].text}"
           </blockquote>
-          <p style={{ fontSize: '0.8rem', color: SAGE, fontWeight: 600, paddingLeft: 22 }}>‚Äî {LAW_QUOTES[0].author}</p>
+          <p style={{ fontSize: '0.8rem', color: SAGE, fontWeight: 600, paddingLeft: 22 }}>G«ˆ {LAW_QUOTES[0].author}</p>
         </div>
       </section>
 
@@ -316,7 +308,7 @@ export default function HomePage() {
               </div>
             </div>
             <Link href={currentApp.href} style={{ display: 'inline-flex', padding: '9px 20px', background: currentApp.color, color: '#fff', borderRadius: 100, textDecoration: 'none', fontSize: '0.82rem', fontWeight: 600 }}>
-              Explore {currentApp.name} ‚Üí
+              Explore {currentApp.name} GÂ∆
             </Link>
           </div>
           <div style={{ display: 'flex', gap: 5, marginTop: 28 }}>
@@ -337,10 +329,15 @@ export default function HomePage() {
           </h2>
           <p style={{ fontSize: '0.9rem', color: 'rgba(240,239,235,0.35)', marginBottom: 32 }}>Free, forever.</p>
           <Link href="/auth/register" style={{ display: 'inline-block', padding: '13px 34px', background: SAGE, color: '#fff', borderRadius: 100, textDecoration: 'none', fontWeight: 600, fontSize: '0.95rem' }}>
-            Get started ‚Äî it's free
+            Get started G«ˆ it's free
           </Link>
         </div>
       </section>
     </div>
   );
 }
+
+
+
+
+
