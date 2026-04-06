@@ -63,12 +63,25 @@ function Typewriter({ text }) {
 
 function LetterDrop() {
   var letters = ['u','e','r','e','n','c','i','a'];
-  var colors  = [0.3, 0.3, 0.3, 0.3, 0.3, 1.0, 1.0, 1.0]; // 'ueren' mờ, 'cia' xanh
+  var cycle = useState(0);
+  var key = cycle[0];
+  var setKey = cycle[1];
 
+  useEffect(function() {
+    var timer = setInterval(function() {
+      setKey(function(k) { return k + 1; });
+    }, 30000);
+    return function() { clearInterval(timer); };
+  }, []);
+
+  // Mỗi chữ rớt cách nhau 0.18s, shimmer sau khi tất cả đã rớt
+  // 8 chữ x 0.18s = 1.44s + 0.8s rớt = 2.24s trước shimmer
   return (
-    <div style={{ display: 'inline-flex', alignItems: 'baseline', letterSpacing: -3, lineHeight: 1 }}>
+    <div key={key} style={{ display: 'inline-flex', alignItems: 'baseline', letterSpacing: -3, lineHeight: 1 }}>
       {letters.map(function(letter, i) {
         var isCia = i >= 5;
+        var fallDelay = i * 0.18;
+        var shimmerDelay = 8 * 0.18 + 0.8 + 0.3;
         return (
           <span key={i} style={{
             display: 'inline-block',
@@ -77,8 +90,7 @@ function LetterDrop() {
             fontWeight: 400,
             color: isCia ? '#4a7c59' : '#f0efeb',
             opacity: isCia ? 1 : 0.3,
-            animation: 'letterFall 0.6s cubic-bezier(0.22,1,0.36,1) both, shimmer 3s ease ' + (0.8 + i * 0.1 + 1.2) + 's 1',
-            animationDelay: (i * 0.08) + 's, ' + (0.8 + i * 0.08 + 1.2) + 's',
+            animation: 'letterFall 0.8s cubic-bezier(0.22,1,0.36,1) ' + fallDelay + 's both, shimmerStrong 2s ease ' + shimmerDelay + 's 1',
           }}>
             {letter}
           </span>

@@ -128,3 +128,10 @@ body > [aria-hidden="true"] { pointer-events: none; }
   40%  { filter: brightness(2.5) drop-shadow(0 0 12px rgba(255,255,255,0.8)); }
   100% { filter: brightness(1); }
 }
+
+@keyframes shimmerStrong {
+  0%   { filter: brightness(1) drop-shadow(0 0 0px transparent); }
+  30%  { filter: brightness(3.5) drop-shadow(0 0 20px rgba(255,255,255,0.95)); }
+  60%  { filter: brightness(2) drop-shadow(0 0 10px rgba(255,255,255,0.5)); }
+  100% { filter: brightness(1) drop-shadow(0 0 0px transparent); }
+}
