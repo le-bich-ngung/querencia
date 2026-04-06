@@ -146,8 +146,6 @@ body > [aria-hidden="true"] { pointer-events: none; }
 }
 @keyframes waveRun { from { stroke-dashoffset: 203; } to { stroke-dashoffset: -203; } }
 
-@keyframes shimmerLogo {
-  0%   { filter: brightness(1); }
-  40%  { filter: brightness(3) drop-shadow(0 0 16px rgba(74,124,89,0.9)); }
-  100% { filter: brightness(1); }
+@keyframes shimmerLogo { 0% { filter: brightness(1); } 20% { filter: brightness(3) drop-shadow(0 0 16px rgba(74,124,89,0.9)); } 40% { filter: brightness(1); } 100% { filter: brightness(1); } }
 }
+
