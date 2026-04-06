@@ -113,11 +113,7 @@ body > [aria-hidden="true"] { pointer-events: none; }
 .ticker-inner:hover { animation-play-state:paused; }
 .qw  { stroke-dasharray: 203 9999; animation: waveRun 10s linear infinite; }
 .qwn { stroke-dasharray: 203 9999; animation: waveRun 10s linear infinite; }
-@keyframes waveRun { from { stroke-dashoffset: 500; } to { stroke-dashoffset: -500; } }
-
-
-
-
+@keyframes waveRun { from { stroke-dashoffset: 406; } to { stroke-dashoffset: -203; } }
 
 
 
