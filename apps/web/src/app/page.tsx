@@ -85,7 +85,7 @@ function LetterDrop() {
         return (
           <span key={i} style={{
             display: 'inline-block',
-            fontFamily: 'Georgia, serif',
+            fontFamily: "'Space Grotesk', sans-serif",
             fontSize: 'clamp(3rem, 9vw, 7rem)',
             fontWeight: 400,
             color: isCia ? '#4a7c59' : '#f0efeb',
