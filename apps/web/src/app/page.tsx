@@ -60,6 +60,34 @@ function Typewriter({ text }) {
   );
 }
 
+
+function LetterDrop() {
+  var letters = ['u','e','r','e','n','c','i','a'];
+  var colors  = [0.3, 0.3, 0.3, 0.3, 0.3, 1.0, 1.0, 1.0]; // 'ueren' mờ, 'cia' xanh
+
+  return (
+    <div style={{ display: 'inline-flex', alignItems: 'baseline', letterSpacing: -3, lineHeight: 1 }}>
+      {letters.map(function(letter, i) {
+        var isCia = i >= 5;
+        return (
+          <span key={i} style={{
+            display: 'inline-block',
+            fontFamily: 'Georgia, serif',
+            fontSize: 'clamp(3rem, 9vw, 7rem)',
+            fontWeight: 400,
+            color: isCia ? '#4a7c59' : '#f0efeb',
+            opacity: isCia ? 1 : 0.3,
+            animation: 'letterFall 0.6s cubic-bezier(0.22,1,0.36,1) both, shimmer 3s ease ' + (0.8 + i * 0.1 + 1.2) + 's 1',
+            animationDelay: (i * 0.08) + 's, ' + (0.8 + i * 0.08 + 1.2) + 's',
+          }}>
+            {letter}
+          </span>
+        );
+      })}
+    </div>
+  );
+}
+
 export default function HomePage() {
   var session = useSession().data;
   var i18n = useI18n();
@@ -124,17 +152,19 @@ export default function HomePage() {
   var companyQuote = COMPANY_QUOTES[locale] || COMPANY_QUOTES.en;
 
   var LogoSVG = function(props) {
-    var animStyle = props.animated ? { strokeDasharray: 160, strokeDashoffset: 0, animation: 'waveRun 2s linear infinite' } : {};
+    var sz = props.size || 22;
+    var col = props.color || SAGE;
+    var animStyle = props.animated ? { strokeDasharray: 160, animation: 'waveRun 2s linear infinite' } : {};
     return (
-      <svg xmlns="http://www.w3.org/2000/svg" viewBox="22 22 72 72" width={props.size || 22} height={props.size || 22} style={{ flexShrink: 0, display: 'block' }}>
-        <defs><clipPath id={"qc" + (props.id || "")}><circle cx="55" cy="55" r="26" /></clipPath></defs>
-        <circle cx="55" cy="55" r="30" fill="none" stroke={props.color || SAGE} strokeWidth="6" strokeLinecap="round" />
-        <line x1="75" y1="75" x2="88" y2="88" stroke={props.color || SAGE} strokeWidth="6" strokeLinecap="round" />
-        <polyline points="26,55 33,41 40,65 47,34 53,57 59,43 65,66 71,48 84,55"
-          fill="none" stroke={props.color || SAGE} strokeWidth="2.5"
+      <svg xmlns="http://www.w3.org/2000/svg" viewBox="13 13 86 86" width={sz} height={sz} style={{ flexShrink: 0, display: 'inline-block', verticalAlign: 'middle' }}>
+        <defs><clipPath id={"qc" + (props.id || "")}><circle cx="55" cy="55" r="32"/></clipPath></defs>
+        <circle cx="55" cy="55" r="38" fill="none" stroke={col} strokeWidth="7" strokeLinecap="round"/>
+        <line x1="81" y1="79" x2="98" y2="98" stroke={col} strokeWidth="7" strokeLinecap="round"/>
+        <polyline points="20,55 28,38 35,68 43,32 51,60 58,43 66,70 74,48 90,55"
+          fill="none" stroke={col} strokeWidth="3"
           strokeLinecap="round" strokeLinejoin="round"
           clipPath={"url(#qc" + (props.id || "") + ")"}
-          style={animStyle} />
+          style={animStyle}/>
       </svg>
     );
   };
@@ -186,11 +216,11 @@ export default function HomePage() {
         <div style={{ position: 'absolute', width: 600, height: 600, borderRadius: '50%', top: '5%', left: '15%', background: 'radial-gradient(circle, rgba(74,124,89,0.1) 0%, transparent 70%)', pointerEvents: 'none' }} />
         <div style={{ position: 'absolute', width: 400, height: 400, borderRadius: '50%', bottom: '10%', right: '10%', background: 'radial-gradient(circle, rgba(74,124,89,0.06) 0%, transparent 70%)', pointerEvents: 'none' }} />
 
-        {/* Logo lớn + wordmark trên cùng 1 dòng */}
-        <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'center', gap: 0, marginBottom: 16 }}>
-          <LogoSVG size={90} animated={true} id="hero" />
-          <h1 style={{ fontFamily: 'Georgia, serif', fontSize: 'clamp(3rem, 9vw, 7rem)', fontWeight: 400, letterSpacing: -3, lineHeight: 1, color: '#f0efeb', margin: 0 }}>
-            <span style={{ opacity: 0.3 }}>ueren</span><span style={{ color: SAGE }}>cia</span>
+        {/* Logo lớn + wordmark cùng hàng */}
+        <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'center', gap: 4, marginBottom: 16 }}>
+          <LogoSVG size={80} animated={true} id="hero" />
+          <h1 style={{ margin: 0, padding: 0, lineHeight: 1 }}>
+            <LetterDrop />
           </h1>
         </div>
 
