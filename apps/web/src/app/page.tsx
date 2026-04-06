@@ -87,7 +87,7 @@ function LetterDrop() {
             display: 'inline-block',
             fontFamily: "'Space Grotesk', sans-serif",
             fontSize: 'clamp(3rem, 9vw, 7rem)',
-            fontWeight: 400,
+            fontWeight: 300,
             color: isCia ? '#4a7c59' : '#f0efeb',
             opacity: isCia ? 1 : 0.3,
             animation: 'letterSlide 1.2s cubic-bezier(0.34,1,0.64,1) ' + fallDelay + 's both, shimmerStrong 2s ease ' + shimmerDelay + 's 1',
