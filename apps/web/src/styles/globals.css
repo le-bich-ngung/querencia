@@ -111,9 +111,10 @@ body > [aria-hidden="true"] { pointer-events: none; }
 @keyframes fadeIn { from{opacity:0;transform:translateY(12px)} to{opacity:1;transform:translateY(0)} }
 .ticker-inner { display:flex; gap:32px; animation:scrollLeft 30s linear infinite; white-space:nowrap; }
 .ticker-inner:hover { animation-play-state:paused; }
-.qw  { stroke-dasharray: 203 9999; animation: waveRun 4s linear infinite; }
-.qwn { stroke-dasharray: 203 9999; animation: waveRun 4s linear infinite; }
+.qw  { stroke-dasharray: 203 9999; animation: waveRun 8s linear infinite; }
+.qwn { stroke-dasharray: 203 9999; animation: waveRun 8s linear infinite; }
 @keyframes waveRun { from { stroke-dashoffset: 500; } to { stroke-dashoffset: -500; } }
+
 
 
 
