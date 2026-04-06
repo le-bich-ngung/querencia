@@ -166,7 +166,7 @@ export default function HomePage() {
   var LogoSVG = function(props) {
     var sz = props.size || 22;
     var col = props.color || SAGE;
-    var animStyle = props.animated ? { strokeDasharray: '203 9999', strokeDashoffset: 250, animation: 'waveRun 3s linear infinite' } : {};
+    var animStyle = props.animated ? { strokeDasharray: '203 9999', animation: 'waveRun 3s linear infinite' } : {};
     return (
       <svg xmlns="http://www.w3.org/2000/svg" viewBox="13 13 86 86" width={sz} height={sz} style={{ flexShrink: 0, display: 'inline-block', verticalAlign: 'middle' }}>
         <defs><clipPath id={"qc" + (props.id || "")}><circle cx="55" cy="55" r="32"/></clipPath></defs>
@@ -336,6 +336,7 @@ export default function HomePage() {
     </div>
   );
 }
+
 
 
 
