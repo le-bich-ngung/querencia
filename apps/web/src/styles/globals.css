@@ -146,5 +146,4 @@ body > [aria-hidden="true"] { pointer-events: none; }
 }
 @keyframes waveRun { from { stroke-dashoffset: 203; } to { stroke-dashoffset: -203; } }
 
-}
 
