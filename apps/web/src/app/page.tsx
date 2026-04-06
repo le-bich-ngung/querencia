@@ -166,7 +166,7 @@ export default function HomePage() {
   var LogoSVG = function(props) {
     var sz = props.size || 22;
     var col = props.color || SAGE;
-    var animStyle = props.animated ? { strokeDasharray: '203 9999', strokeDashoffset: 203, animation: 'waveRun 4s linear infinite', animationFillMode: 'both' } : {};
+    var animStyle = props.animated ? { strokeDasharray: '203 9999', animation: 'waveRun 4s linear infinite' } : {};
     return (
       <svg xmlns="http://www.w3.org/2000/svg" viewBox="13 13 86 86" width={sz} height={sz} style={{ flexShrink: 0, display: 'inline-block', verticalAlign: 'middle' }}>
         <defs><clipPath id={"qc" + (props.id || "")}><circle cx="55" cy="55" r="32"/></clipPath></defs>
@@ -230,7 +230,15 @@ export default function HomePage() {
 
         {/* Logo lớn + wordmark cùng hàng */}
         <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'center', gap: 4, marginBottom: 16 }}>
-          <LogoSVG size={80} animated={true} id="hero" />
+          <svg xmlns="http://www.w3.org/2000/svg" viewBox="14 14 88 88" width={80} height={80} style={{ flexShrink: 0, display: 'inline-block', verticalAlign: 'middle' }}>
+            <defs><clipPath id="qchero"><circle cx="55" cy="55" r="32"/></clipPath></defs>
+            <circle cx="55" cy="55" r="38" fill="none" stroke={SAGE} strokeWidth="7" strokeLinecap="round"/>
+            <line x1="81" y1="79" x2="98" y2="98" stroke={SAGE} strokeWidth="7" strokeLinecap="round"/>
+            <polyline points="20,55 28,38 35,68 43,32 51,60 58,43 66,70 74,48 90,55"
+              fill="none" stroke={SAGE} strokeWidth="3" strokeLinecap="round" strokeLinejoin="round"
+              clipPath="url(#qchero)"
+              style={{ strokeDasharray: '203 9999', animation: 'waveRun 4s linear infinite' }}/>
+          </svg>
           <h1 style={{ margin: 0, padding: 0, lineHeight: 1 }}>
             <LetterDrop />
           </h1>
@@ -336,4 +344,3 @@ export default function HomePage() {
     </div>
   );
 }
-
