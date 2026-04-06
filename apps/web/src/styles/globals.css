@@ -111,9 +111,9 @@ body > [aria-hidden="true"] { pointer-events: none; }
 @keyframes fadeIn { from{opacity:0;transform:translateY(12px)} to{opacity:1;transform:translateY(0)} }
 .ticker-inner { display:flex; gap:32px; animation:scrollLeft 30s linear infinite; white-space:nowrap; }
 .ticker-inner:hover { animation-play-state:paused; }
-.qw  { stroke-dasharray: 203 9999; animation: waveRun 5s linear infinite; }
-.qwn { stroke-dasharray: 203 9999; animation: waveRun 5s linear infinite; }
-@keyframes waveRun { from { stroke-dashoffset: 406; } to { stroke-dashoffset: -203; } }
+.qw  { stroke-dasharray: 203 9999; animation: waveRun 2.5s linear infinite; }
+.qwn { stroke-dasharray: 203 9999; animation: waveRun 2.5s linear infinite; }
+@keyframes waveRun { 0% { stroke-dashoffset: 203; } 80% { stroke-dashoffset: -203; } 100% { stroke-dashoffset: -203; } }
 
 
 
