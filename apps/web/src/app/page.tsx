@@ -186,7 +186,7 @@ export default function HomePage() {
       {/* FLOATING PILL NAV */}
       <nav style={{ position: 'fixed', top: 16, left: '50%', transform: 'translateX(-50%)', zIndex: 200, display: 'flex', alignItems: 'center', gap: 10, background: 'rgba(8,10,8,0.88)', backdropFilter: 'blur(20px)', border: '1px solid rgba(255,255,255,0.08)', borderRadius: 100, padding: '7px 14px 7px 10px' }}>
         <Link href="/" style={{ display: 'flex', alignItems: 'center', gap: 5, textDecoration: 'none' }}>
-          <LogoSVG size={18} animated={true} id="nav" />
+          <LogoSVG size={18} animated={false} id="nav" />
           <span style={{ fontWeight: 700, fontSize: '0.85rem', letterSpacing: -0.3, color: '#f0efeb', lineHeight: 1 }}>
             <span style={{ opacity: 0.45 }}>ueren</span><span style={{ color: SAGE }}>cia</span>
           </span>
@@ -331,7 +331,7 @@ export default function HomePage() {
       <section style={{ background: '#070908', padding: '90px 24px', textAlign: 'center', position: 'relative' }}>
         <div style={{ position: 'absolute', inset: 0, background: 'radial-gradient(ellipse at center, rgba(74,124,89,0.07) 0%, transparent 60%)', pointerEvents: 'none' }} />
         <div style={{ position: 'relative' }}>
-          <LogoSVG size={50} animated={true} id="cta" />
+          <LogoSVG size={50} animated={false} id="cta" />
           <h2 style={{ fontFamily: 'Georgia, serif', fontSize: 'clamp(2.2rem, 5vw, 3.8rem)', fontWeight: 400, letterSpacing: -1.5, lineHeight: 1.08, color: '#f0efeb', margin: '18px 0 14px' }}>
             One account.<br /><span style={{ color: SAGE, fontStyle: 'italic' }}>Everything.</span>
           </h2>
