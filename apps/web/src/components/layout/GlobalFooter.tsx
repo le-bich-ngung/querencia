@@ -11,8 +11,8 @@ export function GlobalFooter() {
     <footer style={{ borderTop: '1px solid rgba(0,0,0,0.07)', padding: '14px 24px', background: '#fafaf8' }}>
       <div style={{ maxWidth: 1100, margin: '0 auto', display: 'flex', alignItems: 'center', justifyContent: 'space-between', flexWrap: 'wrap', gap: 8 }}>
         
-        <div style={{ display: 'flex', alignItems: 'center', gap: 0 }}>
-          <svg xmlns="http://www.w3.org/2000/svg" viewBox="22 22 72 72" width="17" height="17" style={{ flexShrink: 0, display: 'block', marginRight: 3 }}>
+        <div style={{ display: 'flex', alignItems: 'baseline', gap: 0 }}>
+          <svg xmlns="http://www.w3.org/2000/svg" viewBox="22 22 72 72" width="17" height="17" style={{ flexShrink: 0, display: 'inline-block', verticalAlign: 'text-bottom', marginRight: 2 }}>
             <defs><clipPath id="qcfoot"><circle cx="55" cy="55" r="26"/></clipPath></defs>
             <circle cx="55" cy="55" r="30" fill="none" stroke={SAGE} strokeWidth="6" strokeLinecap="round"/>
             <line x1="75" y1="75" x2="88" y2="88" stroke={SAGE} strokeWidth="6" strokeLinecap="round"/>
