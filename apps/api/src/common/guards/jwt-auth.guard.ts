@@ -1,4 +1,4 @@
-/**
+﻿/**
  * JWT Auth Guard — access token 15m + refresh rotation
  * Tự động reject token đã bị revoke (logout từ thiết bị khác)
  */

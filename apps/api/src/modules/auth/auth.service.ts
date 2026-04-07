@@ -1,4 +1,4 @@
-/**
+﻿/**
  * Auth Service — NestJS — DB WIRED
  * Migrated từ:
  *   querencia-backend/api/auth_route.py

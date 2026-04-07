@@ -1,4 +1,4 @@
-// pgvector — Phase 2 feature, disabled for v1.0
+﻿// pgvector — Phase 2 feature, disabled for v1.0
 // Will be enabled when RAG is needed for LàNo
 // import { vector } from 'pgvector/drizzle-orm';
 

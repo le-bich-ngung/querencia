@@ -1,4 +1,4 @@
-/**
+﻿/**
  * Cùi Bắp — WebSocket Gateway
  * Events đầy đủ gồm cả read receipts:
  *   → message_delivered  : khi recipient connect và có tin chưa nhận

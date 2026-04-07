@@ -1,4 +1,4 @@
-/**
+﻿/**
  * Email Worker — BullMQ
  * Xử lý gửi email qua Resend (verify, reset password, notification)
  */

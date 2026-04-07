@@ -1,4 +1,4 @@
-/**
+﻿/**
  * E2EE Key Server — chỉ lưu public keys, KHÔNG bao giờ thấy private keys
  * 
  * Endpoints:

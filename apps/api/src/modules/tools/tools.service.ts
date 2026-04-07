@@ -1,4 +1,4 @@
-/**
+﻿/**
  * Tools Service — NestJS
  * Danh sách tools sync với apps/web/src/lib/tools-registry.ts
  * Chỉ track quota cho tools có qCost > 0

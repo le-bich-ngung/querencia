@@ -1,4 +1,4 @@
-/**
+﻿/**
  * Q Service — quản lý Q tokens, lịch sử, tặng Q
  */
 import { Injectable, ForbiddenException, NotFoundException, BadRequestException, Inject } from '@nestjs/common';

@@ -1,4 +1,4 @@
-/**
+﻿/**
  * Cùi Bắp — App nhắn tin
  * Migrated từ querencia-backend/api/models.py (CBConversation, CBMessage, etc.)
  * Giữ nguyên tên bảng: cb_conversations, cb_messages, etc. để không mất data production
