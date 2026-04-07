@@ -12,7 +12,7 @@ export function GlobalFooter() {
       <div style={{ maxWidth: 1100, margin: '0 auto', display: 'flex', alignItems: 'center', justifyContent: 'space-between', flexWrap: 'wrap', gap: 8 }}>
         
         <div style={{ display: 'flex', alignItems: 'baseline', gap: 0 }}>
-          <svg xmlns="http://www.w3.org/2000/svg" viewBox="22 22 72 72" width="13" height="13" style={{ flexShrink: 0, display: 'inline-block', verticalAlign: 'baseline', marginRight: 2, position: 'relative', top: '1px' }}>
+          <svg xmlns="http://www.w3.org/2000/svg" viewBox="22 22 72 72" width="13" height="13" style={{ flexShrink: 0, display: 'inline-block', verticalAlign: 'baseline', marginRight: 0, position: 'relative', top: '1px' }}>
             <defs><clipPath id="qcfoot"><circle cx="55" cy="55" r="26"/></clipPath></defs>
             <circle cx="55" cy="55" r="30" fill="none" stroke={SAGE} strokeWidth="6" strokeLinecap="round"/>
             <line x1="75" y1="75" x2="88" y2="88" stroke={SAGE} strokeWidth="6" strokeLinecap="round"/>
@@ -25,7 +25,7 @@ export function GlobalFooter() {
             <span style={{ color: SAGE }}>c</span>
             <span style={{ position: 'relative', display: 'inline-block', color: SAGE }}>
               i
-              <svg style={{ position: 'absolute', left: '60%', top: '0.1em', transform: 'translateX(-50%)', width: '0.28em', height: '0.28em' }} viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
+              <svg style={{ position: 'absolute', left: '60%', top: '0.15em', transform: 'translateX(-50%)', width: '0.28em', height: '0.28em' }} viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
                 <path d="M12 21.35l-1.45-1.32C5.4 15.36 2 12.28 2 8.5 2 5.42 4.42 3 7.5 3c1.74 0 3.41.81 4.5 2.09C13.09 3.81 14.76 3 16.5 3 19.58 3 22 5.42 22 8.5c0 3.78-3.4 6.86-8.55 11.54L12 21.35z" fill="#ef4444"/>
               </svg>
             </span>
