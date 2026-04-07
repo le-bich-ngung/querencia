@@ -1,4 +1,4 @@
-﻿/**
+/**
  * Meta Controller — fetch OG metadata cho link preview
  * Server-side để tránh CORS và bảo vệ IP của user
  */

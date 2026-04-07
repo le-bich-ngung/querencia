@@ -1,4 +1,4 @@
-﻿import { Redis } from 'ioredis';
+import { Redis } from 'ioredis';
 
 // DB4 — BullMQ queue backend (isolated — sự cố queue không ảnh hưởng cache/session)
 export const queueRedis = new Redis(

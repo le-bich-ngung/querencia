@@ -1,4 +1,4 @@
-﻿/**
+/**
  * Message Cleanup Worker — BullMQ
  * Chạy mỗi 5 phút: xóa tin nhắn self-destruct đã hết hạn
  * Schedule: cron '*/5 * * * *'

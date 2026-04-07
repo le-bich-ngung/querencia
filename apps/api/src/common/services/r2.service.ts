@@ -1,4 +1,4 @@
-﻿/**
+/**
  * R2 Service — Cloudflare R2 file upload
  * Migrated từ querencia-backend/api/app_logic.py (boto3 r2 client)
  * Dùng cho: Cùi Bắp file upload, Nope image upload

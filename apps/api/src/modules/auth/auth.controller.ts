@@ -1,4 +1,4 @@
-﻿/**
+/**
  * Auth Controller — NestJS
  * Migrated từ querencia-backend/api/auth_route.py
  *

@@ -1,4 +1,4 @@
-﻿/**
+/**
  * Token Service — JWT lifecycle management
  * Access: 15m | Refresh: 7d (rotation — mỗi lần dùng cấp cái mới, hủy cái cũ)
  */

@@ -1,4 +1,4 @@
-﻿import { pgTable, uuid, text, timestamp, pgEnum, integer, boolean } from 'drizzle-orm/pg-core';
+import { pgTable, uuid, text, timestamp, pgEnum, integer, boolean } from 'drizzle-orm/pg-core';
 import { users } from './users';
 
 export const subscriptionStatusEnum = pgEnum('subscription_status', [

@@ -1,4 +1,4 @@
-﻿/**
+/**
  * Database Module — inject Drizzle db vào toàn bộ NestJS app
  * Dùng: @Inject(DB_TOKEN) private db: DB
  */

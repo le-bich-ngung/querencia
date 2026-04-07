@@ -1,4 +1,4 @@
-﻿/**
+/**
  * Rate Limiting — Redis sliding window
  * Khác nhau theo endpoint và plan:
  *   - Auth endpoints:  20 req/15 phút (chống brute force)

@@ -1,4 +1,4 @@
-﻿/**
+/**
  * Paddle Service — tạo checkout session và verify webhook
  */
 import { Injectable, Logger } from '@nestjs/common';

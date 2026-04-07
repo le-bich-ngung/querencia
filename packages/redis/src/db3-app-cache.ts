@@ -1,4 +1,4 @@
-﻿import { Redis } from 'ioredis';
+import { Redis } from 'ioredis';
 
 // DB3 — App cache (feed, leaderboard, hot data) + Cloudflare CDN layer
 export const appCacheRedis = new Redis(

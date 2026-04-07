@@ -1,4 +1,4 @@
-﻿import { Redis } from 'ioredis';
+import { Redis } from 'ioredis';
 
 // DB1 — Q Quota engine (atomic INCR — tránh race condition)
 // TTL 24h tự reset mỗi ngày

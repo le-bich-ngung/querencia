@@ -1,4 +1,4 @@
-﻿/**
+/**
  * JWT Strategy — validate token, attach user to request
  * sub = email (giữ tương thích với code cũ)
  */

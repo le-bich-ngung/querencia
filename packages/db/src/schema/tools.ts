@@ -1,4 +1,4 @@
-﻿import { pgTable, uuid, text, integer, timestamp, boolean, pgEnum } from 'drizzle-orm/pg-core';
+import { pgTable, uuid, text, integer, timestamp, boolean, pgEnum } from 'drizzle-orm/pg-core';
 import { users } from './users';
 
 export const toolTierEnum = pgEnum('tool_tier', ['free', 'paid']);

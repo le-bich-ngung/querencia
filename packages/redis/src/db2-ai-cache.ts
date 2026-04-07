@@ -1,4 +1,4 @@
-﻿import { Redis } from 'ioredis';
+import { Redis } from 'ioredis';
 import { createHash } from 'crypto';
 
 // DB2 — AI result cache (TTL 1h, hash key từ prompt)

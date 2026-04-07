@@ -1,4 +1,4 @@
-﻿/**
+/**
  * Nope Controller — REST endpoints
  * Migrated từ querencia-backend/api/app_logic.py (nope_router)
  */

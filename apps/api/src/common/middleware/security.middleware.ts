@@ -1,4 +1,4 @@
-﻿/**
+/**
  * Security Middleware — CORS, headers bảo mật, captcha trigger
  * Gắn vào app.module.ts qua NestMiddleware
  */
