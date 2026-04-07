@@ -1,4 +1,4 @@
-import { useEffect, useRef, useCallback } from 'react';
+ï»¿import { useEffect, useRef, useCallback } from 'react';
 import { io, Socket } from 'socket.io-client';
 import { useAuthStore } from '../store/auth.store';
 import { useChatStore } from '../store/chat.store';
@@ -75,7 +75,7 @@ export function useSocket() {
       store.updateMessage('', d.message_id, { isDeleted: true, content: null })
     );
 
-    // WebRTC signaling events — forwarded to useWebRTC hook
+    // WebRTC signaling events â forwarded to useWebRTC hook
     // call_offer, call_answer, call_ice, call_end, call_reject
 
     return () => { socket.disconnect(); };

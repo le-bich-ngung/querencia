@@ -1,11 +1,11 @@
-﻿/**
- * Paddle Service — tạo checkout session và verify webhook
+ï»¿/**
+ * Paddle Service â táº¡o checkout session vÃ  verify webhook
  */
 import { Injectable, Logger } from '@nestjs/common';
 import { ConfigService } from '@nestjs/config';
 import * as crypto from 'crypto';
 
-// Giá theo số ngày ($0.50/ngày)
+// GiÃ¡ theo sá» ngÃ y ($0.50/ngÃ y)
 const PRICE_PER_DAY_CENTS = 50; // $0.50
 
 @Injectable()
@@ -29,7 +29,7 @@ export class PaddleService {
       : 'https://api.paddle.com';
   }
 
-  /** Tạo price dynamically cho số ngày cụ thể */
+  /** Táº¡o price dynamically cho sá» ngÃ y cá»¥ thá» */
   async createCheckoutSession(userId: string, userEmail: string, days: number) {
     const amount = days * PRICE_PER_DAY_CENTS; // cents
 
@@ -41,7 +41,7 @@ export class PaddleService {
       },
       body: JSON.stringify({
         product_id:   this.config.get('PADDLE_PRODUCT_ID'),
-        description:  `Querencia Pro — ${days} ngày`,
+        description:  `Querencia Pro â ${days} ngÃ y`,
         unit_price:   { amount: String(amount), currency_code: 'USD' },
         billing_cycle: null, // one-time
         custom_data:  { userId, days: String(days) },
@@ -51,7 +51,7 @@ export class PaddleService {
     if (!res.ok) {
       const err = await res.text();
       this.logger.error('Paddle create price failed:', err);
-      throw new Error('Không thể tạo checkout');
+      throw new Error('KhÃ´ng thá» táº¡o checkout');
     }
 
     const data = await res.json();
@@ -77,7 +77,7 @@ export class PaddleService {
     );
   }
 
-  /** Parse và validate webhook event */
+  /** Parse vÃ  validate webhook event */
   parseWebhookEvent(body: any): {
     type:      string;
     userId?:   string;
@@ -87,7 +87,7 @@ export class PaddleService {
     const event = body.event_type ?? body.alert_name;
     const data  = body.data ?? body;
 
-    // transaction.completed → payment successful
+    // transaction.completed â payment successful
     if (event === 'transaction.completed') {
       const customData = data.custom_data ?? {};
       return {

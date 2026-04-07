@@ -1,8 +1,8 @@
-/**
- * Read Receipt — tick đơn/đôi/xanh cho tin nhắn đã gửi
- * ✓  = sent (delivered to server)
- * ✓✓ = delivered (arrived on recipient device)
- * ✓✓ (xanh) = read (recipient opened conversation)
+ï»¿/**
+ * Read Receipt â tick ÄÆ¡n/ÄÃ´i/xanh cho tin nháº¯n ÄÃ£ gá»­i
+ * â  = sent (delivered to server)
+ * ââ = delivered (arrived on recipient device)
+ * ââ (xanh) = read (recipient opened conversation)
  */
 import React from 'react';
 import Icon from 'react-native-vector-icons/Ionicons';
@@ -30,7 +30,7 @@ export function ReadReceipt({ status, size = 14 }: Props) {
     );
   }
 
-  // read — double tick xanh
+  // read â double tick xanh
   return (
     <Icon name="checkmark-done" size={size} color={colors.online}/>
   );

@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+ï»¿import React, { useState } from 'react';
 import { View, Text, TextInput, TouchableOpacity, StyleSheet, KeyboardAvoidingView, Platform, ScrollView, Alert, ActivityIndicator } from 'react-native';
 import type { NativeStackScreenProps } from '@react-navigation/native-stack';
 import type { AuthStackParams } from '../../navigation';
@@ -14,28 +14,28 @@ export function RegisterScreen({ navigation }: Props) {
   const [loading, setLoading] = useState(false);
 
   async function handle() {
-    if (!name.trim()||!email.trim()||!pw) { Alert.alert('Vui lòng điền đầy đủ.'); return; }
-    if (pw.length < 8) { Alert.alert('Mật khẩu cần ít nhất 8 ký tự.'); return; }
+    if (!name.trim()||!email.trim()||!pw) { Alert.alert('Vui lÃ²ng Äiá»n Äáº§y Äá»§.'); return; }
+    if (pw.length < 8) { Alert.alert('Máº­t kháº©u cáº§n Ã­t nháº¥t 8 kÃ½ tá»±.'); return; }
     setLoading(true);
     try {
       await api.register(name.trim(), email.toLowerCase().trim(), pw);
-      Alert.alert('Kiểm tra email', 'Xác nhận email trước khi đăng nhập.', [
+      Alert.alert('Kiá»m tra email', 'XÃ¡c nháº­n email trÆ°á»c khi ÄÄng nháº­p.', [
         { text: 'OK', onPress: () => navigation.goBack() }
       ]);
-    } catch (e: any) { Alert.alert('Đăng ký thất bại', e.message); }
+    } catch (e: any) { Alert.alert('ÄÄng kÃ½ tháº¥t báº¡i', e.message); }
     finally { setLoading(false); }
   }
 
   return (
     <KeyboardAvoidingView style={s.wrap} behavior={Platform.OS==='ios'?'padding':'height'}>
       <ScrollView contentContainerStyle={s.inner} keyboardShouldPersistTaps="handled">
-        <Text style={s.logo}>🌽</Text>
-        <Text style={s.title}>Tạo tài khoản</Text>
-        <Text style={s.sub}>Miễn phí mãi mãi</Text>
+        <Text style={s.logo}>ð½</Text>
+        <Text style={s.title}>Táº¡o tÃ i khoáº£n</Text>
+        <Text style={s.sub}>Miá»n phÃ­ mÃ£i mÃ£i</Text>
         {[
-          { label:'Họ và tên', v:name, set:setName, ph:'Nguyễn Văn A', kbType:undefined as any, secure:false, cap:'words' as any },
+          { label:'Há» vÃ  tÃªn', v:name, set:setName, ph:'Nguyá»n VÄn A', kbType:undefined as any, secure:false, cap:'words' as any },
           { label:'Email', v:email, set:setEmail, ph:'ban@email.com', kbType:'email-address' as any, secure:false, cap:'none' as any },
-          { label:'Mật khẩu', v:pw, set:setPw, ph:'Ít nhất 8 ký tự', kbType:undefined as any, secure:true, cap:'none' as any },
+          { label:'Máº­t kháº©u', v:pw, set:setPw, ph:'Ãt nháº¥t 8 kÃ½ tá»±', kbType:undefined as any, secure:true, cap:'none' as any },
         ].map(f => (
           <View key={f.label}>
             <Text style={s.label}>{f.label}</Text>
@@ -44,10 +44,10 @@ export function RegisterScreen({ navigation }: Props) {
           </View>
         ))}
         <TouchableOpacity style={[s.btn, loading&&s.btnOff]} onPress={handle} disabled={loading}>
-          {loading ? <ActivityIndicator color="#fff"/> : <Text style={s.btnTxt}>Đăng ký</Text>}
+          {loading ? <ActivityIndicator color="#fff"/> : <Text style={s.btnTxt}>ÄÄng kÃ½</Text>}
         </TouchableOpacity>
         <TouchableOpacity onPress={()=>navigation.goBack()} style={s.back}>
-          <Text style={s.backTxt}>← Đã có tài khoản? <Text style={s.link}>Đăng nhập</Text></Text>
+          <Text style={s.backTxt}>â ÄÃ£ cÃ³ tÃ i khoáº£n? <Text style={s.link}>ÄÄng nháº­p</Text></Text>
         </TouchableOpacity>
       </ScrollView>
     </KeyboardAvoidingView>

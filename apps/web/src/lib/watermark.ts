@@ -1,9 +1,9 @@
-/**
- * Watermark — nhúng vào file/ảnh khi export khỏi tools
- * Client-side hoàn toàn (Canvas API)
+ï»¿/**
+ * Watermark â nhÃºng vÃ o file/áº£nh khi export khá»i tools
+ * Client-side hoÃ n toÃ n (Canvas API)
  *
- * Dùng cho:
- *   - Image Editor: thêm watermark khi download
+ * DÃ¹ng cho:
+ *   - Image Editor: thÃªm watermark khi download
  *   - PDF export: footer "Created with Querencia"
  *   - Screenshot Translator output
  */
@@ -11,7 +11,7 @@
 export interface WatermarkOptions {
   text?:      string;   // default: "querencia.com.vn"
   position?:  'bottom-right' | 'bottom-left' | 'bottom-center' | 'tile';
-  opacity?:   number;   // 0–1, default 0.35
+  opacity?:   number;   // 0â1, default 0.35
   fontSize?:  number;   // px, default 14
   color?:     string;   // default '#4a7c59'
   padding?:   number;   // px from edge, default 12
@@ -19,9 +19,9 @@ export interface WatermarkOptions {
 }
 
 /**
- * Thêm watermark vào ảnh (Canvas API)
- * Input: File hoặc Blob của ảnh
- * Output: Blob đã có watermark
+ * ThÃªm watermark vÃ o áº£nh (Canvas API)
+ * Input: File hoáº·c Blob cá»§a áº£nh
+ * Output: Blob ÄÃ£ cÃ³ watermark
  */
 export async function addImageWatermark(
   imageFile: File | Blob,
@@ -51,7 +51,7 @@ export async function addImageWatermark(
       URL.revokeObjectURL(url);
 
       if (visible) {
-        // ── Visible watermark ──────────────────────────────────
+        // ââ Visible watermark ââââââââââââââââââââââââââââââââââ
         const scale    = Math.min(canvas.width, canvas.height) / 800;
         const scaledFS = Math.max(10, fontSize * scale);
         const scaledPad = Math.max(8, padding * scale);
@@ -78,8 +78,8 @@ export async function addImageWatermark(
         ctx.fillText(text, bx + scaledPad, by + th + scaledPad / 2);
         ctx.restore();
       } else {
-        // ── Invisible steganographic watermark ─────────────────
-        // Nhúng vào LSB của kênh alpha (không nhìn thấy)
+        // ââ Invisible steganographic watermark âââââââââââââââââ
+        // NhÃºng vÃ o LSB cá»§a kÃªnh alpha (khÃ´ng nhÃ¬n tháº¥y)
         const data = ctx.getImageData(0, 0, canvas.width, canvas.height);
         const encoded = encodeToLSB(data, text);
         ctx.putImageData(encoded, 0, 0);
@@ -95,13 +95,13 @@ export async function addImageWatermark(
   });
 }
 
-/** Nhúng text vào LSB (Least Significant Bit) của ảnh */
+/** NhÃºng text vÃ o LSB (Least Significant Bit) cá»§a áº£nh */
 function encodeToLSB(imageData: ImageData, text: string): ImageData {
   const data   = imageData.data;
   const binary = text.split('').map(c => c.charCodeAt(0).toString(2).padStart(8, '0')).join('') + '00000000';
   let bitIdx   = 0;
   for (let i = 0; i < data.length && bitIdx < binary.length; i += 4) {
-    // Chỉ modify kênh Blue (i+2) — ít ảnh hưởng visual nhất
+    // Chá» modify kÃªnh Blue (i+2) â Ã­t áº£nh hÆ°á»ng visual nháº¥t
     data[i + 2] = (data[i + 2] & ~1) | parseInt(binary[bitIdx++] ?? '0');
   }
   return imageData;
@@ -109,7 +109,7 @@ function encodeToLSB(imageData: ImageData, text: string): ImageData {
 
 /**
  * Watermark cho PDF (text footer)
- * Trả về string CSS để inject vào PDF content
+ * Tráº£ vá» string CSS Äá» inject vÃ o PDF content
  */
 export function getPDFWatermarkCSS(): string {
   return `
@@ -117,7 +117,7 @@ export function getPDFWatermarkCSS(): string {
       margin-bottom: 24px;
     }
     body::after {
-      content: 'Created with Querencia · querencia.com.vn';
+      content: 'Created with Querencia Â· querencia.com.vn';
       position: fixed;
       bottom: 8px;
       right: 12px;
@@ -130,7 +130,7 @@ export function getPDFWatermarkCSS(): string {
 }
 
 /**
- * Hook để dùng trong tool pages
+ * Hook Äá» dÃ¹ng trong tool pages
  */
 export function downloadWithWatermark(
   file: File | Blob,
@@ -149,7 +149,7 @@ export function downloadWithWatermark(
       setTimeout(() => URL.revokeObjectURL(url), 1000);
     });
   } else {
-    // Không phải ảnh → download thường
+    // KhÃ´ng pháº£i áº£nh â download thÆ°á»ng
     const url = URL.createObjectURL(file);
     const a   = document.createElement('a');
     a.href    = url;

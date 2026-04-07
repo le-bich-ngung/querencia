@@ -1,14 +1,14 @@
-﻿/**
- * Cùi Bắp Service — DB WIRED
- * Migrated từ querencia-backend/api/app_logic.py (cuibap_router)
- * Tất cả TODO stubs đã được thay bằng Drizzle queries thật.
+ï»¿/**
+ * CÃ¹i Báº¯p Service â DB WIRED
+ * Migrated tá»« querencia-backend/api/app_logic.py (cuibap_router)
+ * Táº¥t cáº£ TODO stubs ÄÃ£ ÄÆ°á»£c thay báº±ng Drizzle queries tháº­t.
  *
- * Logic giữ 100% giống code cũ:
- *   - user_a_id < user_b_id (tránh tạo trùng conversation)
+ * Logic giá»¯ 100% giá»ng code cÅ©:
+ *   - user_a_id < user_b_id (trÃ¡nh táº¡o trÃ¹ng conversation)
  *   - Soft delete message (is_deleted=true, content=null)
- *   - Reaction toggle (có thì xóa, không có thì thêm)
- *   - Settings upsert (tạo nếu chưa có)
- *   - Group max 100 members, mỗi user max 10 groups
+ *   - Reaction toggle (cÃ³ thÃ¬ xÃ³a, khÃ´ng cÃ³ thÃ¬ thÃªm)
+ *   - Settings upsert (táº¡o náº¿u chÆ°a cÃ³)
+ *   - Group max 100 members, má»i user max 10 groups
  *   - File expires_at = now + 7 days
  *   - WebSocket broadcast qua ChatGateway
  */
@@ -40,21 +40,21 @@ export class CuiBapService {
     private readonly r2:          R2Service,
   ) {}
 
-  // ─────────────────────────────────────────────────────────────
-  // FILE UPLOAD → Cloudflare R2
-  // ─────────────────────────────────────────────────────────────
+  // âââââââââââââââââââââââââââââââââââââââââââââââââââââââââââââ
+  // FILE UPLOAD â Cloudflare R2
+  // âââââââââââââââââââââââââââââââââââââââââââââââââââââââââââââ
 
   async uploadFile(userId: string, file: Express.Multer.File) {
     const result = await this.r2.upload(file, 'cuibap', userId);
     return result;
   }
 
-  // ─────────────────────────────────────────────────────────────
+  // âââââââââââââââââââââââââââââââââââââââââââââââââââââââââââââ
   // CONVERSATIONS (DM)
-  // ─────────────────────────────────────────────────────────────
+  // âââââââââââââââââââââââââââââââââââââââââââââââââââââââââââââ
 
   async getConversations(userId: string) {
-    // Query conversations + người kia + tin nhắn cuối
+    // Query conversations + ngÆ°á»i kia + tin nháº¯n cuá»i
     // Logic: user_a_id OR user_b_id == userId, sort by last_message_at DESC
     const convs = await this.db.query.cbConversations.findMany({
       where: or(
@@ -64,7 +64,7 @@ export class CuiBapService {
       orderBy: [desc(cbConversations.lastMessageAt)],
     });
 
-    // Lấy thông tin user kia + last message cho mỗi conversation
+    // Láº¥y thÃ´ng tin user kia + last message cho má»i conversation
     const result = await Promise.all(convs.map(async (conv) => {
       const otherId = conv.userAId === userId ? conv.userBId : conv.userAId;
 
@@ -101,10 +101,10 @@ export class CuiBapService {
 
   async getOrCreateConversation(userId: string, targetUserId: string) {
     if (userId === targetUserId) {
-      throw new BadRequestException('Không thể nhắn tin với chính mình');
+      throw new BadRequestException('KhÃ´ng thá» nháº¯n tin vá»i chÃ­nh mÃ¬nh');
     }
 
-    // user_a_id < user_b_id — giữ y chang logic cũ để tránh tạo trùng
+    // user_a_id < user_b_id â giá»¯ y chang logic cÅ© Äá» trÃ¡nh táº¡o trÃ¹ng
     const [a, b] = [userId, targetUserId].sort();
 
     const existing = await this.db.query.cbConversations.findFirst({
@@ -115,12 +115,12 @@ export class CuiBapService {
     });
     if (existing) return { ...existing, alreadyExists: true };
 
-    // Verify target user tồn tại
+    // Verify target user tá»n táº¡i
     const target = await this.db.query.users.findFirst({
       where: eq(users.id, targetUserId),
       columns: { id: true, name: true },
     });
-    if (!target) throw new NotFoundException('Không tìm thấy người dùng');
+    if (!target) throw new NotFoundException('KhÃ´ng tÃ¬m tháº¥y ngÆ°á»i dÃ¹ng');
 
     const [conv] = await this.db
       .insert(cbConversations)
@@ -130,12 +130,12 @@ export class CuiBapService {
     return { ...conv, alreadyExists: false };
   }
 
-  // ─────────────────────────────────────────────────────────────
+  // âââââââââââââââââââââââââââââââââââââââââââââââââââââââââââââ
   // MESSAGES (DM)
-  // ─────────────────────────────────────────────────────────────
+  // âââââââââââââââââââââââââââââââââââââââââââââââââââââââââââââ
 
   async getMessages(convId: string, userId: string, before?: string, limit = 50) {
-    // Guard: phải là thành viên conversation
+    // Guard: pháº£i lÃ  thÃ nh viÃªn conversation
     const conv = await this._getConvOrFail(convId, userId);
 
     const conditions = [
@@ -143,19 +143,19 @@ export class CuiBapService {
       eq(cbMessages.isDeleted, false),
       eq(cbMessages.isSent, true),
     ];
-    // Phân trang cursor-based: lấy tin nhắn trước timestamp
+    // PhÃ¢n trang cursor-based: láº¥y tin nháº¯n trÆ°á»c timestamp
     if (before) conditions.push(lt(cbMessages.sentAt, new Date(before)));
 
     const msgs = await this.db.query.cbMessages.findMany({
       where: and(...conditions),
       orderBy: [desc(cbMessages.sentAt)],
-      limit: limit + 1,  // +1 để biết có trang tiếp không
+      limit: limit + 1,  // +1 Äá» biáº¿t cÃ³ trang tiáº¿p khÃ´ng
     });
 
     const hasMore = msgs.length > limit;
     const items   = hasMore ? msgs.slice(0, limit) : msgs;
 
-    // Format + đính reactions — chronological order (reversed)
+    // Format + ÄÃ­nh reactions â chronological order (reversed)
     const formatted = await Promise.all(
       items.reverse().map(m => this._formatMessage(m)),
     );
@@ -188,14 +188,14 @@ export class CuiBapService {
         replyToId:      data.replyToId,
         scheduledAt:    data.scheduledAt ? new Date(data.scheduledAt) : null,
         isSent:         !isScheduled,
-        // File tự xóa sau 7 ngày — giữ y chang code cũ
+        // File tá»± xÃ³a sau 7 ngÃ y â giá»¯ y chang code cÅ©
         fileExpiresAt:  data.fileUrl
           ? new Date(Date.now() + 7 * 24 * 3600 * 1000)
           : null,
       })
       .returning();
 
-    // Update last_message_at trên conversation
+    // Update last_message_at trÃªn conversation
     if (!isScheduled) {
       await this.db
         .update(cbConversations)
@@ -205,7 +205,7 @@ export class CuiBapService {
 
     const formatted = await this._formatMessage(msg);
 
-    // WebSocket: gửi đến người nhận — giữ y chang logic cũ
+    // WebSocket: gá»­i Äáº¿n ngÆ°á»i nháº­n â giá»¯ y chang logic cÅ©
     if (!isScheduled) {
       const targetId = conv.userAId === senderId ? conv.userBId : conv.userAId;
       this.chatGateway.sendToUser(targetId, 'new_message', {
@@ -221,14 +221,14 @@ export class CuiBapService {
     const msg = await this.db.query.cbMessages.findFirst({
       where: and(eq(cbMessages.id, msgId), eq(cbMessages.senderId, userId)),
     });
-    if (!msg) throw new NotFoundException('Không tìm thấy tin nhắn');
+    if (!msg) throw new NotFoundException('KhÃ´ng tÃ¬m tháº¥y tin nháº¯n');
 
     await this.db
       .update(cbMessages)
       .set({ content, isEdited: true, editedAt: new Date() })
       .where(eq(cbMessages.id, msgId));
 
-    // Notify người nhận
+    // Notify ngÆ°á»i nháº­n
     const conv = await this.db.query.cbConversations.findFirst({
       where: eq(cbConversations.id, msg.conversationId),
     });
@@ -244,9 +244,9 @@ export class CuiBapService {
     const msg = await this.db.query.cbMessages.findFirst({
       where: and(eq(cbMessages.id, msgId), eq(cbMessages.senderId, userId)),
     });
-    if (!msg) throw new NotFoundException('Không tìm thấy tin nhắn');
+    if (!msg) throw new NotFoundException('KhÃ´ng tÃ¬m tháº¥y tin nháº¯n');
 
-    // Soft delete: is_deleted=true, xóa content — giữ y chang code cũ
+    // Soft delete: is_deleted=true, xÃ³a content â giá»¯ y chang code cÅ©
     await this.db
       .update(cbMessages)
       .set({ isDeleted: true, content: null })
@@ -262,7 +262,7 @@ export class CuiBapService {
   }
 
   async addReaction(msgId: string, userId: string, emoji: string) {
-    // Toggle: có thì xóa, không thì thêm — giữ y chang logic cũ
+    // Toggle: cÃ³ thÃ¬ xÃ³a, khÃ´ng thÃ¬ thÃªm â giá»¯ y chang logic cÅ©
     const existing = await this.db.query.cbReactions.findFirst({
       where: and(
         eq(cbReactions.messageId, msgId),
@@ -296,7 +296,7 @@ export class CuiBapService {
   }
 
   async markRead(convId: string, userId: string, lastMsgId?: string) {
-    // 1. Lưu read receipt cho tin nhắn cuối
+    // 1. LÆ°u read receipt cho tin nháº¯n cuá»i
     if (lastMsgId) {
       await this.db
         .insert(cbReadReceipts)
@@ -304,11 +304,11 @@ export class CuiBapService {
         .onConflictDoNothing();
     }
 
-    // 2. Lấy tất cả tin nhắn trong conv mà user chưa đọc (do người khác gửi)
+    // 2. Láº¥y táº¥t cáº£ tin nháº¯n trong conv mÃ  user chÆ°a Äá»c (do ngÆ°á»i khÃ¡c gá»­i)
     const unread = await this.db.query.cbMessages.findMany({
       where: and(
         eq(cbMessages.conversationId, convId),
-        // Không lấy tin mình gửi
+        // KhÃ´ng láº¥y tin mÃ¬nh gá»­i
         sql`${cbMessages.senderId} != ${userId}`,
         eq(cbMessages.isDeleted, false),
       ),
@@ -318,14 +318,14 @@ export class CuiBapService {
 
     if (!unread.length) return { ok: true };
 
-    // Group by senderId để notify từng sender
+    // Group by senderId Äá» notify tá»«ng sender
     const bySender = new Map<string, string[]>();
     for (const m of unread) {
       if (!bySender.has(m.senderId)) bySender.set(m.senderId, []);
       bySender.get(m.senderId)!.push(m.id);
     }
 
-    // 3. Emit message_read tới từng sender qua WebSocket
+    // 3. Emit message_read tá»i tá»«ng sender qua WebSocket
     for (const [senderId, msgIds] of bySender) {
       this.chatGateway.notifyMessageRead(senderId, convId, userId, msgIds);
     }
@@ -337,9 +337,9 @@ export class CuiBapService {
     const msg = await this.db.query.cbMessages.findFirst({
       where: eq(cbMessages.id, msgId),
     });
-    if (!msg) throw new NotFoundException('Không tìm thấy tin nhắn');
+    if (!msg) throw new NotFoundException('KhÃ´ng tÃ¬m tháº¥y tin nháº¯n');
 
-    // Chỉ thành viên conversation mới pin được
+    // Chá» thÃ nh viÃªn conversation má»i pin ÄÆ°á»£c
     await this._getConvOrFail(msg.conversationId, userId);
 
     await this.db
@@ -350,9 +350,9 @@ export class CuiBapService {
     return { isPinned: !msg.isPinned };
   }
 
-  // ─────────────────────────────────────────────────────────────
+  // âââââââââââââââââââââââââââââââââââââââââââââââââââââââââââââ
   // GROUPS
-  // ─────────────────────────────────────────────────────────────
+  // âââââââââââââââââââââââââââââââââââââââââââââââââââââââââââââ
 
   async getGroups(userId: string) {
     const memberships = await this.db.query.cbGroupMembers.findMany({
@@ -400,7 +400,7 @@ export class CuiBapService {
   async createGroup(ownerId: string, data: {
     name: string; description?: string; memberIds?: string[];
   }) {
-    // Max 10 nhóm/user — giữ y chang code cũ
+    // Max 10 nhÃ³m/user â giá»¯ y chang code cÅ©
     const groupCount = await this.db
       .select({ count: count() })
       .from(cbGroupMembers)
@@ -408,12 +408,12 @@ export class CuiBapService {
       .then(r => r[0]?.count ?? 0);
 
     if (groupCount >= 10) {
-      throw new BadRequestException('Bạn đã đạt giới hạn 10 nhóm');
+      throw new BadRequestException('Báº¡n ÄÃ£ Äáº¡t giá»i háº¡n 10 nhÃ³m');
     }
 
     const extraMembers = data.memberIds ?? [];
     if (extraMembers.length > 99) {
-      throw new BadRequestException('Nhóm tối đa 100 người');
+      throw new BadRequestException('NhÃ³m tá»i Äa 100 ngÆ°á»i');
     }
 
     // Insert group + owner member trong transaction
@@ -422,7 +422,7 @@ export class CuiBapService {
       .values({ name: data.name, description: data.description, ownerId })
       .returning();
 
-    // Owner luôn là member đầu tiên với role='owner'
+    // Owner luÃ´n lÃ  member Äáº§u tiÃªn vá»i role='owner'
     const memberValues = [
       { groupId: group.id, userId: ownerId, role: 'owner' as const },
       ...extraMembers
@@ -436,7 +436,7 @@ export class CuiBapService {
   }
 
   async addGroupMember(groupId: string, requesterId: string, newUserId: string) {
-    // Guard: requester phải là owner hoặc admin — giữ y chang code cũ
+    // Guard: requester pháº£i lÃ  owner hoáº·c admin â giá»¯ y chang code cÅ©
     const myRole = await this.db.query.cbGroupMembers.findFirst({
       where: and(
         eq(cbGroupMembers.groupId, groupId),
@@ -444,7 +444,7 @@ export class CuiBapService {
       ),
     });
     if (!myRole || myRole.role === 'member') {
-      throw new ForbiddenException('Không có quyền thêm thành viên');
+      throw new ForbiddenException('KhÃ´ng cÃ³ quyá»n thÃªm thÃ nh viÃªn');
     }
 
     // Max 100 members
@@ -455,17 +455,17 @@ export class CuiBapService {
       .then(r => r[0]?.count ?? 0);
 
     if (memberCount >= 100) {
-      throw new BadRequestException('Nhóm đã đạt giới hạn 100 người');
+      throw new BadRequestException('NhÃ³m ÄÃ£ Äáº¡t giá»i háº¡n 100 ngÆ°á»i');
     }
 
-    // Check đã là member chưa
+    // Check ÄÃ£ lÃ  member chÆ°a
     const existing = await this.db.query.cbGroupMembers.findFirst({
       where: and(
         eq(cbGroupMembers.groupId, groupId),
         eq(cbGroupMembers.userId, newUserId),
       ),
     });
-    if (existing) throw new BadRequestException('Người dùng đã trong nhóm');
+    if (existing) throw new BadRequestException('NgÆ°á»i dÃ¹ng ÄÃ£ trong nhÃ³m');
 
     await this.db.insert(cbGroupMembers).values({
       groupId, userId: newUserId, role: 'member',
@@ -486,9 +486,9 @@ export class CuiBapService {
     const isOwner  = myRole?.role === 'owner';
     const isAdmin  = myRole?.role === 'admin';
 
-    // Chỉ: owner xóa ai, admin xóa member, member tự rời
+    // Chá»: owner xÃ³a ai, admin xÃ³a member, member tá»± rá»i
     if (!isSelf && !isOwner && !isAdmin) {
-      throw new ForbiddenException('Không có quyền xóa thành viên');
+      throw new ForbiddenException('KhÃ´ng cÃ³ quyá»n xÃ³a thÃ nh viÃªn');
     }
 
     await this.db.delete(cbGroupMembers).where(
@@ -503,18 +503,18 @@ export class CuiBapService {
 
 
   async setMemberRole(groupId: string, requesterId: string, targetUserId: string, role: 'admin' | 'member') {
-    // Chỉ owner mới có thể set role
+    // Chá» owner má»i cÃ³ thá» set role
     const membership = await this.db.query.cbGroupMembers.findFirst({
       where: and(eq(cbGroupMembers.groupId, groupId), eq(cbGroupMembers.userId, requesterId)),
     });
     if (!membership || membership.role !== 'owner') {
-      throw new ForbiddenException('Chỉ trưởng nhóm mới có thể phân quyền');
+      throw new ForbiddenException('Chá» trÆ°á»ng nhÃ³m má»i cÃ³ thá» phÃ¢n quyá»n');
     }
     const target = await this.db.query.cbGroupMembers.findFirst({
       where: and(eq(cbGroupMembers.groupId, groupId), eq(cbGroupMembers.userId, targetUserId)),
     });
-    if (!target) throw new NotFoundException('Thành viên không tồn tại trong nhóm');
-    if (target.role === 'owner') throw new ForbiddenException('Không thể thay đổi quyền trưởng nhóm');
+    if (!target) throw new NotFoundException('ThÃ nh viÃªn khÃ´ng tá»n táº¡i trong nhÃ³m');
+    if (target.role === 'owner') throw new ForbiddenException('KhÃ´ng thá» thay Äá»i quyá»n trÆ°á»ng nhÃ³m');
 
     await this.db.update(cbGroupMembers)
       .set({ role })
@@ -582,7 +582,7 @@ export class CuiBapService {
 
     const formatted = await this._formatGroupMessage(msg);
 
-    // Broadcast đến tất cả members online
+    // Broadcast Äáº¿n táº¥t cáº£ members online
     const members = await this.db.query.cbGroupMembers.findMany({
       where: eq(cbGroupMembers.groupId, groupId),
     });
@@ -598,15 +598,15 @@ export class CuiBapService {
     return formatted;
   }
 
-  // ─────────────────────────────────────────────────────────────
+  // âââââââââââââââââââââââââââââââââââââââââââââââââââââââââââââ
   // POLLS
-  // ─────────────────────────────────────────────────────────────
+  // âââââââââââââââââââââââââââââââââââââââââââââââââââââââââââââ
 
   async createPoll(groupId: string, creatorId: string, data: {
     question: string; options: string[]; closesAt?: string;
   }) {
     if (data.options.length < 2) {
-      throw new BadRequestException('Poll cần ít nhất 2 lựa chọn');
+      throw new BadRequestException('Poll cáº§n Ã­t nháº¥t 2 lá»±a chá»n');
     }
     await this._assertGroupMember(groupId, creatorId);
 
@@ -634,10 +634,10 @@ export class CuiBapService {
       where: eq(cbPolls.id, pollId),
     });
     if (!poll || poll.isClosed) {
-      throw new BadRequestException('Poll không tồn tại hoặc đã đóng');
+      throw new BadRequestException('Poll khÃ´ng tá»n táº¡i hoáº·c ÄÃ£ ÄÃ³ng');
     }
 
-    // Đổi phiếu nếu đã vote — giữ y chang code cũ
+    // Äá»i phiáº¿u náº¿u ÄÃ£ vote â giá»¯ y chang code cÅ©
     const existing = await this.db.query.cbPollVotes.findFirst({
       where: and(
         eq(cbPollVotes.pollId, pollId),
@@ -657,16 +657,16 @@ export class CuiBapService {
     return { ok: true };
   }
 
-  // ─────────────────────────────────────────────────────────────
+  // âââââââââââââââââââââââââââââââââââââââââââââââââââââââââââââ
   // USER SETTINGS
-  // ─────────────────────────────────────────────────────────────
+  // âââââââââââââââââââââââââââââââââââââââââââââââââââââââââââââ
 
   async getSettings(userId: string) {
     let settings = await this.db.query.cbUserSettings.findFirst({
       where: eq(cbUserSettings.userId, userId),
     });
 
-    // Tạo defaults nếu chưa có — giữ y chang code cũ
+    // Táº¡o defaults náº¿u chÆ°a cÃ³ â giá»¯ y chang code cÅ©
     if (!settings) {
       const [created] = await this.db
         .insert(cbUserSettings)
@@ -711,14 +711,14 @@ export class CuiBapService {
     return { ok: true };
   }
 
-  // ─────────────────────────────────────────────────────────────
+  // âââââââââââââââââââââââââââââââââââââââââââââââââââââââââââââ
   // PRIVATE HELPERS
-  // ─────────────────────────────────────────────────────────────
+  // âââââââââââââââââââââââââââââââââââââââââââââââââââââââââââââ
 
 
   async pinConversation(convId: string, userId: string, pin: boolean) {
     await this._getConvOrFail(convId, userId);
-    // Lưu pin state trong user settings (Redis key)
+    // LÆ°u pin state trong user settings (Redis key)
     const key = `conv:pinned:${userId}`;
     if (pin) await this.redis.sadd(key, convId);
     else     await this.redis.srem(key, convId);
@@ -733,7 +733,7 @@ export class CuiBapService {
   }
 
   async deleteConversation(convId: string, userId: string) {
-    // Soft delete — chỉ ẩn ở phía user này
+    // Soft delete â chá» áº©n á» phÃ­a user nÃ y
     const key = `conv:deleted:${userId}`;
     await this.redis.sadd(key, convId);
     return;
@@ -744,7 +744,7 @@ export class CuiBapService {
     const members = await this.db.query.cbGroupMembers.findMany({
       where: eq(cbGroupMembers.groupId, groupId),
     });
-    // Join với user info
+    // Join vá»i user info
     const result = await Promise.all(members.map(async m => {
       const user = await this.db.query.users.findFirst({
         where: eq(users.id, m.userId),
@@ -760,7 +760,7 @@ export class CuiBapService {
       where: eq(cbConversations.id, convId),
     });
     if (!conv || (conv.userAId !== userId && conv.userBId !== userId)) {
-      throw new ForbiddenException('Không có quyền truy cập cuộc trò chuyện này');
+      throw new ForbiddenException('KhÃ´ng cÃ³ quyá»n truy cáº­p cuá»c trÃ² chuyá»n nÃ y');
     }
     return conv;
   }
@@ -772,11 +772,11 @@ export class CuiBapService {
         eq(cbGroupMembers.userId, userId),
       ),
     });
-    if (!member) throw new ForbiddenException('Bạn không phải thành viên của nhóm này');
+    if (!member) throw new ForbiddenException('Báº¡n khÃ´ng pháº£i thÃ nh viÃªn cá»§a nhÃ³m nÃ y');
     return member;
   }
 
-  // Format DM message — giữ y chang _format_message từ code cũ
+  // Format DM message â giá»¯ y chang _format_message tá»« code cÅ©
   private async _formatMessage(msg: typeof cbMessages.$inferSelect) {
     const [sender, reactions] = await Promise.all([
       this.db.query.users.findFirst({
@@ -788,7 +788,7 @@ export class CuiBapService {
       }),
     ]);
 
-    // Group reactions by emoji — giữ y chang code cũ
+    // Group reactions by emoji â giá»¯ y chang code cÅ©
     const reactionSummary: Record<string, number> = {};
     for (const r of reactions) {
       reactionSummary[r.emoji] = (reactionSummary[r.emoji] ?? 0) + 1;

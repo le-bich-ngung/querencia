@@ -1,4 +1,4 @@
-export function AuthMessage({ message, type }: {
+ï»¿export function AuthMessage({ message, type }: {
   message: string | null;
   type: 'error' | 'success' | 'info';
 }) {

@@ -1,4 +1,4 @@
-import React from 'react';
+ï»¿import React from 'react';
 import { View, Text, TouchableOpacity, StyleSheet, Alert } from 'react-native';
 import type { NativeStackScreenProps } from '@react-navigation/native-stack';
 import type { RootStackParams } from '../../navigation';
@@ -12,29 +12,29 @@ export function SettingsScreen({ navigation }: Props) {
 
   return (
     <View style={s.container}>
-      <Text style={s.title}>Cài đặt</Text>
+      <Text style={s.title}>CÃ i Äáº·t</Text>
       <TouchableOpacity style={s.card} onPress={() => (navigation as any).navigate('EditProfile')} activeOpacity={0.8}>
         <View style={s.avatar}><Text style={s.avatarTxt}>{user?.name?.[0]?.toUpperCase()}</Text></View>
         <View style={{flex:1}}>
           <Text style={s.name}>{user?.name}</Text>
           <Text style={s.email}>{user?.email}</Text>
-          <Text style={s.plan}>{user?.plan==='pro'?'⭐ Pro':'Free'}</Text>
+          <Text style={s.plan}>{user?.plan==='pro'?'â­ Pro':'Free'}</Text>
         </View>
       </TouchableOpacity>
-      <Text style={s.editHint}>Nhấn để chỉnh sửa hồ sơ</Text>
+      <Text style={s.editHint}>Nháº¥n Äá» chá»nh sá»­a há» sÆ¡</Text>
       {[
-        {label:'🔔 Thông báo',onPress:()=>{}},
-        {label:'🎨 Giao diện',onPress:()=>{}},
-        {label:'🔒 Bảo mật',onPress:()=>{}},
-        {label:'🌿 Về Querencia',onPress:()=>{}},
+        {label:'ð ThÃ´ng bÃ¡o',onPress:()=>{}},
+        {label:'ð¨ Giao diá»n',onPress:()=>{}},
+        {label:'ð Báº£o máº­t',onPress:()=>{}},
+        {label:'ð¿ Vá» Querencia',onPress:()=>{}},
       ].map(item=>(
         <TouchableOpacity key={item.label} style={s.row} onPress={item.onPress}>
           <Text style={s.rowTxt}>{item.label}</Text>
-          <Text style={{color:colors.gray,fontSize:20}}>›</Text>
+          <Text style={{color:colors.gray,fontSize:20}}>âº</Text>
         </TouchableOpacity>
       ))}
-      <TouchableOpacity style={s.logout} onPress={()=>Alert.alert('Đăng xuất?','',[ {text:'Hủy',style:'cancel'},{text:'Đăng xuất',style:'destructive',onPress:()=>logout()} ])}>
-        <Text style={s.logoutTxt}>🚪 Đăng xuất</Text>
+      <TouchableOpacity style={s.logout} onPress={()=>Alert.alert('ÄÄng xuáº¥t?','',[ {text:'Há»§y',style:'cancel'},{text:'ÄÄng xuáº¥t',style:'destructive',onPress:()=>logout()} ])}>
+        <Text style={s.logoutTxt}>ðª ÄÄng xuáº¥t</Text>
       </TouchableOpacity>
     </View>
   );

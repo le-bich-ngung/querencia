@@ -1,11 +1,11 @@
-﻿/**
- * Webhooks Controller — xử lý Paddle payment webhooks
- * Quan trọng: đây là điểm cấp Q cho user sau khi thanh toán thành công
+ï»¿/**
+ * Webhooks Controller â xá»­ lÃ½ Paddle payment webhooks
+ * Quan trá»ng: ÄÃ¢y lÃ  Äiá»m cáº¥p Q cho user sau khi thanh toÃ¡n thÃ nh cÃ´ng
  *
  * Security:
- *   - Verify HMAC-SHA256 signature từ Paddle
- *   - Idempotency: check order đã xử lý chưa (dùng orderId)
- *   - Raw body: phải đọc raw body (không parse JSON) để verify signature
+ *   - Verify HMAC-SHA256 signature tá»« Paddle
+ *   - Idempotency: check order ÄÃ£ xá»­ lÃ½ chÆ°a (dÃ¹ng orderId)
+ *   - Raw body: pháº£i Äá»c raw body (khÃ´ng parse JSON) Äá» verify signature
  */
 import {
   Controller, Post, Headers, Body,
@@ -48,12 +48,12 @@ export class WebhooksController {
 
     if (event.type === 'payment_completed' && event.userId && event.days && event.orderId) {
       try {
-        // 1. Record order (idempotent — onConflictDoNothing)
+        // 1. Record order (idempotent â onConflictDoNothing)
         await this.paymentsSvc.recordOrder(
           event.userId,
           event.days,
           event.orderId,
-          event.days * 50, // $0.50/ngày = 50 cents
+          event.days * 50, // $0.50/ngÃ y = 50 cents
         );
 
         // 2. Grant Q
@@ -62,7 +62,7 @@ export class WebhooksController {
         this.logger.log(`Granted Q for user ${event.userId}: ${event.days} days`);
       } catch (e) {
         this.logger.error('Failed to process payment:', e);
-        // Trả 200 để Paddle không retry — đã log lỗi để xử lý manual
+        // Tráº£ 200 Äá» Paddle khÃ´ng retry â ÄÃ£ log lá»i Äá» xá»­ lÃ½ manual
       }
     }
 

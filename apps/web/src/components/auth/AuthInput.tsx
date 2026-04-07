@@ -1,4 +1,4 @@
-'use client';
+ï»¿'use client';
 import { useState } from 'react';
 
 export function AuthInput({ label, type = 'text', ...props }: {

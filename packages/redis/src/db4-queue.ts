@@ -1,13 +1,13 @@
-﻿import { Redis } from 'ioredis';
+ï»¿import { Redis } from 'ioredis';
 
-// DB4 — BullMQ queue backend (isolated — sự cố queue không ảnh hưởng cache/session)
+// DB4 â BullMQ queue backend (isolated â sá»± cá» queue khÃ´ng áº£nh hÆ°á»ng cache/session)
 export const queueRedis = new Redis(
   process.env.REDIS_DB4_QUEUE_URL!,
   {
     db: 4,
     lazyConnect: true,
-    maxRetriesPerRequest: null, // BullMQ yêu cầu null
-    enableReadyCheck: false,    // BullMQ yêu cầu false
+    maxRetriesPerRequest: null, // BullMQ yÃªu cáº§u null
+    enableReadyCheck: false,    // BullMQ yÃªu cáº§u false
   }
 );
 // Export connection cho BullMQ

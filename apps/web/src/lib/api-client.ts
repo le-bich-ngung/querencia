@@ -1,6 +1,6 @@
-/**
- * API Client — gọi NestJS API từ Next.js
- * Giữ cùng pattern với js/api.js cũ nhưng dùng fetch thay XHR
+ï»¿/**
+ * API Client â gá»i NestJS API tá»« Next.js
+ * Giá»¯ cÃ¹ng pattern vá»i js/api.js cÅ© nhÆ°ng dÃ¹ng fetch thay XHR
  */
 const API_BASE = process.env.NEXT_PUBLIC_API_URL ?? '/api/v1';
 
@@ -18,12 +18,12 @@ export async function apiRequest<T>(
   const res = await fetch(`${API_BASE}${path}`, { ...fetchOpts, headers });
   if (!res.ok) {
     const err = await res.json().catch(() => ({ message: res.statusText }));
-    throw new Error(err.message ?? 'Có lỗi xảy ra');
+    throw new Error(err.message ?? 'CÃ³ lá»i xáº£y ra');
   }
   return res.json();
 }
 
-// ── Auth ─────────────────────────────────────────────────────
+// ââ Auth âââââââââââââââââââââââââââââââââââââââââââââââââââââ
 export const authApi = {
   register: (data: { email: string; name: string; password: string }) =>
     apiRequest('/auth/register', { method: 'POST', body: JSON.stringify(data) }),
@@ -37,7 +37,7 @@ export const authApi = {
     apiRequest<any>('/auth/me', { token }),
 };
 
-// ── Nope ─────────────────────────────────────────────────────
+// ââ Nope âââââââââââââââââââââââââââââââââââââââââââââââââââââ
 export const nopeApi = {
   getFeed: (page = 1, token?: string) =>
     apiRequest<any>(`/nope/posts?page=${page}`, { token }),
@@ -60,7 +60,7 @@ export const nopeApi = {
     }),
 };
 
-// ── Cùi Bắp ─────────────────────────────────────────────────
+// ââ CÃ¹i Báº¯p âââââââââââââââââââââââââââââââââââââââââââââââââ
 export const cuiBapApi = {
   getConversations: (token: string) =>
     apiRequest<any[]>('/cuibap/conversations', { token }),
@@ -80,7 +80,7 @@ export const cuiBapApi = {
     apiRequest<any>('/cuibap/settings', { token }),
 };
 
-// ── Tools ────────────────────────────────────────────────────
+// ââ Tools ââââââââââââââââââââââââââââââââââââââââââââââââââââ
 export const toolsApi = {
   getTools: () => apiRequest<any>('/tools'),
   getQuota: (token: string) => apiRequest<any>('/tools/quota', { token }),

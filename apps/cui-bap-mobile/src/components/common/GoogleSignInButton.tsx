@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+ï»¿import React, { useState } from 'react';
 import { TouchableOpacity, Text, View, StyleSheet, ActivityIndicator, Alert } from 'react-native';
 import { signInWithGoogle } from '../../lib/google-auth';
 import { useAuthStore } from '../../store/auth.store';
@@ -14,11 +14,11 @@ export function GoogleSignInButton() {
     try {
       const { user, accessToken, refreshToken } = await signInWithGoogle();
       setAuth(user, accessToken, refreshToken);
-      // Setup E2EE keys nếu là user mới
+      // Setup E2EE keys náº¿u lÃ  user má»i
       setupE2EE().catch(() => {}); // background
     } catch (error: any) {
       if (error.code !== 'SIGN_IN_CANCELLED') {
-        Alert.alert('Lỗi đăng nhập', error.message ?? 'Không thể đăng nhập với Google.');
+        Alert.alert('Lá»i ÄÄng nháº­p', error.message ?? 'KhÃ´ng thá» ÄÄng nháº­p vá»i Google.');
       }
     } finally {
       setLoading(false);
@@ -40,7 +40,7 @@ export function GoogleSignInButton() {
           <View style={s.gLogo}>
             <Text style={s.gText}>G</Text>
           </View>
-          <Text style={s.label}>Tiếp tục với Google</Text>
+          <Text style={s.label}>Tiáº¿p tá»¥c vá»i Google</Text>
         </>
       )}
     </TouchableOpacity>

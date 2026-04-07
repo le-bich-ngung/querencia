@@ -1,4 +1,4 @@
-'use client';
+ï»¿'use client';
 export const dynamic = 'force-dynamic';
 import { Suspense } from 'react';
 import Link from 'next/link';
@@ -9,7 +9,7 @@ function SuccessContent() {
   const days = searchParams.get('days') ?? '?';
   return (
     <div style={{ maxWidth: 480, margin: '80px auto', padding: '0 24px', textAlign: 'center' }}>
-      <div style={{ fontSize: '3.5rem', marginBottom: 16 }}>🎉</div>
+      <div style={{ fontSize: '3.5rem', marginBottom: 16 }}>ð</div>
       <h1 style={{ fontSize: '1.5rem', fontWeight: 800, marginBottom: 8 }}>
         Mua thanh cong!
       </h1>

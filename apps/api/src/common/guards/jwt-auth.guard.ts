@@ -1,6 +1,6 @@
-﻿/**
- * JWT Auth Guard — access token 15m + refresh rotation
- * Tự động reject token đã bị revoke (logout từ thiết bị khác)
+ï»¿/**
+ * JWT Auth Guard â access token 15m + refresh rotation
+ * Tá»± Äá»ng reject token ÄÃ£ bá» revoke (logout tá»« thiáº¿t bá» khÃ¡c)
  */
 import {
   Injectable, ExecutionContext,
@@ -27,7 +27,7 @@ export class JwtAuthGuard extends AuthGuard('jwt') {
 
   handleRequest(err: any, user: any, info: any, ctx: ExecutionContext) {
     if (err || !user) {
-      // Log loại lỗi để debug (không expose ra client)
+      // Log loáº¡i lá»i Äá» debug (khÃ´ng expose ra client)
       if (info?.name === 'TokenExpiredError') {
         throw new UnauthorizedException('TOKEN_EXPIRED');
       }

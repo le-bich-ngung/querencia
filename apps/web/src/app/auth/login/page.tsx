@@ -1,11 +1,11 @@
-'use client';
+ï»¿'use client';
 /**
- * Login page — /auth/login
- * Migrated từ auth.js doLogin() + MFA waiting overlay
- * Flow giữ nguyên:
- *   1. Email + password → POST /api/v1/auth/login
- *   2. Nếu user có Cùi Bắp app → MFA challenge → polling
- *   3. Nếu không có app → đăng nhập thẳng
+ * Login page â /auth/login
+ * Migrated tá»« auth.js doLogin() + MFA waiting overlay
+ * Flow giá»¯ nguyÃªn:
+ *   1. Email + password â POST /api/v1/auth/login
+ *   2. Náº¿u user cÃ³ CÃ¹i Báº¯p app â MFA challenge â polling
+ *   3. Náº¿u khÃ´ng cÃ³ app â ÄÄng nháº­p tháº³ng
  */
 import { useState, useRef , Suspense} from 'react';
 import { signIn }            from 'next-auth/react';
@@ -28,7 +28,7 @@ const GoogleIcon = () => (
 type MFAState = {
   token:    string;
   device:   string;
-  fallback: string; // JWT token nếu user bấm "skip"
+  fallback: string; // JWT token náº¿u user báº¥m "skip"
   email:    string;
   expires:  number; // timestamp
 };
@@ -48,7 +48,7 @@ function LoginContent() {
   const pollRef  = useRef<ReturnType<typeof setInterval> | null>(null);
   const timerRef = useRef<ReturnType<typeof setInterval> | null>(null);
 
-  // ── Detect thiết bị — giữ y chang _getDeviceInfo() cũ ──
+  // ââ Detect thiáº¿t bá» â giá»¯ y chang _getDeviceInfo() cÅ© ââ
   function getDeviceInfo(): string {
     const ua = navigator.userAgent;
     let browser = 'Browser', os = 'Web';
@@ -63,13 +63,13 @@ function LoginContent() {
     return `${browser} on ${os}`;
   }
 
-  // ── Hoàn tất đăng nhập qua NextAuth session ──
+  // ââ HoÃ n táº¥t ÄÄng nháº­p qua NextAuth session ââ
   async function finalizeLogin(accessToken: string, refreshToken: string, email: string) {
-    // Dùng NextAuth credentials provider với custom token
-    // Truyền token đã có sẵn từ API — không cần gọi login lại
+    // DÃ¹ng NextAuth credentials provider vá»i custom token
+    // Truyá»n token ÄÃ£ cÃ³ sáºµn tá»« API â khÃ´ng cáº§n gá»i login láº¡i
     const result = await signIn('credentials', {
       email,
-      password: '__token__', // sentinel — NextAuth biết dùng token
+      password: '__token__', // sentinel â NextAuth biáº¿t dÃ¹ng token
       accessToken,
       refreshToken,
       redirect: false,
@@ -81,7 +81,7 @@ function LoginContent() {
     }
   }
 
-  // ── Start MFA polling — giữ y chang logic cũ ──
+  // ââ Start MFA polling â giá»¯ y chang logic cÅ© ââ
   function startMFAPolling(mfaState: MFAState) {
     let count = 0;
     let remaining = 300;
@@ -97,7 +97,7 @@ function LoginContent() {
       if (count > 150) {
         clearAll();
         setMfa(null);
-        setMsg({ text: 'Xác nhận đã hết hạn. Vui lòng đăng nhập lại.', type: 'error' });
+        setMsg({ text: 'XÃ¡c nháº­n ÄÃ£ háº¿t háº¡n. Vui lÃ²ng ÄÄng nháº­p láº¡i.', type: 'error' });
         return;
       }
       try {
@@ -110,11 +110,11 @@ function LoginContent() {
         } else if (d.status === 'rejected') {
           clearAll();
           setMfa(null);
-          setMsg({ text: '🔒 Đăng nhập bị từ chối từ điện thoại của bạn.', type: 'error' });
+          setMsg({ text: 'ð ÄÄng nháº­p bá» tá»« chá»i tá»« Äiá»n thoáº¡i cá»§a báº¡n.', type: 'error' });
         } else if (d.status === 'expired') {
           clearAll();
           setMfa(null);
-          setMsg({ text: 'Phiên đã hết hạn. Vui lòng đăng nhập lại.', type: 'error' });
+          setMsg({ text: 'PhiÃªn ÄÃ£ háº¿t háº¡n. Vui lÃ²ng ÄÄng nháº­p láº¡i.', type: 'error' });
         }
       } catch {}
     }, 2000);
@@ -131,11 +131,11 @@ function LoginContent() {
     setMfa(null);
   }
 
-  // ── Submit login ──
+  // ââ Submit login ââ
   async function handleLogin(e: React.FormEvent) {
     e.preventDefault();
     if (!email || !password) {
-      setMsg({ text: 'Vui lòng điền đầy đủ thông tin.', type: 'error' }); return;
+      setMsg({ text: 'Vui lÃ²ng Äiá»n Äáº§y Äá»§ thÃ´ng tin.', type: 'error' }); return;
     }
     setLoading(true);
     setMsg(null);
@@ -148,11 +148,11 @@ function LoginContent() {
       const data = await res.json();
 
       if (!res.ok) {
-        setMsg({ text: data.message ?? 'Email hoặc mật khẩu không đúng.', type: 'error' });
+        setMsg({ text: data.message ?? 'Email hoáº·c máº­t kháº©u khÃ´ng ÄÃºng.', type: 'error' });
         return;
       }
 
-      // Thử MFA challenge — giữ y chang doLogin() cũ
+      // Thá»­ MFA challenge â giá»¯ y chang doLogin() cÅ©
       const device = getDeviceInfo();
       let mfaToken: string | null = null;
       try {
@@ -166,7 +166,7 @@ function LoginContent() {
       } catch {}
 
       if (mfaToken) {
-        // Có Cùi Bắp app → hiện màn hình chờ
+        // CÃ³ CÃ¹i Báº¯p app â hiá»n mÃ n hÃ¬nh chá»
         const state: MFAState = {
           token:    mfaToken,
           device,
@@ -180,19 +180,19 @@ function LoginContent() {
         await finalizeLogin(data.access_token, data.refresh_token, email);
       }
     } catch {
-      setMsg({ text: 'Không thể kết nối đến máy chủ. Vui lòng thử lại.', type: 'error' });
+      setMsg({ text: 'KhÃ´ng thá» káº¿t ná»i Äáº¿n mÃ¡y chá»§. Vui lÃ²ng thá»­ láº¡i.', type: 'error' });
     } finally {
       setLoading(false);
     }
   }
 
-  // ── Google OAuth ──
+  // ââ Google OAuth ââ
   async function handleGoogle() {
     setLoading(true);
     await signIn('google', { callbackUrl });
   }
 
-  // ── MFA waiting screen ──
+  // ââ MFA waiting screen ââ
   if (mfa) {
     const m = Math.floor(mfaTimer / 60);
     const s = mfaTimer % 60;
@@ -207,13 +207,13 @@ function LoginContent() {
           maxWidth: 360, width: '100%', textAlign: 'center',
           boxShadow: '0 8px 40px rgba(0,0,0,0.1)',
         }}>
-          <div style={{ fontSize: '2.8rem', marginBottom: 14 }}>📱</div>
+          <div style={{ fontSize: '2.8rem', marginBottom: 14 }}>ð±</div>
           <h2 style={{ fontSize: '1.15rem', fontWeight: 800, marginBottom: 8, color: 'var(--text)' }}>
-            Kiểm tra điện thoại
+            Kiá»m tra Äiá»n thoáº¡i
           </h2>
           <p style={{ fontSize: '0.85rem', color: 'var(--text-secondary)', lineHeight: 1.6, marginBottom: 18 }}>
-            Mở app <strong>Cùi Bắp</strong> và nhấn{' '}
-            <strong style={{ color: 'var(--sage)' }}>Phê duyệt</strong> để xác nhận đăng nhập.
+            Má» app <strong>CÃ¹i Báº¯p</strong> vÃ  nháº¥n{' '}
+            <strong style={{ color: 'var(--sage)' }}>PhÃª duyá»t</strong> Äá» xÃ¡c nháº­n ÄÄng nháº­p.
           </p>
           {/* Device + countdown */}
           <div style={{
@@ -221,8 +221,8 @@ function LoginContent() {
             padding: '10px 14px', fontSize: '0.78rem',
             color: 'var(--text-secondary)', marginBottom: 18, textAlign: 'left',
           }}>
-            🖥️ <strong>Thiết bị:</strong> {mfa.device}<br/>
-            ⏱️ Hết hạn sau: <strong>{m}:{s.toString().padStart(2, '0')}</strong>
+            ð¥ï¸ <strong>Thiáº¿t bá»:</strong> {mfa.device}<br/>
+            â±ï¸ Háº¿t háº¡n sau: <strong>{m}:{s.toString().padStart(2, '0')}</strong>
           </div>
           {/* Spinner */}
           <div style={{
@@ -230,7 +230,7 @@ function LoginContent() {
             gap: 8, color: 'var(--sage)', fontSize: '0.82rem', marginBottom: 20,
           }}>
             <SpinnerIcon />
-            Đang chờ xác nhận…
+            Äang chá» xÃ¡c nháº­nâ¦
           </div>
           <button
             onClick={skipMFA}
@@ -241,16 +241,16 @@ function LoginContent() {
               cursor: 'pointer', fontFamily: 'inherit',
             }}
           >
-            Bỏ qua, đăng nhập không cần xác nhận
+            Bá» qua, ÄÄng nháº­p khÃ´ng cáº§n xÃ¡c nháº­n
           </button>
         </div>
       </div>
     );
   }
 
-  // ── Login form ──
+  // ââ Login form ââ
   return (
-    <AuthCard title="Đăng nhập" subtitle="Chào mừng bạn trở lại 🌿">
+    <AuthCard title="ÄÄng nháº­p" subtitle="ChÃ o má»«ng báº¡n trá» láº¡i ð¿">
       {/* Google OAuth */}
       <button
         onClick={handleGoogle}
@@ -268,7 +268,7 @@ function LoginContent() {
         onMouseLeave={e => (e.currentTarget.style.background = 'var(--bg)')}
       >
         <GoogleIcon />
-        Tiếp tục với Google
+        Tiáº¿p tá»¥c vá»i Google
       </button>
 
       {/* Divider */}
@@ -277,7 +277,7 @@ function LoginContent() {
         color: 'var(--gray)', fontSize: '0.78rem',
       }}>
         <hr style={{ flex: 1, border: 'none', borderTop: '1px solid var(--border)' }}/>
-        hoặc
+        hoáº·c
         <hr style={{ flex: 1, border: 'none', borderTop: '1px solid var(--border)' }}/>
       </div>
 
@@ -293,11 +293,11 @@ function LoginContent() {
           autoFocus
         />
         <AuthInput
-          label="Mật khẩu"
+          label="Máº­t kháº©u"
           showToggle
           value={password}
           onChange={e => setPassword(e.target.value)}
-          placeholder="••••••••"
+          placeholder="â¢â¢â¢â¢â¢â¢â¢â¢"
           autoComplete="current-password"
         />
 
@@ -307,7 +307,7 @@ function LoginContent() {
             fontSize: '0.8rem', color: 'var(--sage)',
             textDecoration: 'none',
           }}>
-            Quên mật khẩu?
+            QuÃªn máº­t kháº©u?
           </Link>
         </div>
 
@@ -324,7 +324,7 @@ function LoginContent() {
             opacity: loading ? 0.7 : 1, transition: 'opacity 0.15s',
           }}
         >
-          {loading ? 'Đang đăng nhập…' : 'Đăng nhập'}
+          {loading ? 'Äang ÄÄng nháº­pâ¦' : 'ÄÄng nháº­p'}
         </button>
       </form>
 
@@ -333,9 +333,9 @@ function LoginContent() {
         textAlign: 'center', fontSize: '0.83rem',
         color: 'var(--text-secondary)', marginTop: 20,
       }}>
-        Chưa có tài khoản?{' '}
+        ChÆ°a cÃ³ tÃ i khoáº£n?{' '}
         <Link href="/auth/register" style={{ color: 'var(--sage)', fontWeight: 600, textDecoration: 'none' }}>
-          Đăng ký miễn phí
+          ÄÄng kÃ½ miá»n phÃ­
         </Link>
       </p>
 
@@ -344,7 +344,7 @@ function LoginContent() {
         textAlign: 'center', fontSize: '0.72rem',
         color: 'var(--gray)', marginTop: 16,
       }}>
-        🌿 Querencia không quảng cáo và không bán dữ liệu của bạn.
+        ð¿ Querencia khÃ´ng quáº£ng cÃ¡o vÃ  khÃ´ng bÃ¡n dá»¯ liá»u cá»§a báº¡n.
       </p>
     </AuthCard>
   );

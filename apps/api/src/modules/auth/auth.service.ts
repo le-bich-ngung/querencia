@@ -1,17 +1,17 @@
-﻿/**
- * Auth Service — NestJS — DB WIRED
- * Migrated từ:
+ï»¿/**
+ * Auth Service â NestJS â DB WIRED
+ * Migrated tá»«:
  *   querencia-backend/api/auth_route.py
  *   querencia-backend/core/security.py
  *
- * Tất cả TODO stubs đã được thay bằng Drizzle queries thật.
- * Logic giữ 100% giống code cũ:
- *   - bcrypt (tương thích hash cũ trên production)
+ * Táº¥t cáº£ TODO stubs ÄÃ£ ÄÆ°á»£c thay báº±ng Drizzle queries tháº­t.
+ * Logic giá»¯ 100% giá»ng code cÅ©:
+ *   - bcrypt (tÆ°Æ¡ng thÃ­ch hash cÅ© trÃªn production)
  *   - JWT sub = email
- *   - Email verify token dùng 1 lần
- *   - Google OAuth: google_id → email → tạo mới
- *   - Forgot password luôn 200
- *   - Refresh token rotation lưu Redis db0
+ *   - Email verify token dÃ¹ng 1 láº§n
+ *   - Google OAuth: google_id â email â táº¡o má»i
+ *   - Forgot password luÃ´n 200
+ *   - Refresh token rotation lÆ°u Redis db0
  */
 import {
   Injectable, ConflictException, UnauthorizedException,
@@ -33,7 +33,7 @@ import type { DB } from '@querencia/db';
 
 // Session Redis key helpers
 const sessionKey = (userId: string) => `refresh:${userId}`;
-const REFRESH_TTL = 7 * 24 * 3600; // 7 ngày (giây)
+const REFRESH_TTL = 7 * 24 * 3600; // 7 ngÃ y (giÃ¢y)
 
 @Injectable()
 export class AuthService {
@@ -55,10 +55,10 @@ export class AuthService {
     if (resendKey) this.resend = new Resend(resendKey);
   }
 
-  // ─────────────────────────────────────────────────────────────
+  // âââââââââââââââââââââââââââââââââââââââââââââââââââââââââââââ
   // PASSWORD UTILS
-  // Dùng bcryptjs để tương thích với hashed password từ Python bcrypt cũ
-  // ─────────────────────────────────────────────────────────────
+  // DÃ¹ng bcryptjs Äá» tÆ°Æ¡ng thÃ­ch vá»i hashed password tá»« Python bcrypt cÅ©
+  // âââââââââââââââââââââââââââââââââââââââââââââââââââââââââââââ
 
   async hashPassword(plain: string): Promise<string> {
     return bcrypt.hash(plain, 12);
@@ -68,10 +68,10 @@ export class AuthService {
     return bcrypt.compare(plain, hashed);
   }
 
-  // ─────────────────────────────────────────────────────────────
+  // âââââââââââââââââââââââââââââââââââââââââââââââââââââââââââââ
   // JWT HELPERS
-  // sub = email (giữ tương thích — token cũ từ production vẫn valid)
-  // ─────────────────────────────────────────────────────────────
+  // sub = email (giá»¯ tÆ°Æ¡ng thÃ­ch â token cÅ© tá»« production váº«n valid)
+  // âââââââââââââââââââââââââââââââââââââââââââââââââââââââââââââ
 
   createAccessToken(email: string): string {
     return this.jwtService.sign(
@@ -100,22 +100,22 @@ export class AuthService {
     }
   }
 
-  // ─────────────────────────────────────────────────────────────
+  // âââââââââââââââââââââââââââââââââââââââââââââââââââââââââââââ
   // REGISTER
   // POST /auth/register
-  // ─────────────────────────────────────────────────────────────
+  // âââââââââââââââââââââââââââââââââââââââââââââââââââââââââââââ
 
   async register(data: { email: string; name: string; password: string }) {
     const email = data.email.toLowerCase().trim();
 
-    // 1. Kiểm tra email đã tồn tại (giữ y chang code cũ)
+    // 1. Kiá»m tra email ÄÃ£ tá»n táº¡i (giá»¯ y chang code cÅ©)
     const existing = await this.db.query.users.findFirst({
       where: eq(users.email, email),
       columns: { id: true },
     });
-    if (existing) throw new ConflictException('Email này đã được đăng ký rồi');
+    if (existing) throw new ConflictException('Email nÃ y ÄÃ£ ÄÆ°á»£c ÄÄng kÃ½ rá»i');
 
-    // 2. Hash password + tạo verification token
+    // 2. Hash password + táº¡o verification token
     const [hashedPassword, verificationToken] = await Promise.all([
       this.hashPassword(data.password),
       Promise.resolve(crypto.randomBytes(32).toString('base64url')),
@@ -135,17 +135,17 @@ export class AuthService {
       })
       .returning({ id: users.id, email: users.email, name: users.name });
 
-    // 4. Gửi email xác nhận (không block nếu lỗi — giữ y chang code cũ)
+    // 4. Gá»­i email xÃ¡c nháº­n (khÃ´ng block náº¿u lá»i â giá»¯ y chang code cÅ©)
     await this.sendVerificationEmail(email, data.name, verificationToken);
 
     this.logger.log(`[REGISTER] New user: ${email}`);
-    return { message: 'Đăng ký thành công! Vui lòng kiểm tra email để xác nhận tài khoản.' };
+    return { message: 'ÄÄng kÃ½ thÃ nh cÃ´ng! Vui lÃ²ng kiá»m tra email Äá» xÃ¡c nháº­n tÃ i khoáº£n.' };
   }
 
-  // ─────────────────────────────────────────────────────────────
+  // âââââââââââââââââââââââââââââââââââââââââââââââââââââââââââââ
   // VERIFY EMAIL
   // GET /auth/verify/:token
-  // ─────────────────────────────────────────────────────────────
+  // âââââââââââââââââââââââââââââââââââââââââââââââââââââââââââââ
 
   async verifyEmail(token: string): Promise<{ username: string; redirectUrl: string }> {
     const user = await this.db.query.users.findFirst({
@@ -153,9 +153,9 @@ export class AuthService {
       columns: { id: true, name: true },
     });
 
-    if (!user) throw new BadRequestException('Link không hợp lệ hoặc đã hết hạn');
+    if (!user) throw new BadRequestException('Link khÃ´ng há»£p lá» hoáº·c ÄÃ£ háº¿t háº¡n');
 
-    // Kích hoạt + xóa token (dùng 1 lần — giữ y chang code cũ)
+    // KÃ­ch hoáº¡t + xÃ³a token (dÃ¹ng 1 láº§n â giá»¯ y chang code cÅ©)
     await this.db
       .update(users)
       .set({ isVerified: true, verificationToken: null, updatedAt: new Date() })
@@ -163,15 +163,15 @@ export class AuthService {
 
     this.logger.log(`[VERIFY] User ${user.id} verified`);
     return {
-      username: user.name ?? 'bạn',
+      username: user.name ?? 'báº¡n',
       redirectUrl: `${this.frontendUrl}?login=1`,
     };
   }
 
-  // ─────────────────────────────────────────────────────────────
+  // âââââââââââââââââââââââââââââââââââââââââââââââââââââââââââââ
   // LOGIN
   // POST /auth/login
-  // ─────────────────────────────────────────────────────────────
+  // âââââââââââââââââââââââââââââââââââââââââââââââââââââââââââââ
 
   async login(email: string, password: string) {
     const lowerEmail = email.toLowerCase().trim();
@@ -180,31 +180,31 @@ export class AuthService {
       where: eq(users.email, lowerEmail),
     });
 
-    // Kiểm tra user tồn tại + password (timing-safe: luôn chạy verify dù user null)
+    // Kiá»m tra user tá»n táº¡i + password (timing-safe: luÃ´n cháº¡y verify dÃ¹ user null)
     const passwordOk = user?.hashedPassword
       ? await this.verifyPassword(password, user.hashedPassword)
       : false;
 
     if (!user || !passwordOk) {
-      throw new UnauthorizedException('Email hoặc mật khẩu không đúng');
+      throw new UnauthorizedException('Email hoáº·c máº­t kháº©u khÃ´ng ÄÃºng');
     }
 
     if (!user.isActive) {
-      throw new ForbiddenException('Tài khoản này đã bị khóa');
+      throw new ForbiddenException('TÃ i khoáº£n nÃ y ÄÃ£ bá» khÃ³a');
     }
 
-    // Kiểm tra verify — giữ y chang message từ code cũ
+    // Kiá»m tra verify â giá»¯ y chang message tá»« code cÅ©
     if (!user.isVerified) {
       throw new ForbiddenException(
-        'Vui lòng xác nhận email trước khi đăng nhập. Kiểm tra hòm thư của bạn.',
+        'Vui lÃ²ng xÃ¡c nháº­n email trÆ°á»c khi ÄÄng nháº­p. Kiá»m tra hÃ²m thÆ° cá»§a báº¡n.',
       );
     }
 
     const accessToken  = this.createAccessToken(lowerEmail);
     const refreshToken = this.createRefreshToken(lowerEmail);
 
-    // Lưu refresh token vào Redis db0 (session store)
-    // Key = refresh:{userId} — 1 user 1 token (single-session)
+    // LÆ°u refresh token vÃ o Redis db0 (session store)
+    // Key = refresh:{userId} â 1 user 1 token (single-session)
     await this.sessionRedis.set(sessionKey(user.id), refreshToken, 'EX', REFRESH_TTL);
 
     return {
@@ -220,34 +220,34 @@ export class AuthService {
     };
   }
 
-  // ─────────────────────────────────────────────────────────────
+  // âââââââââââââââââââââââââââââââââââââââââââââââââââââââââââââ
   // REFRESH TOKEN
-  // POST /auth/refresh  — rotation: cấp token mới, thu hồi cũ
-  // ─────────────────────────────────────────────────────────────
+  // POST /auth/refresh  â rotation: cáº¥p token má»i, thu há»i cÅ©
+  // âââââââââââââââââââââââââââââââââââââââââââââââââââââââââââââ
 
   async refresh(refreshToken: string) {
     const payload = this.verifyRefreshToken(refreshToken);
-    if (!payload) throw new UnauthorizedException('Refresh token không hợp lệ hoặc đã hết hạn');
+    if (!payload) throw new UnauthorizedException('Refresh token khÃ´ng há»£p lá» hoáº·c ÄÃ£ háº¿t háº¡n');
 
-    // Tìm user để lấy id (cần cho Redis key)
+    // TÃ¬m user Äá» láº¥y id (cáº§n cho Redis key)
     const user = await this.db.query.users.findFirst({
       where: eq(users.email, payload.sub),
       columns: { id: true, email: true, plan: true },
     });
-    if (!user) throw new UnauthorizedException('User không tồn tại');
+    if (!user) throw new UnauthorizedException('User khÃ´ng tá»n táº¡i');
 
-    // Rotation guard: token phải khớp với cái đang lưu trong Redis
+    // Rotation guard: token pháº£i khá»p vá»i cÃ¡i Äang lÆ°u trong Redis
     const stored = await this.sessionRedis.get(sessionKey(user.id));
     if (stored !== refreshToken) {
-      // Token reuse → thu hồi luôn (bảo mật)
+      // Token reuse â thu há»i luÃ´n (báº£o máº­t)
       await this.sessionRedis.del(sessionKey(user.id));
-      throw new UnauthorizedException('Refresh token đã bị thu hồi. Vui lòng đăng nhập lại.');
+      throw new UnauthorizedException('Refresh token ÄÃ£ bá» thu há»i. Vui lÃ²ng ÄÄng nháº­p láº¡i.');
     }
 
     const newAccess  = this.createAccessToken(user.email);
     const newRefresh = this.createRefreshToken(user.email);
 
-    // Ghi đè token mới
+    // Ghi ÄÃ¨ token má»i
     await this.sessionRedis.set(sessionKey(user.id), newRefresh, 'EX', REFRESH_TTL);
 
     return {
@@ -257,21 +257,21 @@ export class AuthService {
     };
   }
 
-  // ─────────────────────────────────────────────────────────────
-  // LOGOUT — thu hồi refresh token
+  // âââââââââââââââââââââââââââââââââââââââââââââââââââââââââââââ
+  // LOGOUT â thu há»i refresh token
   // POST /auth/logout
-  // ─────────────────────────────────────────────────────────────
+  // âââââââââââââââââââââââââââââââââââââââââââââââââââââââââââââ
 
   async logout(userId: string) {
     await this.sessionRedis.del(sessionKey(userId));
-    return { message: 'Đăng xuất thành công' };
+    return { message: 'ÄÄng xuáº¥t thÃ nh cÃ´ng' };
   }
 
-  // ─────────────────────────────────────────────────────────────
+  // âââââââââââââââââââââââââââââââââââââââââââââââââââââââââââââ
   // FORGOT PASSWORD
   // POST /auth/forgot-password
-  // Luôn trả 200 dù email có hay không (chống enumerate — giữ y chang code cũ)
-  // ─────────────────────────────────────────────────────────────
+  // LuÃ´n tráº£ 200 dÃ¹ email cÃ³ hay khÃ´ng (chá»ng enumerate â giá»¯ y chang code cÅ©)
+  // âââââââââââââââââââââââââââââââââââââââââââââââââââââââââââââ
 
   async forgotPassword(email: string): Promise<{ message: string }> {
     const lowerEmail = email.toLowerCase().trim();
@@ -289,27 +289,27 @@ export class AuthService {
         .set({ verificationToken: resetToken, updatedAt: new Date() })
         .where(eq(users.id, user.id));
 
-      await this.sendPasswordResetEmail(lowerEmail, user.name ?? 'bạn', resetToken);
+      await this.sendPasswordResetEmail(lowerEmail, user.name ?? 'báº¡n', resetToken);
     }
 
-    return { message: 'Nếu email tồn tại, bạn sẽ nhận được hướng dẫn trong vài phút.' };
+    return { message: 'Náº¿u email tá»n táº¡i, báº¡n sáº½ nháº­n ÄÆ°á»£c hÆ°á»ng dáº«n trong vÃ i phÃºt.' };
   }
 
-  // ─────────────────────────────────────────────────────────────
+  // âââââââââââââââââââââââââââââââââââââââââââââââââââââââââââââ
   // RESET PASSWORD
   // POST /auth/reset-password/:token
-  // ─────────────────────────────────────────────────────────────
+  // âââââââââââââââââââââââââââââââââââââââââââââââââââââââââââââ
 
   async resetPassword(token: string, newPassword: string): Promise<{ message: string }> {
     if (newPassword.length < 8) {
-      throw new BadRequestException('Mật khẩu cần ít nhất 8 ký tự');
+      throw new BadRequestException('Máº­t kháº©u cáº§n Ã­t nháº¥t 8 kÃ½ tá»±');
     }
 
     const user = await this.db.query.users.findFirst({
       where: eq(users.verificationToken, token),
       columns: { id: true },
     });
-    if (!user) throw new BadRequestException('Token không hợp lệ hoặc đã hết hạn');
+    if (!user) throw new BadRequestException('Token khÃ´ng há»£p lá» hoáº·c ÄÃ£ háº¿t háº¡n');
 
     const hashed = await this.hashPassword(newPassword);
 
@@ -318,17 +318,17 @@ export class AuthService {
       .set({ hashedPassword: hashed, verificationToken: null, updatedAt: new Date() })
       .where(eq(users.id, user.id));
 
-    // Thu hồi tất cả session sau khi đổi mật khẩu
+    // Thu há»i táº¥t cáº£ session sau khi Äá»i máº­t kháº©u
     await this.sessionRedis.del(sessionKey(user.id));
 
-    return { message: 'Đặt lại mật khẩu thành công' };
+    return { message: 'Äáº·t láº¡i máº­t kháº©u thÃ nh cÃ´ng' };
   }
 
-  // ─────────────────────────────────────────────────────────────
+  // âââââââââââââââââââââââââââââââââââââââââââââââââââââââââââââ
   // GOOGLE OAUTH
-  // GET /auth/google → redirect Google
-  // GET /auth/google/callback → upsert user → JWT
-  // ─────────────────────────────────────────────────────────────
+  // GET /auth/google â redirect Google
+  // GET /auth/google/callback â upsert user â JWT
+  // âââââââââââââââââââââââââââââââââââââââââââââââââââââââââââââ
 
   getGoogleAuthUrl(): string {
     const params = new URLSearchParams({
@@ -342,7 +342,7 @@ export class AuthService {
   }
 
   async handleGoogleCallback(code: string) {
-    // 1. Exchange code → token
+    // 1. Exchange code â token
     const tokenRes = await fetch('https://oauth2.googleapis.com/token', {
       method: 'POST',
       headers: { 'Content-Type': 'application/x-www-form-urlencoded' },
@@ -357,7 +357,7 @@ export class AuthService {
     const tokenData = await tokenRes.json() as any;
     if (!tokenData.access_token) throw new UnauthorizedException('Google auth failed');
 
-    // 2. Get user info từ Google
+    // 2. Get user info tá»« Google
     const userRes = await fetch('https://www.googleapis.com/oauth2/v2/userinfo', {
       headers: { Authorization: `Bearer ${tokenData.access_token}` },
     });
@@ -365,8 +365,8 @@ export class AuthService {
     const { id: googleId, email, name, picture } = gUser;
     if (!email || !googleId) throw new UnauthorizedException('Google auth failed');
 
-    // 3. Upsert user — logic y chang code cũ
-    //    Tìm bằng google_id → email → tạo mới
+    // 3. Upsert user â logic y chang code cÅ©
+    //    TÃ¬m báº±ng google_id â email â táº¡o má»i
     let user = await this.db.query.users.findFirst({
       where: eq(users.googleId, googleId),
     });
@@ -377,14 +377,14 @@ export class AuthService {
       });
 
       if (user) {
-        // Email đã tồn tại, gắn google_id vào
+        // Email ÄÃ£ tá»n táº¡i, gáº¯n google_id vÃ o
         await this.db
           .update(users)
           .set({ googleId, avatarUrl: picture ?? user.avatarUrl, updatedAt: new Date() })
           .where(eq(users.id, user.id));
         user = { ...user, googleId };
       } else {
-        // Tạo user mới từ Google
+        // Táº¡o user má»i tá»« Google
         const [newUser] = await this.db
           .insert(users)
           .values({
@@ -392,7 +392,7 @@ export class AuthService {
             name,
             avatarUrl:      picture ?? null,
             hashedPassword: await this.hashPassword(crypto.randomBytes(32).toString('hex')),
-            isVerified:     true,   // Google đã verify email
+            isVerified:     true,   // Google ÄÃ£ verify email
             isActive:       true,
             googleId,
             plan:           'free',
@@ -405,13 +405,13 @@ export class AuthService {
     const accessToken  = this.createAccessToken(user.email);
     const refreshToken = this.createRefreshToken(user.email);
 
-    // Lưu session
+    // LÆ°u session
     await this.sessionRedis.set(sessionKey(user.id), refreshToken, 'EX', REFRESH_TTL);
 
     this.logger.log(`[GOOGLE] User ${user.email} logged in via Google`);
 
     return {
-      // Redirect về frontend với token (giữ y chang code cũ)
+      // Redirect vá» frontend vá»i token (giá»¯ y chang code cÅ©)
       redirectUrl:  `${this.frontendUrl}?google_token=${accessToken}&name=${encodeURIComponent(user.name ?? '')}&email=${encodeURIComponent(user.email)}`,
       accessToken,
       refreshToken,
@@ -424,10 +424,10 @@ export class AuthService {
     };
   }
 
-  // ─────────────────────────────────────────────────────────────
+  // âââââââââââââââââââââââââââââââââââââââââââââââââââââââââââââ
   // GET ME
   // GET /auth/me
-  // ─────────────────────────────────────────────────────────────
+  // âââââââââââââââââââââââââââââââââââââââââââââââââââââââââââââ
 
   async getMe(userId: string) {
     const user = await this.db.query.users.findFirst({
@@ -437,14 +437,14 @@ export class AuthService {
         avatarUrl: true, plan: true, createdAt: true,
       },
     });
-    if (!user) throw new NotFoundException('Không tìm thấy người dùng');
+    if (!user) throw new NotFoundException('KhÃ´ng tÃ¬m tháº¥y ngÆ°á»i dÃ¹ng');
     return user;
   }
 
-  // ─────────────────────────────────────────────────────────────
+  // âââââââââââââââââââââââââââââââââââââââââââââââââââââââââââââ
   // EMAIL HELPERS (Resend)
-  // Templates giữ nguyên style xanh lá từ code cũ
-  // ─────────────────────────────────────────────────────────────
+  // Templates giá»¯ nguyÃªn style xanh lÃ¡ tá»« code cÅ©
+  // âââââââââââââââââââââââââââââââââââââââââââââââââââââââââââââ
 
   private async sendVerificationEmail(email: string, name: string, token: string) {
     const verifyUrl = `${this.apiUrl}/api/v1/auth/verify/${token}`;
@@ -453,13 +453,13 @@ export class AuthService {
         await this.resend.emails.send({
           from:    'Querencia <no-reply@querencia.com.vn>',
           to:      email,
-          subject: 'Xác nhận tài khoản Querencia của bạn',
+          subject: 'XÃ¡c nháº­n tÃ i khoáº£n Querencia cá»§a báº¡n',
           html:    this.verificationEmailHtml(name, verifyUrl),
         });
       }
-      this.logger.log(`[EMAIL] Verification → ${email}`);
+      this.logger.log(`[EMAIL] Verification â ${email}`);
     } catch (e) {
-      // Không block đăng ký nếu email lỗi — giữ y chang code cũ
+      // KhÃ´ng block ÄÄng kÃ½ náº¿u email lá»i â giá»¯ y chang code cÅ©
       this.logger.error(`[EMAIL ERROR] ${e}`);
     }
   }
@@ -471,31 +471,31 @@ export class AuthService {
         await this.resend.emails.send({
           from:    'Querencia <no-reply@querencia.com.vn>',
           to:      email,
-          subject: 'Đặt lại mật khẩu Querencia',
+          subject: 'Äáº·t láº¡i máº­t kháº©u Querencia',
           html:    this.resetEmailHtml(name, resetUrl),
         });
       }
-      this.logger.log(`[EMAIL] Password reset → ${email}`);
+      this.logger.log(`[EMAIL] Password reset â ${email}`);
     } catch (e) {
       this.logger.error(`[EMAIL ERROR] ${e}`);
     }
   }
 
-  // ── Email templates (giữ style xanh lá #4a7c59 từ code cũ) ──
+  // ââ Email templates (giá»¯ style xanh lÃ¡ #4a7c59 tá»« code cÅ©) ââ
 
   private verificationEmailHtml(name: string, verifyUrl: string): string {
     return `
     <div style="font-family:sans-serif;max-width:480px;margin:auto;padding:40px 24px">
       <h1 style="font-size:2rem;color:#2d5a3d;margin-bottom:8px">Querencia</h1>
-      <p style="color:#555;font-size:1rem">Xin chào <strong>${name}</strong>,</p>
-      <p style="color:#555">Cảm ơn bạn đã đăng ký! Vui lòng xác nhận email để kích hoạt tài khoản.</p>
+      <p style="color:#555;font-size:1rem">Xin chÃ o <strong>${name}</strong>,</p>
+      <p style="color:#555">Cáº£m Æ¡n báº¡n ÄÃ£ ÄÄng kÃ½! Vui lÃ²ng xÃ¡c nháº­n email Äá» kÃ­ch hoáº¡t tÃ i khoáº£n.</p>
       <a href="${verifyUrl}"
          style="display:inline-block;margin:24px 0;padding:14px 32px;background:#4a7c59;color:#fff;border-radius:32px;text-decoration:none;font-weight:600;font-size:1rem">
-        Xác nhận tài khoản
+        XÃ¡c nháº­n tÃ i khoáº£n
       </a>
-      <p style="color:#999;font-size:0.82rem">Link có hiệu lực trong 24 giờ. Nếu bạn không đăng ký, hãy bỏ qua email này.</p>
+      <p style="color:#999;font-size:0.82rem">Link cÃ³ hiá»u lá»±c trong 24 giá». Náº¿u báº¡n khÃ´ng ÄÄng kÃ½, hÃ£y bá» qua email nÃ y.</p>
       <hr style="border:none;border-top:1px solid #eee;margin:32px 0"/>
-      <p style="color:#bbb;font-size:0.78rem">© 2026 Querencia · querencia.com.vn</p>
+      <p style="color:#bbb;font-size:0.78rem">Â© 2026 Querencia Â· querencia.com.vn</p>
     </div>`;
   }
 
@@ -503,15 +503,15 @@ export class AuthService {
     return `
     <div style="font-family:sans-serif;max-width:480px;margin:auto;padding:40px 24px">
       <h1 style="font-size:2rem;color:#2d5a3d;margin-bottom:8px">Querencia</h1>
-      <p style="color:#555">Xin chào <strong>${name}</strong>,</p>
-      <p style="color:#555">Chúng tôi nhận được yêu cầu đặt lại mật khẩu cho tài khoản của bạn.</p>
+      <p style="color:#555">Xin chÃ o <strong>${name}</strong>,</p>
+      <p style="color:#555">ChÃºng tÃ´i nháº­n ÄÆ°á»£c yÃªu cáº§u Äáº·t láº¡i máº­t kháº©u cho tÃ i khoáº£n cá»§a báº¡n.</p>
       <a href="${resetUrl}"
          style="display:inline-block;margin:24px 0;padding:14px 32px;background:#4a7c59;color:#fff;border-radius:32px;text-decoration:none;font-weight:600;font-size:1rem">
-        Đặt lại mật khẩu
+        Äáº·t láº¡i máº­t kháº©u
       </a>
-      <p style="color:#999;font-size:0.82rem">Link có hiệu lực trong 1 giờ. Nếu bạn không yêu cầu, hãy bỏ qua email này.</p>
+      <p style="color:#999;font-size:0.82rem">Link cÃ³ hiá»u lá»±c trong 1 giá». Náº¿u báº¡n khÃ´ng yÃªu cáº§u, hÃ£y bá» qua email nÃ y.</p>
       <hr style="border:none;border-top:1px solid #eee;margin:32px 0"/>
-      <p style="color:#bbb;font-size:0.78rem">© 2026 Querencia · querencia.com.vn</p>
+      <p style="color:#bbb;font-size:0.78rem">Â© 2026 Querencia Â· querencia.com.vn</p>
     </div>`;
   }
 
@@ -526,13 +526,13 @@ export class AuthService {
     return this.appleOAuthCallback(email, email, name);
   }
 
-  // ── Apple Identity Token verification ────────────────────────
+  // ââ Apple Identity Token verification ââââââââââââââââââââââââ
   async verifyAppleIdentityToken(identityToken: string) {
     // Apple public keys endpoint
     const jwksRes  = await fetch('https://appleid.apple.com/auth/keys');
     const jwks     = await jwksRes.json();
 
-    // Decode header để lấy kid
+    // Decode header Äá» láº¥y kid
     const header   = JSON.parse(
       Buffer.from(identityToken.split('.')[0], 'base64').toString()
     );
@@ -551,26 +551,26 @@ export class AuthService {
     return payload; // { sub, email, email_verified, ... }
   }
 
-  // ── Apple OAuth upsert ────────────────────────────────────────
+  // ââ Apple OAuth upsert ââââââââââââââââââââââââââââââââââââââââ
   async appleOAuthCallback(appleUserId: string, email?: string, name?: string) {
-    // Tìm user đã có với appleId này
+    // TÃ¬m user ÄÃ£ cÃ³ vá»i appleId nÃ y
     let user = await this.db.query.users.findFirst({
       where: eq(users.googleId, appleUserId),
     });
 
     if (!user && email) {
-      // Tìm theo email (user có thể đã đăng ký bằng email)
+      // TÃ¬m theo email (user cÃ³ thá» ÄÃ£ ÄÄng kÃ½ báº±ng email)
       user = await this.db.query.users.findFirst({
         where: eq(users.email, email),
       });
       if (user) {
-        // Link Apple ID vào account cũ
+        // Link Apple ID vÃ o account cÅ©
         await this.db.update(users).set({ googleId: appleUserId }).where(eq(users.id, user.id));
       }
     }
 
     if (!user) {
-      // User mới — tạo account
+      // User má»i â táº¡o account
       if (!email) throw new UnauthorizedException('Email required for first Apple Sign-In');
       const [newUser] = await this.db.insert(users).values({
         email,
@@ -592,7 +592,7 @@ export class AuthService {
     };
   }
 
-  // ── FCM Token registration ────────────────────────────────────
+  // ââ FCM Token registration ââââââââââââââââââââââââââââââââââââ
   async registerFcmToken(userId: string, fcmToken: string) {
     await this.db.update(users)
       .set({ fcmToken, updatedAt: new Date() })
@@ -600,21 +600,21 @@ export class AuthService {
     return { ok: true };
   }
 
-  // ── MFA: gửi push notification lên FCM token của thiết bị ────
+  // ââ MFA: gá»­i push notification lÃªn FCM token cá»§a thiáº¿t bá» ââââ
   async initiateMfa(userId: string, requestingDevice: string, ipAddress: string) {
     const user = await this.db.query.users.findFirst({
       where: eq(users.id, userId),
       columns: { id: true, fcmToken: true, email: true },
     });
-    if (!user?.fcmToken) return { mfaRequired: false }; // không có device → skip MFA
+    if (!user?.fcmToken) return { mfaRequired: false }; // khÃ´ng cÃ³ device â skip MFA
 
-    // Tạo MFA token ngắn hạn (5 phút)
+    // Táº¡o MFA token ngáº¯n háº¡n (5 phÃºt)
     const mfaToken = crypto.randomBytes(32).toString('hex');
     await this.sessionRedis.setex(`mfa:${mfaToken}`, 300, JSON.stringify({
       userId, status: 'pending',
     }));
 
-    // Gửi FCM push notification đến thiết bị của user
+    // Gá»­i FCM push notification Äáº¿n thiáº¿t bá» cá»§a user
     await this._sendMfaPushNotification(user.fcmToken, {
       mfaToken, device: requestingDevice, ipAddress,
       createdAt: new Date().toISOString(),
@@ -625,10 +625,10 @@ export class AuthService {
 
   async respondMfa(mfaToken: string, status: 'approved' | 'rejected') {
     const raw = await this.sessionRedis.get(`mfa:${mfaToken}`);
-    if (!raw) throw new BadRequestException('MFA token hết hạn hoặc không hợp lệ');
+    if (!raw) throw new BadRequestException('MFA token háº¿t háº¡n hoáº·c khÃ´ng há»£p lá»');
 
     const data = JSON.parse(raw);
-    if (data.status !== 'pending') throw new BadRequestException('MFA token đã được sử dụng');
+    if (data.status !== 'pending') throw new BadRequestException('MFA token ÄÃ£ ÄÆ°á»£c sá»­ dá»¥ng');
 
     await this.sessionRedis.setex(`mfa:${mfaToken}`, 30, JSON.stringify({
       ...data, status,
@@ -654,8 +654,8 @@ export class AuthService {
           priority: 'high',
           data: { type: 'mfa_request', ...data },
           notification: {
-            title: '🔐 Xác nhận đăng nhập',
-            body:  `Ai đó đang đăng nhập từ ${data.device}`,
+            title: 'ð XÃ¡c nháº­n ÄÄng nháº­p',
+            body:  `Ai ÄÃ³ Äang ÄÄng nháº­p tá»« ${data.device}`,
           },
         }),
       });

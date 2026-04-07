@@ -1,13 +1,13 @@
-'use client';
+ï»¿'use client';
 /**
- * Nope — Feed bài viết chia sẻ kinh nghiệm sống
- * Features: feed, create post, comments, thank ❤️, save, profile
+ * Nope â Feed bÃ i viáº¿t chia sáº» kinh nghiá»m sá»ng
+ * Features: feed, create post, comments, thank â¤ï¸, save, profile
  */
 import { useState, useEffect, useCallback } from 'react';
 import Link        from 'next/link';
 import { useSession } from 'next-auth/react';
 
-// ── Types ─────────────────────────────────────────────────────
+// ââ Types âââââââââââââââââââââââââââââââââââââââââââââââââââââ
 interface NopePost {
   id:           string;
   authorId:     string;
@@ -36,14 +36,14 @@ const API  = '/api/v1/nope';
 function timeAgo(iso: string) {
   const diff = Date.now() - new Date(iso).getTime();
   const m = Math.floor(diff / 60000);
-  if (m < 1)  return 'vừa xong';
-  if (m < 60) return `${m} phút trước`;
+  if (m < 1)  return 'vá»«a xong';
+  if (m < 60) return `${m} phÃºt trÆ°á»c`;
   const h = Math.floor(m / 60);
-  if (h < 24) return `${h} giờ trước`;
-  return `${Math.floor(h / 24)} ngày trước`;
+  if (h < 24) return `${h} giá» trÆ°á»c`;
+  return `${Math.floor(h / 24)} ngÃ y trÆ°á»c`;
 }
 
-// ── Post Card ─────────────────────────────────────────────────
+// ââ Post Card âââââââââââââââââââââââââââââââââââââââââââââââââ
 function PostCard({
   post, token, onUpdate,
 }: {
@@ -160,7 +160,7 @@ function PostCard({
           fontSize: '0.88rem', color: 'var(--text-secondary)',
           lineHeight: 1.65, marginBottom: needsMore ? 4 : 0, whiteSpace: 'pre-wrap',
         }}>
-          {body}{needsMore && !showAll ? '…' : ''}
+          {body}{needsMore && !showAll ? 'â¦' : ''}
         </p>
         {needsMore && (
           <button onClick={() => setShowAll(s => !s)} style={{
@@ -168,7 +168,7 @@ function PostCard({
             color: SAGE, fontSize: '0.8rem', fontWeight: 600,
             padding: '2px 0', marginBottom: 4,
           }}>
-            {showAll ? 'Thu gọn' : 'Đọc thêm'}
+            {showAll ? 'Thu gá»n' : 'Äá»c thÃªm'}
           </button>
         )}
 
@@ -188,18 +188,18 @@ function PostCard({
       }}>
         {[
           {
-            label: `❤️ ${post.thanksCount > 0 ? post.thanksCount : ''} Cảm ơn`,
+            label: `â¤ï¸ ${post.thanksCount > 0 ? post.thanksCount : ''} Cáº£m Æ¡n`,
             active: post.isThanked,
             onClick: handleThank,
             disabled: !token,
           },
           {
-            label: `💬 ${post.commentCount > 0 ? post.commentCount : ''} Bình luận`,
+            label: `ð¬ ${post.commentCount > 0 ? post.commentCount : ''} BÃ¬nh luáº­n`,
             active: expanded,
             onClick: loadComments,
           },
           {
-            label: post.isSaved ? '🔖 Đã lưu' : '🔖 Lưu',
+            label: post.isSaved ? 'ð ÄÃ£ lÆ°u' : 'ð LÆ°u',
             active: post.isSaved,
             onClick: handleSave,
             disabled: !token,
@@ -233,7 +233,7 @@ function PostCard({
               <textarea
                 value={commentText}
                 onChange={e => setCommentText(e.target.value)}
-                placeholder="Viết bình luận..."
+                placeholder="Viáº¿t bÃ¬nh luáº­n..."
                 rows={2}
                 style={{
                   flex: 1, padding: '8px 12px',
@@ -254,7 +254,7 @@ function PostCard({
                   fontFamily: 'inherit', fontSize: '0.82rem', fontWeight: 600,
                   alignSelf: 'flex-end',
                 }}>
-                {loadingCmt ? '…' : 'Gửi'}
+                {loadingCmt ? 'â¦' : 'Gá»­i'}
               </button>
             </div>
           )}
@@ -263,7 +263,7 @@ function PostCard({
           <div style={{ display: 'flex', flexDirection: 'column', gap: 10 }}>
             {comments.length === 0 ? (
               <p style={{ fontSize: '0.82rem', color: 'var(--gray)', textAlign: 'center', padding: '8px 0' }}>
-                Chưa có bình luận nào. Hãy là người đầu tiên!
+                ChÆ°a cÃ³ bÃ¬nh luáº­n nÃ o. HÃ£y lÃ  ngÆ°á»i Äáº§u tiÃªn!
               </p>
             ) : comments.map(c => (
               <div key={c.id} style={{
@@ -288,7 +288,7 @@ function PostCard({
   );
 }
 
-// ── Create Post Modal ─────────────────────────────────────────
+// ââ Create Post Modal âââââââââââââââââââââââââââââââââââââââââ
 function CreatePostModal({ token, onCreated, onClose }: {
   token: string; onCreated: (post: NopePost) => void; onClose: () => void;
 }) {
@@ -300,7 +300,7 @@ function CreatePostModal({ token, onCreated, onClose }: {
 
   async function handleSubmit(e: React.FormEvent) {
     e.preventDefault();
-    if (!title.trim() || !body.trim()) { setError('Vui lòng điền tiêu đề và nội dung.'); return; }
+    if (!title.trim() || !body.trim()) { setError('Vui lÃ²ng Äiá»n tiÃªu Äá» vÃ  ná»i dung.'); return; }
     setLoading(true); setError('');
     const res = await fetch(`${API}/posts`, {
       method: 'POST',
@@ -316,7 +316,7 @@ function CreatePostModal({ token, onCreated, onClose }: {
       onCreated({ ...post, tags: JSON.parse(post.tags ?? '[]'), thanksCount: 0, commentCount: 0, isThanked: false, isSaved: false });
       onClose();
     } else {
-      setError('Đăng bài thất bại. Thử lại nhé.');
+      setError('ÄÄng bÃ i tháº¥t báº¡i. Thá»­ láº¡i nhÃ©.');
     }
     setLoading(false);
   }
@@ -335,15 +335,15 @@ function CreatePostModal({ token, onCreated, onClose }: {
       }}>
         <div style={{ display: 'flex', justifyContent: 'space-between', marginBottom: 20 }}>
           <h2 style={{ fontWeight: 800, fontSize: '1.1rem', color: 'var(--text)' }}>
-            🌿 Chia sẻ kinh nghiệm
+            ð¿ Chia sáº» kinh nghiá»m
           </h2>
-          <button onClick={onClose} style={{ background: 'none', border: 'none', cursor: 'pointer', fontSize: '1.1rem', color: 'var(--gray)' }}>✕</button>
+          <button onClick={onClose} style={{ background: 'none', border: 'none', cursor: 'pointer', fontSize: '1.1rem', color: 'var(--gray)' }}>â</button>
         </div>
 
         <form onSubmit={handleSubmit} style={{ display: 'flex', flexDirection: 'column', gap: 14 }}>
           <input
             value={title} onChange={e => setTitle(e.target.value)}
-            placeholder="Tiêu đề bài viết *"
+            placeholder="TiÃªu Äá» bÃ i viáº¿t *"
             autoFocus
             style={{
               padding: '11px 14px', borderRadius: 10,
@@ -356,7 +356,7 @@ function CreatePostModal({ token, onCreated, onClose }: {
           />
           <textarea
             value={body} onChange={e => setBody(e.target.value)}
-            placeholder="Chia sẻ câu chuyện, bài học, kinh nghiệm của bạn... *"
+            placeholder="Chia sáº» cÃ¢u chuyá»n, bÃ i há»c, kinh nghiá»m cá»§a báº¡n... *"
             rows={6}
             style={{
               padding: '11px 14px', borderRadius: 10,
@@ -370,7 +370,7 @@ function CreatePostModal({ token, onCreated, onClose }: {
           />
           <input
             value={tags} onChange={e => setTags(e.target.value)}
-            placeholder="Tags: việc làm, sức khỏe, tài chính... (cách nhau bằng dấu phẩy)"
+            placeholder="Tags: viá»c lÃ m, sá»©c khá»e, tÃ i chÃ­nh... (cÃ¡ch nhau báº±ng dáº¥u pháº©y)"
             style={{
               padding: '10px 14px', borderRadius: 10,
               border: '1.5px solid var(--border)',
@@ -387,7 +387,7 @@ function CreatePostModal({ token, onCreated, onClose }: {
               border: '1.5px solid var(--border)', background: 'none',
               color: 'var(--text)', cursor: 'pointer', fontFamily: 'inherit',
             }}>
-              Hủy
+              Há»§y
             </button>
             <button type="submit" disabled={loading} style={{
               padding: '10px 24px', borderRadius: 10,
@@ -395,7 +395,7 @@ function CreatePostModal({ token, onCreated, onClose }: {
               cursor: loading ? 'not-allowed' : 'pointer',
               fontFamily: 'inherit', fontWeight: 700, opacity: loading ? 0.7 : 1,
             }}>
-              {loading ? 'Đang đăng…' : 'Đăng bài'}
+              {loading ? 'Äang ÄÄngâ¦' : 'ÄÄng bÃ i'}
             </button>
           </div>
         </form>
@@ -404,7 +404,7 @@ function CreatePostModal({ token, onCreated, onClose }: {
   );
 }
 
-// ── Main Page ─────────────────────────────────────────────────
+// ââ Main Page âââââââââââââââââââââââââââââââââââââââââââââââââ
 export default function NopePage() {
   const { data: session } = useSession();
   const token = (session as any)?.accessToken as string | undefined;
@@ -461,10 +461,10 @@ export default function NopePage() {
       }}>
         <div>
           <h1 style={{ fontSize: '1.5rem', fontWeight: 800, color: 'var(--text)', letterSpacing: -0.5 }}>
-            🌿 Nope
+            ð¿ Nope
           </h1>
           <p style={{ fontSize: '0.8rem', color: 'var(--text-secondary)', marginTop: 2 }}>
-            Kinh nghiệm sống từ người thật
+            Kinh nghiá»m sá»ng tá»« ngÆ°á»i tháº­t
           </p>
         </div>
         {session && (
@@ -474,7 +474,7 @@ export default function NopePage() {
             cursor: 'pointer', fontFamily: 'inherit',
             fontWeight: 700, fontSize: '0.85rem',
           }}>
-            ✏️ Chia sẻ
+            âï¸ Chia sáº»
           </button>
         )}
       </div>
@@ -483,7 +483,7 @@ export default function NopePage() {
       <form onSubmit={handleSearch} style={{ display: 'flex', gap: 8, marginBottom: 24 }}>
         <input
           value={search} onChange={e => setSearch(e.target.value)}
-          placeholder="Tìm kinh nghiệm, chủ đề..."
+          placeholder="TÃ¬m kinh nghiá»m, chá»§ Äá»..."
           style={{
             flex: 1, padding: '10px 14px', borderRadius: 10,
             border: '1.5px solid var(--border)',
@@ -498,7 +498,7 @@ export default function NopePage() {
           background: 'var(--bg-surface)', border: '1.5px solid var(--border)',
           cursor: 'pointer', color: 'var(--text)', fontFamily: 'inherit',
         }}>
-          {searching ? '…' : '🔍'}
+          {searching ? 'â¦' : 'ð'}
         </button>
       </form>
 
@@ -516,15 +516,15 @@ export default function NopePage() {
         </div>
       ) : posts.length === 0 ? (
         <div style={{ textAlign: 'center', padding: '60px 24px', color: 'var(--text-secondary)' }}>
-          <div style={{ fontSize: '3rem', marginBottom: 12 }}>🌱</div>
-          <p style={{ fontSize: '0.95rem' }}>Chưa có bài nào. Hãy là người đầu tiên chia sẻ!</p>
+          <div style={{ fontSize: '3rem', marginBottom: 12 }}>ð±</div>
+          <p style={{ fontSize: '0.95rem' }}>ChÆ°a cÃ³ bÃ i nÃ o. HÃ£y lÃ  ngÆ°á»i Äáº§u tiÃªn chia sáº»!</p>
           {session && (
             <button onClick={() => setShowCreate(true)} style={{
               marginTop: 16, padding: '10px 24px', borderRadius: 10,
               background: SAGE, color: '#fff', border: 'none',
               cursor: 'pointer', fontFamily: 'inherit', fontWeight: 700,
             }}>
-              Chia sẻ ngay
+              Chia sáº» ngay
             </button>
           )}
         </div>
@@ -545,7 +545,7 @@ export default function NopePage() {
                 fontFamily: 'inherit', fontSize: '0.88rem', color: 'var(--text-secondary)',
               }}
             >
-              Xem thêm
+              Xem thÃªm
             </button>
           )}
         </>
@@ -559,14 +559,14 @@ export default function NopePage() {
           textAlign: 'center',
         }}>
           <p style={{ fontSize: '0.88rem', color: 'var(--text-secondary)', marginBottom: 12 }}>
-            Đăng nhập để chia sẻ kinh nghiệm và cảm ơn bài viết 🌿
+            ÄÄng nháº­p Äá» chia sáº» kinh nghiá»m vÃ  cáº£m Æ¡n bÃ i viáº¿t ð¿
           </p>
           <Link href="/auth/login" style={{
             padding: '9px 22px', borderRadius: 10,
             background: SAGE, color: '#fff',
             textDecoration: 'none', fontWeight: 700, fontSize: '0.85rem',
           }}>
-            Đăng nhập
+            ÄÄng nháº­p
           </Link>
         </div>
       )}

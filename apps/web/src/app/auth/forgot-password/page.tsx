@@ -1,8 +1,8 @@
-'use client';
+ï»¿'use client';
 /**
- * Forgot password page — /auth/forgot-password
- * Migrated từ auth.js doForgotPassword()
- * Luôn show success dù email có hay không (chống enumerate — giữ y chang code cũ)
+ * Forgot password page â /auth/forgot-password
+ * Migrated tá»« auth.js doForgotPassword()
+ * LuÃ´n show success dÃ¹ email cÃ³ hay khÃ´ng (chá»ng enumerate â giá»¯ y chang code cÅ©)
  */
 import { useState }  from 'react';
 import Link          from 'next/link';
@@ -19,7 +19,7 @@ export default function ForgotPasswordPage() {
   async function handleSubmit(e: React.FormEvent) {
     e.preventDefault();
     if (!email.trim()) {
-      setMsg({ text: 'Vui lòng nhập email.', type: 'error' }); return;
+      setMsg({ text: 'Vui lÃ²ng nháº­p email.', type: 'error' }); return;
     }
     setLoading(true);
     setMsg(null);
@@ -29,10 +29,10 @@ export default function ForgotPasswordPage() {
         headers: { 'Content-Type': 'application/json' },
         body:    JSON.stringify({ email }),
       });
-      // Luôn show success — giữ y chang code cũ (chống enumerate)
+      // LuÃ´n show success â giá»¯ y chang code cÅ© (chá»ng enumerate)
       setSent(true);
     } catch {
-      setMsg({ text: 'Không thể kết nối. Vui lòng thử lại.', type: 'error' });
+      setMsg({ text: 'KhÃ´ng thá» káº¿t ná»i. Vui lÃ²ng thá»­ láº¡i.', type: 'error' });
     } finally {
       setLoading(false);
     }
@@ -40,11 +40,11 @@ export default function ForgotPasswordPage() {
 
   if (sent) {
     return (
-      <AuthCard title="Kiểm tra email" subtitle={`Nếu ${email} tồn tại trong hệ thống, bạn sẽ nhận được link đặt lại mật khẩu trong vài phút.`}>
+      <AuthCard title="Kiá»m tra email" subtitle={`Náº¿u ${email} tá»n táº¡i trong há» thá»ng, báº¡n sáº½ nháº­n ÄÆ°á»£c link Äáº·t láº¡i máº­t kháº©u trong vÃ i phÃºt.`}>
         <div style={{ textAlign: 'center', padding: '8px 0 16px' }}>
-          <div style={{ fontSize: '3rem', marginBottom: 12 }}>📬</div>
+          <div style={{ fontSize: '3rem', marginBottom: 12 }}>ð¬</div>
           <p style={{ fontSize: '0.85rem', color: 'var(--text-secondary)', lineHeight: 1.6, marginBottom: 24 }}>
-            Kiểm tra hòm thư (kể cả folder Spam). Link có hiệu lực trong 1 giờ.
+            Kiá»m tra hÃ²m thÆ° (ká» cáº£ folder Spam). Link cÃ³ hiá»u lá»±c trong 1 giá».
           </p>
           <Link href="/auth/login" style={{
             display: 'inline-block', padding: '11px 28px',
@@ -52,7 +52,7 @@ export default function ForgotPasswordPage() {
             borderRadius: 10, textDecoration: 'none',
             fontWeight: 600, fontSize: '0.9rem',
           }}>
-            ← Quay lại đăng nhập
+            â Quay láº¡i ÄÄng nháº­p
           </Link>
         </div>
       </AuthCard>
@@ -61,8 +61,8 @@ export default function ForgotPasswordPage() {
 
   return (
     <AuthCard
-      title="Quên mật khẩu"
-      subtitle="Nhập email của bạn và chúng tôi sẽ gửi link đặt lại mật khẩu."
+      title="QuÃªn máº­t kháº©u"
+      subtitle="Nháº­p email cá»§a báº¡n vÃ  chÃºng tÃ´i sáº½ gá»­i link Äáº·t láº¡i máº­t kháº©u."
     >
       <form onSubmit={handleSubmit} style={{ display: 'flex', flexDirection: 'column', gap: 16 }}>
         <AuthInput
@@ -86,7 +86,7 @@ export default function ForgotPasswordPage() {
             opacity: loading ? 0.7 : 1,
           }}
         >
-          {loading ? 'Đang gửi…' : 'Gửi link đặt lại'}
+          {loading ? 'Äang gá»­iâ¦' : 'Gá»­i link Äáº·t láº¡i'}
         </button>
       </form>
       <p style={{
@@ -94,7 +94,7 @@ export default function ForgotPasswordPage() {
         color: 'var(--text-secondary)', marginTop: 20,
       }}>
         <Link href="/auth/login" style={{ color: 'var(--sage)', fontWeight: 600, textDecoration: 'none' }}>
-          ← Quay lại đăng nhập
+          â Quay láº¡i ÄÄng nháº­p
         </Link>
       </p>
     </AuthCard>

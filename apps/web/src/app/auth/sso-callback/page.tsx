@@ -1,9 +1,9 @@
-export const dynamic = 'force-dynamic';
+ï»¿export const dynamic = 'force-dynamic';
 
 export default function SsoCallbackPage() {
   return (
     <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'center', minHeight: '100vh' }}>
-      <p>Đang xử lý đăng nhập...</p>
+      <p>Äang xá»­ lÃ½ ÄÄng nháº­p...</p>
     </div>
   );
 }

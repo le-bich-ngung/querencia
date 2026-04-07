@@ -1,7 +1,7 @@
-﻿/**
- * Tools Service — NestJS
- * Danh sách tools sync với apps/web/src/lib/tools-registry.ts
- * Chỉ track quota cho tools có qCost > 0
+ï»¿/**
+ * Tools Service â NestJS
+ * Danh sÃ¡ch tools sync vá»i apps/web/src/lib/tools-registry.ts
+ * Chá» track quota cho tools cÃ³ qCost > 0
  */
 import { Injectable } from '@nestjs/common';
 import { QuotaService } from './quota.service';
@@ -14,11 +14,11 @@ interface ToolEntry {
   backend: 'none' | 'ai-service' | 'external-api';
 }
 
-// Chỉ list tools có backend — pure client-side tools không cần register ở đây
+// Chá» list tools cÃ³ backend â pure client-side tools khÃ´ng cáº§n register á» ÄÃ¢y
 const BACKEND_TOOLS: ToolEntry[] = [
   { slug: 'flashcards',             name: 'Flashcards',              tier: 'free', qCost: 0, backend: 'ai-service' },
-  { slug: 'vault',                  name: 'Vault — Self-destruct Link', tier: 'free', qCost: 0, backend: 'ai-service' },
-  { slug: 'pdf-to-word',            name: 'PDF → Word',              tier: 'free', qCost: 1, backend: 'ai-service' },
+  { slug: 'vault',                  name: 'Vault â Self-destruct Link', tier: 'free', qCost: 0, backend: 'ai-service' },
+  { slug: 'pdf-to-word',            name: 'PDF â Word',              tier: 'free', qCost: 1, backend: 'ai-service' },
   { slug: 'screenshot-translator',  name: 'Screenshot Translator',   tier: 'paid', qCost: 2, backend: 'ai-service' },
 ];
 

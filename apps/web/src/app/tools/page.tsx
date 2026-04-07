@@ -1,8 +1,8 @@
-'use client';
+ï»¿'use client';
 /**
- * Tools listing page — /tools
- * Migrated từ querencia-frontend/pages/tools.html
- * Hiển thị tất cả 44 tools theo category, free/paid filter
+ * Tools listing page â /tools
+ * Migrated tá»« querencia-frontend/pages/tools.html
+ * Hiá»n thá» táº¥t cáº£ 44 tools theo category, free/paid filter
  */
 import { useState } from 'react';
 import Link from 'next/link';
@@ -33,14 +33,14 @@ export default function ToolsPage() {
           Tools
         </h1>
         <p style={{ fontSize: '0.9rem', color: 'var(--text-secondary)' }}>
-          Không quảng cáo, không bán dữ liệu. Nguồn thu duy nhất là tools có phí.
+          KhÃ´ng quáº£ng cÃ¡o, khÃ´ng bÃ¡n dá»¯ liá»u. Nguá»n thu duy nháº¥t lÃ  tools cÃ³ phÃ­.
         </p>
       </div>
 
       {/* Search */}
       <input
         type="text"
-        placeholder="Tìm tool..."
+        placeholder="TÃ¬m tool..."
         value={search}
         onChange={e => setSearch(e.target.value)}
         style={{
@@ -56,7 +56,7 @@ export default function ToolsPage() {
       {/* Category filter */}
       <div style={{ display: 'flex', gap: 8, flexWrap: 'wrap', marginBottom: 28 }}>
         <FilterBtn active={activeCategory === 'all'} onClick={() => setActiveCategory('all')}>
-          Tất cả ({TOOLS.length})
+          Táº¥t cáº£ ({TOOLS.length})
         </FilterBtn>
         {CATEGORIES.map(c => {
           const count = TOOLS.filter(t => t.category === c.id).length;
@@ -83,7 +83,7 @@ export default function ToolsPage() {
         ))}
         {filtered.length === 0 && (
           <div style={{ gridColumn: '1/-1', padding: 48, textAlign: 'center', color: 'var(--gray)' }}>
-            Không tìm thấy tool nào
+            KhÃ´ng tÃ¬m tháº¥y tool nÃ o
           </div>
         )}
       </div>
@@ -93,7 +93,7 @@ export default function ToolsPage() {
         marginTop: 48, textAlign: 'center',
         fontSize: '0.8rem', color: 'var(--gray)',
       }}>
-        Querencia không gắn quảng cáo và không bán dữ liệu người dùng. 🌿
+        Querencia khÃ´ng gáº¯n quáº£ng cÃ¡o vÃ  khÃ´ng bÃ¡n dá»¯ liá»u ngÆ°á»i dÃ¹ng. ð¿
       </p>
     </div>
   );
@@ -158,7 +158,7 @@ function ToolCard({ tool, hasSession }: { tool: Tool; hasSession: boolean }) {
                 fontSize: '0.65rem', fontWeight: 700,
                 background: 'var(--sage)', color: '#fff',
                 padding: '2px 7px', borderRadius: 999,
-              }}>MỚI</span>
+              }}>Má»I</span>
             )}
             {needsQ ? (
               <span style={{
@@ -171,7 +171,7 @@ function ToolCard({ tool, hasSession }: { tool: Tool; hasSession: boolean }) {
                 fontSize: '0.65rem', fontWeight: 600,
                 background: 'var(--bg-surface)', color: 'var(--gray)',
                 padding: '2px 7px', borderRadius: 999,
-              }}>Miễn phí</span>
+              }}>Miá»n phÃ­</span>
             )}
           </div>
         </div>

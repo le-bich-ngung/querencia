@@ -1,8 +1,8 @@
-'use client';
+ï»¿'use client';
 /**
- * Cùi Bắp — Trang chat chính
+ * CÃ¹i Báº¯p â Trang chat chÃ­nh
  * Layout: Sidebar (conv list) | Chat window
- * Mobile: slide giữa sidebar và chat
+ * Mobile: slide giá»¯a sidebar vÃ  chat
  */
 import { useState, useRef, useCallback } from 'react';
 import Link from 'next/link';
@@ -10,12 +10,12 @@ import { useSession } from 'next-auth/react';
 import { useCuiBap } from '../../../components/cui-bap/useCuiBap';
 import type { CBMessage, CBConversation, CBGroup } from '../../../components/cui-bap/useCuiBap';
 
-// ── Constants ──────────────────────────────────────────────────
+// ââ Constants ââââââââââââââââââââââââââââââââââââââââââââââââââ
 const SAGE       = '#4a7c59';
-const REACTIONS  = ['❤️','😂','👍','😮','😢','🔥','🎉','👏','🙏','💯'];
-const EMOJI_PICK = ['😊','😂','❤️','👍','🙏','🔥','🎉','😮','😢','💯','✨','🌿','🌽','😎','🤔','💪'];
+const REACTIONS  = ['â¤ï¸','ð','ð','ð®','ð¢','ð¥','ð','ð','ð','ð¯'];
+const EMOJI_PICK = ['ð','ð','â¤ï¸','ð','ð','ð¥','ð','ð®','ð¢','ð¯','â¨','ð¿','ð½','ð','ð¤','ðª'];
 
-// ── Avatar ──────────────────────────────────────────────────────
+// ââ Avatar ââââââââââââââââââââââââââââââââââââââââââââââââââââââ
 function Avatar({ name, size = 38, color = SAGE }: { name: string; size?: number; color?: string }) {
   return (
     <div style={{
@@ -29,7 +29,7 @@ function Avatar({ name, size = 38, color = SAGE }: { name: string; size?: number
   );
 }
 
-// ── Online dot ─────────────────────────────────────────────────
+// ââ Online dot âââââââââââââââââââââââââââââââââââââââââââââââââ
 const OnlineDot = () => (
   <div style={{
     position: 'absolute', bottom: 0, right: 0,
@@ -38,7 +38,7 @@ const OnlineDot = () => (
   }}/>
 );
 
-// ── Format size ────────────────────────────────────────────────
+// ââ Format size ââââââââââââââââââââââââââââââââââââââââââââââââ
 function fmtSize(b?: number) {
   if (!b) return '';
   if (b < 1024) return `${b} B`;
@@ -46,7 +46,7 @@ function fmtSize(b?: number) {
   return `${(b/1048576).toFixed(1)} MB`;
 }
 
-// ── Message bubble ─────────────────────────────────────────────
+// ââ Message bubble âââââââââââââââââââââââââââââââââââââââââââââ
 function MessageBubble({
   msg, isOut, onReply, onEdit, onDelete, onReact, formatTime,
 }: {
@@ -76,7 +76,7 @@ function MessageBubble({
     return (
       <div style={{ display: 'flex', justifyContent: isOut ? 'flex-end' : 'flex-start', padding: '2px 16px' }}>
         <div style={{ ...bubbleStyle, opacity: 0.45, fontStyle: 'italic', fontSize: '0.8rem' }}>
-          🗑 Tin nhắn đã bị xóa
+          ð Tin nháº¯n ÄÃ£ bá» xÃ³a
         </div>
       </div>
     );
@@ -88,7 +88,7 @@ function MessageBubble({
       onMouseEnter={() => setShowActions(true)}
       onMouseLeave={() => { setShowActions(false); setShowReacts(false); }}
     >
-      {/* Incoming: avatar bên trái */}
+      {/* Incoming: avatar bÃªn trÃ¡i */}
       {!isOut && (
         <div style={{ position: 'relative', flexShrink: 0 }}>
           <Avatar name={msg.sender?.name ?? '?'} size={28}/>
@@ -113,7 +113,7 @@ function MessageBubble({
             maxWidth: '100%', overflow: 'hidden',
             textOverflow: 'ellipsis', whiteSpace: 'nowrap',
           }}>
-            ↩️ Trả lời tin nhắn
+            â©ï¸ Tráº£ lá»i tin nháº¯n
           </div>
         )}
 
@@ -130,7 +130,7 @@ function MessageBubble({
           ) : msg.type === 'file' && msg.file_url ? (
             <a href={msg.file_url} target="_blank" rel="noreferrer"
               style={{ color: isOut ? '#fff' : SAGE, textDecoration: 'none', display: 'flex', gap: 8, alignItems: 'center' }}>
-              <span style={{ fontSize: '1.2rem' }}>📎</span>
+              <span style={{ fontSize: '1.2rem' }}>ð</span>
               <span>
                 <div style={{ fontWeight: 600, fontSize: '0.82rem' }}>{msg.file_name || 'File'}</div>
                 <div style={{ fontSize: '0.68rem', opacity: 0.7 }}>{fmtSize(msg.file_size)}</div>
@@ -140,7 +140,7 @@ function MessageBubble({
             <>
               {msg.content}
               {msg.is_edited && (
-                <span style={{ fontSize: '0.62rem', opacity: 0.6, marginLeft: 4 }}>(đã sửa)</span>
+                <span style={{ fontSize: '0.62rem', opacity: 0.6, marginLeft: 4 }}>(ÄÃ£ sá»­a)</span>
               )}
             </>
           )}
@@ -169,11 +169,11 @@ function MessageBubble({
           </span>
           {showActions && (
             <div style={{ display: 'flex', gap: 2 }}>
-              <ActionBtn onClick={() => setShowReacts(s => !s)} title="React">😊</ActionBtn>
-              <ActionBtn onClick={() => onReply(msg)} title="Reply">↩️</ActionBtn>
+              <ActionBtn onClick={() => setShowReacts(s => !s)} title="React">ð</ActionBtn>
+              <ActionBtn onClick={() => onReply(msg)} title="Reply">â©ï¸</ActionBtn>
               {isOut && <>
-                <ActionBtn onClick={() => onEdit(msg)} title="Sửa">✏️</ActionBtn>
-                <ActionBtn onClick={() => onDelete(msg.id)} title="Xóa">🗑️</ActionBtn>
+                <ActionBtn onClick={() => onEdit(msg)} title="Sá»­a">âï¸</ActionBtn>
+                <ActionBtn onClick={() => onDelete(msg.id)} title="XÃ³a">ðï¸</ActionBtn>
               </>}
             </div>
           )}
@@ -218,7 +218,7 @@ const ActionBtn = ({ onClick, title, children }: { onClick: () => void; title: s
   </button>
 );
 
-// ── Conversation item ───────────────────────────────────────────
+// ââ Conversation item âââââââââââââââââââââââââââââââââââââââââââ
 function ConvItem({ conv, active, onClick }: { conv: CBConversation; active: boolean; onClick: () => void }) {
   return (
     <button onClick={onClick} style={{
@@ -243,17 +243,17 @@ function ConvItem({ conv, active, onClick }: { conv: CBConversation; active: boo
           fontSize: '0.75rem', color: 'var(--text-secondary)',
           overflow: 'hidden', textOverflow: 'ellipsis', whiteSpace: 'nowrap',
         }}>
-          {conv.last_message?.content || conv.last_message?.type === 'image' ? '📷 Hình ảnh'
-            : conv.last_message?.type === 'file' ? '📎 File'
-            : conv.last_message?.type === 'audio' ? '🎵 Audio'
-            : 'Bắt đầu trò chuyện'}
+          {conv.last_message?.content || conv.last_message?.type === 'image' ? 'ð· HÃ¬nh áº£nh'
+            : conv.last_message?.type === 'file' ? 'ð File'
+            : conv.last_message?.type === 'audio' ? 'ðµ Audio'
+            : 'Báº¯t Äáº§u trÃ² chuyá»n'}
         </div>
       </div>
     </button>
   );
 }
 
-// ── Group item ─────────────────────────────────────────────────
+// ââ Group item âââââââââââââââââââââââââââââââââââââââââââââââââ
 function GroupItem({ group, active, onClick }: { group: CBGroup; active: boolean; onClick: () => void }) {
   return (
     <button onClick={onClick} style={{
@@ -272,22 +272,22 @@ function GroupItem({ group, active, onClick }: { group: CBGroup; active: boolean
         display: 'flex', alignItems: 'center', justifyContent: 'center',
         fontSize: '1.2rem', flexShrink: 0,
       }}>
-        👥
+        ð¥
       </div>
       <div style={{ flex: 1, minWidth: 0 }}>
         <div style={{ fontWeight: 600, fontSize: '0.85rem', color: 'var(--text)', marginBottom: 2 }}>
           {group.name}
         </div>
         <div style={{ fontSize: '0.75rem', color: 'var(--text-secondary)', overflow: 'hidden', textOverflow: 'ellipsis', whiteSpace: 'nowrap' }}>
-          {group.member_count} thành viên
-          {group.last_message ? ` · ${group.last_message.content || '📎 File'}` : ''}
+          {group.member_count} thÃ nh viÃªn
+          {group.last_message ? ` Â· ${group.last_message.content || 'ð File'}` : ''}
         </div>
       </div>
     </button>
   );
 }
 
-// ── Main page ──────────────────────────────────────────────────
+// ââ Main page ââââââââââââââââââââââââââââââââââââââââââââââââââ
 export default function CuiBapPage() {
   const { data: session, status } = useSession();
   const cb = useCuiBap();
@@ -307,19 +307,19 @@ export default function CuiBapPage() {
   // Not logged in
   if (status === 'loading') return (
     <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'center', height: '60vh' }}>
-      <div style={{ color: 'var(--text-secondary)' }}>Đang tải...</div>
+      <div style={{ color: 'var(--text-secondary)' }}>Äang táº£i...</div>
     </div>
   );
 
   if (!session) return (
     <div style={{ display: 'flex', flexDirection: 'column', alignItems: 'center', justifyContent: 'center', height: '60vh', gap: 16 }}>
-      <div style={{ fontSize: '3rem' }}>🌽</div>
-      <p style={{ fontWeight: 600, fontSize: '1rem' }}>Bạn cần đăng nhập để dùng Cùi Bắp</p>
+      <div style={{ fontSize: '3rem' }}>ð½</div>
+      <p style={{ fontWeight: 600, fontSize: '1rem' }}>Báº¡n cáº§n ÄÄng nháº­p Äá» dÃ¹ng CÃ¹i Báº¯p</p>
       <Link href="/auth/login" style={{
         padding: '10px 28px', background: SAGE, color: '#fff',
         borderRadius: 20, textDecoration: 'none', fontWeight: 600,
       }}>
-        Đăng nhập
+        ÄÄng nháº­p
       </Link>
     </div>
   );
@@ -370,7 +370,7 @@ export default function CuiBapPage() {
         background: 'var(--bg)', overflow: 'hidden',
       }}>
 
-        {/* ── SIDEBAR ───────────────────────────────────────── */}
+        {/* ââ SIDEBAR âââââââââââââââââââââââââââââââââââââââââ */}
         <div className="cb-sidebar" style={{
           width: 300, flexShrink: 0,
           borderRight: '1px solid var(--border)',
@@ -382,16 +382,16 @@ export default function CuiBapPage() {
           <div style={{ padding: '14px 16px 10px', borderBottom: '1px solid var(--border)' }}>
             <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', marginBottom: 10 }}>
               <h2 style={{ fontWeight: 800, fontSize: '1rem', color: 'var(--text)' }}>
-                🌽 Cùi Bắp
+                ð½ CÃ¹i Báº¯p
               </h2>
               <div style={{ display: 'flex', gap: 6 }}>
-                <IconBtn title="Nhắn tin mới" onClick={() => setShowNewChat(true)}>✏️</IconBtn>
-                <IconBtn title="Tạo nhóm" onClick={() => setShowNewGroup(true)}>👥</IconBtn>
+                <IconBtn title="Nháº¯n tin má»i" onClick={() => setShowNewChat(true)}>âï¸</IconBtn>
+                <IconBtn title="Táº¡o nhÃ³m" onClick={() => setShowNewGroup(true)}>ð¥</IconBtn>
               </div>
             </div>
             {/* Search */}
             <input
-              type="text" placeholder="Tìm kiếm..."
+              type="text" placeholder="TÃ¬m kiáº¿m..."
               value={cb.search} onChange={e => cb.setSearch(e.target.value)}
               style={{
                 width: '100%', padding: '8px 12px',
@@ -414,7 +414,7 @@ export default function CuiBapPage() {
                   fontFamily: 'inherit', fontSize: '0.78rem', fontWeight: 600,
                   transition: 'all 0.15s',
                 }}>
-                  {t === 'chats' ? '💬 Chat' : '👥 Nhóm'}
+                  {t === 'chats' ? 'ð¬ Chat' : 'ð¥ NhÃ³m'}
                 </button>
               ))}
             </div>
@@ -424,13 +424,13 @@ export default function CuiBapPage() {
           <div style={{ flex: 1, overflowY: 'auto', padding: '8px' }}>
             {cb.loading ? (
               <div style={{ padding: 24, textAlign: 'center', color: 'var(--text-secondary)', fontSize: '0.82rem' }}>
-                Đang tải...
+                Äang táº£i...
               </div>
             ) : cb.tab === 'chats' ? (
               cb.conversations.length === 0 ? (
                 <Empty
-                  emoji="💬" text="Chưa có cuộc trò chuyện nào"
-                  action="Nhắn tin mới" onAction={() => setShowNewChat(true)}
+                  emoji="ð¬" text="ChÆ°a cÃ³ cuá»c trÃ² chuyá»n nÃ o"
+                  action="Nháº¯n tin má»i" onAction={() => setShowNewChat(true)}
                 />
               ) : (
                 cb.conversations.map(c => (
@@ -444,8 +444,8 @@ export default function CuiBapPage() {
             ) : (
               cb.groups.length === 0 ? (
                 <Empty
-                  emoji="👥" text="Chưa có nhóm nào"
-                  action="Tạo nhóm" onAction={() => setShowNewGroup(true)}
+                  emoji="ð¥" text="ChÆ°a cÃ³ nhÃ³m nÃ o"
+                  action="Táº¡o nhÃ³m" onAction={() => setShowNewGroup(true)}
                 />
               ) : (
                 cb.groups.map(g => (
@@ -460,7 +460,7 @@ export default function CuiBapPage() {
           </div>
         </div>
 
-        {/* ── CHAT WINDOW ───────────────────────────────────── */}
+        {/* ââ CHAT WINDOW âââââââââââââââââââââââââââââââââââââ */}
         <div className="cb-chat" style={{
           flex: 1, display: chatVisible ? 'flex' : cb.currentConvId ? 'flex' : 'none',
           flexDirection: 'column', minWidth: 0,
@@ -481,7 +481,7 @@ export default function CuiBapPage() {
                   fontSize: '1.1rem', padding: '4px 8px 4px 0',
                   display: sidebarVisible ? 'none' : 'block',
                 }}>
-                  ‹
+                  â¹
                 </button>
 
                 {cb.currentType === 'direct' ? (
@@ -495,7 +495,7 @@ export default function CuiBapPage() {
                     background: '#7c5cbf', color: '#fff',
                     display: 'flex', alignItems: 'center', justifyContent: 'center',
                     fontSize: '1.1rem', flexShrink: 0,
-                  }}>👥</div>
+                  }}>ð¥</div>
                 )}
                 <div style={{ flex: 1 }}>
                   <div style={{ fontWeight: 700, fontSize: '0.9rem', color: 'var(--text)' }}>
@@ -503,29 +503,29 @@ export default function CuiBapPage() {
                   </div>
                   <div style={{ fontSize: '0.7rem', color: 'var(--text-secondary)' }}>
                     {cb.typingUser ? (
-                      <span style={{ color: SAGE }}>Đang nhập...</span>
+                      <span style={{ color: SAGE }}>Äang nháº­p...</span>
                     ) : cb.currentType === 'direct' ? (
                       cb.conversations.find(c => c.id === cb.currentConvId)?.is_online
-                        ? '🟢 online' : 'offline'
+                        ? 'ð¢ online' : 'offline'
                     ) : (
-                      `${cb.groups.find(g => g.id === cb.currentConvId)?.member_count ?? 0} thành viên`
+                      `${cb.groups.find(g => g.id === cb.currentConvId)?.member_count ?? 0} thÃ nh viÃªn`
                     )}
                   </div>
                 </div>
                 {/* Call buttons */}
-                <IconBtn title="Gọi thoại" onClick={() => alert('Gọi thoại — sắp có trên app!')}>📞</IconBtn>
-                <IconBtn title="Gọi video" onClick={() => alert('Gọi video — sắp có trên app!')}>📹</IconBtn>
+                <IconBtn title="Gá»i thoáº¡i" onClick={() => alert('Gá»i thoáº¡i â sáº¯p cÃ³ trÃªn app!')}>ð</IconBtn>
+                <IconBtn title="Gá»i video" onClick={() => alert('Gá»i video â sáº¯p cÃ³ trÃªn app!')}>ð¹</IconBtn>
               </div>
 
               {/* Messages */}
               <div style={{ flex: 1, overflowY: 'auto', padding: '12px 0' }}>
                 {cb.msgLoading ? (
                   <div style={{ padding: 32, textAlign: 'center', color: 'var(--text-secondary)', fontSize: '0.82rem' }}>
-                    Đang tải tin nhắn...
+                    Äang táº£i tin nháº¯n...
                   </div>
                 ) : cb.messages.length === 0 ? (
                   <div style={{ padding: 32, textAlign: 'center', color: 'var(--text-secondary)', fontSize: '0.82rem' }}>
-                    Bắt đầu cuộc trò chuyện 👋
+                    Báº¯t Äáº§u cuá»c trÃ² chuyá»n ð
                   </div>
                 ) : (
                   cb.messages.map(msg => (
@@ -553,13 +553,13 @@ export default function CuiBapPage() {
                   display: 'flex', alignItems: 'center', gap: 10,
                 }}>
                   <div style={{ flex: 1, fontSize: '0.78rem', color: 'var(--text-secondary)' }}>
-                    <span style={{ color: SAGE, fontWeight: 600 }}>↩️ Trả lời:</span>{' '}
+                    <span style={{ color: SAGE, fontWeight: 600 }}>â©ï¸ Tráº£ lá»i:</span>{' '}
                     {cb.replyTo.content?.slice(0, 60)}
                   </div>
                   <button onClick={() => cb.setReplyTo(null)} style={{
                     background: 'none', border: 'none', cursor: 'pointer',
                     color: 'var(--gray)', fontSize: '1rem',
-                  }}>✕</button>
+                  }}>â</button>
                 </div>
               )}
 
@@ -583,16 +583,16 @@ export default function CuiBapPage() {
                       borderRadius: 8, fontFamily: 'inherit', fontSize: '0.88rem', outline: 'none',
                       background: '#fff',
                     }}
-                    placeholder="Sửa tin nhắn... (Enter để lưu, Esc để hủy)"
+                    placeholder="Sá»­a tin nháº¯n... (Enter Äá» lÆ°u, Esc Äá» há»§y)"
                   />
                   <button onClick={() => cb.editMessage(cb.editingMsg!.id, editText)} style={{
                     padding: '8px 14px', background: SAGE, color: '#fff',
                     border: 'none', borderRadius: 8, cursor: 'pointer', fontSize: '0.82rem', fontWeight: 600,
-                  }}>Lưu</button>
+                  }}>LÆ°u</button>
                   <button onClick={() => cb.setEditingMsg(null)} style={{
                     padding: '8px 10px', background: 'none',
                     border: '1px solid var(--border)', borderRadius: 8, cursor: 'pointer', fontSize: '0.82rem',
-                  }}>Hủy</button>
+                  }}>Há»§y</button>
                 </div>
               )}
 
@@ -606,11 +606,11 @@ export default function CuiBapPage() {
               }}>
                 {/* Attach file */}
                 <input type="file" ref={fileInputRef} onChange={handleFile} style={{ display: 'none' }}/>
-                <IconBtn title="Đính kèm file" onClick={() => fileInputRef.current?.click()}>📎</IconBtn>
+                <IconBtn title="ÄÃ­nh kÃ¨m file" onClick={() => fileInputRef.current?.click()}>ð</IconBtn>
 
                 {/* Emoji picker toggle */}
                 <div style={{ position: 'relative' }}>
-                  <IconBtn title="Emoji" onClick={() => setShowEmoji(s => !s)}>😊</IconBtn>
+                  <IconBtn title="Emoji" onClick={() => setShowEmoji(s => !s)}>ð</IconBtn>
                   {showEmoji && (
                     <div style={{
                       position: 'absolute', bottom: '100%', left: 0, marginBottom: 6,
@@ -640,7 +640,7 @@ export default function CuiBapPage() {
                     cb.sendTyping();
                   }}
                   onKeyDown={handleKeyDown}
-                  placeholder="Nhắn tin..."
+                  placeholder="Nháº¯n tin..."
                   rows={1}
                   style={{
                     flex: 1, padding: '9px 13px',
@@ -666,38 +666,38 @@ export default function CuiBapPage() {
                     fontSize: '1rem', transition: 'all 0.15s', flexShrink: 0,
                   }}
                 >
-                  ➤
+                  â¤
                 </button>
               </div>
             </>
           ) : (
-            /* Empty state — no conv selected */
+            /* Empty state â no conv selected */
             <div style={{
               flex: 1, display: 'flex', flexDirection: 'column',
               alignItems: 'center', justifyContent: 'center',
               color: 'var(--text-secondary)', gap: 16,
             }}>
-              <div style={{ fontSize: '3rem' }}>🌽</div>
+              <div style={{ fontSize: '3rem' }}>ð½</div>
               <p style={{ fontWeight: 600, fontSize: '0.95rem', textAlign: 'center' }}>
-                Chọn một cuộc trò chuyện<br/>hoặc bắt đầu nhắn tin mới
+                Chá»n má»t cuá»c trÃ² chuyá»n<br/>hoáº·c báº¯t Äáº§u nháº¯n tin má»i
               </p>
               <button onClick={() => setShowNewChat(true)} style={{
                 padding: '9px 22px', background: SAGE, color: '#fff',
                 border: 'none', borderRadius: 20, cursor: 'pointer',
                 fontFamily: 'inherit', fontWeight: 600, fontSize: '0.85rem',
               }}>
-                ✏️ Nhắn tin mới
+                âï¸ Nháº¯n tin má»i
               </button>
             </div>
           )}
         </div>
       </div>
 
-      {/* ── MODAL: New Chat ─────────────────────────────────── */}
+      {/* ââ MODAL: New Chat âââââââââââââââââââââââââââââââââââ */}
       {showNewChat && (
-        <Modal title="✏️ Nhắn tin mới" onClose={() => { setShowNewChat(false); setNewChatEmail(''); }}>
+        <Modal title="âï¸ Nháº¯n tin má»i" onClose={() => { setShowNewChat(false); setNewChatEmail(''); }}>
           <p style={{ fontSize: '0.82rem', color: 'var(--text-secondary)', marginBottom: 12 }}>
-            Nhập email người bạn muốn nhắn tin
+            Nháº­p email ngÆ°á»i báº¡n muá»n nháº¯n tin
           </p>
           <ModalInput
             autoFocus
@@ -706,28 +706,28 @@ export default function CuiBapPage() {
             onKeyDown={e => e.key === 'Enter' && cb.createConversation(newChatEmail).then(() => setShowNewChat(false))}
           />
           <ModalBtn onClick={() => cb.createConversation(newChatEmail).then(() => { setShowNewChat(false); setNewChatEmail(''); })}>
-            Bắt đầu chat
+            Báº¯t Äáº§u chat
           </ModalBtn>
         </Modal>
       )}
 
-      {/* ── MODAL: New Group ────────────────────────────────── */}
+      {/* ââ MODAL: New Group ââââââââââââââââââââââââââââââââââ */}
       {showNewGroup && (
-        <Modal title="👥 Tạo nhóm mới" onClose={() => { setShowNewGroup(false); setNewGroupName(''); setNewGroupDesc(''); }}>
+        <Modal title="ð¥ Táº¡o nhÃ³m má»i" onClose={() => { setShowNewGroup(false); setNewGroupName(''); setNewGroupDesc(''); }}>
           <ModalInput
             autoFocus
-            type="text" placeholder="Tên nhóm *"
+            type="text" placeholder="TÃªn nhÃ³m *"
             value={newGroupName} onChange={e => setNewGroupName(e.target.value)}
           />
           <ModalInput
-            type="text" placeholder="Mô tả nhóm (tùy chọn)"
+            type="text" placeholder="MÃ´ táº£ nhÃ³m (tÃ¹y chá»n)"
             value={newGroupDesc} onChange={e => setNewGroupDesc(e.target.value)}
           />
           <ModalBtn
             disabled={!newGroupName.trim()}
             onClick={() => cb.createGroup(newGroupName, newGroupDesc).then(() => { setShowNewGroup(false); setNewGroupName(''); setNewGroupDesc(''); })}
           >
-            Tạo nhóm
+            Táº¡o nhÃ³m
           </ModalBtn>
         </Modal>
       )}
@@ -735,7 +735,7 @@ export default function CuiBapPage() {
   );
 }
 
-// ── Reusable small components ──────────────────────────────────
+// ââ Reusable small components ââââââââââââââââââââââââââââââââââ
 
 const IconBtn = ({ onClick, title, children }: { onClick: () => void; title: string; children: React.ReactNode }) => (
   <button onClick={onClick} title={title} style={{
@@ -778,7 +778,7 @@ const Modal = ({ title, children, onClose }: { title: string; children: React.Re
     }}>
       <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: 4 }}>
         <h3 style={{ fontWeight: 700, fontSize: '1rem', color: 'var(--text)' }}>{title}</h3>
-        <button onClick={onClose} style={{ background: 'none', border: 'none', cursor: 'pointer', color: 'var(--gray)', fontSize: '1.1rem' }}>✕</button>
+        <button onClick={onClose} style={{ background: 'none', border: 'none', cursor: 'pointer', color: 'var(--gray)', fontSize: '1.1rem' }}>â</button>
       </div>
       {children}
     </div>

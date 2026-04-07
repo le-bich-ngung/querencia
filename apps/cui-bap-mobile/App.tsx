@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from 'react';
+ï»¿import React, { useEffect, useState } from 'react';
 import { GestureHandlerRootView } from 'react-native-gesture-handler';
 import { SafeAreaProvider } from 'react-native-safe-area-context';
 import { StatusBar, Modal } from 'react-native';
@@ -16,7 +16,7 @@ PushNotification.configure({
     try { await api.registerFCM(token); } catch {}
   },
   onNotification: (notification) => {
-    // MFA notification → hiện approve screen
+    // MFA notification â hiá»n approve screen
     if (notification.data?.type === 'mfa_request') {
       // Handled via Firebase onMessage below
     }
@@ -28,7 +28,7 @@ PushNotification.configure({
 // Push notification channels
 PushNotification.createChannel({
   channelId:   'messages',
-  channelName: 'Tin nhắn',
+  channelName: 'Tin nháº¯n',
   importance:  4, // HIGH
   soundName:   'notification.wav',
   vibrate:     true,
@@ -36,7 +36,7 @@ PushNotification.createChannel({
 
 PushNotification.createChannel({
   channelId:   'security',
-  channelName: 'Bảo mật',
+  channelName: 'Báº£o máº­t',
   importance:  5, // MAX
   soundName:   'default',
   vibrate:     true,
@@ -60,7 +60,7 @@ export default function App() {
       const data = msg.data;
 
       if (data?.type === 'mfa_request') {
-        // MFA request → hiện modal ngay
+        // MFA request â hiá»n modal ngay
         setMfaRequest({
           mfaToken:  data.mfa_token!,
           device:    data.device    ?? 'Unknown device',
@@ -71,10 +71,10 @@ export default function App() {
         return;
       }
 
-      // Tin nhắn thường → local notification
+      // Tin nháº¯n thÆ°á»ng â local notification
       PushNotification.localNotification({
         channelId:   'messages',
-        title:       msg.notification?.title ?? '🌽 Tin nhắn mới',
+        title:       msg.notification?.title ?? 'ð½ Tin nháº¯n má»i',
         message:     msg.notification?.body  ?? '',
         userInfo:    data,
         soundName:   'notification.wav',
@@ -83,7 +83,7 @@ export default function App() {
     });
 
     // FCM background/quit tap
-    // Deep link: tap notification → navigate đến conversation
+    // Deep link: tap notification â navigate Äáº¿n conversation
     const unsubResponse = PushNotification.configure({
       onNotification: (notification) => {
         const data = notification.data;
@@ -91,7 +91,7 @@ export default function App() {
           navigationRef.current.navigate('Chat', {
             convId:   data.convId,
             convType: data.convType ?? 'direct',
-            name:     data.senderName ?? 'Tin nhắn',
+            name:     data.senderName ?? 'Tin nháº¯n',
           });
         }
         notification.finish(PushNotification.FetchResult.NoData);
@@ -121,7 +121,7 @@ export default function App() {
         <StatusBar barStyle="light-content" backgroundColor="#0d0f0d"/>
         <AppNavigator/>
 
-        {/* MFA Approve Modal — toàn màn hình, overlay mọi thứ */}
+        {/* MFA Approve Modal â toÃ n mÃ n hÃ¬nh, overlay má»i thá»© */}
         <Modal
           visible={!!mfaRequest}
           animationType="fade"

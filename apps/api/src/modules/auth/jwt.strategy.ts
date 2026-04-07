@@ -1,6 +1,6 @@
-﻿/**
- * JWT Strategy — validate token, attach user to request
- * sub = email (giữ tương thích với code cũ)
+ï»¿/**
+ * JWT Strategy â validate token, attach user to request
+ * sub = email (giá»¯ tÆ°Æ¡ng thÃ­ch vá»i code cÅ©)
  */
 import { Injectable, UnauthorizedException, Inject } from '@nestjs/common';
 import { PassportStrategy } from '@nestjs/passport';
@@ -35,9 +35,9 @@ export class JwtStrategy extends PassportStrategy(Strategy) {
       },
     });
 
-    if (!user || !user.isActive) throw new UnauthorizedException('Token không hợp lệ');
+    if (!user || !user.isActive) throw new UnauthorizedException('Token khÃ´ng há»£p lá»');
 
-    // Gắn vào request.user — dùng với @CurrentUser()
+    // Gáº¯n vÃ o request.user â dÃ¹ng vá»i @CurrentUser()
     return user;
   }
 }

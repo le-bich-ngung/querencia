@@ -1,4 +1,4 @@
-// Gamification — track user actions for streak/badges
+ï»¿// Gamification â track user actions for streak/badges
 
 export const gameStats = {
   recordLaNoMessage: () => {

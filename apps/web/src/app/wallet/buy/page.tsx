@@ -1,8 +1,8 @@
-'use client';
+ï»¿'use client';
 /**
- * Wallet Buy — /wallet/buy
- * Paddle Checkout cho mua ngày Pro
- * $0.50/ngày flat, không discount, gói 1/7/30 ngày
+ * Wallet Buy â /wallet/buy
+ * Paddle Checkout cho mua ngÃ y Pro
+ * $0.50/ngÃ y flat, khÃ´ng discount, gÃ³i 1/7/30 ngÃ y
  */
 'use client';
 import { useEffect, useState, Suspense } from 'react';
@@ -17,9 +17,9 @@ declare global {
 
 const PRICE_PER_DAY = 0.50;
 const PLANS = [
-  { days: 1,  label: '1 ngày',  badge: null,         desc: 'Thử trước — chỉ $0.50' },
-  { days: 7,  label: '7 ngày',  badge: 'Phổ biến',   desc: '1 tuần không lo thanh toán lại' },
-  { days: 30, label: '30 ngày', badge: null,          desc: 'Tiết kiệm thời gian nhất' },
+  { days: 1,  label: '1 ngÃ y',  badge: null,         desc: 'Thá»­ trÆ°á»c â chá» $0.50' },
+  { days: 7,  label: '7 ngÃ y',  badge: 'Phá» biáº¿n',   desc: '1 tuáº§n khÃ´ng lo thanh toÃ¡n láº¡i' },
+  { days: 30, label: '30 ngÃ y', badge: null,          desc: 'Tiáº¿t kiá»m thá»i gian nháº¥t' },
 ];
 
 const QIcon = ({ size = 16, color = '#4a7c59' }: { size?: number; color?: string }) => (
@@ -69,7 +69,7 @@ function BuyContent() {
     setProcessing(true);
 
     try {
-      // Tạo checkout session từ server (server tạo price custom theo số ngày)
+      // Táº¡o checkout session tá»« server (server táº¡o price custom theo sá» ngÃ y)
       const res = await fetch('/api/v1/payments/create-checkout', {
         method:  'POST',
         headers: { 'Content-Type': 'application/json', Authorization: `Bearer ${token}` },
@@ -108,12 +108,12 @@ function BuyContent() {
     return (
       <div style={{ textAlign: 'center', padding: '60px 24px' }}>
         <p style={{ color: 'var(--text-secondary)', marginBottom: 16 }}>
-          Đăng nhập để mua Q Pro
+          ÄÄng nháº­p Äá» mua Q Pro
         </p>
         <Link href={`/auth/login?next=/wallet/buy?days=${selected}`} style={{
           padding: '10px 24px', background: '#4a7c59', color: '#fff',
           borderRadius: 10, textDecoration: 'none', fontWeight: 700,
-        }}>Đăng nhập</Link>
+        }}>ÄÄng nháº­p</Link>
       </div>
     );
   }
@@ -121,14 +121,14 @@ function BuyContent() {
   return (
     <div style={{ maxWidth: 520, margin: '0 auto', padding: '40px 20px 96px' }}>
       <Link href="/pricing" style={{ fontSize: '0.82rem', color: 'var(--text-secondary)', textDecoration: 'none', display: 'block', marginBottom: 20 }}>
-        ← Xem chi tiết pricing
+        â Xem chi tiáº¿t pricing
       </Link>
 
       <h1 style={{ fontSize: '1.4rem', fontWeight: 800, marginBottom: 6, color: 'var(--text)' }}>
         Mua Q Pro
       </h1>
       <p style={{ fontSize: '0.85rem', color: 'var(--text-secondary)', marginBottom: 28 }}>
-        $0.50/ngày · 10Q expiring + 1Q permanent mỗi ngày
+        $0.50/ngÃ y Â· 10Q expiring + 1Q permanent má»i ngÃ y
       </p>
 
       {/* Plan selector */}
@@ -198,11 +198,11 @@ function BuyContent() {
         onMouseEnter={e => { if (paddleLoaded) e.currentTarget.style.background = '#2d5a3d'; }}
         onMouseLeave={e => { e.currentTarget.style.background = '#4a7c59'; }}
       >
-        {!paddleLoaded ? 'Đang tải...' : processing ? 'Đang xử lý...' : `Thanh toán $${total.toFixed(2)}`}
+        {!paddleLoaded ? 'Äang táº£i...' : processing ? 'Äang xá»­ lÃ½...' : `Thanh toÃ¡n $${total.toFixed(2)}`}
       </button>
 
       <p style={{ fontSize: '0.72rem', color: 'var(--gray)', textAlign: 'center', marginTop: 12, lineHeight: 1.5 }}>
-        Không tự gia hạn · Hoàn tiền ngày trọn vẹn chưa dùng · Phí giao dịch do bạn chịu
+        KhÃ´ng tá»± gia háº¡n Â· HoÃ n tiá»n ngÃ y trá»n váº¹n chÆ°a dÃ¹ng Â· PhÃ­ giao dá»ch do báº¡n chá»u
       </p>
     </div>
   );
@@ -210,7 +210,7 @@ function BuyContent() {
 
 export default function BuyPage() {
   return (
-    <Suspense fallback={<div style={{ padding: 40, textAlign: 'center', color: 'var(--text-secondary)' }}>Đang tải...</div>}>
+    <Suspense fallback={<div style={{ padding: 40, textAlign: 'center', color: 'var(--text-secondary)' }}>Äang táº£i...</div>}>
       <BuyContent/>
     </Suspense>
   );

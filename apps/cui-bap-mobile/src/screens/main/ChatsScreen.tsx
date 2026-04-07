@@ -1,4 +1,4 @@
-import { updateAppBadge } from '../../lib/badge';
+ï»¿import { updateAppBadge } from '../../lib/badge';
 import { ConvOptionsModal } from '../../components/chat/ConvOptionsModal';
 import React, { useEffect, useState, useCallback } from 'react';
 import { View, Text, FlatList, TouchableOpacity, TextInput, StyleSheet, RefreshControl, ActivityIndicator } from 'react-native';
@@ -51,22 +51,22 @@ export function ChatsScreen({ navigation }: Props) {
   return (
     <View style={s.container}>
       <View style={s.header}>
-        <Text style={s.title}>🌽 Cùi Bắp</Text>
+        <Text style={s.title}>ð½ CÃ¹i Báº¯p</Text>
         <View style={{flexDirection:'row',alignItems:'center',gap:10}}>
           <View style={{width:8,height:8,borderRadius:4,backgroundColor:connected?colors.online:colors.error}}/>
           <TouchableOpacity onPress={()=>navigation.navigate('NewChat')} style={s.newBtn}>
-            <Text style={{fontSize:20}}>✏️</Text>
+            <Text style={{fontSize:20}}>âï¸</Text>
           </TouchableOpacity>
         </View>
       </View>
       <View style={s.searchWrap}>
         <TextInput style={s.search} value={search} onChangeText={setSearch}
-          placeholder="Tìm kiếm..." placeholderTextColor={colors.gray}/>
+          placeholder="TÃ¬m kiáº¿m..." placeholderTextColor={colors.gray}/>
       </View>
       <View style={s.tabs}>
         {(['chats','groups'] as Tab[]).map(t=>(
           <TouchableOpacity key={t} onPress={()=>setTab(t)} style={[s.tab, tab===t&&s.tabOn]}>
-            <Text style={[s.tabTxt, tab===t&&s.tabTxtOn]}>{t==='chats'?'💬 Chat':'👥 Nhóm'}</Text>
+            <Text style={[s.tabTxt, tab===t&&s.tabTxtOn]}>{t==='chats'?'ð¬ Chat':'ð¥ NhÃ³m'}</Text>
           </TouchableOpacity>
         ))}
       </View>
@@ -104,7 +104,7 @@ export function ChatsScreen({ navigation }: Props) {
                 </View>
                 <View style={{flexDirection:'row',justifyContent:'space-between',alignItems:'center'}}>
                   <Text style={s.preview} numberOfLines={1}>
-                    {(c as any).lastMessage?.content || (tab==='groups'?`${(c as any).memberCount} thành viên`:'Bắt đầu trò chuyện')}
+                    {(c as any).lastMessage?.content || (tab==='groups'?`${(c as any).memberCount} thÃ nh viÃªn`:'Báº¯t Äáº§u trÃ² chuyá»n')}
                   </Text>
                   {(c as any).unreadCount > 0 && (
                     <View style={s.badge}><Text style={s.badgeTxt}>{(c as any).unreadCount}</Text></View>
@@ -115,9 +115,9 @@ export function ChatsScreen({ navigation }: Props) {
           )}
           ListEmptyComponent={
             <View style={s.empty}>
-              <Text style={{fontSize:48,marginBottom:12}}>{tab==='chats'?'💬':'👥'}</Text>
+              <Text style={{fontSize:48,marginBottom:12}}>{tab==='chats'?'ð¬':'ð¥'}</Text>
               <Text style={{color:colors.gray,textAlign:'center',fontSize:15}}>
-                {tab==='chats'?'Chưa có cuộc trò chuyện\nBấm ✏️ để nhắn tin mới':'Chưa có nhóm nào'}
+                {tab==='chats'?'ChÆ°a cÃ³ cuá»c trÃ² chuyá»n\nBáº¥m âï¸ Äá» nháº¯n tin má»i':'ChÆ°a cÃ³ nhÃ³m nÃ o'}
               </Text>
             </View>
           }

@@ -1,6 +1,6 @@
-/**
- * VoiceRecorder — nút giữ để ghi âm, thả để gửi
- * Dùng: react-native-audio-recorder-player
+ï»¿/**
+ * VoiceRecorder â nÃºt giá»¯ Äá» ghi Ã¢m, tháº£ Äá» gá»­i
+ * DÃ¹ng: react-native-audio-recorder-player
  */
 import React, { useState, useRef } from 'react';
 import {
@@ -44,7 +44,7 @@ export function VoiceRecorder({ onAudioReady, disabled }: Props) {
     if (disabled) return;
     const hasPermission = await checkMicPermission();
     if (!hasPermission) {
-      Alert.alert('Cần quyền microphone', 'Vui lòng cho phép trong Cài đặt.');
+      Alert.alert('Cáº§n quyá»n microphone', 'Vui lÃ²ng cho phÃ©p trong CÃ i Äáº·t.');
       return;
     }
 
@@ -112,7 +112,7 @@ export function VoiceRecorder({ onAudioReady, disabled }: Props) {
         <View style={s.recordingBar}>
           <View style={s.recordDot}/>
           <Text style={s.recordTime}>{formatDuration(duration)}</Text>
-          <Text style={s.recordHint}>Thả để gửi · Vuốt để hủy</Text>
+          <Text style={s.recordHint}>Tháº£ Äá» gá»­i Â· Vuá»t Äá» há»§y</Text>
         </View>
       )}
       <Animated.View style={{ transform: [{ scale: scaleAnim }] }}>

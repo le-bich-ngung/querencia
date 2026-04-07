@@ -1,4 +1,4 @@
-import type { Metadata } from 'next';
+ï»¿import type { Metadata } from 'next';
 import { Providers }  from '../components/providers';
 import { BottomNav }     from '../components/layout/BottomNav';
 import { GlobalFooter } from '../components/layout/GlobalFooter';
@@ -7,8 +7,8 @@ import '../styles/globals.css';
 
 export const metadata: Metadata = {
   charset: 'utf-8',
-  title:       { default: 'Querencia', template: '%s — Querencia' },
-  description: 'Nope · Cùi Bắp · LàNo · Tools — Một hệ sinh thái, một tài khoản.',
+  title:       { default: 'Querencia', template: '%s â Querencia' },
+  description: 'Nope Â· CÃ¹i Báº¯p Â· LÃ No Â· Tools â Má»t há» sinh thÃ¡i, má»t tÃ i khoáº£n.',
   themeColor:  '#4a7c59',
   icons: {
     icon:  [

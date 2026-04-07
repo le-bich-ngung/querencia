@@ -1,4 +1,4 @@
-﻿import { pgTable, uuid, text, timestamp, pgEnum, boolean } from 'drizzle-orm/pg-core';
+ï»¿import { pgTable, uuid, text, timestamp, pgEnum, boolean } from 'drizzle-orm/pg-core';
 
 export const planEnum = pgEnum('plan', ['free', 'pro', 'enterprise']);
 
@@ -9,11 +9,11 @@ export const users = pgTable('users', {
   avatarUrl:         text('avatar_url'),
   plan:              planEnum('plan').default('free').notNull(),
 
-  // ── Auth fields (migrated từ SQLAlchemy User model) ────────
-  hashedPassword:    text('hashed_password'),           // null nếu chỉ dùng OAuth
+  // ââ Auth fields (migrated tá»« SQLAlchemy User model) ââââââââ
+  hashedPassword:    text('hashed_password'),           // null náº¿u chá» dÃ¹ng OAuth
   isActive:          boolean('is_active').default(true).notNull(),
   isVerified:        boolean('is_verified').default(false).notNull(),
-  verificationToken: text('verification_token'),        // email verify + password reset, dùng 1 lần
+  verificationToken: text('verification_token'),        // email verify + password reset, dÃ¹ng 1 láº§n
   googleId:          text('google_id').unique(),        // Google OAuth ID
   fcmToken:          text('fcm_token'),                 // Firebase push notification (MFA)
   fcmTokenUpdatedAt: timestamp('fcm_token_updated_at'),
@@ -22,7 +22,7 @@ export const users = pgTable('users', {
   updatedAt:         timestamp('updated_at').defaultNow().notNull(),
 });
 
-// accounts — OAuth providers (Google, future: GitHub, Apple)
+// accounts â OAuth providers (Google, future: GitHub, Apple)
 export const accounts = pgTable('accounts', {
   id:                uuid('id').primaryKey().defaultRandom(),
   userId:            uuid('user_id').references(() => users.id, { onDelete: 'cascade' }).notNull(),
@@ -34,12 +34,12 @@ export const accounts = pgTable('accounts', {
   createdAt:         timestamp('created_at').defaultNow().notNull(),
 });
 
-// Kiểu helper — dùng trong service
+// Kiá»u helper â dÃ¹ng trong service
 export type User = typeof users.$inferSelect;
 export type NewUser = typeof users.$inferInsert;
 
-// ── E2EE public key storage ───────────────────────────────────
-// Server chỉ lưu PUBLIC keys — không bao giờ thấy private keys
+// ââ E2EE public key storage âââââââââââââââââââââââââââââââââââ
+// Server chá» lÆ°u PUBLIC keys â khÃ´ng bao giá» tháº¥y private keys
 
 import { pgTable as _pgTable, uuid as _uuid, text as _text, integer as _int, boolean as _bool, timestamp as _ts } from 'drizzle-orm/pg-core';
 
@@ -66,7 +66,7 @@ export const e2eePreKeys = _pgTable('e2ee_pre_keys', {
 });
 
 
-// ── User blocks ───────────────────────────────────────────────
+// ââ User blocks âââââââââââââââââââââââââââââââââââââââââââââââ
 import { pgTable as _pt2, uuid as _u2, timestamp as _t2 } from 'drizzle-orm/pg-core';
 
 export const userBlocks = _pt2('user_blocks', {

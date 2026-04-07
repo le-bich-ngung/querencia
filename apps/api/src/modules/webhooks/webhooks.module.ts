@@ -1,4 +1,4 @@
-﻿import { Module } from '@nestjs/common';
+ï»¿import { Module } from '@nestjs/common';
 import { WebhooksController } from './webhooks.controller';
 import { PaymentsModule }     from '../payments/payments.module';
 import { QModule }            from '../q/q.module';

@@ -1,10 +1,10 @@
 /**
- * NextAuth.js — SSO toàn hệ sinh thái Querencia
+ * NextAuth.js â SSO toÃ n há» sinh thÃ¡i Querencia
  * Providers: Google OAuth + Credentials (email/password)
  *
- * Lưu ý đặc biệt:
- * Khi password = '__token__', nghĩa là client đã có access_token từ API
- * (sau MFA hoặc Google callback), chỉ cần wrap vào NextAuth session.
+ * LÆ°u Ã½ Äáº·c biá»t:
+ * Khi password = '__token__', nghÄ©a lÃ  client ÄÃ£ cÃ³ access_token tá»« API
+ * (sau MFA hoáº·c Google callback), chá» cáº§n wrap vÃ o NextAuth session.
  */
 import NextAuth from 'next-auth';
 import GoogleProvider from 'next-auth/providers/google';
@@ -32,7 +32,7 @@ const handler = NextAuth({
 
         // Case 1: Token passthrough (sau MFA / Google redirect)
         if (creds.password === '__token__' && creds.accessToken) {
-          // Fetch user info bằng token đã có
+          // Fetch user info báº±ng token ÄÃ£ cÃ³
           const res = await fetch(`${API_URL}/api/v1/auth/me`, {
             headers: { Authorization: `Bearer ${creds.accessToken}` },
           });
@@ -48,7 +48,7 @@ const handler = NextAuth({
           };
         }
 
-        // Case 2: Email + password thường
+        // Case 2: Email + password thÆ°á»ng
         const res = await fetch(`${API_URL}/api/v1/auth/login`, {
           method:  'POST',
           headers: { 'Content-Type': 'application/json' },
@@ -79,7 +79,7 @@ const handler = NextAuth({
         token.accessToken  = (user as any).accessToken;
         token.refreshToken = (user as any).refreshToken;
       }
-      // Google OAuth → gọi NestJS để upsert user + lấy JWT
+      // Google OAuth â gá»i NestJS Äá» upsert user + láº¥y JWT
       if (account?.provider === 'google' && account.access_token) {
         try {
           const res = await fetch(`${API_URL}/api/v1/auth/google/token-exchange`, {

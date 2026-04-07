@@ -1,11 +1,11 @@
-/**
+ï»¿/**
  * Group Info & Management Screen
- * - Xem danh sách thành viên
- * - Thêm thành viên (owner/admin)
- * - Xóa thành viên (owner/admin)
- * - Phân quyền admin (owner)
- * - Rời nhóm (member)
- * - Giải tán nhóm (owner)
+ * - Xem danh sÃ¡ch thÃ nh viÃªn
+ * - ThÃªm thÃ nh viÃªn (owner/admin)
+ * - XÃ³a thÃ nh viÃªn (owner/admin)
+ * - PhÃ¢n quyá»n admin (owner)
+ * - Rá»i nhÃ³m (member)
+ * - Giáº£i tÃ¡n nhÃ³m (owner)
  */
 import React, { useEffect, useState } from 'react';
 import {
@@ -29,9 +29,9 @@ interface Member {
 type Props = NativeStackScreenProps<RootStackParams, 'GroupInfo'>;
 
 const ROLE_LABEL: Record<string, string> = {
-  owner: '👑 Trưởng nhóm',
-  admin: '🛡️ Admin',
-  member: 'Thành viên',
+  owner: 'ð TrÆ°á»ng nhÃ³m',
+  admin: 'ð¡ï¸ Admin',
+  member: 'ThÃ nh viÃªn',
 };
 
 export function GroupInfoScreen({ route, navigation }: Props) {
@@ -65,32 +65,32 @@ export function GroupInfoScreen({ route, navigation }: Props) {
       setShowAdd(false);
       await loadMembers();
     } catch (e: any) {
-      Alert.alert('Lỗi', e.message);
+      Alert.alert('Lá»i', e.message);
     } finally { setAddLoad(false); }
   }
 
   async function handleRemove(member: Member) {
     const isSelf = member.id === currentUser?.id;
-    const title  = isSelf ? 'Rời nhóm' : `Xóa ${member.name}`;
+    const title  = isSelf ? 'Rá»i nhÃ³m' : `XÃ³a ${member.name}`;
     const msg    = isSelf
-      ? 'Bạn có chắc muốn rời nhóm này không?'
-      : `Xóa ${member.name} khỏi nhóm?`;
+      ? 'Báº¡n cÃ³ cháº¯c muá»n rá»i nhÃ³m nÃ y khÃ´ng?'
+      : `XÃ³a ${member.name} khá»i nhÃ³m?`;
 
     Alert.alert(title, msg, [
-      { text: 'Hủy', style: 'cancel' },
+      { text: 'Há»§y', style: 'cancel' },
       {
-        text: isSelf ? 'Rời nhóm' : 'Xóa',
+        text: isSelf ? 'Rá»i nhÃ³m' : 'XÃ³a',
         style: 'destructive',
         onPress: async () => {
           try {
             await api.removeGroupMember(groupId, member.id);
             if (isSelf) {
               navigation.goBack();
-              navigation.goBack(); // về chat list
+              navigation.goBack(); // vá» chat list
             } else {
               await loadMembers();
             }
-          } catch (e: any) { Alert.alert('Lỗi', e.message); }
+          } catch (e: any) { Alert.alert('Lá»i', e.message); }
         },
       },
     ]);
@@ -98,16 +98,16 @@ export function GroupInfoScreen({ route, navigation }: Props) {
 
   async function handlePromote(member: Member) {
     if (myRole !== 'owner') return;
-    Alert.alert(`Phân quyền ${member.name}`, 'Chọn quyền mới:', [
-      { text: 'Hủy', style: 'cancel' },
+    Alert.alert(`PhÃ¢n quyá»n ${member.name}`, 'Chá»n quyá»n má»i:', [
+      { text: 'Há»§y', style: 'cancel' },
       {
-        text: member.role === 'admin' ? 'Xuống Member' : 'Lên Admin',
+        text: member.role === 'admin' ? 'Xuá»ng Member' : 'LÃªn Admin',
         onPress: async () => {
           try {
             const newRole = member.role === 'admin' ? 'member' : 'admin';
             await api.setMemberRole(groupId, member.id, newRole);
             await loadMembers();
-          } catch (e: any) { Alert.alert('Lỗi', e.message); }
+          } catch (e: any) { Alert.alert('Lá»i', e.message); }
         },
       },
     ]);
@@ -129,7 +129,7 @@ export function GroupInfoScreen({ route, navigation }: Props) {
         <View style={{ flex: 1 }}>
           <Text style={s.memberName}>
             {item.name}
-            {isSelf && <Text style={{ color: colors.sage }}> (bạn)</Text>}
+            {isSelf && <Text style={{ color: colors.sage }}> (báº¡n)</Text>}
           </Text>
           <Text style={s.memberRole}>{ROLE_LABEL[item.role]}</Text>
         </View>
@@ -139,14 +139,14 @@ export function GroupInfoScreen({ route, navigation }: Props) {
           {myRole === 'owner' && !isSelf && item.role !== 'owner' && (
             <TouchableOpacity onPress={() => handlePromote(item)} style={s.actionBtn}>
               <Text style={{ color: colors.sage, fontSize: 12 }}>
-                {item.role === 'admin' ? '↓' : '↑'}
+                {item.role === 'admin' ? 'â' : 'â'}
               </Text>
             </TouchableOpacity>
           )}
           {(canManage || canLeave) && (
             <TouchableOpacity onPress={() => handleRemove(item)} style={[s.actionBtn, s.removeBtn]}>
               <Text style={{ color: colors.error, fontSize: 12 }}>
-                {canLeave ? 'Rời' : 'Xóa'}
+                {canLeave ? 'Rá»i' : 'XÃ³a'}
               </Text>
             </TouchableOpacity>
           )}
@@ -160,16 +160,16 @@ export function GroupInfoScreen({ route, navigation }: Props) {
       {/* Group header */}
       <View style={s.groupHeader}>
         <View style={s.groupAvatar}>
-          <Text style={{ fontSize: 28 }}>👥</Text>
+          <Text style={{ fontSize: 28 }}>ð¥</Text>
         </View>
         <Text style={s.groupName}>{groupName}</Text>
-        <Text style={s.memberCount}>{members.length} thành viên</Text>
+        <Text style={s.memberCount}>{members.length} thÃ nh viÃªn</Text>
       </View>
 
       {/* Add member button */}
       {(myRole === 'owner' || myRole === 'admin') && (
         <TouchableOpacity style={s.addBtn} onPress={() => setShowAdd(true)}>
-          <Text style={s.addBtnTxt}>➕ Thêm thành viên</Text>
+          <Text style={s.addBtnTxt}>â ThÃªm thÃ nh viÃªn</Text>
         </TouchableOpacity>
       )}
 
@@ -185,7 +185,7 @@ export function GroupInfoScreen({ route, navigation }: Props) {
           renderItem={renderMember}
           contentContainerStyle={{ paddingBottom: 40 }}
           ListHeaderComponent={
-            <Text style={s.sectionLabel}>Thành viên</Text>
+            <Text style={s.sectionLabel}>ThÃ nh viÃªn</Text>
           }
         />
       )}
@@ -195,12 +195,12 @@ export function GroupInfoScreen({ route, navigation }: Props) {
         onRequestClose={() => setShowAdd(false)}>
         <View style={s.modal}>
           <View style={s.modalHeader}>
-            <Text style={s.modalTitle}>Thêm thành viên</Text>
+            <Text style={s.modalTitle}>ThÃªm thÃ nh viÃªn</Text>
             <TouchableOpacity onPress={() => setShowAdd(false)}>
-              <Text style={{ color: colors.sage, fontSize: 16 }}>Đóng</Text>
+              <Text style={{ color: colors.sage, fontSize: 16 }}>ÄÃ³ng</Text>
             </TouchableOpacity>
           </View>
-          <Text style={s.inputLabel}>Email người dùng</Text>
+          <Text style={s.inputLabel}>Email ngÆ°á»i dÃ¹ng</Text>
           <TextInput
             style={s.input}
             value={addEmail}
@@ -218,7 +218,7 @@ export function GroupInfoScreen({ route, navigation }: Props) {
           >
             {addLoading
               ? <ActivityIndicator color="#fff"/>
-              : <Text style={s.confirmTxt}>Thêm vào nhóm</Text>
+              : <Text style={s.confirmTxt}>ThÃªm vÃ o nhÃ³m</Text>
             }
           </TouchableOpacity>
         </View>

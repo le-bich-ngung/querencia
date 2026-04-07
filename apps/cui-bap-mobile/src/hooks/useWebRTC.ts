@@ -1,7 +1,7 @@
-/**
- * useWebRTC — gọi thoại & video qua WebRTC
- * Dùng react-native-webrtc
- * Flow: caller → call_offer → callee → call_answer → ICE exchange → connected
+ï»¿/**
+ * useWebRTC â gá»i thoáº¡i & video qua WebRTC
+ * DÃ¹ng react-native-webrtc
+ * Flow: caller â call_offer â callee â call_answer â ICE exchange â connected
  */
 import { useRef, useState, useCallback, useEffect } from 'react';
 import {
@@ -12,12 +12,12 @@ import {
   MediaStream,
 } from 'react-native-webrtc';
 
-// STUN/TURN servers — dùng Google STUN miễn phí + Twilio TURN (nếu cần)
+// STUN/TURN servers â dÃ¹ng Google STUN miá»n phÃ­ + Twilio TURN (náº¿u cáº§n)
 const ICE_SERVERS = {
   iceServers: [
     { urls: 'stun:stun.l.google.com:19302' },
     { urls: 'stun:stun1.l.google.com:19302' },
-    // Thêm TURN server khi cần (cho network khó tính):
+    // ThÃªm TURN server khi cáº§n (cho network khÃ³ tÃ­nh):
     // { urls: 'turn:your-turn-server', username: 'user', credential: 'pass' }
   ],
 };
@@ -52,7 +52,7 @@ export function useWebRTC({
   const [isCamOff,     setIsCamOff]     = useState(false);
   const [isSpeaker,    setIsSpeaker]    = useState(false);
 
-  // ── Khởi tạo PeerConnection ──────────────────────────────────
+  // ââ Khá»i táº¡o PeerConnection ââââââââââââââââââââââââââââââââââ
   const initPC = useCallback(() => {
     const connection = new RTCPeerConnection(ICE_SERVERS);
 
@@ -78,7 +78,7 @@ export function useWebRTC({
     return connection;
   }, [targetId, sendIceCandidate]); // eslint-disable-line
 
-  // ── Lấy media stream ─────────────────────────────────────────
+  // ââ Láº¥y media stream âââââââââââââââââââââââââââââââââââââââââ
   const getLocalStream = useCallback(async (type: CallType) => {
     const stream = await mediaDevices.getUserMedia({
       audio: true,
@@ -88,7 +88,7 @@ export function useWebRTC({
     return stream;
   }, []);
 
-  // ── GỌI (caller) ─────────────────────────────────────────────
+  // ââ Gá»I (caller) âââââââââââââââââââââââââââââââââââââââââââââ
   const startCall = useCallback(async (toId: string, convId: string, type: CallType) => {
     setTargetId(toId);
     setCallType(type);
@@ -108,7 +108,7 @@ export function useWebRTC({
     sendCallOffer(toId, convId, type, offer.sdp ?? '');
   }, [initPC, getLocalStream, sendCallOffer]);
 
-  // ── NGHE (callee) — khi nhận offer ───────────────────────────
+  // ââ NGHE (callee) â khi nháº­n offer âââââââââââââââââââââââââââ
   const receiveOffer = useCallback(async (data: {
     sdp: string; callType: CallType; fromId: string; fromName: string;
   }) => {
@@ -118,7 +118,7 @@ export function useWebRTC({
     onCallOffer(data);
   }, [onCallOffer]);
 
-  // ── NGHE: trả lời cuộc gọi ───────────────────────────────────
+  // ââ NGHE: tráº£ lá»i cuá»c gá»i âââââââââââââââââââââââââââââââââââ
   const answerCall = useCallback(async (remoteSdp: string) => {
     const connection = initPC();
     const stream     = await getLocalStream(callType);
@@ -134,14 +134,14 @@ export function useWebRTC({
     setCallState('connected');
   }, [initPC, getLocalStream, callType, targetId, sendCallAnswer]);
 
-  // ── Caller nhận answer ───────────────────────────────────────
+  // ââ Caller nháº­n answer âââââââââââââââââââââââââââââââââââââââ
   const handleAnswer = useCallback(async (sdp: string) => {
     if (!pc.current) return;
     await pc.current.setRemoteDescription(new RTCSessionDescription({ type: 'answer', sdp }));
     setCallState('connected');
   }, []);
 
-  // ── ICE candidate ────────────────────────────────────────────
+  // ââ ICE candidate ââââââââââââââââââââââââââââââââââââââââââââ
   const handleIceCandidate = useCallback(async (candidate: any) => {
     if (!pc.current) return;
     try {
@@ -149,7 +149,7 @@ export function useWebRTC({
     } catch {}
   }, []);
 
-  // ── Kết thúc cuộc gọi ────────────────────────────────────────
+  // ââ Káº¿t thÃºc cuá»c gá»i ââââââââââââââââââââââââââââââââââââââââ
   const hangUp = useCallback(() => {
     localStream.current?.getTracks().forEach((t: any) => t.stop());
     pc.current?.close();
@@ -166,7 +166,7 @@ export function useWebRTC({
     if (targetId) sendCallReject(targetId);
   }, [targetId, sendCallReject]);
 
-  // ── Controls ─────────────────────────────────────────────────
+  // ââ Controls âââââââââââââââââââââââââââââââââââââââââââââââââ
   const toggleMute = useCallback(() => {
     localStream.current?.getAudioTracks().forEach((t: any) => { t.enabled = !t.enabled; });
     setIsMuted(m => !m);
@@ -181,7 +181,7 @@ export function useWebRTC({
     localStream.current?.getVideoTracks().forEach((t: any) => t._switchCamera?.());
   }, []);
 
-  // ── Listen to socket events ───────────────────────────────────
+  // ââ Listen to socket events âââââââââââââââââââââââââââââââââââ
   useEffect(() => {
     const unsubAnswer  = onCallEvent('call_answer',  (d) => handleAnswer(d.sdp));
     const unsubIce     = onCallEvent('call_ice',     (d) => handleIceCandidate(d.candidate));

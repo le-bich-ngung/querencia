@@ -1,15 +1,15 @@
-export interface Tool {
+ï»¿export interface Tool {
   slug:        string;
   name:        string;
   nameVi:      string;
   descVi:      string;
   description: string;
-  category:    string;   // id của category
+  category:    string;   // id cá»§a category
   tier:        'free' | 'paid';
   qCost:       number;
-  icon:        string;   // giữ lại để tương thích
-  emoji:       string;   // dùng trong ToolCard & ToolFrame
-  htmlFile:    string;   // tên file HTML trong /public/tools/
+  icon:        string;   // giá»¯ láº¡i Äá» tÆ°Æ¡ng thÃ­ch
+  emoji:       string;   // dÃ¹ng trong ToolCard & ToolFrame
+  htmlFile:    string;   // tÃªn file HTML trong /public/tools/
   tags:        string[];
   isNew?:      boolean;
 }
@@ -21,87 +21,87 @@ export interface Category {
 }
 
 export const CATEGORIES: Category[] = [
-  { id: 'tai-lieu',    labelVi: 'Tài liệu',     emoji: '📄' },
-  { id: 'hinh-anh',   labelVi: 'Hình ảnh',     emoji: '🖼️' },
-  { id: 'ai',         labelVi: 'AI',            emoji: '🤖' },
-  { id: 'hoc-tap',    labelVi: 'Học tập',       emoji: '📚' },
-  { id: 'viet-lach',  labelVi: 'Viết lách',     emoji: '✍️' },
-  { id: 'tien-ich',   labelVi: 'Tiện ích',      emoji: '🛠️' },
-  { id: 'bao-mat',    labelVi: 'Bảo mật',       emoji: '🔐' },
-  { id: 'nghe-nghiep',labelVi: 'Nghề nghiệp',   emoji: '💼' },
+  { id: 'tai-lieu',    labelVi: 'TÃ i liá»u',     emoji: 'ð' },
+  { id: 'hinh-anh',   labelVi: 'HÃ¬nh áº£nh',     emoji: 'ð¼ï¸' },
+  { id: 'ai',         labelVi: 'AI',            emoji: 'ð¤' },
+  { id: 'hoc-tap',    labelVi: 'Há»c táº­p',       emoji: 'ð' },
+  { id: 'viet-lach',  labelVi: 'Viáº¿t lÃ¡ch',     emoji: 'âï¸' },
+  { id: 'tien-ich',   labelVi: 'Tiá»n Ã­ch',      emoji: 'ð ï¸' },
+  { id: 'bao-mat',    labelVi: 'Báº£o máº­t',       emoji: 'ð' },
+  { id: 'nghe-nghiep',labelVi: 'Nghá» nghiá»p',   emoji: 'ð¼' },
 ];
 
 export const TOOLS: Tool[] = [
   {
     slug: 'pdf-to-word',
-    name: 'PDF → Word', nameVi: 'PDF sang Word',
-    descVi: 'Chuyển PDF thành file Word có thể chỉnh sửa',
-    description: 'Chuyển PDF thành file Word có thể chỉnh sửa',
+    name: 'PDF â Word', nameVi: 'PDF sang Word',
+    descVi: 'Chuyá»n PDF thÃ nh file Word cÃ³ thá» chá»nh sá»­a',
+    description: 'Chuyá»n PDF thÃ nh file Word cÃ³ thá» chá»nh sá»­a',
     category: 'tai-lieu', tier: 'free', qCost: 0,
-    icon: '📄', emoji: '📄', htmlFile: 'pdf-to-word.html',
+    icon: 'ð', emoji: 'ð', htmlFile: 'pdf-to-word.html',
     tags: ['pdf', 'word', 'convert'],
   },
   {
     slug: 'image-compress',
-    name: 'Nén ảnh', nameVi: 'Nén ảnh',
-    descVi: 'Giảm dung lượng ảnh mà không mất chất lượng',
-    description: 'Giảm dung lượng ảnh mà không mất chất lượng',
+    name: 'NÃ©n áº£nh', nameVi: 'NÃ©n áº£nh',
+    descVi: 'Giáº£m dung lÆ°á»£ng áº£nh mÃ  khÃ´ng máº¥t cháº¥t lÆ°á»£ng',
+    description: 'Giáº£m dung lÆ°á»£ng áº£nh mÃ  khÃ´ng máº¥t cháº¥t lÆ°á»£ng',
     category: 'hinh-anh', tier: 'free', qCost: 0,
-    icon: '🖼️', emoji: '🖼️', htmlFile: 'image-compress.html',
+    icon: 'ð¼ï¸', emoji: 'ð¼ï¸', htmlFile: 'image-compress.html',
     tags: ['image', 'compress'],
   },
   {
     slug: 'text-summarize',
-    name: 'Tóm tắt văn bản', nameVi: 'Tóm tắt văn bản',
-    descVi: 'AI tóm tắt bài viết, tài liệu dài',
-    description: 'AI tóm tắt bài viết, tài liệu dài',
+    name: 'TÃ³m táº¯t vÄn báº£n', nameVi: 'TÃ³m táº¯t vÄn báº£n',
+    descVi: 'AI tÃ³m táº¯t bÃ i viáº¿t, tÃ i liá»u dÃ i',
+    description: 'AI tÃ³m táº¯t bÃ i viáº¿t, tÃ i liá»u dÃ i',
     category: 'ai', tier: 'paid', qCost: 2,
-    icon: '📝', emoji: '📝', htmlFile: 'text-summarize.html',
+    icon: 'ð', emoji: 'ð', htmlFile: 'text-summarize.html',
     tags: ['ai', 'summarize'],
   },
   {
     slug: 'flashcard-gen',
-    name: 'Tạo Flashcard', nameVi: 'Tạo Flashcard',
-    descVi: 'AI tạo flashcard từ tài liệu học',
-    description: 'AI tạo flashcard từ tài liệu học',
+    name: 'Táº¡o Flashcard', nameVi: 'Táº¡o Flashcard',
+    descVi: 'AI táº¡o flashcard tá»« tÃ i liá»u há»c',
+    description: 'AI táº¡o flashcard tá»« tÃ i liá»u há»c',
     category: 'hoc-tap', tier: 'paid', qCost: 3,
-    icon: '🃏', emoji: '🃏', htmlFile: 'flashcard-gen.html',
+    icon: 'ð', emoji: 'ð', htmlFile: 'flashcard-gen.html',
     tags: ['ai', 'study', 'flashcard'], isNew: true,
   },
   {
     slug: 'grammar-check',
-    name: 'Kiểm tra ngữ pháp', nameVi: 'Kiểm tra ngữ pháp',
-    descVi: 'Sửa lỗi chính tả và ngữ pháp tiếng Việt/Anh',
-    description: 'Sửa lỗi chính tả và ngữ pháp tiếng Việt/Anh',
+    name: 'Kiá»m tra ngá»¯ phÃ¡p', nameVi: 'Kiá»m tra ngá»¯ phÃ¡p',
+    descVi: 'Sá»­a lá»i chÃ­nh táº£ vÃ  ngá»¯ phÃ¡p tiáº¿ng Viá»t/Anh',
+    description: 'Sá»­a lá»i chÃ­nh táº£ vÃ  ngá»¯ phÃ¡p tiáº¿ng Viá»t/Anh',
     category: 'viet-lach', tier: 'free', qCost: 0,
-    icon: '✍️', emoji: '✍️', htmlFile: 'grammar-check.html',
+    icon: 'âï¸', emoji: 'âï¸', htmlFile: 'grammar-check.html',
     tags: ['grammar', 'writing'],
   },
   {
     slug: 'qr-generator',
-    name: 'Tạo QR Code', nameVi: 'Tạo QR Code',
-    descVi: 'Tạo QR code cho link, text, contact',
-    description: 'Tạo QR code cho link, text, contact',
+    name: 'Táº¡o QR Code', nameVi: 'Táº¡o QR Code',
+    descVi: 'Táº¡o QR code cho link, text, contact',
+    description: 'Táº¡o QR code cho link, text, contact',
     category: 'tien-ich', tier: 'free', qCost: 0,
-    icon: '📱', emoji: '📱', htmlFile: 'qr-generator.html',
+    icon: 'ð±', emoji: 'ð±', htmlFile: 'qr-generator.html',
     tags: ['qr', 'utility'],
   },
   {
     slug: 'password-gen',
-    name: 'Tạo mật khẩu', nameVi: 'Tạo mật khẩu',
-    descVi: 'Tạo mật khẩu mạnh ngẫu nhiên',
-    description: 'Tạo mật khẩu mạnh ngẫu nhiên',
+    name: 'Táº¡o máº­t kháº©u', nameVi: 'Táº¡o máº­t kháº©u',
+    descVi: 'Táº¡o máº­t kháº©u máº¡nh ngáº«u nhiÃªn',
+    description: 'Táº¡o máº­t kháº©u máº¡nh ngáº«u nhiÃªn',
     category: 'bao-mat', tier: 'free', qCost: 0,
-    icon: '🔐', emoji: '🔐', htmlFile: 'password-gen.html',
+    icon: 'ð', emoji: 'ð', htmlFile: 'password-gen.html',
     tags: ['password', 'security'],
   },
   {
     slug: 'cv-builder',
-    name: 'Tạo CV', nameVi: 'Tạo CV',
-    descVi: 'AI giúp tạo CV chuyên nghiệp',
-    description: 'AI giúp tạo CV chuyên nghiệp',
+    name: 'Táº¡o CV', nameVi: 'Táº¡o CV',
+    descVi: 'AI giÃºp táº¡o CV chuyÃªn nghiá»p',
+    description: 'AI giÃºp táº¡o CV chuyÃªn nghiá»p',
     category: 'nghe-nghiep', tier: 'paid', qCost: 5,
-    icon: '💼', emoji: '💼', htmlFile: 'cv-builder.html',
+    icon: 'ð¼', emoji: 'ð¼', htmlFile: 'cv-builder.html',
     tags: ['cv', 'resume', 'ai'],
   },
 ];

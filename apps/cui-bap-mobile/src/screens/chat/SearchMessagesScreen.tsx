@@ -1,6 +1,6 @@
-/**
- * Tìm kiếm tin nhắn trong conversation
- * Local search — E2EE friendly (không gửi lên server)
+ï»¿/**
+ * TÃ¬m kiáº¿m tin nháº¯n trong conversation
+ * Local search â E2EE friendly (khÃ´ng gá»­i lÃªn server)
  */
 import React, { useState, useCallback } from 'react';
 import {
@@ -71,7 +71,7 @@ export function SearchMessagesScreen({ route, navigation }: Props) {
           style={s.input}
           value={query}
           onChangeText={q => { setQuery(q); search(q); }}
-          placeholder="Tìm trong cuộc trò chuyện..."
+          placeholder="TÃ¬m trong cuá»c trÃ² chuyá»n..."
           placeholderTextColor={colors.gray}
           autoFocus
           returnKeyType="search"
@@ -94,8 +94,8 @@ export function SearchMessagesScreen({ route, navigation }: Props) {
       ) : searched && results.length === 0 ? (
         <View style={s.center}>
           <Icon name="search" size={40} color={colors.grayLight}/>
-          <Text style={s.emptyText}>Không tìm thấy kết quả nào</Text>
-          <Text style={s.emptySubText}>Thử từ khóa khác</Text>
+          <Text style={s.emptyText}>KhÃ´ng tÃ¬m tháº¥y káº¿t quáº£ nÃ o</Text>
+          <Text style={s.emptySubText}>Thá»­ tá»« khÃ³a khÃ¡c</Text>
         </View>
       ) : (
         <FlatList
@@ -103,13 +103,13 @@ export function SearchMessagesScreen({ route, navigation }: Props) {
           keyExtractor={m => m.id}
           contentContainerStyle={{ padding: spacing.md }}
           ListHeaderComponent={searched && results.length > 0 ? (
-            <Text style={s.countText}>{results.length} kết quả</Text>
+            <Text style={s.countText}>{results.length} káº¿t quáº£</Text>
           ) : null}
           renderItem={({ item }) => (
             <TouchableOpacity
               style={sr.item}
               onPress={() => {
-                // Pass msgId vào ChatScreen params để scroll đến
+                // Pass msgId vÃ o ChatScreen params Äá» scroll Äáº¿n
                 navigation.navigate('Chat', {
                   convId,
                   convType,

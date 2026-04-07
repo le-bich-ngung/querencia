@@ -1,8 +1,8 @@
-'use client';
+ï»¿'use client';
 /**
- * Read — Bài viết / Blog nội bộ Querencia
- * Content lấy từ /api/v1/read/posts (markdown rendered)
- * Smart History: track bài đã đọc + resume scroll
+ * Read â BÃ i viáº¿t / Blog ná»i bá» Querencia
+ * Content láº¥y tá»« /api/v1/read/posts (markdown rendered)
+ * Smart History: track bÃ i ÄÃ£ Äá»c + resume scroll
  */
 import { useState, useEffect } from 'react';
 import Link from 'next/link';
@@ -20,45 +20,45 @@ interface Article {
   featured?: boolean;
 }
 
-const CATEGORIES = ['Tất cả', 'Tâm lý', 'Sức khỏe', 'Công việc', 'Tài chính', 'Cuộc sống'];
+const CATEGORIES = ['Táº¥t cáº£', 'TÃ¢m lÃ½', 'Sá»©c khá»e', 'CÃ´ng viá»c', 'TÃ i chÃ­nh', 'Cuá»c sá»ng'];
 
-// Static articles — sẽ được replace bằng API call khi CMS ready
+// Static articles â sáº½ ÄÆ°á»£c replace báº±ng API call khi CMS ready
 const ARTICLES: Article[] = [
   {
     slug: 'lam-the-nao-de-noi-chuyen-voi-chinh-minh',
-    title: 'Làm thế nào để nói chuyện với chính mình',
-    excerpt: 'Journaling không phải là viết nhật ký. Đó là cách bạn tổ chức lại những gì đang xảy ra trong đầu.',
-    category: 'Tâm lý', readTime: 4, publishedAt: '2025-03-01', featured: true,
+    title: 'LÃ m tháº¿ nÃ o Äá» nÃ³i chuyá»n vá»i chÃ­nh mÃ¬nh',
+    excerpt: 'Journaling khÃ´ng pháº£i lÃ  viáº¿t nháº­t kÃ½. ÄÃ³ lÃ  cÃ¡ch báº¡n tá» chá»©c láº¡i nhá»¯ng gÃ¬ Äang xáº£y ra trong Äáº§u.',
+    category: 'TÃ¢m lÃ½', readTime: 4, publishedAt: '2025-03-01', featured: true,
   },
   {
     slug: 'khi-cong-viec-khong-con-y-nghia',
-    title: 'Khi công việc không còn ý nghĩa',
-    excerpt: 'Bạn không bị hỏng. Bạn chỉ đang ở một giai đoạn mà nhiều người không dám thừa nhận.',
-    category: 'Công việc', readTime: 6, publishedAt: '2025-02-20',
+    title: 'Khi cÃ´ng viá»c khÃ´ng cÃ²n Ã½ nghÄ©a',
+    excerpt: 'Báº¡n khÃ´ng bá» há»ng. Báº¡n chá» Äang á» má»t giai Äoáº¡n mÃ  nhiá»u ngÆ°á»i khÃ´ng dÃ¡m thá»«a nháº­n.',
+    category: 'CÃ´ng viá»c', readTime: 6, publishedAt: '2025-02-20',
   },
   {
-    slug: 'giac-ngu-va-ban-nghĩ-gi-truoc-khi-ngu',
-    title: 'Giấc ngủ và bạn nghĩ gì trước khi ngủ',
-    excerpt: '20 phút cuối trước khi ngủ ảnh hưởng đến não bộ nhiều hơn bạn nghĩ.',
-    category: 'Sức khỏe', readTime: 3, publishedAt: '2025-02-10',
+    slug: 'giac-ngu-va-ban-nghÄ©-gi-truoc-khi-ngu',
+    title: 'Giáº¥c ngá»§ vÃ  báº¡n nghÄ© gÃ¬ trÆ°á»c khi ngá»§',
+    excerpt: '20 phÃºt cuá»i trÆ°á»c khi ngá»§ áº£nh hÆ°á»ng Äáº¿n nÃ£o bá» nhiá»u hÆ¡n báº¡n nghÄ©.',
+    category: 'Sá»©c khá»e', readTime: 3, publishedAt: '2025-02-10',
   },
   {
     slug: 'quan-ly-tien-khi-luong-khong-du',
-    title: 'Quản lý tiền khi lương không đủ',
-    excerpt: 'Không phải ai cũng bắt đầu với đủ điều kiện. Nhưng ai cũng có thể bắt đầu.',
-    category: 'Tài chính', readTime: 5, publishedAt: '2025-01-28',
+    title: 'Quáº£n lÃ½ tiá»n khi lÆ°Æ¡ng khÃ´ng Äá»§',
+    excerpt: 'KhÃ´ng pháº£i ai cÅ©ng báº¯t Äáº§u vá»i Äá»§ Äiá»u kiá»n. NhÆ°ng ai cÅ©ng cÃ³ thá» báº¯t Äáº§u.',
+    category: 'TÃ i chÃ­nh', readTime: 5, publishedAt: '2025-01-28',
   },
   {
     slug: 'tinh-ban-tuoi-truong-thanh-kho-duy-tri-hon-ban-nghi',
-    title: 'Tình bạn tuổi trưởng thành khó duy trì hơn bạn nghĩ',
-    excerpt: 'Và đó không phải lỗi của bạn hay họ. Đó là cấu trúc của cuộc đời.',
-    category: 'Cuộc sống', readTime: 5, publishedAt: '2025-01-15',
+    title: 'TÃ¬nh báº¡n tuá»i trÆ°á»ng thÃ nh khÃ³ duy trÃ¬ hÆ¡n báº¡n nghÄ©',
+    excerpt: 'VÃ  ÄÃ³ khÃ´ng pháº£i lá»i cá»§a báº¡n hay há». ÄÃ³ lÃ  cáº¥u trÃºc cá»§a cuá»c Äá»i.',
+    category: 'Cuá»c sá»ng', readTime: 5, publishedAt: '2025-01-15',
   },
   {
     slug: 'hoi-phuc-sau-burnout',
-    title: 'Hồi phục sau burnout',
-    excerpt: 'Burnout không phải chỉ là mệt. Đây là cách nhận biết và phục hồi đúng cách.',
-    category: 'Tâm lý', readTime: 7, publishedAt: '2025-01-05',
+    title: 'Há»i phá»¥c sau burnout',
+    excerpt: 'Burnout khÃ´ng pháº£i chá» lÃ  má»t. ÄÃ¢y lÃ  cÃ¡ch nháº­n biáº¿t vÃ  phá»¥c há»i ÄÃºng cÃ¡ch.',
+    category: 'TÃ¢m lÃ½', readTime: 7, publishedAt: '2025-01-05',
   },
 ];
 
@@ -68,7 +68,7 @@ function timeAgo(iso: string) {
 }
 
 export default function ReadPage() {
-  const [category, setCategory] = useState('Tất cả');
+  const [category, setCategory] = useState('Táº¥t cáº£');
   const [search,   setSearch]   = useState('');
   const [recentRead, setRecent] = useState<string[]>([]);
 
@@ -82,7 +82,7 @@ export default function ReadPage() {
   }
 
   const filtered = ARTICLES.filter(a =>
-    (category === 'Tất cả' || a.category === category) &&
+    (category === 'Táº¥t cáº£' || a.category === category) &&
     (a.title.toLowerCase().includes(search.toLowerCase()) ||
      a.excerpt.toLowerCase().includes(search.toLowerCase()))
   );
@@ -95,17 +95,17 @@ export default function ReadPage() {
       {/* Header */}
       <div style={{ marginBottom: 24 }}>
         <h1 style={{ fontSize: '1.5rem', fontWeight: 800, color: 'var(--text)', letterSpacing: -0.5, marginBottom: 4 }}>
-          📖 Read
+          ð Read
         </h1>
         <p style={{ fontSize: '0.82rem', color: 'var(--text-secondary)' }}>
-          Những bài viết về cuộc sống, tâm lý và trưởng thành
+          Nhá»¯ng bÃ i viáº¿t vá» cuá»c sá»ng, tÃ¢m lÃ½ vÃ  trÆ°á»ng thÃ nh
         </p>
       </div>
 
       {/* Search */}
       <input
         value={search} onChange={e => setSearch(e.target.value)}
-        placeholder="Tìm bài viết..."
+        placeholder="TÃ¬m bÃ i viáº¿t..."
         style={{
           width: '100%', padding: '10px 14px', borderRadius: 10, marginBottom: 16,
           border: '1.5px solid var(--border)', fontFamily: 'inherit', fontSize: '0.88rem',
@@ -131,10 +131,10 @@ export default function ReadPage() {
       </div>
 
       {/* Recently read */}
-      {recentRead.length > 0 && search === '' && category === 'Tất cả' && (
+      {recentRead.length > 0 && search === '' && category === 'Táº¥t cáº£' && (
         <div style={{ marginBottom: 24 }}>
           <p style={{ fontSize: '0.72rem', fontWeight: 700, color: 'var(--text-secondary)', textTransform: 'uppercase', letterSpacing: '0.08em', marginBottom: 8 }}>
-            Đọc gần đây
+            Äá»c gáº§n ÄÃ¢y
           </p>
           <div style={{ display: 'flex', gap: 8, flexWrap: 'wrap' }}>
             {recentRead.map(slug => {
@@ -146,7 +146,7 @@ export default function ReadPage() {
                   background: 'rgba(74,124,89,0.06)', border: '1px solid rgba(74,124,89,0.2)',
                   color: SAGE, fontSize: '0.78rem', fontWeight: 600, textDecoration: 'none',
                 }}>
-                  {art.title.slice(0, 32)}{art.title.length > 32 ? '…' : ''}
+                  {art.title.slice(0, 32)}{art.title.length > 32 ? 'â¦' : ''}
                 </Link>
               );
             })}
@@ -168,7 +168,7 @@ export default function ReadPage() {
           >
             <div style={{ display: 'flex', alignItems: 'center', gap: 8, marginBottom: 10 }}>
               <span style={{ fontSize: '0.62rem', fontWeight: 800, background: SAGE, color: '#fff', padding: '2px 8px', borderRadius: 999 }}>
-                ✨ NỔI BẬT
+                â¨ Ná»I Báº¬T
               </span>
               <span style={{ fontSize: '0.72rem', color: SAGE, fontWeight: 600 }}>{featured.category}</span>
             </div>
@@ -179,8 +179,8 @@ export default function ReadPage() {
               {featured.excerpt}
             </p>
             <div style={{ display: 'flex', gap: 12, fontSize: '0.72rem', color: 'var(--gray)' }}>
-              <span>📅 {timeAgo(featured.publishedAt)}</span>
-              <span>⏱ {featured.readTime} phút đọc</span>
+              <span>ð {timeAgo(featured.publishedAt)}</span>
+              <span>â± {featured.readTime} phÃºt Äá»c</span>
             </div>
           </article>
         </Link>
@@ -202,7 +202,7 @@ export default function ReadPage() {
               <span style={{ fontSize: '0.68rem', fontWeight: 700, color: SAGE }}>
                 {art.category}
                 {recentRead.includes(art.slug) && (
-                  <span style={{ marginLeft: 6, color: 'var(--gray)', fontWeight: 400 }}>· đã đọc</span>
+                  <span style={{ marginLeft: 6, color: 'var(--gray)', fontWeight: 400 }}>Â· ÄÃ£ Äá»c</span>
                 )}
               </span>
               <h3 style={{ fontSize: '0.95rem', fontWeight: 700, color: 'var(--text)', lineHeight: 1.35, margin: 0 }}>
@@ -212,8 +212,8 @@ export default function ReadPage() {
                 {art.excerpt}
               </p>
               <div style={{ display: 'flex', gap: 10, fontSize: '0.7rem', color: 'var(--gray)', marginTop: 4 }}>
-                <span>📅 {timeAgo(art.publishedAt)}</span>
-                <span>⏱ {art.readTime} phút</span>
+                <span>ð {timeAgo(art.publishedAt)}</span>
+                <span>â± {art.readTime} phÃºt</span>
               </div>
             </article>
           </Link>
@@ -222,8 +222,8 @@ export default function ReadPage() {
 
       {filtered.length === 0 && (
         <div style={{ textAlign: 'center', padding: '48px 0', color: 'var(--text-secondary)' }}>
-          <div style={{ fontSize: '2.5rem', marginBottom: 12 }}>📭</div>
-          <p>Không tìm thấy bài viết nào</p>
+          <div style={{ fontSize: '2.5rem', marginBottom: 12 }}>ð­</div>
+          <p>KhÃ´ng tÃ¬m tháº¥y bÃ i viáº¿t nÃ o</p>
         </div>
       )}
     </div>

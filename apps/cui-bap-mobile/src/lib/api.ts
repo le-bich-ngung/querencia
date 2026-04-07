@@ -1,7 +1,7 @@
-import { useAuthStore } from '../store/auth.store';
+ï»¿import { useAuthStore } from '../store/auth.store';
 
 const BASE = __DEV__
-  ? 'http://10.0.2.2:3001/api/v1'  // Android emulator → localhost
+  ? 'http://10.0.2.2:3001/api/v1'  // Android emulator â localhost
   : 'https://querencia-api.fly.dev/api/v1';
 
 export async function apiRequest<T = any>(path: string, opts: RequestInit = {}): Promise<T> {
@@ -48,7 +48,7 @@ export const api = {
     apiRequest('/auth/register', {method:'POST',body:JSON.stringify({name,email,password:pw})}),
   me:       () => apiRequest('/auth/me'),
 
-  // Cùi Bắp
+  // CÃ¹i Báº¯p
   getConvs:      () => apiRequest('/cuibap/conversations'),
   getGroups:     () => apiRequest('/cuibap/groups'),
   getMsgs:       (id:string,before?:string) =>
@@ -84,7 +84,7 @@ export const e2eeApiExt = {
   uploadMoreE2eePreKeys:(keys: any[])    => apiRequest('/e2ee/keys/prekeys', { method:'POST', body:JSON.stringify({preKeys:keys}) }),
 };
 
-// Merge vào api object
+// Merge vÃ o api object
 Object.assign(api, e2eeApiExt);
 
 // Auth extensions
@@ -102,7 +102,7 @@ Object.assign(api, {
     }),
 });
 
-// Thêm API methods cho tính năng mới
+// ThÃªm API methods cho tÃ­nh nÄng má»i
 Object.assign(api, {
   blockUser:       (userId: string)            => apiRequest(`/users/${userId}/block`,  { method:'POST' }),
   reportUser:      (userId: string, reason: string) => apiRequest(`/users/${userId}/report`, { method:'POST', body:JSON.stringify({reason}) }),

@@ -1,7 +1,7 @@
-/**
+ï»¿/**
  * Self-Destruct Timer Picker
- * Hiện khi bấm icon đồng hồ trong input bar
- * Chọn thời gian tự hủy cho tin nhắn tiếp theo
+ * Hiá»n khi báº¥m icon Äá»ng há» trong input bar
+ * Chá»n thá»i gian tá»± há»§y cho tin nháº¯n tiáº¿p theo
  */
 import React from 'react';
 import {
@@ -18,12 +18,12 @@ interface Props {
 }
 
 const OPTIONS = [
-  { label: 'Tắt',    value: null,  icon: 'timer-off-outline' },
-  { label: '30 giây', value: 30,   icon: 'timer-outline' },
-  { label: '5 phút',  value: 300,  icon: 'timer-outline' },
-  { label: '1 giờ',   value: 3600, icon: 'timer-outline' },
-  { label: '1 ngày',  value: 86400,icon: 'timer-outline' },
-  { label: '1 tuần',  value: 604800,icon: 'timer-outline' },
+  { label: 'Táº¯t',    value: null,  icon: 'timer-off-outline' },
+  { label: '30 giÃ¢y', value: 30,   icon: 'timer-outline' },
+  { label: '5 phÃºt',  value: 300,  icon: 'timer-outline' },
+  { label: '1 giá»',   value: 3600, icon: 'timer-outline' },
+  { label: '1 ngÃ y',  value: 86400,icon: 'timer-outline' },
+  { label: '1 tuáº§n',  value: 604800,icon: 'timer-outline' },
 ];
 
 export function SelfDestructPicker({ visible, current, onSelect, onClose }: Props) {
@@ -33,7 +33,7 @@ export function SelfDestructPicker({ visible, current, onSelect, onClose }: Prop
         <View style={s.menu}>
           <View style={s.header}>
             <Icon name="timer-outline" size={18} color={colors.sage}/>
-            <Text style={s.title}>Tự hủy sau</Text>
+            <Text style={s.title}>Tá»± há»§y sau</Text>
           </View>
           {OPTIONS.map(opt => (
             <TouchableOpacity

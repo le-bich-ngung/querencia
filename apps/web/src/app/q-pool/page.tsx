@@ -1,7 +1,7 @@
-'use client';
+ï»¿'use client';
 /**
- * Q Pool — tặng treo cho cộng đồng
- * Ai có Q expiring sắp hết → tặng treo → người dùng toàn thế giới vào nhận
+ * Q Pool â táº·ng treo cho cá»ng Äá»ng
+ * Ai cÃ³ Q expiring sáº¯p háº¿t â táº·ng treo â ngÆ°á»i dÃ¹ng toÃ n tháº¿ giá»i vÃ o nháº­n
  */
 import { useState } from 'react';
 import { useSession } from 'next-auth/react';
@@ -18,7 +18,7 @@ const QSymbol = ({ size = 14, color = 'currentColor' }: { size?: number; color?:
   </svg>
 );
 
-// Mock data — sẽ thay bằng real API
+// Mock data â sáº½ thay báº±ng real API
 const MOCK_POOL = [
   { id: '1', amount: 2, type: 'expiring',  expiresIn: '1h 42m', donor: null,     claimed: 0 },
   { id: '2', amount: 1, type: 'expiring',  expiresIn: '2h 15m', donor: 'An N.',  claimed: 3 },
@@ -35,12 +35,12 @@ export default function QPoolPage() {
     if (!session) return;
     setLoading(id);
 
-    // Dùng mock cho đến khi có API thật
+    // DÃ¹ng mock cho Äáº¿n khi cÃ³ API tháº­t
     await new Promise(r => setTimeout(r, 800));
     setClaimed(c => [...c, id]);
     setLoading(null);
 
-    // TODO: khi có API thật, uncomment đoạn này
+    // TODO: khi cÃ³ API tháº­t, uncomment Äoáº¡n nÃ y
     // const token = (session as any).accessToken;
     // const res = await fetch(`/api/v1/q-pool/${id}/claim`, {
     //   method: 'POST',
@@ -68,8 +68,8 @@ export default function QPoolPage() {
           </h1>
         </div>
         <p style={{ fontSize: '0.9rem', color: 'var(--text-secondary)', lineHeight: 1.6, marginTop: 6 }}>
-          Q được tặng treo bởi cộng đồng — ai cần vào nhận. Mỗi lần nhận 1-2 Q.
-          Q expiring hết hạn sau 24h kể từ khi được cấp cho người tặng.
+          Q ÄÆ°á»£c táº·ng treo bá»i cá»ng Äá»ng â ai cáº§n vÃ o nháº­n. Má»i láº§n nháº­n 1-2 Q.
+          Q expiring háº¿t háº¡n sau 24h ká» tá»« khi ÄÆ°á»£c cáº¥p cho ngÆ°á»i táº·ng.
         </p>
       </div>
 
@@ -80,9 +80,9 @@ export default function QPoolPage() {
         marginBottom: 28, border: '1px solid var(--border)',
       }}>
         {[
-          { label: 'Q có sẵn', value: `${available.length * 1.5}` },
-          { label: 'Đang treo', value: `${available.length}` },
-          { label: 'Đã được nhận hôm nay', value: '47' },
+          { label: 'Q cÃ³ sáºµn', value: `${available.length * 1.5}` },
+          { label: 'Äang treo', value: `${available.length}` },
+          { label: 'ÄÃ£ ÄÆ°á»£c nháº­n hÃ´m nay', value: '47' },
         ].map(s => (
           <div key={s.label} style={{ flex: 1, textAlign: 'center' }}>
             <div style={{ fontSize: '1.3rem', fontWeight: 800, color: '#4a7c59' }}>{s.value}</div>
@@ -97,10 +97,10 @@ export default function QPoolPage() {
           textAlign: 'center', padding: '60px 24px',
           color: 'var(--text-secondary)',
         }}>
-          <div style={{ fontSize: '3rem', marginBottom: 12 }}>🌿</div>
-          <p style={{ fontSize: '0.9rem' }}>Pool đang trống. Kiểm tra lại sau!</p>
+          <div style={{ fontSize: '3rem', marginBottom: 12 }}>ð¿</div>
+          <p style={{ fontSize: '0.9rem' }}>Pool Äang trá»ng. Kiá»m tra láº¡i sau!</p>
           <p style={{ fontSize: '0.78rem', marginTop: 8, color: 'var(--gray)' }}>
-            Q được tặng treo thường xuyên từ người dùng có Q sắp hết hạn.
+            Q ÄÆ°á»£c táº·ng treo thÆ°á»ng xuyÃªn tá»« ngÆ°á»i dÃ¹ng cÃ³ Q sáº¯p háº¿t háº¡n.
           </p>
         </div>
       ) : (
@@ -151,12 +151,12 @@ export default function QPoolPage() {
                     color: item.type === 'permanent' ? '#4a7c59' : '#92400e',
                     padding: '1px 6px', borderRadius: 999,
                   }}>
-                    {item.type === 'permanent' ? 'không hết hạn' : `hết hạn ${item.expiresIn}`}
+                    {item.type === 'permanent' ? 'khÃ´ng háº¿t háº¡n' : `háº¿t háº¡n ${item.expiresIn}`}
                   </span>
                 </div>
                 <div style={{ fontSize: '0.75rem', color: 'var(--text-secondary)' }}>
-                  {item.donor ? `Tặng bởi ${item.donor}` : 'Tặng ẩn danh'}
-                  {item.claimed > 0 && ` · ${item.claimed} người đã nhận`}
+                  {item.donor ? `Táº·ng bá»i ${item.donor}` : 'Táº·ng áº©n danh'}
+                  {item.claimed > 0 && ` Â· ${item.claimed} ngÆ°á»i ÄÃ£ nháº­n`}
                 </div>
               </div>
 
@@ -175,7 +175,7 @@ export default function QPoolPage() {
                     flexShrink: 0,
                   }}
                 >
-                  {loading === item.id ? '...' : 'Nhận'}
+                  {loading === item.id ? '...' : 'Nháº­n'}
                 </button>
               ) : (
                 <Link href="/auth/login" style={{
@@ -186,7 +186,7 @@ export default function QPoolPage() {
                   textDecoration: 'none', fontSize: '0.82rem',
                   fontWeight: 600, flexShrink: 0,
                 }}>
-                  Đăng nhập
+                  ÄÄng nháº­p
                 </Link>
               )}
             </div>
@@ -194,7 +194,7 @@ export default function QPoolPage() {
         </div>
       )}
 
-      {/* CTA: tặng Q */}
+      {/* CTA: táº·ng Q */}
       {session && (
         <div style={{
           marginTop: 32, padding: '20px 24px',
@@ -203,13 +203,13 @@ export default function QPoolPage() {
           borderRadius: 14, textAlign: 'center',
         }}>
           <p style={{ fontSize: '0.85rem', color: 'var(--text-secondary)', marginBottom: 12 }}>
-            Có Q sắp hết hạn? Tặng treo cho cộng đồng 🌿
+            CÃ³ Q sáº¯p háº¿t háº¡n? Táº·ng treo cho cá»ng Äá»ng ð¿
           </p>
           <Link href="/wallet/gift?pool=true" style={{
             fontSize: '0.82rem', fontWeight: 600,
             color: '#4a7c59', textDecoration: 'none',
           }}>
-            Tặng Q vào Pool →
+            Táº·ng Q vÃ o Pool â
           </Link>
         </div>
       )}

@@ -1,11 +1,11 @@
-﻿/**
- * E2EE Key Server — chỉ lưu public keys, KHÔNG bao giờ thấy private keys
+ï»¿/**
+ * E2EE Key Server â chá» lÆ°u public keys, KHÃNG bao giá» tháº¥y private keys
  * 
  * Endpoints:
- *   POST /e2ee/keys           → upload public key bundle khi đăng ký
- *   GET  /e2ee/keys/:userId   → fetch public keys của người nhận
- *   POST /e2ee/keys/prekeys   → upload thêm one-time prekeys khi gần hết
- *   DELETE /e2ee/keys/prekey/:keyId → xóa prekey đã dùng
+ *   POST /e2ee/keys           â upload public key bundle khi ÄÄng kÃ½
+ *   GET  /e2ee/keys/:userId   â fetch public keys cá»§a ngÆ°á»i nháº­n
+ *   POST /e2ee/keys/prekeys   â upload thÃªm one-time prekeys khi gáº§n háº¿t
+ *   DELETE /e2ee/keys/prekey/:keyId â xÃ³a prekey ÄÃ£ dÃ¹ng
  */
 import { Injectable, NotFoundException, Inject } from '@nestjs/common';
 import { eq, and } from 'drizzle-orm';
@@ -17,7 +17,7 @@ import { e2eeKeys, e2eePreKeys } from '@querencia/db';
 export class E2eeService {
   constructor(@Inject(DB_TOKEN) private readonly db: DB) {}
 
-  // Upload initial key bundle sau khi đăng ký
+  // Upload initial key bundle sau khi ÄÄng kÃ½
   async uploadKeyBundle(userId: string, bundle: {
     registrationId: number;
     identityKey:    string;
@@ -58,16 +58,16 @@ export class E2eeService {
     return { ok: true, preKeysUploaded: bundle.oneTimePreKeys.length };
   }
 
-  // Fetch public key bundle của người nhận — server consume 1 one-time prekey
+  // Fetch public key bundle cá»§a ngÆ°á»i nháº­n â server consume 1 one-time prekey
   async getKeyBundle(requesterId: string, targetUserId: string) {
     const identity = await this.db.query.e2eeKeys.findFirst({
       where: eq(e2eeKeys.userId, targetUserId),
     });
     if (!identity) {
-      throw new NotFoundException('Người dùng chưa setup E2EE');
+      throw new NotFoundException('NgÆ°á»i dÃ¹ng chÆ°a setup E2EE');
     }
 
-    // Lấy và xóa 1 one-time prekey (single use)
+    // Láº¥y vÃ  xÃ³a 1 one-time prekey (single use)
     const oneTimePreKey = await this.db.query.e2eePreKeys.findFirst({
       where: and(
         eq(e2eePreKeys.userId, targetUserId),
@@ -82,7 +82,7 @@ export class E2eeService {
         .where(eq(e2eePreKeys.id, oneTimePreKey.id));
     }
 
-    // Cảnh báo nếu prekeys gần hết (< 10)
+    // Cáº£nh bÃ¡o náº¿u prekeys gáº§n háº¿t (< 10)
     const remaining = await this.db.query.e2eePreKeys.findMany({
       where: and(
         eq(e2eePreKeys.userId, targetUserId),
@@ -101,13 +101,13 @@ export class E2eeService {
       oneTimePreKey: oneTimePreKey
         ? { keyId: oneTimePreKey.keyId, publicKey: oneTimePreKey.publicKey }
         : undefined,
-      // Nhắc client upload thêm prekeys
+      // Nháº¯c client upload thÃªm prekeys
       lowPreKeys: remaining.length < 10,
       remainingPreKeys: remaining.length,
     };
   }
 
-  // Upload thêm prekeys khi gần hết
+  // Upload thÃªm prekeys khi gáº§n háº¿t
   async uploadMorePreKeys(userId: string, preKeys: { keyId: number; publicKey: string }[]) {
     await this.db.insert(e2eePreKeys).values(
       preKeys.map(pk => ({ userId, keyId: pk.keyId, publicKey: pk.publicKey }))

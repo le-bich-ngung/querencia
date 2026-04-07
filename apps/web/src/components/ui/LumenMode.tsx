@@ -1,19 +1,19 @@
-/**
- * Lumen Mode — hiệu ứng ánh sáng / glow cho toàn hệ sinh thái
+ï»¿/**
+ * Lumen Mode â hiá»u á»©ng Ã¡nh sÃ¡ng / glow cho toÃ n há» sinh thÃ¡i
  *
- * Dùng cho:
- *   - Cursor glow theo chuột
- *   - Spotlight effect trên hero sections
- *   - Glow pulse khi nhận Q
- *   - Ambient light xung quanh chat bubble của LàNo
+ * DÃ¹ng cho:
+ *   - Cursor glow theo chuá»t
+ *   - Spotlight effect trÃªn hero sections
+ *   - Glow pulse khi nháº­n Q
+ *   - Ambient light xung quanh chat bubble cá»§a LÃ No
  *   - Page transition glow
  *
- * Toggle: user có thể tắt trong Settings (prefers-reduced-motion)
+ * Toggle: user cÃ³ thá» táº¯t trong Settings (prefers-reduced-motion)
  */
 'use client';
 import { useEffect, useRef, useState, useCallback } from 'react';
 
-// ── Cursor Glow ────────────────────────────────────────────────
+// ââ Cursor Glow ââââââââââââââââââââââââââââââââââââââââââââââââ
 export function CursorGlow({
   color   = 'rgba(74,124,89,0.12)',
   size    = 400,
@@ -72,7 +72,7 @@ export function CursorGlow({
   );
 }
 
-// ── Spotlight (hover glow trên card) ──────────────────────────
+// ââ Spotlight (hover glow trÃªn card) ââââââââââââââââââââââââââ
 export function SpotlightCard({
   children,
   className,
@@ -137,7 +137,7 @@ export function SpotlightCard({
   );
 }
 
-// ── Q Receive Pulse ────────────────────────────────────────────
+// ââ Q Receive Pulse ââââââââââââââââââââââââââââââââââââââââââââ
 export function QPulse({ trigger }: { trigger: boolean }) {
   const [active, setActive] = useState(false);
 
@@ -173,7 +173,7 @@ export function QPulse({ trigger }: { trigger: boolean }) {
   );
 }
 
-// ── Ambient Glow (cho LàNo chat bubbles) ─────────────────────
+// ââ Ambient Glow (cho LÃ No chat bubbles) âââââââââââââââââââââ
 export function AmbientGlow({
   color   = '#4a7c59',
   intensity = 0.08,
@@ -200,7 +200,7 @@ export function AmbientGlow({
   );
 }
 
-// ── Page Transition Glow ──────────────────────────────────────
+// ââ Page Transition Glow ââââââââââââââââââââââââââââââââââââââ
 export function PageGlow() {
   return (
     <>
@@ -223,7 +223,7 @@ export function PageGlow() {
   );
 }
 
-// ── Lumen Provider — wrap toàn app ────────────────────────────
+// ââ Lumen Provider â wrap toÃ n app ââââââââââââââââââââââââââââ
 export function LumenProvider({ children }: { children: React.ReactNode }) {
   const [reduced, setReduced] = useState(false);
 

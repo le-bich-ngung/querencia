@@ -1,6 +1,6 @@
-﻿/**
- * Email Worker — BullMQ
- * Xử lý gửi email qua Resend (verify, reset password, notification)
+ï»¿/**
+ * Email Worker â BullMQ
+ * Xá»­ lÃ½ gá»­i email qua Resend (verify, reset password, notification)
  */
 import { Worker, Queue } from 'bullmq';
 import { Resend } from 'resend';
@@ -32,12 +32,12 @@ export const emailWorker = new Worker('email', async (job) => {
 export const emailJobs = {
   sendVerification: (to: string, token: string) =>
     emailQueue.add('verify', {
-      to, subject: 'Xác nhận email — Querencia',
-      html: `<a href="https://querencia.com.vn/auth/verify?token=${token}">Xác nhận email</a>`,
+      to, subject: 'XÃ¡c nháº­n email â Querencia',
+      html: `<a href="https://querencia.com.vn/auth/verify?token=${token}">XÃ¡c nháº­n email</a>`,
     }),
   sendPasswordReset: (to: string, token: string) =>
     emailQueue.add('reset', {
-      to, subject: 'Đặt lại mật khẩu — Querencia',
-      html: `<a href="https://querencia.com.vn/auth/reset-password?token=${token}">Đặt lại mật khẩu</a>`,
+      to, subject: 'Äáº·t láº¡i máº­t kháº©u â Querencia',
+      html: `<a href="https://querencia.com.vn/auth/reset-password?token=${token}">Äáº·t láº¡i máº­t kháº©u</a>`,
     }),
 };

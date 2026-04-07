@@ -1,7 +1,7 @@
-﻿/**
- * Cùi Bắp — App nhắn tin
- * Migrated từ querencia-backend/api/models.py (CBConversation, CBMessage, etc.)
- * Giữ nguyên tên bảng: cb_conversations, cb_messages, etc. để không mất data production
+ï»¿/**
+ * CÃ¹i Báº¯p â App nháº¯n tin
+ * Migrated tá»« querencia-backend/api/models.py (CBConversation, CBMessage, etc.)
+ * Giá»¯ nguyÃªn tÃªn báº£ng: cb_conversations, cb_messages, etc. Äá» khÃ´ng máº¥t data production
  */
 import {
   pgTable, uuid, integer, text, boolean,
@@ -12,7 +12,7 @@ import { users } from './users';
 export const cbMemberRoleEnum = pgEnum('cb_member_role', ['owner', 'admin', 'member']);
 export const cbMsgTypeEnum = pgEnum('cb_msg_type', ['text', 'image', 'file', 'audio', 'location', 'sticker']);
 
-// ── DM Conversations ─────────────────────────────────────────
+// ââ DM Conversations âââââââââââââââââââââââââââââââââââââââââ
 export const cbConversations = pgTable('cb_conversations', {
   id:            uuid('id').primaryKey().defaultRandom(),
   userAId:       uuid('user_a_id').references(() => users.id, { onDelete: 'cascade' }).notNull(),
@@ -21,7 +21,7 @@ export const cbConversations = pgTable('cb_conversations', {
   lastMessageAt: timestamp('last_message_at').defaultNow().notNull(),
 });
 
-// ── DM Messages ──────────────────────────────────────────────
+// ââ DM Messages ââââââââââââââââââââââââââââââââââââââââââââââ
 export const cbMessages = pgTable('cb_messages', {
   id:             uuid('id').primaryKey().defaultRandom(),
   conversationId: uuid('conversation_id').references(() => cbConversations.id, { onDelete: 'cascade' }).notNull(),
@@ -31,7 +31,7 @@ export const cbMessages = pgTable('cb_messages', {
   fileUrl:        text('file_url'),                   // R2 URL
   fileName:       text('file_name'),
   fileSize:       bigint('file_size', { mode: 'number' }),
-  fileExpiresAt:  timestamp('file_expires_at'),        // 7 ngày
+  fileExpiresAt:  timestamp('file_expires_at'),        // 7 ngÃ y
   replyToId:      uuid('reply_to_id'),                 // self-reference
   isEdited:       boolean('is_edited').default(false).notNull(),
   editedAt:       timestamp('edited_at'),
@@ -39,12 +39,12 @@ export const cbMessages = pgTable('cb_messages', {
   isPinned:       boolean('is_pinned').default(false).notNull(),
   scheduledAt:    timestamp('scheduled_at'),
   autoDeleteAt:   timestamp('auto_delete_at'),  // self-destruct
-  deliveredAt:    timestamp('delivered_at'),       // khi recipient nhận được
+  deliveredAt:    timestamp('delivered_at'),       // khi recipient nháº­n ÄÆ°á»£c
   isSent:         boolean('is_sent').default(true).notNull(),
   sentAt:         timestamp('sent_at').defaultNow().notNull(),
 });
 
-// ── Groups ───────────────────────────────────────────────────
+// ââ Groups âââââââââââââââââââââââââââââââââââââââââââââââââââ
 export const cbGroups = pgTable('cb_groups', {
   id:            uuid('id').primaryKey().defaultRandom(),
   name:          text('name').notNull(),
@@ -63,7 +63,7 @@ export const cbGroupMembers = pgTable('cb_group_members', {
   joinedAt:  timestamp('joined_at').defaultNow().notNull(),
 });
 
-// ── Group Messages ───────────────────────────────────────────
+// ââ Group Messages âââââââââââââââââââââââââââââââââââââââââââ
 // deliveredAt added for read receipts
 export const cbGroupMessages = pgTable('cb_group_messages', {
   id:          uuid('id').primaryKey().defaultRandom(),
@@ -87,7 +87,7 @@ export const cbGroupMessages = pgTable('cb_group_messages', {
   deliveredAt:  timestamp('delivered_at'),
 });
 
-// ── Reactions ─────────────────────────────────────────────────
+// ââ Reactions âââââââââââââââââââââââââââââââââââââââââââââââââ
 export const cbReactions = pgTable('cb_reactions', {
   id:        uuid('id').primaryKey().defaultRandom(),
   messageId: uuid('message_id').references(() => cbMessages.id, { onDelete: 'cascade' }).notNull(),
@@ -104,7 +104,7 @@ export const cbGroupReactions = pgTable('cb_group_reactions', {
   createdAt: timestamp('created_at').defaultNow().notNull(),
 });
 
-// ── Read Receipts ─────────────────────────────────────────────
+// ââ Read Receipts âââââââââââââââââââââââââââââââââââââââââââââ
 export const cbReadReceipts = pgTable('cb_read_receipts', {
   id:        uuid('id').primaryKey().defaultRandom(),
   messageId: uuid('message_id').references(() => cbMessages.id, { onDelete: 'cascade' }).notNull(),
@@ -112,7 +112,7 @@ export const cbReadReceipts = pgTable('cb_read_receipts', {
   readAt:    timestamp('read_at').defaultNow().notNull(),
 });
 
-// ── Polls ─────────────────────────────────────────────────────
+// ââ Polls âââââââââââââââââââââââââââââââââââââââââââââââââââââ
 export const cbPolls = pgTable('cb_polls', {
   id:        uuid('id').primaryKey().defaultRandom(),
   groupId:   uuid('group_id').references(() => cbGroups.id, { onDelete: 'cascade' }).notNull(),
@@ -132,7 +132,7 @@ export const cbPollVotes = pgTable('cb_poll_votes', {
   votedAt:     timestamp('voted_at').defaultNow().notNull(),
 });
 
-// ── User Settings ─────────────────────────────────────────────
+// ââ User Settings âââââââââââââââââââââââââââââââââââââââââââââ
 export const cbUserSettings = pgTable('cb_user_settings', {
   id:             uuid('id').primaryKey().defaultRandom(),
   userId:         uuid('user_id').references(() => users.id).unique().notNull(),

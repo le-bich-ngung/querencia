@@ -1,6 +1,6 @@
-﻿/**
- * Meta Controller — fetch OG metadata cho link preview
- * Server-side để tránh CORS và bảo vệ IP của user
+ï»¿/**
+ * Meta Controller â fetch OG metadata cho link preview
+ * Server-side Äá» trÃ¡nh CORS vÃ  báº£o vá» IP cá»§a user
  */
 import { Controller, Get, Query, Logger } from '@nestjs/common';
 import { Public } from '../../common/decorators/public.decorator';

@@ -1,11 +1,11 @@
-/**
+ï»¿/**
  * Google Sign-In cho React Native
  * Package: @react-native-google-signin/google-signin
  *
- * Setup cần làm:
- * 1. Google Cloud Console → OAuth 2.0 Credentials → Android client
- * 2. Lấy SHA-1 fingerprint của keystore
- * 3. Điền vào google-services.json
+ * Setup cáº§n lÃ m:
+ * 1. Google Cloud Console â OAuth 2.0 Credentials â Android client
+ * 2. Láº¥y SHA-1 fingerprint cá»§a keystore
+ * 3. Äiá»n vÃ o google-services.json
  */
 import {
   GoogleSignin,
@@ -14,11 +14,11 @@ import {
 } from '@react-native-google-signin/google-signin';
 import { api } from './api';
 
-// Configure một lần khi app start (App.tsx)
+// Configure má»t láº§n khi app start (App.tsx)
 export function configureGoogleSignIn() {
   GoogleSignin.configure({
-    // Web client ID từ Google Cloud Console (không phải Android client ID)
-    // Tìm tại: console.cloud.google.com → Credentials → Web client
+    // Web client ID tá»« Google Cloud Console (khÃ´ng pháº£i Android client ID)
+    // TÃ¬m táº¡i: console.cloud.google.com â Credentials â Web client
     webClientId: process.env.GOOGLE_WEB_CLIENT_ID ?? 'YOUR_WEB_CLIENT_ID.apps.googleusercontent.com',
     scopes: ['email', 'profile'],
   });
@@ -32,8 +32,8 @@ export interface GoogleAuthResult {
 
 /**
  * Trigger Google Sign-In flow
- * → Nhận idToken từ Google
- * → Gửi lên Querencia API để verify + tạo JWT
+ * â Nháº­n idToken tá»« Google
+ * â Gá»­i lÃªn Querencia API Äá» verify + táº¡o JWT
  */
 export async function signInWithGoogle(): Promise<GoogleAuthResult> {
   await GoogleSignin.hasPlayServices({ showPlayServicesUpdateDialog: true });
@@ -43,7 +43,7 @@ export async function signInWithGoogle(): Promise<GoogleAuthResult> {
 
   if (!idToken) throw new Error('Google Sign-In failed: no idToken');
 
-  // Gửi idToken lên Querencia server → server verify với Google → trả JWT
+  // Gá»­i idToken lÃªn Querencia server â server verify vá»i Google â tráº£ JWT
   const data = await api.googleAuth(idToken);
 
   return {

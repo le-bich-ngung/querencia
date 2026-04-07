@@ -1,8 +1,8 @@
-/**
- * Link Preview — hiện og:title, og:image, og:description
- * khi tin nhắn chứa URL
+ï»¿/**
+ * Link Preview â hiá»n og:title, og:image, og:description
+ * khi tin nháº¯n chá»©a URL
  * Fetch metadata server-side qua /api/v1/meta/preview?url=...
- * (tránh CORS + không expose user IP cho external sites)
+ * (trÃ¡nh CORS + khÃ´ng expose user IP cho external sites)
  */
 import React, { useEffect, useState } from 'react';
 import {
@@ -20,7 +20,7 @@ interface OgMeta {
   url:          string;
 }
 
-// Regex nhận ra URL trong text
+// Regex nháº­n ra URL trong text
 const URL_REGEX = /https?:\/\/(www\.)?[-a-zA-Z0-9@:%._+~#=]{2,256}\.[a-z]{2,6}\b([-a-zA-Z0-9@:%_+.~#?&/=]*)/gi;
 
 export function extractUrls(text: string): string[] {
@@ -34,7 +34,7 @@ interface Props {
 
 export function LinkPreview({ text, isOut }: Props) {
   const urls = extractUrls(text);
-  const url  = urls[0]; // chỉ preview URL đầu tiên
+  const url  = urls[0]; // chá» preview URL Äáº§u tiÃªn
   if (!url) return null;
 
   const [meta,    setMeta]    = useState<OgMeta | null>(null);

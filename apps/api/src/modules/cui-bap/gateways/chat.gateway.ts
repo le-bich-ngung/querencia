@@ -1,10 +1,10 @@
-﻿/**
- * Cùi Bắp — WebSocket Gateway
- * Events đầy đủ gồm cả read receipts:
- *   → message_delivered  : khi recipient connect và có tin chưa nhận
- *   → message_read       : khi recipient gọi markRead
- *   → typing / stop_typing
- *   → call signaling (offer/answer/ice/end/reject)
+ï»¿/**
+ * CÃ¹i Báº¯p â WebSocket Gateway
+ * Events Äáº§y Äá»§ gá»m cáº£ read receipts:
+ *   â message_delivered  : khi recipient connect vÃ  cÃ³ tin chÆ°a nháº­n
+ *   â message_read       : khi recipient gá»i markRead
+ *   â typing / stop_typing
+ *   â call signaling (offer/answer/ice/end/reject)
  */
 import {
   WebSocketGateway, WebSocketServer, SubscribeMessage,
@@ -32,7 +32,7 @@ export class ChatGateway implements OnGatewayConnection, OnGatewayDisconnect {
   @WebSocketServer() server: Server;
   private readonly logger = new Logger(ChatGateway.name);
 
-  // userId → Set<socketId>
+  // userId â Set<socketId>
   private readonly userSockets = new Map<string, Set<string>>();
 
   constructor(
@@ -41,7 +41,7 @@ export class ChatGateway implements OnGatewayConnection, OnGatewayDisconnect {
     @Inject(DB_TOKEN) private readonly db: DB,
   ) {}
 
-  // ── Connection ────────────────────────────────────────────────
+  // ââ Connection ââââââââââââââââââââââââââââââââââââââââââââââââ
   async handleConnection(client: Socket) {
     try {
       const token = (client.handshake.auth?.token
@@ -67,10 +67,10 @@ export class ChatGateway implements OnGatewayConnection, OnGatewayDisconnect {
       this.userSockets.get(user.id)!.add(client.id);
       this.logger.log(`[WS] ${user.name} connected (${client.id})`);
 
-      // Sau khi connect → notify senders các tin nhắn đã delivered
+      // Sau khi connect â notify senders cÃ¡c tin nháº¯n ÄÃ£ delivered
       await this._notifyPendingDeliveries(user.id);
 
-      // Broadcast online status đến những người đang chat với user này
+      // Broadcast online status Äáº¿n nhá»¯ng ngÆ°á»i Äang chat vá»i user nÃ y
       await this._broadcastPresence(user.id, true);
 
     } catch {
@@ -88,7 +88,7 @@ export class ChatGateway implements OnGatewayConnection, OnGatewayDisconnect {
     }
   }
 
-  // ── Public API (gọi từ CuiBapService) ────────────────────────
+  // ââ Public API (gá»i tá»« CuiBapService) ââââââââââââââââââââââââ
   sendToUser(userId: string, event: string, data: unknown) {
     const sockets = this.userSockets.get(userId);
     if (sockets?.size) {
@@ -103,8 +103,8 @@ export class ChatGateway implements OnGatewayConnection, OnGatewayDisconnect {
   }
 
   /**
-   * Emit message_read đến sender khi recipient đọc conv
-   * Gọi từ CuiBapService.markRead()
+   * Emit message_read Äáº¿n sender khi recipient Äá»c conv
+   * Gá»i tá»« CuiBapService.markRead()
    */
   notifyMessageRead(senderId: string, convId: string, readByUserId: string, messageIds: string[]) {
     if (!messageIds.length) return;
@@ -115,14 +115,14 @@ export class ChatGateway implements OnGatewayConnection, OnGatewayDisconnect {
     });
   }
 
-  // ── Private: notify deliveries khi user vừa connect ──────────
+  // ââ Private: notify deliveries khi user vá»«a connect ââââââââââ
   private async _notifyPendingDeliveries(recipientId: string) {
     try {
-      // Tìm các conversations mà user này là người nhận
+      // TÃ¬m cÃ¡c conversations mÃ  user nÃ y lÃ  ngÆ°á»i nháº­n
       const convs = await this.db.query.cbConversations.findMany({
         where: eq(cbConversations.userBId, recipientId),
       });
-      // Cũng check conversations mà user là user1
+      // CÅ©ng check conversations mÃ  user lÃ  user1
       const convs2 = await this.db.query.cbConversations.findMany({
         where: eq(cbConversations.userAId, recipientId),
       });
@@ -130,16 +130,16 @@ export class ChatGateway implements OnGatewayConnection, OnGatewayDisconnect {
 
       if (!allConvIds.length) return;
 
-      // Tìm tin nhắn chưa có deliveredAt (gửi cho mình, chưa được nhận)
-      // — chỉ lấy tin nhắn KHÔNG do mình gửi
+      // TÃ¬m tin nháº¯n chÆ°a cÃ³ deliveredAt (gá»­i cho mÃ¬nh, chÆ°a ÄÆ°á»£c nháº­n)
+      // â chá» láº¥y tin nháº¯n KHÃNG do mÃ¬nh gá»­i
       for (const conv of [...convs, ...convs2]) {
         const otherUserId = conv.userAId === recipientId ? conv.userBId : conv.userAId;
 
         const undelivered = await this.db.query.cbMessages.findMany({
           where: and(
             eq(cbMessages.conversationId, conv.id),
-            eq(cbMessages.senderId, otherUserId), // tin do người kia gửi
-            isNull(cbMessages.deliveredAt),        // chưa delivered
+            eq(cbMessages.senderId, otherUserId), // tin do ngÆ°á»i kia gá»­i
+            isNull(cbMessages.deliveredAt),        // chÆ°a delivered
             eq(cbMessages.isDeleted, false),
           ),
           columns: { id: true },
@@ -150,7 +150,7 @@ export class ChatGateway implements OnGatewayConnection, OnGatewayDisconnect {
 
         const ids = undelivered.map(m => m.id);
 
-        // Cập nhật deliveredAt trong DB
+        // Cáº­p nháº­t deliveredAt trong DB
         await this.db.update(cbMessages)
           .set({ deliveredAt: new Date() })
           .where(
@@ -161,13 +161,13 @@ export class ChatGateway implements OnGatewayConnection, OnGatewayDisconnect {
             )
           );
 
-        // Emit message_delivered đến sender
+        // Emit message_delivered Äáº¿n sender
         this.sendToUser(otherUserId, 'message_delivered', {
           conversation_id: conv.id,
           message_ids:     ids,
         });
       }
-      // Group messages — notify undelivered
+      // Group messages â notify undelivered
       const memberships = await this.db.query.cbGroupMembers.findMany({
         where: eq(cbGroupMembers.userId, recipientId),
       });
@@ -191,7 +191,7 @@ export class ChatGateway implements OnGatewayConnection, OnGatewayDisconnect {
             ne(cbGroupMessages.senderId, recipientId),
             isNull(cbGroupMessages.deliveredAt),
           ));
-        // Notify mỗi sender trong nhóm
+        // Notify má»i sender trong nhÃ³m
         const senderIds = [...new Set(undelivered.map(msg => msg.senderId))];
         for (const sid of senderIds) {
           this.sendToUser(sid as string, 'message_delivered', {
@@ -205,12 +205,12 @@ export class ChatGateway implements OnGatewayConnection, OnGatewayDisconnect {
     }
   }
 
-  // ── TYPING ────────────────────────────────────────────────────
+  // ââ TYPING ââââââââââââââââââââââââââââââââââââââââââââââââââââ
 
-  // ── PRESENCE ─────────────────────────────────────────────────
+  // ââ PRESENCE âââââââââââââââââââââââââââââââââââââââââââââââââ
   private async _broadcastPresence(userId: string, online: boolean) {
     try {
-      // Tìm tất cả user đang chat với userId này (conversations)
+      // TÃ¬m táº¥t cáº£ user Äang chat vá»i userId nÃ y (conversations)
       const convs = await this.db.query.cbConversations.findMany({
         where: (c, { or, eq }) => or(
           eq(c.userAId, userId),
@@ -218,7 +218,7 @@ export class ChatGateway implements OnGatewayConnection, OnGatewayDisconnect {
         ),
       });
 
-      // Notify từng đối tác
+      // Notify tá»«ng Äá»i tÃ¡c
       for (const conv of convs) {
         const otherId = conv.userAId === userId ? conv.userBId : conv.userAId;
         this.sendToUser(otherId, 'presence', {
@@ -251,7 +251,7 @@ export class ChatGateway implements OnGatewayConnection, OnGatewayDisconnect {
     });
   }
 
-  // ── WEBRTC SIGNALING ──────────────────────────────────────────
+  // ââ WEBRTC SIGNALING ââââââââââââââââââââââââââââââââââââââââââ
   @SubscribeMessage('call_offer')
   handleCallOffer(
     @ConnectedSocket() client: Socket,

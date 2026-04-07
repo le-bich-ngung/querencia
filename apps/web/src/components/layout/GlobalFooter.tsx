@@ -1,4 +1,4 @@
-'use client';
+ï»¿'use client';
 import Link from 'next/link';
 import { useI18n } from '../../lib/i18n';
 
@@ -23,11 +23,11 @@ export function GlobalFooter() {
           <span style={{ fontWeight: 300, fontFamily: "'Space Grotesk', sans-serif", fontSize: '0.85rem', lineHeight: 1, letterSpacing: -0.2, display: 'flex', alignItems: 'center', gap: 2 }}>
             <span style={{ fontFamily: "'Space Grotesk', sans-serif", fontWeight: 400, display: 'inline-flex', alignItems: 'baseline' }}><span style={{ color: '#111', opacity: 0.45 }}>ueren</span><span style={{ color: SAGE }}>c</span><span style={{ position: 'relative', display: 'inline-block', color: SAGE }}>i<svg style={{ position: 'absolute', left: '58%', top: '0.12em', transform: 'translateX(-50%)', width: '0.20em', height: '0.20em' }} viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg"><path d="M12 21.35l-1.45-1.32C5.4 15.36 2 12.28 2 8.5 2 5.42 4.42 3 7.5 3c1.74 0 3.41.81 4.5 2.09C13.09 3.81 14.76 3 16.5 3 19.58 3 22 5.42 22 8.5c0 3.78-3.4 6.86-8.55 11.54L12 21.35z" fill="#ef4444"/></svg></span><span style={{ color: SAGE }}>a</span></span>
           </span>
-          <span style={{ fontSize: '0.7rem', color: '#bbb', marginLeft: 10 }}>Ãƒâ€šÃ‚Â© 2026 Ãƒâ€šÃ‚Â· All rights reserved</span>
+          <span style={{ fontSize: '0.7rem', color: '#bbb', marginLeft: 10 }}>ÃÆÃ¢â¬Å¡ÃâÃÂ© 2026 ÃÆÃ¢â¬Å¡ÃâÃÂ· All rights reserved</span>
         </div>
 
         <span style={{ fontSize: '0.7rem', color: '#aaa', textAlign: 'center', flex: 1, padding: '0 16px' }}>
-          Querencia khÃƒÆ’Ã‚Â´ng quÃƒÂ¡Ã‚ÂºÃ‚Â£ng cÃƒÆ’Ã‚Â¡o vÃƒÆ’Ã‚Â  khÃƒÆ’Ã‚Â´ng bÃƒÆ’Ã‚Â¡n dÃƒÂ¡Ã‚Â»Ã‚Â¯ liÃƒÂ¡Ã‚Â»Ã¢â‚¬Â¡u. NguÃƒÂ¡Ã‚Â»Ã¢â‚¬Å“n thu duy nhÃƒÂ¡Ã‚ÂºÃ‚Â¥t Ãƒâ€žÃ¢â‚¬ËœÃƒÂ¡Ã‚ÂºÃ‚Â¿n tÃƒÂ¡Ã‚Â»Ã‚Â« cÃƒÆ’Ã‚Â¡c cÃƒÆ’Ã‚Â´ng cÃƒÂ¡Ã‚Â»Ã‚Â¥ trÃƒÂ¡Ã‚ÂºÃ‚Â£ phÃƒÆ’Ã‚Â­.
+          Querencia khÃÆÃâÃâÃÂ´ng quÃÆÃÂ¡ÃâÃÂºÃâÃÂ£ng cÃÆÃâÃâÃÂ¡o vÃÆÃâÃâÃÂ  khÃÆÃâÃâÃÂ´ng bÃÆÃâÃâÃÂ¡n dÃÆÃÂ¡ÃâÃÂ»ÃâÃÂ¯ liÃÆÃÂ¡ÃâÃÂ»ÃÂ¢Ã¢âÂ¬ÃÂ¡u. NguÃÆÃÂ¡ÃâÃÂ»ÃÂ¢Ã¢âÂ¬Ãân thu duy nhÃÆÃÂ¡ÃâÃÂºÃâÃÂ¥t ÃÆÃ¢â¬Å¾ÃÂ¢Ã¢âÂ¬ÃÅÃÆÃÂ¡ÃâÃÂºÃâÃÂ¿n tÃÆÃÂ¡ÃâÃÂ»ÃâÃÂ« cÃÆÃâÃâÃÂ¡c cÃÆÃâÃâÃÂ´ng cÃÆÃÂ¡ÃâÃÂ»ÃâÃÂ¥ trÃÆÃÂ¡ÃâÃÂºÃâÃÂ£ phÃÆÃâÃâÃÂ­.
         </span>
 
         <div style={{ display: 'flex', gap: 14 }}>

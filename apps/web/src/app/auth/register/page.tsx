@@ -1,9 +1,9 @@
-'use client';
+ï»¿'use client';
 /**
- * Register page — /auth/register
- * Migrated từ auth.js doRegister()
- * Flow: Họ + Tên + Email + Password → POST /api/v1/auth/register
- *       → Hiện thông báo → chuyển sang login
+ * Register page â /auth/register
+ * Migrated tá»« auth.js doRegister()
+ * Flow: Há» + TÃªn + Email + Password â POST /api/v1/auth/register
+ *       â Hiá»n thÃ´ng bÃ¡o â chuyá»n sang login
  */
 import { useState } from 'react';
 import Link         from 'next/link';
@@ -38,13 +38,13 @@ export default function RegisterPage() {
 
   function validate(): boolean {
     const e: Record<string, string> = {};
-    if (!givenName.trim())  e.givenName = 'Vui lòng nhập tên.';
-    if (!lastName.trim())   e.lastName  = 'Vui lòng nhập họ.';
-    if (!email.trim())      e.email     = 'Vui lòng nhập email.';
-    else if (!emailRegex.test(email)) e.email = 'Email không hợp lệ.';
-    if (!password)          e.password  = 'Vui lòng nhập mật khẩu.';
-    else if (password.length < 8) e.password = 'Mật khẩu cần ít nhất 8 ký tự.';
-    if (password !== confirm) e.confirm = 'Mật khẩu không khớp.';
+    if (!givenName.trim())  e.givenName = 'Vui lÃ²ng nháº­p tÃªn.';
+    if (!lastName.trim())   e.lastName  = 'Vui lÃ²ng nháº­p há».';
+    if (!email.trim())      e.email     = 'Vui lÃ²ng nháº­p email.';
+    else if (!emailRegex.test(email)) e.email = 'Email khÃ´ng há»£p lá».';
+    if (!password)          e.password  = 'Vui lÃ²ng nháº­p máº­t kháº©u.';
+    else if (password.length < 8) e.password = 'Máº­t kháº©u cáº§n Ã­t nháº¥t 8 kÃ½ tá»±.';
+    if (password !== confirm) e.confirm = 'Máº­t kháº©u khÃ´ng khá»p.';
     setErrors(e);
     return Object.keys(e).length === 0;
   }
@@ -56,7 +56,7 @@ export default function RegisterPage() {
     setLoading(true);
     setMsg(null);
 
-    // Giữ logic cũ: name = `${lastName} ${givenName}`
+    // Giá»¯ logic cÅ©: name = `${lastName} ${givenName}`
     const name = `${lastName.trim()} ${givenName.trim()}`;
 
     try {
@@ -68,24 +68,24 @@ export default function RegisterPage() {
       const data = await res.json();
 
       if (res.ok) {
-        setMsg({ text: 'Tạo tài khoản thành công! Vui lòng kiểm tra email để xác nhận.', type: 'success' });
-        // Chuyển sang login sau 2s, pre-fill email — giữ y chang code cũ
+        setMsg({ text: 'Táº¡o tÃ i khoáº£n thÃ nh cÃ´ng! Vui lÃ²ng kiá»m tra email Äá» xÃ¡c nháº­n.', type: 'success' });
+        // Chuyá»n sang login sau 2s, pre-fill email â giá»¯ y chang code cÅ©
         setTimeout(() => router.push(`/auth/login?email=${encodeURIComponent(email)}`), 2000);
       } else {
         setMsg({
-          text: data.message ?? 'Đăng ký thất bại. Email có thể đã được sử dụng.',
+          text: data.message ?? 'ÄÄng kÃ½ tháº¥t báº¡i. Email cÃ³ thá» ÄÃ£ ÄÆ°á»£c sá»­ dá»¥ng.',
           type: 'error',
         });
       }
     } catch {
-      setMsg({ text: 'Không thể kết nối đến máy chủ. Vui lòng thử lại.', type: 'error' });
+      setMsg({ text: 'KhÃ´ng thá» káº¿t ná»i Äáº¿n mÃ¡y chá»§. Vui lÃ²ng thá»­ láº¡i.', type: 'error' });
     } finally {
       setLoading(false);
     }
   }
 
   return (
-    <AuthCard title="Tạo tài khoản" subtitle="Miễn phí mãi mãi. Không quảng cáo. Không bán dữ liệu.">
+    <AuthCard title="Táº¡o tÃ i khoáº£n" subtitle="Miá»n phÃ­ mÃ£i mÃ£i. KhÃ´ng quáº£ng cÃ¡o. KhÃ´ng bÃ¡n dá»¯ liá»u.">
       {/* Google */}
       <button
         onClick={() => signIn('google', { callbackUrl: '/' })}
@@ -103,7 +103,7 @@ export default function RegisterPage() {
         onMouseLeave={e => (e.currentTarget.style.background = 'var(--bg)')}
       >
         <GoogleIcon />
-        Tiếp tục với Google
+        Tiáº¿p tá»¥c vá»i Google
       </button>
 
       {/* Divider */}
@@ -112,29 +112,29 @@ export default function RegisterPage() {
         color: 'var(--gray)', fontSize: '0.78rem',
       }}>
         <hr style={{ flex: 1, border: 'none', borderTop: '1px solid var(--border)' }}/>
-        hoặc
+        hoáº·c
         <hr style={{ flex: 1, border: 'none', borderTop: '1px solid var(--border)' }}/>
       </div>
 
       <form onSubmit={handleRegister} style={{ display: 'flex', flexDirection: 'column', gap: 14 }}>
-        {/* Họ + Tên trên 1 hàng — giữ y chang form cũ */}
+        {/* Há» + TÃªn trÃªn 1 hÃ ng â giá»¯ y chang form cÅ© */}
         <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: 12 }}>
           <AuthInput
-            label="Họ"
+            label="Há»"
             type="text"
             value={lastName}
             onChange={e => { setLastName(e.target.value); setErrors(p => ({...p, lastName: ''})); }}
-            placeholder="Nguyễn"
+            placeholder="Nguyá»n"
             autoComplete="family-name"
             error={errors.lastName}
             autoFocus
           />
           <AuthInput
-            label="Tên"
+            label="TÃªn"
             type="text"
             value={givenName}
             onChange={e => { setGivenName(e.target.value); setErrors(p => ({...p, givenName: ''})); }}
-            placeholder="Văn A"
+            placeholder="VÄn A"
             autoComplete="given-name"
             error={errors.givenName}
           />
@@ -150,20 +150,20 @@ export default function RegisterPage() {
           error={errors.email}
         />
         <AuthInput
-          label="Mật khẩu"
+          label="Máº­t kháº©u"
           showToggle
           value={password}
           onChange={e => { setPassword(e.target.value); setErrors(p => ({...p, password: ''})); }}
-          placeholder="Ít nhất 8 ký tự"
+          placeholder="Ãt nháº¥t 8 kÃ½ tá»±"
           autoComplete="new-password"
           error={errors.password}
         />
         <AuthInput
-          label="Xác nhận mật khẩu"
+          label="XÃ¡c nháº­n máº­t kháº©u"
           showToggle
           value={confirm}
           onChange={e => { setConfirm(e.target.value); setErrors(p => ({...p, confirm: ''})); }}
-          placeholder="••••••••"
+          placeholder="â¢â¢â¢â¢â¢â¢â¢â¢"
           autoComplete="new-password"
           error={errors.confirm}
         />
@@ -181,7 +181,7 @@ export default function RegisterPage() {
             opacity: loading ? 0.7 : 1, marginTop: 2,
           }}
         >
-          {loading ? 'Đang tạo tài khoản…' : 'Tạo tài khoản'}
+          {loading ? 'Äang táº¡o tÃ i khoáº£nâ¦' : 'Táº¡o tÃ i khoáº£n'}
         </button>
       </form>
 
@@ -189,9 +189,9 @@ export default function RegisterPage() {
         textAlign: 'center', fontSize: '0.83rem',
         color: 'var(--text-secondary)', marginTop: 20,
       }}>
-        Đã có tài khoản?{' '}
+        ÄÃ£ cÃ³ tÃ i khoáº£n?{' '}
         <Link href="/auth/login" style={{ color: 'var(--sage)', fontWeight: 600, textDecoration: 'none' }}>
-          Đăng nhập
+          ÄÄng nháº­p
         </Link>
       </p>
 
@@ -200,10 +200,10 @@ export default function RegisterPage() {
         textAlign: 'center', fontSize: '0.72rem',
         color: 'var(--gray)', marginTop: 14, lineHeight: 1.5,
       }}>
-        Bằng cách đăng ký, bạn đồng ý với{' '}
-        <Link href="/pages/terms" style={{ color: 'var(--sage)' }}>Điều khoản</Link>
-        {' '}và{' '}
-        <Link href="/pages/privacy" style={{ color: 'var(--sage)' }}>Chính sách bảo mật</Link> của chúng tôi.
+        Báº±ng cÃ¡ch ÄÄng kÃ½, báº¡n Äá»ng Ã½ vá»i{' '}
+        <Link href="/pages/terms" style={{ color: 'var(--sage)' }}>Äiá»u khoáº£n</Link>
+        {' '}vÃ {' '}
+        <Link href="/pages/privacy" style={{ color: 'var(--sage)' }}>ChÃ­nh sÃ¡ch báº£o máº­t</Link> cá»§a chÃºng tÃ´i.
       </p>
     </AuthCard>
   );

@@ -1,4 +1,4 @@
-export function AuthCard({ children, title, subtitle }: {
+ï»¿export function AuthCard({ children, title, subtitle }: {
   children: React.ReactNode;
   title: string;
   subtitle?: string;

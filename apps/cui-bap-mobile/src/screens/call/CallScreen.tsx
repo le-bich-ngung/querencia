@@ -1,6 +1,6 @@
-/**
- * CallScreen — gọi thoại & video
- * Hiển thị: local video (PiP góc), remote video (full), hoặc avatar khi gọi thoại
+ï»¿/**
+ * CallScreen â gá»i thoáº¡i & video
+ * Hiá»n thá»: local video (PiP gÃ³c), remote video (full), hoáº·c avatar khi gá»i thoáº¡i
  * Controls: mute, camera flip, speaker, end call
  */
 import React, { useEffect, useState } from 'react';
@@ -57,7 +57,7 @@ export function CallScreen({
     }
   }, [callState]);
 
-  // Đếm thời gian gọi
+  // Äáº¿m thá»i gian gá»i
   useEffect(() => {
     if (callState !== 'connected') { setDuration(0); return; }
     const t = setInterval(() => setDuration(d => d + 1), 1000);
@@ -76,7 +76,7 @@ export function CallScreen({
     <View style={cs.container}>
       <StatusBar barStyle="light-content" backgroundColor={colors.callBg}/>
 
-      {/* Background: video hoặc gradient */}
+      {/* Background: video hoáº·c gradient */}
       {callType === 'video' && remoteStream ? (
         <RTCView
           streamURL={remoteStream.toURL()}
@@ -91,14 +91,14 @@ export function CallScreen({
       <View style={cs.topInfo}>
         <Text style={cs.callerName}>{callerName}</Text>
         <Text style={cs.statusText}>
-          {callState === 'calling'   ? 'Đang gọi...' :
-           callState === 'ringing'   ? 'Cuộc gọi đến' :
+          {callState === 'calling'   ? 'Äang gá»i...' :
+           callState === 'ringing'   ? 'Cuá»c gá»i Äáº¿n' :
            callState === 'connected' ? fmtDuration(duration) :
            ''}
         </Text>
       </View>
 
-      {/* Center: avatar (voice call) hoặc local PiP (video) */}
+      {/* Center: avatar (voice call) hoáº·c local PiP (video) */}
       {callType === 'voice' || !remoteStream ? (
         <View style={cs.center}>
           <Avatar name={callerName} size={100}/>
@@ -124,7 +124,7 @@ export function CallScreen({
         </View>
       )}
 
-      {/* INCOMING CALL — answer/reject */}
+      {/* INCOMING CALL â answer/reject */}
       {callState === 'ringing' && (
         <View style={cs.incomingControls}>
           <View style={cs.incomingRow}>
@@ -133,7 +133,7 @@ export function CallScreen({
               <TouchableOpacity style={[cs.callBtn, cs.rejectBtn]} onPress={onReject}>
                 <Icon name="call" size={28} color="#fff" style={{ transform: [{ rotate: '135deg' }] }}/>
               </TouchableOpacity>
-              <Text style={cs.btnLabel}>Từ chối</Text>
+              <Text style={cs.btnLabel}>Tá»« chá»i</Text>
             </View>
 
             {/* Answer */}
@@ -141,7 +141,7 @@ export function CallScreen({
               <TouchableOpacity style={[cs.callBtn, cs.answerBtn]} onPress={onAnswer}>
                 <Icon name="call" size={28} color="#fff"/>
               </TouchableOpacity>
-              <Text style={cs.btnLabel}>Trả lời</Text>
+              <Text style={cs.btnLabel}>Tráº£ lá»i</Text>
             </View>
           </View>
         </View>
@@ -160,7 +160,7 @@ export function CallScreen({
               >
                 <Icon name={isMuted ? 'mic-off' : 'mic'} size={22} color="#fff"/>
               </TouchableOpacity>
-              <Text style={cs.ctrlLabel}>{isMuted ? 'Bỏ tắt' : 'Tắt mic'}</Text>
+              <Text style={cs.ctrlLabel}>{isMuted ? 'Bá» táº¯t' : 'Táº¯t mic'}</Text>
             </View>
 
             {/* End call */}
@@ -168,7 +168,7 @@ export function CallScreen({
               <TouchableOpacity style={[cs.ctrlBtn, cs.endBtn]} onPress={onHangUp}>
                 <Icon name="call" size={26} color="#fff" style={{ transform: [{ rotate: '135deg' }] }}/>
               </TouchableOpacity>
-              <Text style={cs.ctrlLabel}>Kết thúc</Text>
+              <Text style={cs.ctrlLabel}>Káº¿t thÃºc</Text>
             </View>
 
             {/* Camera (video only) */}
@@ -180,7 +180,7 @@ export function CallScreen({
                 >
                   <Icon name={isCamOff ? 'videocam-off' : 'videocam'} size={22} color="#fff"/>
                 </TouchableOpacity>
-                <Text style={cs.ctrlLabel}>{isCamOff ? 'Bật cam' : 'Tắt cam'}</Text>
+                <Text style={cs.ctrlLabel}>{isCamOff ? 'Báº­t cam' : 'Táº¯t cam'}</Text>
               </View>
             ) : (
               // Speaker toggle cho voice call
@@ -188,7 +188,7 @@ export function CallScreen({
                 <TouchableOpacity style={cs.ctrlBtn} onPress={() => {}}>
                   <Icon name="volume-high" size={22} color="#fff"/>
                 </TouchableOpacity>
-                <Text style={cs.ctrlLabel}>Loa ngoài</Text>
+                <Text style={cs.ctrlLabel}>Loa ngoÃ i</Text>
               </View>
             )}
 

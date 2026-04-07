@@ -1,4 +1,4 @@
-import { createNavigationContainerRef } from '@react-navigation/native';
+ï»¿import { createNavigationContainerRef } from '@react-navigation/native';
 import React from 'react';
 import { NavigationContainer } from '@react-navigation/native';
 import { createNativeStackNavigator } from '@react-navigation/native-stack';
@@ -56,9 +56,9 @@ function MainTabs() {
       tabBarLabelStyle: { fontSize:11, fontWeight:'600' },
     }}>
       <Tab.Screen name="Chats"    component={ChatsScreen}
-        options={{ tabBarLabel:'Tin nhắn', tabBarIcon:({color,size})=><Icon name="chatbubbles" size={size} color={color}/> }}/>
+        options={{ tabBarLabel:'Tin nháº¯n', tabBarIcon:({color,size})=><Icon name="chatbubbles" size={size} color={color}/> }}/>
       <Tab.Screen name="Settings" component={SettingsScreen}
-        options={{ tabBarLabel:'Cài đặt',  tabBarIcon:({color,size})=><Icon name="settings-outline" size={size} color={color}/> }}/>
+        options={{ tabBarLabel:'CÃ i Äáº·t',  tabBarIcon:({color,size})=><Icon name="settings-outline" size={size} color={color}/> }}/>
     </Tab.Navigator>
   );
 }
@@ -80,12 +80,12 @@ export function AppNavigator() {
           <>
             <Root.Screen name="Main"           component={MainTabs}            options={{ headerShown:false }}/>
             <Root.Screen name="Chat"           component={ChatScreen}          options={({route})=>({ title:(route.params as any).name })}/>
-            <Root.Screen name="NewChat"        component={NewChatScreen}       options={{ title:'Tạo mới', presentation:'modal' }}/>
+            <Root.Screen name="NewChat"        component={NewChatScreen}       options={{ title:'Táº¡o má»i', presentation:'modal' }}/>
             <Root.Screen name="GroupInfo"      component={GroupInfoScreen}     options={({route})=>({ title:(route.params as any).groupName })}/>
-            <Root.Screen name="SearchMessages" component={SearchMessagesScreen} options={{ title:'Tìm kiếm', presentation:'modal' }}/>
-            <Root.Screen name="BlockReport"    component={BlockReportScreen}   options={{ title:'Tùy chọn', presentation:'modal' }}/>
-            <Root.Screen name="PinnedMessages" component={PinnedMessagesScreen} options={{ title:'Tin nhắn đã ghim' }}/>
-            <Root.Screen name="EditProfile"    component={EditProfileScreen}    options={{ title:'Chỉnh sửa hồ sơ', presentation:'modal' }}/>
+            <Root.Screen name="SearchMessages" component={SearchMessagesScreen} options={{ title:'TÃ¬m kiáº¿m', presentation:'modal' }}/>
+            <Root.Screen name="BlockReport"    component={BlockReportScreen}   options={{ title:'TÃ¹y chá»n', presentation:'modal' }}/>
+            <Root.Screen name="PinnedMessages" component={PinnedMessagesScreen} options={{ title:'Tin nháº¯n ÄÃ£ ghim' }}/>
+            <Root.Screen name="EditProfile"    component={EditProfileScreen}    options={{ title:'Chá»nh sá»­a há» sÆ¡', presentation:'modal' }}/>
           </>
         ) : (
           <Root.Screen name="Auth" component={AuthStack} options={{ headerShown:false }}/>

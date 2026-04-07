@@ -1,39 +1,39 @@
-/**
- * Contextual Links — tự nhận biết context và tạo deep link đúng
+ï»¿/**
+ * Contextual Links â tá»± nháº­n biáº¿t context vÃ  táº¡o deep link ÄÃºng
  *
- * Dùng cho:
- *   - LàNo: khi AI đề cập tool → tạo link vào tool đó
- *   - Read: link nội bộ trong bài viết
- *   - Nope: mention tool → link vào tools page
+ * DÃ¹ng cho:
+ *   - LÃ No: khi AI Äá» cáº­p tool â táº¡o link vÃ o tool ÄÃ³
+ *   - Read: link ná»i bá» trong bÃ i viáº¿t
+ *   - Nope: mention tool â link vÃ o tools page
  *   - Tools: suggest related tools
  */
 
 export interface ContextLink {
-  text: string;        // text hiển thị
-  href: string;        // URL đích
+  text: string;        // text hiá»n thá»
+  href: string;        // URL ÄÃ­ch
   type: 'tool' | 'app' | 'page' | 'external';
   description?: string;
 }
 
-// Keyword → deep link mapping
+// Keyword â deep link mapping
 const TOOL_KEYWORDS: Record<string, { href: string; name: string }> = {
-  'pdf': { href: '/tools/pdf-to-word', name: 'PDF → Word' },
-  'word': { href: '/tools/pdf-to-word', name: 'PDF → Word' },
-  'ảnh': { href: '/tools/image-editor', name: 'Image Editor' },
-  'hình ảnh': { href: '/tools/image-editor', name: 'Image Editor' },
+  'pdf': { href: '/tools/pdf-to-word', name: 'PDF â Word' },
+  'word': { href: '/tools/pdf-to-word', name: 'PDF â Word' },
+  'áº£nh': { href: '/tools/image-editor', name: 'Image Editor' },
+  'hÃ¬nh áº£nh': { href: '/tools/image-editor', name: 'Image Editor' },
   'image': { href: '/tools/image-editor', name: 'Image Editor' },
-  'nén ảnh': { href: '/tools/compressor', name: 'Image Compressor' },
+  'nÃ©n áº£nh': { href: '/tools/compressor', name: 'Image Compressor' },
   'compress': { href: '/tools/compressor', name: 'Image Compressor' },
   'qr': { href: '/tools/qr-generator', name: 'QR Generator' },
-  'mã qr': { href: '/tools/qr-generator', name: 'QR Generator' },
-  'mật khẩu': { href: '/tools/password-generator', name: 'Password Generator' },
+  'mÃ£ qr': { href: '/tools/qr-generator', name: 'QR Generator' },
+  'máº­t kháº©u': { href: '/tools/password-generator', name: 'Password Generator' },
   'password': { href: '/tools/password-generator', name: 'Password Generator' },
   'flashcard': { href: '/tools/flashcards', name: 'Flashcards' },
-  'thẻ ghi nhớ': { href: '/tools/flashcards', name: 'Flashcards' },
+  'tháº» ghi nhá»': { href: '/tools/flashcards', name: 'Flashcards' },
   'markdown': { href: '/tools/markdown-editor', name: 'Markdown Editor' },
-  'link tự hủy': { href: '/tools/vault', name: 'Vault' },
+  'link tá»± há»§y': { href: '/tools/vault', name: 'Vault' },
   'vault': { href: '/tools/vault', name: 'Vault' },
-  'ghi chú': { href: '/tools/notes', name: 'Notes' },
+  'ghi chÃº': { href: '/tools/notes', name: 'Notes' },
   'notes': { href: '/tools/notes', name: 'Notes' },
   'pomodoro': { href: '/tools/pomodoro', name: 'Pomodoro' },
   'json': { href: '/tools/json-formatter', name: 'JSON Formatter' },
@@ -41,16 +41,16 @@ const TOOL_KEYWORDS: Record<string, { href: string; name: string }> = {
 };
 
 const APP_KEYWORDS: Record<string, { href: string; name: string }> = {
-  'lano': { href: '/dashboard/lano', name: 'LàNo' },
-  'làno': { href: '/dashboard/lano', name: 'LàNo' },
+  'lano': { href: '/dashboard/lano', name: 'LÃ No' },
+  'lÃ no': { href: '/dashboard/lano', name: 'LÃ No' },
   'nope': { href: '/dashboard/nope', name: 'Nope' },
-  'cùi bắp': { href: '/dashboard/cui-bap', name: 'Cùi Bắp' },
-  'cuibap': { href: '/dashboard/cui-bap', name: 'Cùi Bắp' },
+  'cÃ¹i báº¯p': { href: '/dashboard/cui-bap', name: 'CÃ¹i Báº¯p' },
+  'cuibap': { href: '/dashboard/cui-bap', name: 'CÃ¹i Báº¯p' },
 };
 
 /**
- * Parse text và tìm contextual links
- * Trả về danh sách link gợi ý dựa trên nội dung
+ * Parse text vÃ  tÃ¬m contextual links
+ * Tráº£ vá» danh sÃ¡ch link gá»£i Ã½ dá»±a trÃªn ná»i dung
  */
 export function extractContextLinks(text: string): ContextLink[] {
   const lower = text.toLowerCase();
@@ -64,7 +64,7 @@ export function extractContextLinks(text: string): ContextLink[] {
         text:  target.name,
         href:  target.href,
         type:  'tool',
-        description: `Mở ${target.name}`,
+        description: `Má» ${target.name}`,
       });
     }
   }
@@ -76,16 +76,16 @@ export function extractContextLinks(text: string): ContextLink[] {
         text:  target.name,
         href:  target.href,
         type:  'app',
-        description: `Vào ${target.name}`,
+        description: `VÃ o ${target.name}`,
       });
     }
   }
 
-  return links.slice(0, 3); // Max 3 gợi ý tại một thời điểm
+  return links.slice(0, 3); // Max 3 gá»£i Ã½ táº¡i má»t thá»i Äiá»m
 }
 
 /**
- * Tạo deep link từ context cụ thể
+ * Táº¡o deep link tá»« context cá»¥ thá»
  */
 export function buildDeepLink(context: {
   app?: 'lano' | 'nope' | 'cui-bap' | 'tools';
@@ -100,7 +100,7 @@ export function buildDeepLink(context: {
 }
 
 /**
- * Smart suggest: dựa trên tool vừa dùng → suggest related
+ * Smart suggest: dá»±a trÃªn tool vá»«a dÃ¹ng â suggest related
  */
 export const RELATED_TOOLS: Record<string, string[]> = {
   'pdf-to-word':         ['pdf-reader', 'pdf-tool', 'markdown-editor'],

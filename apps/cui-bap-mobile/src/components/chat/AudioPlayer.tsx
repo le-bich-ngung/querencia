@@ -1,5 +1,5 @@
-/**
- * AudioPlayer — inline audio player cho voice messages
+ï»¿/**
+ * AudioPlayer â inline audio player cho voice messages
  * Play/pause + progress bar + duration
  */
 import React, { useState, useRef, useEffect } from 'react';
