@@ -1,4 +1,4 @@
-ï»¿import React, { useEffect, useRef, useState, useCallback } from 'react';
+import React, { useEffect, useRef, useState, useCallback } from 'react';
 import {
   View, Text, FlatList, TextInput, TouchableOpacity,
   StyleSheet, KeyboardAvoidingView, Platform,
@@ -28,13 +28,13 @@ import type { CBMessage } from '../../store/chat.store';
 
 type Props = NativeStackScreenProps<RootStackParams, 'Chat'>;
 const SAGE   = colors.sage;
-const EMOJIS = ['â¤ï¸','ð','ð','ð®','ð¢','ð¥','ð','ð','ð','ð¯'];
+const EMOJIS = ['❤️','😂','👍','😮','😢','🔥','🎉','👏','🙏','💯'];
 
 function fmt(iso: string) {
   return new Date(iso).toLocaleTimeString('vi-VN', { hour: '2-digit', minute: '2-digit' });
 }
 
-// ââ Message bubble âââââââââââââââââââââââââââââââââââââââââââââ
+// ── Message bubble ─────────────────────────────────────────────
 function Bubble({ msg, isOut, onLongPress, myId }: {
   msg: CBMessage; isOut: boolean;
   onLongPress: (m: CBMessage) => void;
@@ -44,15 +44,15 @@ function Bubble({ msg, isOut, onLongPress, myId }: {
     return (
       <View style={[ms.row, isOut && ms.rowOut]}>
         <View style={[ms.bubble, { backgroundColor: colors.bgSurface, opacity: 0.5 }]}>
-          <Text style={{ color: colors.gray, fontStyle: 'italic', fontSize: 13 }}>ð ÄÃ£ xÃ³a</Text>
+          <Text style={{ color: colors.gray, fontStyle: 'italic', fontSize: 13 }}>🗑 Đã xóa</Text>
         </View>
       </View>
     );
   }
 
-  // Receipt status â tá»« store (cáº­p nháº­t real-time qua WebSocket)
+  // Receipt status — từ store (cập nhật real-time qua WebSocket)
   const receiptStatus = !isOut
-    ? undefined  // chá» show cho tin mÃ¬nh gá»­i
+    ? undefined  // chỉ show cho tin mình gửi
     : msg.pending
       ? 'sending'
       : msg.receiptStatus ?? 'sent';
@@ -74,7 +74,7 @@ function Bubble({ msg, isOut, onLongPress, myId }: {
         {/* Reply preview */}
         {msg.replyToId && (
           <View style={[ms.replyBar, isOut && ms.replyBarOut]}>
-            <Text style={ms.replyText} numberOfLines={1}>â©ï¸ Tráº£ lá»i tin nháº¯n</Text>
+            <Text style={ms.replyText} numberOfLines={1}>↩️ Trả lời tin nhắn</Text>
           </View>
         )}
 
@@ -116,9 +116,9 @@ function Bubble({ msg, isOut, onLongPress, myId }: {
           ) : (
             <Text style={[ms.txt, isOut && ms.txtOut]}>
               {msg.content}
-              {msg.isEdited && <Text style={{ opacity: 0.5, fontSize: 10 }}> (ÄÃ£ sá»­a)</Text>}
+              {msg.isEdited && <Text style={{ opacity: 0.5, fontSize: 10 }}> (đã sửa)</Text>}
             </Text>
-            {/* Link preview cho text messages cÃ³ chá»©a URL */}
+            {/* Link preview cho text messages có chứa URL */}
             {msg.content && extractUrls(msg.content).length > 0 && (
               <LinkPreview text={msg.content} isOut={isOut}/>
             )}
@@ -171,7 +171,7 @@ const ms = StyleSheet.create({
   time:       { fontSize:10, color:colors.gray },
 });
 
-// ââ ChatScreen âââââââââââââââââââââââââââââââââââââââââââââââââ
+// ── ChatScreen ─────────────────────────────────────────────────
 export function ChatScreen({ route, navigation }: Props) {
   const { convId, convType, name, otherUserId } = route.params;
   const scrollToMsgId = (route.params as any).scrollToMsgId as string | undefined;
@@ -202,7 +202,7 @@ export function ChatScreen({ route, navigation }: Props) {
     ...socketFns,
     onCallOffer:  (d) => setIncoming(d),
     onCallEnd:    () => {},
-    onCallReject: () => Alert.alert('Cuá»c gá»i bá» tá»« chá»i'),
+    onCallReject: () => Alert.alert('Cuộc gọi bị từ chối'),
   });
 
   // Header
@@ -308,9 +308,9 @@ export function ChatScreen({ route, navigation }: Props) {
       const sent = isDirect ? await api.sendMsg(convId, body) : await api.sendGroupMsg(convId, body);
       store.updateMessage(convId, tempId, { ...sent, id: sent.id, pending: false, receiptStatus: 'sent' });
     } catch {
-      // LÆ°u vÃ o offline queue â sáº½ retry khi cÃ³ máº¡ng
+      // Lưu vào offline queue — sẽ retry khi có mạng
       enqueue({ tempId, convId, convType, body, queuedAt: new Date().toISOString(), retries: 0 });
-      // Message váº«n hiá»n nhÆ°ng vá»i icon pending (sáº½ tá»± gá»­i láº¡i)
+      // Message vẫn hiện nhưng với icon pending (sẽ tự gửi lại)
     }
   }
 
@@ -326,7 +326,7 @@ export function ChatScreen({ route, navigation }: Props) {
       const body = { content: a.fileName ?? 'photo.jpg', msgType: 'image', fileUrl: u.url, fileName: a.fileName, fileSize: a.fileSize };
       const msg  = isDirect ? await api.sendMsg(convId, body) : await api.sendGroupMsg(convId, body);
       store.appendMessage(convId, msg);
-    } catch { Alert.alert('Lá»i', 'KhÃ´ng thá» gá»­i áº£nh.'); }
+    } catch { Alert.alert('Lỗi', 'Không thể gửi ảnh.'); }
   }
 
 
@@ -335,9 +335,9 @@ export function ChatScreen({ route, navigation }: Props) {
     const r = await launchImageLibrary({ mediaType: 'video', videoQuality: 'medium' });
     if (!r.assets?.[0]) return;
     const a = r.assets[0];
-    // Giá»i háº¡n 50MB
+    // Giới hạn 50MB
     if (a.fileSize && a.fileSize > 50 * 1024 * 1024) {
-      Alert.alert('File quÃ¡ lá»n', 'Video tá»i Äa 50MB. Thá»­ nÃ©n video láº¡i nhÃ©.'); return;
+      Alert.alert('File quá lớn', 'Video tối đa 50MB. Thử nén video lại nhé.'); return;
     }
     const form = new FormData();
     form.append('file', { uri: a.uri, name: a.fileName ?? 'video.mp4', type: a.type ?? 'video/mp4' } as any);
@@ -346,7 +346,7 @@ export function ChatScreen({ route, navigation }: Props) {
       const body = { content: a.fileName ?? 'video.mp4', msgType: 'video', fileUrl: u.url, fileName: a.fileName, fileSize: a.fileSize };
       const msg  = isDirect ? await api.sendMsg(convId, body) : await api.sendGroupMsg(convId, body);
       store.appendMessage(convId, msg);
-    } catch { Alert.alert('Lá»i', 'KhÃ´ng thá» gá»­i video.'); }
+    } catch { Alert.alert('Lỗi', 'Không thể gửi video.'); }
   }
 
   // File
@@ -372,27 +372,27 @@ export function ChatScreen({ route, navigation }: Props) {
       const body = { content: name, msgType: 'audio', fileUrl: u.url, fileName: name, fileSize: u.size };
       const msg  = isDirect ? await api.sendMsg(convId, body) : await api.sendGroupMsg(convId, body);
       store.appendMessage(convId, msg);
-    } catch { Alert.alert('Lá»i', 'KhÃ´ng thá» gá»­i voice message.'); }
+    } catch { Alert.alert('Lỗi', 'Không thể gửi voice message.'); }
   }
 
   // Long press
   function handleLongPress(msg: CBMessage) {
     const isOut = msg.sender?.id === user?.id;
     const opts: any[] = [
-      { text: 'â©ï¸ Tráº£ lá»i',      onPress: () => setReplyTo(msg) },
-      { text: 'ð React',        onPress: () => setShowEmoji(msg.id) },
-      { text: 'âï¸ Chuyá»n tiáº¿p', onPress: () => setForwardMsg(msg) },
+      { text: '↩️ Trả lời',      onPress: () => setReplyTo(msg) },
+      { text: '😊 React',        onPress: () => setShowEmoji(msg.id) },
+      { text: '↗️ Chuyển tiếp', onPress: () => setForwardMsg(msg) },
     ];
     if (isOut) {
       opts.push({
-        text: 'ð XÃ³a', style: 'destructive',
+        text: '🗑 Xóa', style: 'destructive',
         onPress: async () => {
           await api.deleteMsg(msg.id);
           store.updateMessage(convId, msg.id, { isDeleted: true, content: null });
         },
       });
     }
-    opts.push({ text: 'ÄÃ³ng', style: 'cancel' });
+    opts.push({ text: 'Đóng', style: 'cancel' });
     Alert.alert('', undefined, opts);
   }
 
@@ -406,7 +406,7 @@ export function ChatScreen({ route, navigation }: Props) {
     }
   }
 
-  // Typing indicator â resolve username
+  // Typing indicator — resolve username
   const typingNames = Object.entries(store.typingUsers)
     .filter(([, v]) => v)
     .map(([uid]) => {
@@ -459,7 +459,7 @@ export function ChatScreen({ route, navigation }: Props) {
             onContentSizeChange={() => {
               if (!loadingMore) listRef.current?.scrollToEnd({ animated: false });
             }}
-            // Pagination: scroll lÃªn Äáº§u â load more
+            // Pagination: scroll lên đầu → load more
             onScrollBeginDrag={() => {}}
             onEndReachedThreshold={0.1}
             ListHeaderComponent={
@@ -467,14 +467,14 @@ export function ChatScreen({ route, navigation }: Props) {
                 <TouchableOpacity onPress={loadMore} style={cs.loadMore}>
                   {loadingMore
                     ? <ActivityIndicator size="small" color={SAGE}/>
-                    : <Text style={cs.loadMoreTxt}>Táº£i thÃªm tin nháº¯n cÅ© hÆ¡n</Text>
+                    : <Text style={cs.loadMoreTxt}>Tải thêm tin nhắn cũ hơn</Text>
                   }
                 </TouchableOpacity>
               ) : null
             }
             ListEmptyComponent={
               <View style={cs.center}>
-                <Text style={{ color: colors.gray, fontSize: 15 }}>Báº¯t Äáº§u trÃ² chuyá»n ð</Text>
+                <Text style={{ color: colors.gray, fontSize: 15 }}>Bắt đầu trò chuyện 👋</Text>
               </View>
             }
             scrollIndicatorInsets={{ right: 1 }}
@@ -483,7 +483,7 @@ export function ChatScreen({ route, navigation }: Props) {
 
         {/* Typing indicator */}
         {typingNames.length > 0 && (
-          <Text style={cs.typing}>{typingNames[0]} Äang nháº­p...</Text>
+          <Text style={cs.typing}>{typingNames[0]} đang nhập...</Text>
         )}
 
         {/* Emoji reaction picker */}
@@ -507,9 +507,9 @@ export function ChatScreen({ route, navigation }: Props) {
         {replyTo && (
           <View style={cs.replyBar}>
             <View style={{ flex: 1 }}>
-              <Text style={{ fontSize: 11, color: SAGE, fontWeight: '700' }}>â©ï¸ Tráº£ lá»i</Text>
+              <Text style={{ fontSize: 11, color: SAGE, fontWeight: '700' }}>↩️ Trả lời</Text>
               <Text style={{ fontSize: 12, color: colors.textSec }} numberOfLines={1}>
-                {replyTo.content || 'ð File'}
+                {replyTo.content || '📎 File'}
               </Text>
             </View>
             <TouchableOpacity onPress={() => setReplyTo(null)}>
@@ -523,12 +523,12 @@ export function ChatScreen({ route, navigation }: Props) {
           <View style={cs.timerBar}>
             <Icon name="timer" size={13} color={SAGE}/>
             <Text style={cs.timerTxt}>
-              Tin nháº¯n tiáº¿p theo sáº½ tá»± há»§y sau{' '}
+              Tin nhắn tiếp theo sẽ tự hủy sau{' '}
               {autoDelete < 3600
-                ? `${autoDelete / 60} phÃºt`
+                ? `${autoDelete / 60} phút`
                 : autoDelete < 86400
-                  ? `${autoDelete / 3600} giá»`
-                  : `${autoDelete / 86400} ngÃ y`
+                  ? `${autoDelete / 3600} giờ`
+                  : `${autoDelete / 86400} ngày`
               }
             </Text>
             <TouchableOpacity onPress={() => setAutoDelete(null)}>
@@ -558,7 +558,7 @@ export function ChatScreen({ route, navigation }: Props) {
             style={cs.input}
             value={text}
             onChangeText={onTextChange}
-            placeholder="Nháº¯n tin..."
+            placeholder="Nhắn tin..."
             placeholderTextColor={colors.gray}
             multiline
             maxLength={4000}

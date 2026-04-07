@@ -1,6 +1,6 @@
-ï»¿/**
- * ImageViewer â full screen image viewer
- * Tap Äá» má», pinch to zoom, swipe down Äá» ÄÃ³ng
+/**
+ * ImageViewer — full screen image viewer
+ * Tap để mở, pinch to zoom, swipe down để đóng
  */
 import React, { useState } from 'react';
 import {
@@ -25,7 +25,7 @@ export function ImageViewer({ uri, fileName, visible, onClose }: Props) {
       await Share.share({
         url:     Platform.OS === 'ios' ? uri : undefined,
         message: Platform.OS === 'android' ? uri : undefined,
-        title:   fileName ?? 'HÃ¬nh áº£nh tá»« CÃ¹i Báº¯p',
+        title:   fileName ?? 'Hình ảnh từ Cùi Bắp',
       });
     } catch {}
   }
@@ -68,7 +68,7 @@ export function ImageViewer({ uri, fileName, visible, onClose }: Props) {
   );
 }
 
-// ââ Tap-to-view wrapper âââââââââââââââââââââââââââââââââââââââ
+// ── Tap-to-view wrapper ───────────────────────────────────────
 export function TappableImage({
   uri, fileName, style,
 }: {

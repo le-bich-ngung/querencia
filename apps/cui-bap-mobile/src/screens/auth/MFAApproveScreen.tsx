@@ -1,7 +1,7 @@
-ï»¿/**
+/**
  * MFA Push Notification Approve Screen
- * Hiá»n khi nháº­n push notification tá»« ÄÄng nháº­p web
- * User báº¥m PhÃª duyá»t hoáº·c Tá»« chá»i
+ * Hiện khi nhận push notification từ đăng nhập web
+ * User bấm Phê duyệt hoặc Từ chối
  */
 import React, { useState, useEffect } from 'react';
 import {
@@ -27,10 +27,10 @@ interface Props {
 
 export function MFAApproveScreen({ request, onDismiss }: Props) {
   const [loading,    setLoading]    = useState(false);
-  const [countdown,  setCountdown]  = useState(300); // 5 phÃºt
+  const [countdown,  setCountdown]  = useState(300); // 5 phút
   const [responded,  setResponded]  = useState<'approved'|'rejected'|null>(null);
 
-  // Äáº¿m ngÆ°á»£c 5 phÃºt
+  // Đếm ngược 5 phút
   useEffect(() => {
     const t = setInterval(() => {
       setCountdown(c => {
@@ -54,7 +54,7 @@ export function MFAApproveScreen({ request, onDismiss }: Props) {
       setResponded('approved');
       setTimeout(onDismiss, 1500);
     } catch (e: any) {
-      Alert.alert('Lá»i', e.message);
+      Alert.alert('Lỗi', e.message);
     } finally { setLoading(false); }
   }
 
@@ -65,7 +65,7 @@ export function MFAApproveScreen({ request, onDismiss }: Props) {
       setResponded('rejected');
       setTimeout(onDismiss, 1500);
     } catch (e: any) {
-      Alert.alert('Lá»i', e.message);
+      Alert.alert('Lỗi', e.message);
     } finally { setLoading(false); }
   }
 
@@ -79,7 +79,7 @@ export function MFAApproveScreen({ request, onDismiss }: Props) {
             color={responded === 'approved' ? colors.sage : colors.error}
           />
           <Text style={s.resultText}>
-            {responded === 'approved' ? 'ÄÃ£ phÃª duyá»t' : 'ÄÃ£ tá»« chá»i'}
+            {responded === 'approved' ? 'Đã phê duyệt' : 'Đã từ chối'}
           </Text>
         </View>
       </View>
@@ -94,9 +94,9 @@ export function MFAApproveScreen({ request, onDismiss }: Props) {
           <Icon name="laptop" size={36} color={colors.sage}/>
         </View>
 
-        <Text style={s.title}>YÃªu cáº§u ÄÄng nháº­p</Text>
+        <Text style={s.title}>Yêu cầu đăng nhập</Text>
         <Text style={s.subtitle}>
-          CÃ³ ngÆ°á»i Äang ÄÄng nháº­p vÃ o tÃ i khoáº£n Querencia cá»§a báº¡n
+          Có người đang đăng nhập vào tài khoản Querencia của bạn
         </Text>
 
         {/* Device info */}
@@ -125,7 +125,7 @@ export function MFAApproveScreen({ request, onDismiss }: Props) {
 
         {/* Countdown */}
         <Text style={s.countdown}>
-          Háº¿t háº¡n sau {fmtCountdown()}
+          Hết hạn sau {fmtCountdown()}
         </Text>
 
         {/* Buttons */}
@@ -138,7 +138,7 @@ export function MFAApproveScreen({ request, onDismiss }: Props) {
             {loading ? <ActivityIndicator color="#fff" size="small"/> : (
               <>
                 <Icon name="close" size={18} color="#fff"/>
-                <Text style={s.btnText}>Tá»« chá»i</Text>
+                <Text style={s.btnText}>Từ chối</Text>
               </>
             )}
           </TouchableOpacity>
@@ -151,14 +151,14 @@ export function MFAApproveScreen({ request, onDismiss }: Props) {
             {loading ? <ActivityIndicator color="#fff" size="small"/> : (
               <>
                 <Icon name="checkmark" size={18} color="#fff"/>
-                <Text style={s.btnText}>PhÃª duyá»t</Text>
+                <Text style={s.btnText}>Phê duyệt</Text>
               </>
             )}
           </TouchableOpacity>
         </View>
 
         <Text style={s.warning}>
-          â ï¸ Náº¿u báº¡n khÃ´ng yÃªu cáº§u ÄÄng nháº­p, hÃ£y tá»« chá»i vÃ  Äá»i máº­t kháº©u ngay.
+          ⚠️ Nếu bạn không yêu cầu đăng nhập, hãy từ chối và đổi mật khẩu ngay.
         </Text>
       </View>
     </View>

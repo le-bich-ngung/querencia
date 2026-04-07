@@ -1,4 +1,4 @@
-ï»¿import { create } from 'zustand';
+import { create } from 'zustand';
 
 export interface CBUser    { id:string; name:string; avatarUrl?:string; }
 export interface CBMessage {

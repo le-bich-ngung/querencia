@@ -1,6 +1,6 @@
-ï»¿/**
- * Token Service â JWT lifecycle management
- * Access: 15m | Refresh: 7d (rotation â má»i láº§n dÃ¹ng cáº¥p cÃ¡i má»i, há»§y cÃ¡i cÅ©)
+﻿/**
+ * Token Service — JWT lifecycle management
+ * Access: 15m | Refresh: 7d (rotation — mỗi lần dùng cấp cái mới, hủy cái cũ)
  */
 import { Injectable, UnauthorizedException, Inject } from '@nestjs/common';
 import { JwtService } from '@nestjs/jwt';
@@ -9,8 +9,8 @@ import { randomUUID } from 'crypto';
 import { REDIS_SESSION } from '../../redis/redis.module';
 import type { Redis } from 'ioredis';
 
-const ACCESS_EXPIRY  = 15 * 60;          // 15 phÃºt (giÃ¢y)
-const REFRESH_EXPIRY = 7 * 24 * 3600;   // 7 ngÃ y (giÃ¢y)
+const ACCESS_EXPIRY  = 15 * 60;          // 15 phút (giây)
+const REFRESH_EXPIRY = 7 * 24 * 3600;   // 7 ngày (giây)
 
 @Injectable()
 export class TokenService {
@@ -20,7 +20,7 @@ export class TokenService {
     @Inject(REDIS_SESSION) private readonly redis: Redis,
   ) {}
 
-  /** Táº¡o access + refresh token má»i */
+  /** Tạo access + refresh token mới */
   async issueTokens(userId: string, email: string) {
     const jti = randomUUID(); // JWT ID cho revocation
 
@@ -40,7 +40,7 @@ export class TokenService {
       },
     );
 
-    // LÆ°u refresh token hash vÃ o Redis (family-based rotation)
+    // Lưu refresh token hash vào Redis (family-based rotation)
     const family = randomUUID();
     await this.redis.setex(
       `refresh:${userId}:${family}`,
@@ -51,7 +51,7 @@ export class TokenService {
     return { accessToken, refreshToken, family };
   }
 
-  /** Refresh rotation â nháº­n token cÅ©, cáº¥p token má»i, há»§y token cÅ© */
+  /** Refresh rotation — nhận token cũ, cấp token mới, hủy token cũ */
   async rotate(refreshToken: string): Promise<{ accessToken: string; refreshToken: string; family: string }> {
     let payload: any;
     try {
@@ -64,7 +64,7 @@ export class TokenService {
 
     const email = payload.sub as string;
 
-    // Cáº¥p token má»i
+    // Cấp token mới
     const tokens = await this.issueTokens(email, email);
     return tokens;
   }
@@ -74,7 +74,7 @@ export class TokenService {
     await this.redis.setex(`revoked:${jti}`, ttl, '1');
   }
 
-  /** Revoke táº¥t cáº£ refresh tokens cá»§a user (force logout all devices) */
+  /** Revoke tất cả refresh tokens của user (force logout all devices) */
   async revokeAll(userId: string) {
     const keys = await this.redis.keys(`refresh:${userId}:*`);
     if (keys.length) await this.redis.del(...keys);

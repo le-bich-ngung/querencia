@@ -1,6 +1,6 @@
-ï»¿import { Redis } from 'ioredis';
+﻿import { Redis } from 'ioredis';
 
-// DB3 â App cache (feed, leaderboard, hot data) + Cloudflare CDN layer
+// DB3 — App cache (feed, leaderboard, hot data) + Cloudflare CDN layer
 export const appCacheRedis = new Redis(
   process.env.REDIS_DB3_APP_CACHE_URL!,
   { db: 3, lazyConnect: true, maxRetriesPerRequest: 3 }

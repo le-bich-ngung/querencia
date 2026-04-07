@@ -1,6 +1,6 @@
-ï»¿/**
- * Nope Controller â REST endpoints
- * Migrated tá»« querencia-backend/api/app_logic.py (nope_router)
+﻿/**
+ * Nope Controller — REST endpoints
+ * Migrated từ querencia-backend/api/app_logic.py (nope_router)
  */
 import {
   Controller, Get, Post, Delete, Param, Body, Query,

@@ -1,18 +1,18 @@
-ï»¿/**
- * Nope â App chia sáº» kinh nghiá»m sá»ng
- * Migrated tá»« querencia-backend/api/models.py (NopePost, NopeComment, etc.)
- * Giá»¯ nguyÃªn tÃªn báº£ng Äá» data production an toÃ n
+﻿/**
+ * Nope — App chia sẻ kinh nghiệm sống
+ * Migrated từ querencia-backend/api/models.py (NopePost, NopeComment, etc.)
+ * Giữ nguyên tên bảng để data production an toàn
  */
 import {
   pgTable, uuid, text, integer, timestamp, boolean
 } from 'drizzle-orm/pg-core';
 import { users } from './users';
 
-// ââ Posts ââââââââââââââââââââââââââââââââââââââââââââââââââââ
+// ── Posts ────────────────────────────────────────────────────
 export const nopePosts = pgTable('nope_posts', {
   id:         uuid('id').primaryKey().defaultRandom(),
   authorId:   uuid('author_id').references(() => users.id, { onDelete: 'cascade' }).notNull(),
-  authorName: text('author_name').notNull(),          // tÃªn tháº­t hoáº·c nickname
+  authorName: text('author_name').notNull(),          // tên thật hoặc nickname
   title:      text('title').notNull(),
   body:       text('body').notNull(),
   imageUrl:   text('image_url'),                       // R2 URL
@@ -21,7 +21,7 @@ export const nopePosts = pgTable('nope_posts', {
   updatedAt:  timestamp('updated_at').defaultNow().notNull(),
 });
 
-// ââ Comments âââââââââââââââââââââââââââââââââââââââââââââââââ
+// ── Comments ─────────────────────────────────────────────────
 export const nopeComments = pgTable('nope_comments', {
   id:         uuid('id').primaryKey().defaultRandom(),
   postId:     uuid('post_id').references(() => nopePosts.id, { onDelete: 'cascade' }).notNull(),
@@ -31,7 +31,7 @@ export const nopeComments = pgTable('nope_comments', {
   createdAt:  timestamp('created_at').defaultNow().notNull(),
 });
 
-// ââ Thanks (â¤ï¸ bÃ i viáº¿t) ââââââââââââââââââââââââââââââââââââââ
+// ── Thanks (❤️ bài viết) ──────────────────────────────────────
 export const nopeThanks = pgTable('nope_thanks', {
   id:        uuid('id').primaryKey().defaultRandom(),
   postId:    uuid('post_id').references(() => nopePosts.id, { onDelete: 'cascade' }).notNull(),
@@ -39,7 +39,7 @@ export const nopeThanks = pgTable('nope_thanks', {
   createdAt: timestamp('created_at').defaultNow().notNull(),
 });
 
-// ââ Saves (Äá»c sau) ââââââââââââââââââââââââââââââââââââââââââ
+// ── Saves (đọc sau) ──────────────────────────────────────────
 export const nopeSaves = pgTable('nope_saves', {
   id:        uuid('id').primaryKey().defaultRandom(),
   postId:    uuid('post_id').references(() => nopePosts.id, { onDelete: 'cascade' }).notNull(),
@@ -47,7 +47,7 @@ export const nopeSaves = pgTable('nope_saves', {
   createdAt: timestamp('created_at').defaultNow().notNull(),
 });
 
-// ââ Follows ââââââââââââââââââââââââââââââââââââââââââââââââââ
+// ── Follows ──────────────────────────────────────────────────
 export const nopeFollows = pgTable('nope_follows', {
   id:          uuid('id').primaryKey().defaultRandom(),
   followerId:  uuid('follower_id').references(() => users.id, { onDelete: 'cascade' }).notNull(),
@@ -55,7 +55,7 @@ export const nopeFollows = pgTable('nope_follows', {
   createdAt:   timestamp('created_at').defaultNow().notNull(),
 });
 
-// ââ Reports ââââââââââââââââââââââââââââââââââââââââââââââââââ
+// ── Reports ──────────────────────────────────────────────────
 export const nopeReports = pgTable('nope_reports', {
   id:        uuid('id').primaryKey().defaultRandom(),
   postId:    uuid('post_id').references(() => nopePosts.id, { onDelete: 'cascade' }).notNull(),

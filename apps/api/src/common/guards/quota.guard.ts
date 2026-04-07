@@ -1,6 +1,6 @@
-ï»¿/**
- * Quota Guard â kiá»m tra vÃ  trá»« Q trÆ°á»c khi dÃ¹ng tool cÃ³ phÃ­
- * DÃ¹ng vá»i @QuotaCost(n) decorator
+﻿/**
+ * Quota Guard — kiểm tra và trừ Q trước khi dùng tool có phí
+ * Dùng với @QuotaCost(n) decorator
  */
 import {
   Injectable, CanActivate, ExecutionContext,
@@ -31,7 +31,7 @@ export class QuotaGuard implements CanActivate {
     const user = ctx.switchToHttp().getRequest().user;
     if (!user) throw new ForbiddenException('UNAUTHENTICATED');
 
-    // Pipeline: kiá»m tra Q expiring trÆ°á»c, náº¿u Äá»§ thÃ¬ trá»«
+    // Pipeline: kiểm tra Q expiring trước, nếu đủ thì trừ
     const expiringKey  = `q:expiring:${user.id}`;
     const permanentKey = `q:permanent:${user.id}`;
 
@@ -44,13 +44,13 @@ export class QuotaGuard implements CanActivate {
     if (total < cost) {
       throw new ForbiddenException({
         code:    'INSUFFICIENT_Q',
-        message: `Cáº§n ${cost} Q, báº¡n cÃ³ ${total} Q`,
+        message: `Cần ${cost} Q, bạn có ${total} Q`,
         needed:  cost,
         have:    total,
       });
     }
 
-    // Trá»« Q expiring trÆ°á»c, rá»i má»i trá»« permanent
+    // Trừ Q expiring trước, rồi mới trừ permanent
     if (expiring >= cost) {
       await this.redis.decrby(expiringKey, cost);
     } else {

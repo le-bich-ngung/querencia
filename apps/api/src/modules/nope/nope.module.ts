@@ -1,4 +1,4 @@
-ï»¿import { Module } from '@nestjs/common';
+﻿import { Module } from '@nestjs/common';
 import { NopeController } from './nope.controller';
 import { NopeService }    from './nope.service';
 

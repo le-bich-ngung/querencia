@@ -1,6 +1,6 @@
-ï»¿/**
- * Nope Service â DB WIRED
- * Táº¥t cáº£ stubs ÄÃ£ thay báº±ng Drizzle queries tháº­t
+﻿/**
+ * Nope Service — DB WIRED
+ * Tất cả stubs đã thay bằng Drizzle queries thật
  */
 import {
   Injectable, NotFoundException,
@@ -16,7 +16,7 @@ import { DB_TOKEN } from '../../database/database.module';
 import { REDIS_SESSION } from '../../redis/redis.module';
 import type { Redis } from 'ioredis';
 
-const FEED_CACHE_TTL = 300; // 5 phÃºt
+const FEED_CACHE_TTL = 300; // 5 phút
 
 @Injectable()
 export class NopeService {
@@ -27,11 +27,11 @@ export class NopeService {
     @Inject(REDIS_SESSION) private readonly redis: Redis,
   ) {}
 
-  // ââ Feed ââââââââââââââââââââââââââââââââââââââââââââââââââ
+  // ── Feed ──────────────────────────────────────────────────
   async getFeed(page = 1, limit = 20, userId?: string) {
     const cacheKey = `nope:feed:${page}:${limit}`;
 
-    // Try cache (chá» cache trang Äáº§u, anonymous)
+    // Try cache (chỉ cache trang đầu, anonymous)
     if (page === 1 && !userId) {
       const cached = await this.redis.get(cacheKey);
       if (cached) return JSON.parse(cached);
@@ -58,7 +58,7 @@ export class NopeService {
     return result;
   }
 
-  // ââ Search ââââââââââââââââââââââââââââââââââââââââââââââââ
+  // ── Search ────────────────────────────────────────────────
   async searchPosts(query: string, tags?: string[]) {
     const posts = await this.db.query.nopePosts.findMany({
       where: or(
@@ -80,7 +80,7 @@ export class NopeService {
     return { posts: await this._enrichPosts(filtered) };
   }
 
-  // ââ Saved posts âââââââââââââââââââââââââââââââââââââââââââ
+  // ── Saved posts ───────────────────────────────────────────
   async getSavedPosts(userId: string) {
     const saves = await this.db.query.nopeSaves.findMany({
       where: eq(nopeSaves.userId, userId),
@@ -95,12 +95,12 @@ export class NopeService {
     return { posts: await this._enrichPosts(posts, userId) };
   }
 
-  // ââ Post detail âââââââââââââââââââââââââââââââââââââââââââ
+  // ── Post detail ───────────────────────────────────────────
   async getPostById(postId: string, userId?: string) {
     const post = await this.db.query.nopePosts.findFirst({
       where: eq(nopePosts.id, postId),
     });
-    if (!post) throw new NotFoundException('BÃ i viáº¿t khÃ´ng tá»n táº¡i');
+    if (!post) throw new NotFoundException('Bài viết không tồn tại');
 
     const [comments, thanksCount, isThanked, isSaved] = await Promise.all([
       this.db.query.nopeComments.findMany({
@@ -134,7 +134,7 @@ export class NopeService {
     };
   }
 
-  // ââ Create post âââââââââââââââââââââââââââââââââââââââââââ
+  // ── Create post ───────────────────────────────────────────
   async createPost(data: {
     authorId:   string;
     authorName: string;
@@ -158,19 +158,19 @@ export class NopeService {
     return post;
   }
 
-  // ââ Delete post âââââââââââââââââââââââââââââââââââââââââââ
+  // ── Delete post ───────────────────────────────────────────
   async deletePost(postId: string, userId: string) {
     const post = await this.db.query.nopePosts.findFirst({
       where: eq(nopePosts.id, postId),
     });
-    if (!post) throw new NotFoundException('BÃ i viáº¿t khÃ´ng tá»n táº¡i');
-    if (post.authorId !== userId) throw new ForbiddenException('KhÃ´ng cÃ³ quyá»n xÃ³a');
+    if (!post) throw new NotFoundException('Bài viết không tồn tại');
+    if (post.authorId !== userId) throw new ForbiddenException('Không có quyền xóa');
 
     await this.db.delete(nopePosts).where(eq(nopePosts.id, postId));
     this._invalidateFeedCache();
   }
 
-  // ââ Toggle thank â¤ï¸ ââââââââââââââââââââââââââââââââââââââââ
+  // ── Toggle thank ❤️ ────────────────────────────────────────
   async toggleThank(postId: string, userId: string) {
     const existing = await this.db.query.nopeThanks.findFirst({
       where: and(eq(nopeThanks.postId, postId), eq(nopeThanks.userId, userId)),
@@ -188,7 +188,7 @@ export class NopeService {
     return { thanked: !existing, count: c };
   }
 
-  // ââ Toggle save âââââââââââââââââââââââââââââââââââââââââââ
+  // ── Toggle save ───────────────────────────────────────────
   async toggleSave(postId: string, userId: string) {
     const existing = await this.db.query.nopeSaves.findFirst({
       where: and(eq(nopeSaves.postId, postId), eq(nopeSaves.userId, userId)),
@@ -203,7 +203,7 @@ export class NopeService {
     return { saved: !existing };
   }
 
-  // ââ Add comment âââââââââââââââââââââââââââââââââââââââââââ
+  // ── Add comment ───────────────────────────────────────────
   async addComment(postId: string, data: {
     authorId:   string;
     authorName: string;
@@ -212,7 +212,7 @@ export class NopeService {
     const post = await this.db.query.nopePosts.findFirst({
       where: eq(nopePosts.id, postId),
     });
-    if (!post) throw new NotFoundException('BÃ i viáº¿t khÃ´ng tá»n táº¡i');
+    if (!post) throw new NotFoundException('Bài viết không tồn tại');
 
     const [comment] = await this.db.insert(nopeComments).values({
       postId,
@@ -224,20 +224,20 @@ export class NopeService {
     return comment;
   }
 
-  // ââ Delete comment ââââââââââââââââââââââââââââââââââââââââ
+  // ── Delete comment ────────────────────────────────────────
   async deleteComment(commentId: string, userId: string) {
     const comment = await this.db.query.nopeComments.findFirst({
       where: eq(nopeComments.id, commentId),
     });
-    if (!comment) throw new NotFoundException('BÃ¬nh luáº­n khÃ´ng tá»n táº¡i');
-    if (comment.authorId !== userId) throw new ForbiddenException('KhÃ´ng cÃ³ quyá»n xÃ³a');
+    if (!comment) throw new NotFoundException('Bình luận không tồn tại');
+    if (comment.authorId !== userId) throw new ForbiddenException('Không có quyền xóa');
 
     await this.db.delete(nopeComments).where(eq(nopeComments.id, commentId));
   }
 
-  // ââ Toggle follow âââââââââââââââââââââââââââââââââââââââââ
+  // ── Toggle follow ─────────────────────────────────────────
   async toggleFollow(followerId: string, followingId: string) {
-    if (followerId === followingId) throw new ForbiddenException('KhÃ´ng thá» follow chÃ­nh mÃ¬nh');
+    if (followerId === followingId) throw new ForbiddenException('Không thể follow chính mình');
 
     const existing = await this.db.query.nopeFollows.findFirst({
       where: and(
@@ -255,13 +255,13 @@ export class NopeService {
     return { following: !existing };
   }
 
-  // ââ User profile ââââââââââââââââââââââââââââââââââââââââââ
+  // ── User profile ──────────────────────────────────────────
   async getUserProfile(userId: string) {
     const user = await this.db.query.users.findFirst({
       where: eq(users.id, userId),
       columns: { id: true, name: true, email: true, avatarUrl: true, plan: true, createdAt: true },
     });
-    if (!user) throw new NotFoundException('NgÆ°á»i dÃ¹ng khÃ´ng tá»n táº¡i');
+    if (!user) throw new NotFoundException('Người dùng không tồn tại');
 
     const [[{ postCount }], [{ followerCount }], [{ followingCount }]] = await Promise.all([
       this.db.select({ postCount: count() }).from(nopePosts)
@@ -281,20 +281,20 @@ export class NopeService {
     return { ...user, postCount, followerCount, followingCount, recentPosts };
   }
 
-  // ââ Report post âââââââââââââââââââââââââââââââââââââââââââ
+  // ── Report post ───────────────────────────────────────────
   async reportPost(postId: string, userId: string, reason: string) {
     await this.db.insert(nopeReports).values({ postId, userId, reason })
-      .onConflictDoNothing(); // khÃ´ng cho report 2 láº§n
+      .onConflictDoNothing(); // không cho report 2 lần
   }
 
-  // ââ Private helpers âââââââââââââââââââââââââââââââââââââââ
+  // ── Private helpers ───────────────────────────────────────
 
   private async _enrichPosts(posts: any[], userId?: string) {
     if (!posts.length) return [];
 
     const postIds = posts.map(p => p.id);
 
-    // Batch query: Äáº¿m thanks + comments
+    // Batch query: đếm thanks + comments
     const [thanksRows, commentRows] = await Promise.all([
       this.db.select({ postId: nopeThanks.postId, c: count() })
         .from(nopeThanks)

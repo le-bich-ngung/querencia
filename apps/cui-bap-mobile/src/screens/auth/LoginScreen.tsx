@@ -1,4 +1,4 @@
-ï»¿import React, { useState } from 'react';
+import React, { useState } from 'react';
 import {
   View, Text, TextInput, TouchableOpacity, StyleSheet,
   KeyboardAvoidingView, Platform, ScrollView, ActivityIndicator, Alert,
@@ -22,7 +22,7 @@ export function LoginScreen({ navigation }: Props) {
 
   async function handleLogin() {
     if (!email.trim() || !password) {
-      Alert.alert('Vui lÃ²ng Äiá»n Äáº§y Äá»§ thÃ´ng tin.'); return;
+      Alert.alert('Vui lòng điền đầy đủ thông tin.'); return;
     }
     setLoading(true);
     try {
@@ -30,20 +30,20 @@ export function LoginScreen({ navigation }: Props) {
       setAuth(d.user, d.access_token, d.refresh_token);
       setupE2EE().catch(() => {});
     } catch (e: any) {
-      Alert.alert('ÄÄng nháº­p tháº¥t báº¡i', e.message ?? 'Email hoáº·c máº­t kháº©u khÃ´ng ÄÃºng.');
+      Alert.alert('Đăng nhập thất bại', e.message ?? 'Email hoặc mật khẩu không đúng.');
     } finally { setLoading(false); }
   }
 
   return (
     <KeyboardAvoidingView style={s.wrap} behavior={Platform.OS === 'ios' ? 'padding' : 'height'}>
       <ScrollView contentContainerStyle={s.inner} keyboardShouldPersistTaps="handled">
-        <Text style={s.logo}>ð½</Text>
-        <Text style={s.title}>CÃ¹i Báº¯p</Text>
-        <Text style={s.sub}>Nháº¯n tin riÃªng tÆ° Â· KhÃ´ng quáº£ng cÃ¡o</Text>
+        <Text style={s.logo}>🌽</Text>
+        <Text style={s.title}>Cùi Bắp</Text>
+        <Text style={s.sub}>Nhắn tin riêng tư · Không quảng cáo</Text>
 
-        {/* Social sign-in â Apple trÃªn iOS, Google trÃªn má»i ná»n táº£ng */}
+        {/* Social sign-in — Apple trên iOS, Google trên mọi nền tảng */}
         <View style={s.socialBtns}>
-          {/* Apple hiá»n trÆ°á»c trÃªn iOS (App Store requirement) */}
+          {/* Apple hiện trước trên iOS (App Store requirement) */}
           <AppleSignInButton/>
           <GoogleSignInButton/>
         </View>
@@ -51,7 +51,7 @@ export function LoginScreen({ navigation }: Props) {
         {/* Divider */}
         <View style={s.divider}>
           <View style={s.divLine}/>
-          <Text style={s.divText}>hoáº·c ÄÄng nháº­p báº±ng email</Text>
+          <Text style={s.divText}>hoặc đăng nhập bằng email</Text>
           <View style={s.divLine}/>
         </View>
 
@@ -63,10 +63,10 @@ export function LoginScreen({ navigation }: Props) {
           keyboardType="email-address" autoCapitalize="none" autoCorrect={false}
         />
 
-        <Text style={s.label}>Máº­t kháº©u</Text>
+        <Text style={s.label}>Mật khẩu</Text>
         <TextInput
           style={s.input} value={password} onChangeText={setPassword}
-          placeholder="â¢â¢â¢â¢â¢â¢â¢â¢" placeholderTextColor={colors.gray}
+          placeholder="••••••••" placeholderTextColor={colors.gray}
           secureTextEntry returnKeyType="done" onSubmitEditing={handleLogin}
         />
 
@@ -76,24 +76,24 @@ export function LoginScreen({ navigation }: Props) {
         >
           {loading
             ? <ActivityIndicator color="#fff"/>
-            : <Text style={s.btnTxt}>ÄÄng nháº­p</Text>
+            : <Text style={s.btnTxt}>Đăng nhập</Text>
           }
         </TouchableOpacity>
 
         <TouchableOpacity onPress={() => navigation.navigate('Register')} style={s.switchBtn}>
           <Text style={s.switchTxt}>
-            ChÆ°a cÃ³ tÃ i khoáº£n?{' '}
-            <Text style={s.link}>ÄÄng kÃ½ miá»n phÃ­</Text>
+            Chưa có tài khoản?{' '}
+            <Text style={s.link}>Đăng ký miễn phí</Text>
           </Text>
         </TouchableOpacity>
 
         {/* Trust indicators */}
         <View style={s.trustRow}>
-          <Text style={s.trustText}>ð E2EE</Text>
-          <Text style={s.trustDot}>Â·</Text>
-          <Text style={s.trustText}>ð« KhÃ´ng quáº£ng cÃ¡o</Text>
-          <Text style={s.trustDot}>Â·</Text>
-          <Text style={s.trustText}>ð¿ Querencia</Text>
+          <Text style={s.trustText}>🔒 E2EE</Text>
+          <Text style={s.trustDot}>·</Text>
+          <Text style={s.trustText}>🚫 Không quảng cáo</Text>
+          <Text style={s.trustDot}>·</Text>
+          <Text style={s.trustText}>🌿 Querencia</Text>
         </View>
       </ScrollView>
     </KeyboardAvoidingView>

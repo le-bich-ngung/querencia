@@ -1,4 +1,4 @@
-ï»¿import React, { useState } from 'react';
+import React, { useState } from 'react';
 import {
   View, Text, TouchableOpacity, StyleSheet,
   Alert, ActivityIndicator, TextInput,
@@ -12,11 +12,11 @@ import Icon from 'react-native-vector-icons/Ionicons';
 type Props = NativeStackScreenProps<RootStackParams, 'BlockReport'>;
 
 const REPORT_REASONS = [
-  'Spam hoáº·c quáº£ng cÃ¡o',
-  'Quáº¥y rá»i hoáº·c báº¯t náº¡t',
-  'Ná»i dung khÃ´ng phÃ¹ há»£p',
-  'Giáº£ máº¡o danh tÃ­nh',
-  'LÃ½ do khÃ¡c',
+  'Spam hoặc quảng cáo',
+  'Quấy rối hoặc bắt nạt',
+  'Nội dung không phù hợp',
+  'Giả mạo danh tính',
+  'Lý do khác',
 ];
 
 export function BlockReportScreen({ route, navigation }: Props) {
@@ -31,21 +31,21 @@ export function BlockReportScreen({ route, navigation }: Props) {
 
   async function handleBlock() {
     Alert.alert(
-      `Cháº·n ${targetName}?`,
-      'Sau khi cháº·n, ngÆ°á»i nÃ y sáº½ khÃ´ng thá» nháº¯n tin cho báº¡n.',
+      `Chặn ${targetName}?`,
+      'Sau khi chặn, người này sẽ không thể nhắn tin cho bạn.',
       [
-        { text: 'Há»§y', style: 'cancel' },
+        { text: 'Hủy', style: 'cancel' },
         {
-          text: 'Cháº·n', style: 'destructive',
+          text: 'Chặn', style: 'destructive',
           onPress: async () => {
             setLoading(true);
             try {
               await api.blockUser(targetUserId);
-              Alert.alert('ÄÃ£ cháº·n', `${targetName} ÄÃ£ bá» cháº·n.`, [
+              Alert.alert('Đã chặn', `${targetName} đã bị chặn.`, [
                 { text: 'OK', onPress: () => { navigation.goBack(); navigation.goBack(); } },
               ]);
             } catch (e: any) {
-              Alert.alert('Lá»i', e.message);
+              Alert.alert('Lỗi', e.message);
             } finally { setLoading(false); }
           },
         },
@@ -54,29 +54,29 @@ export function BlockReportScreen({ route, navigation }: Props) {
   }
 
   async function handleReport() {
-    const reason = selectedReason === 'LÃ½ do khÃ¡c'
+    const reason = selectedReason === 'Lý do khác'
       ? customReason.trim()
       : selectedReason;
-    if (!reason) { Alert.alert('Chá»n lÃ½ do bÃ¡o cÃ¡o'); return; }
+    if (!reason) { Alert.alert('Chọn lý do báo cáo'); return; }
 
     setLoading(true);
     try {
       await api.reportUser(targetUserId, reason);
       Alert.alert(
-        'ÄÃ£ gá»­i bÃ¡o cÃ¡o',
-        'Cáº£m Æ¡n báº¡n. ChÃºng tÃ´i sáº½ xem xÃ©t trong 24 giá».',
+        'Đã gửi báo cáo',
+        'Cảm ơn bạn. Chúng tôi sẽ xem xét trong 24 giờ.',
         [{ text: 'OK', onPress: () => navigation.goBack() }]
       );
     } catch (e: any) {
-      Alert.alert('Lá»i', e.message);
+      Alert.alert('Lỗi', e.message);
     } finally { setLoading(false); }
   }
 
   if (mode === 'report') {
     return (
       <View style={s.container}>
-        <Text style={s.title}>BÃ¡o cÃ¡o {targetName}</Text>
-        <Text style={s.subtitle}>Chá»n lÃ½ do bÃ¡o cÃ¡o:</Text>
+        <Text style={s.title}>Báo cáo {targetName}</Text>
+        <Text style={s.subtitle}>Chọn lý do báo cáo:</Text>
 
         {REPORT_REASONS.map(reason => (
           <TouchableOpacity
@@ -94,12 +94,12 @@ export function BlockReportScreen({ route, navigation }: Props) {
           </TouchableOpacity>
         ))}
 
-        {selectedReason === 'LÃ½ do khÃ¡c' && (
+        {selectedReason === 'Lý do khác' && (
           <TextInput
             style={s.customInput}
             value={customReason}
             onChangeText={setCustomReason}
-            placeholder="MÃ´ táº£ lÃ½ do..."
+            placeholder="Mô tả lý do..."
             placeholderTextColor={colors.gray}
             multiline
             autoFocus
@@ -113,12 +113,12 @@ export function BlockReportScreen({ route, navigation }: Props) {
         >
           {loading
             ? <ActivityIndicator color="#fff" size="small"/>
-            : <Text style={s.btnText}>Gá»­i bÃ¡o cÃ¡o</Text>
+            : <Text style={s.btnText}>Gửi báo cáo</Text>
           }
         </TouchableOpacity>
 
         <TouchableOpacity onPress={() => setMode('menu')} style={s.cancelBtn}>
-          <Text style={s.cancelText}>â Quay láº¡i</Text>
+          <Text style={s.cancelText}>← Quay lại</Text>
         </TouchableOpacity>
       </View>
     );
@@ -138,18 +138,18 @@ export function BlockReportScreen({ route, navigation }: Props) {
           ? <ActivityIndicator color="#fff" size="small"/>
           : <>
               <Icon name="ban" size={18} color="#fff"/>
-              <Text style={s.btnText}>Cháº·n {targetName}</Text>
+              <Text style={s.btnText}>Chặn {targetName}</Text>
             </>
         }
       </TouchableOpacity>
 
       <TouchableOpacity style={[s.btn, s.warnBtn]} onPress={() => setMode('report')}>
         <Icon name="flag" size={18} color={colors.text}/>
-        <Text style={[s.btnText, { color: colors.text }]}>BÃ¡o cÃ¡o {targetName}</Text>
+        <Text style={[s.btnText, { color: colors.text }]}>Báo cáo {targetName}</Text>
       </TouchableOpacity>
 
       <Text style={s.note}>
-        Khi báº¡n cháº·n ai ÄÃ³, há» sáº½ khÃ´ng thá» nháº¯n tin hoáº·c xem tráº¡ng thÃ¡i cá»§a báº¡n.
+        Khi bạn chặn ai đó, họ sẽ không thể nhắn tin hoặc xem trạng thái của bạn.
       </Text>
     </View>
   );

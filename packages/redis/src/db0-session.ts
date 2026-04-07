@@ -1,7 +1,7 @@
-ï»¿import { Redis } from 'ioredis';
+﻿import { Redis } from 'ioredis';
 
-// DB0 â Session / Auth tokens
-// TTL = token lifetime (thÆ°á»ng 15m access, 7d refresh)
+// DB0 — Session / Auth tokens
+// TTL = token lifetime (thường 15m access, 7d refresh)
 export const sessionRedis = new Redis(
   process.env.REDIS_DB0_SESSION_URL!,
   { db: 0, lazyConnect: true, maxRetriesPerRequest: 3 }

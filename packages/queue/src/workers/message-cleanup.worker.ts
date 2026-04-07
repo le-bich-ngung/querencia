@@ -1,6 +1,6 @@
-ï»¿/**
- * Message Cleanup Worker â BullMQ
- * Cháº¡y má»i 5 phÃºt: xÃ³a tin nháº¯n self-destruct ÄÃ£ háº¿t háº¡n
+﻿/**
+ * Message Cleanup Worker — BullMQ
+ * Chạy mỗi 5 phút: xóa tin nhắn self-destruct đã hết hạn
  * Schedule: cron '*/5 * * * *'
  */
 import { Worker, Queue } from 'bullmq';
@@ -20,7 +20,7 @@ export const cleanupQueue = new Queue('message-cleanup', {
 export async function scheduleCleanup() {
   await cleanupQueue.upsertJobScheduler(
     'auto-delete-messages',
-    { pattern: '*/5 * * * *' }, // má»i 5 phÃºt
+    { pattern: '*/5 * * * *' }, // mỗi 5 phút
     { name: 'cleanup', data: {} },
   );
 }
@@ -29,7 +29,7 @@ export async function scheduleCleanup() {
 export const cleanupWorker = new Worker('message-cleanup', async (job) => {
   const now = new Date();
 
-  // Soft delete messages ÄÃ£ háº¿t háº¡n
+  // Soft delete messages đã hết hạn
   await db.update(cbMessages)
     .set({ isDeleted: true, content: null })
     .where(and(

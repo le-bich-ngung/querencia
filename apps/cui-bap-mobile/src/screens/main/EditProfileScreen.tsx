@@ -1,4 +1,4 @@
-ï»¿import React, { useState } from 'react';
+import React, { useState } from 'react';
 import {
   View, Text, TextInput, TouchableOpacity, StyleSheet,
   Image, Alert, ActivityIndicator, KeyboardAvoidingView,
@@ -36,12 +36,12 @@ export function EditProfileScreen({ navigation }: Props) {
   }
 
   async function handleSave() {
-    if (!name.trim()) { Alert.alert('TÃªn khÃ´ng ÄÆ°á»£c Äá» trá»ng'); return; }
+    if (!name.trim()) { Alert.alert('Tên không được để trống'); return; }
     setSaving(true);
     try {
       let avatarUrl = user?.avatarUrl;
 
-      // Upload avatar náº¿u cÃ³ áº£nh má»i
+      // Upload avatar nếu có ảnh mới
       if (newAvatar) {
         setUploading(true);
         const form = new FormData();
@@ -55,11 +55,11 @@ export function EditProfileScreen({ navigation }: Props) {
       const updated = await api.updateProfile({ name: name.trim(), avatarUrl });
       updateUser({ name: updated.name, avatarUrl: updated.avatarUrl });
 
-      Alert.alert('ÄÃ£ lÆ°u', 'Há» sÆ¡ cá»§a báº¡n ÄÃ£ ÄÆ°á»£c cáº­p nháº­t.', [
+      Alert.alert('Đã lưu', 'Hồ sơ của bạn đã được cập nhật.', [
         { text: 'OK', onPress: () => navigation.goBack() },
       ]);
     } catch (e: any) {
-      Alert.alert('Lá»i', e.message ?? 'KhÃ´ng thá» cáº­p nháº­t há» sÆ¡.');
+      Alert.alert('Lỗi', e.message ?? 'Không thể cập nhật hồ sơ.');
     } finally {
       setSaving(false);
       setUploading(false);
@@ -90,16 +90,16 @@ export function EditProfileScreen({ navigation }: Props) {
               <Icon name="camera" size={16} color="#fff"/>
             </View>
           </TouchableOpacity>
-          <Text style={s.avatarHint}>Nháº¥n Äá» Äá»i áº£nh Äáº¡i diá»n</Text>
+          <Text style={s.avatarHint}>Nhấn để đổi ảnh đại diện</Text>
         </View>
 
         {/* Name */}
-        <Text style={s.label}>TÃªn hiá»n thá»</Text>
+        <Text style={s.label}>Tên hiển thị</Text>
         <TextInput
           style={s.input}
           value={name}
           onChangeText={setName}
-          placeholder="TÃªn cá»§a báº¡n"
+          placeholder="Tên của bạn"
           placeholderTextColor={colors.gray}
           autoCapitalize="words"
           maxLength={50}
@@ -112,7 +112,7 @@ export function EditProfileScreen({ navigation }: Props) {
         <View style={[s.input, s.inputReadonly]}>
           <Text style={s.readonlyText}>{user?.email}</Text>
         </View>
-        <Text style={s.readonlyHint}>Email khÃ´ng thá» thay Äá»i</Text>
+        <Text style={s.readonlyHint}>Email không thể thay đổi</Text>
 
         {/* Save button */}
         <TouchableOpacity
@@ -123,10 +123,10 @@ export function EditProfileScreen({ navigation }: Props) {
           {saving ? (
             <View style={{ flexDirection: 'row', gap: 8, alignItems: 'center' }}>
               <ActivityIndicator color="#fff" size="small"/>
-              <Text style={s.saveBtnText}>{uploading ? 'Äang táº£i áº£nh...' : 'Äang lÆ°u...'}</Text>
+              <Text style={s.saveBtnText}>{uploading ? 'Đang tải ảnh...' : 'Đang lưu...'}</Text>
             </View>
           ) : (
-            <Text style={s.saveBtnText}>LÆ°u thay Äá»i</Text>
+            <Text style={s.saveBtnText}>Lưu thay đổi</Text>
           )}
         </TouchableOpacity>
 

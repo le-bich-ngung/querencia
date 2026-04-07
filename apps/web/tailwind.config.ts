@@ -1,12 +1,12 @@
-ï»¿import type { Config } from 'tailwindcss';
+import type { Config } from 'tailwindcss';
 
 const config: Config = {
   content: ['./src/**/*.{js,ts,jsx,tsx,mdx}'],
   theme: {
     extend: {
       colors: {
-        // Design tokens tá»« css/design-system.css cÅ©
-        sage:     '#4a7c59',   // --sage: mÃ u xanh lÃ¡ chá»§ Äáº¡o
+        // Design tokens từ css/design-system.css cũ
+        sage:     '#4a7c59',   // --sage: màu xanh lá chủ đạo
         'sage-dark': '#2d5a3d',
         'sage-light': '#ddeee3',
         'warm-bg': '#f9f9f7',  // --bg-warm

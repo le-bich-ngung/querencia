@@ -1,7 +1,7 @@
-ï»¿'use client';
+'use client';
 /**
- * Message â gá»­i feedback cho Querencia
- * 1 chiá»u: gá»­i rá»i thÃ´i, khÃ´ng nháº­n há»i Ã¢m
+ * Message — gửi feedback cho Querencia
+ * 1 chiều: gửi rồi thôi, không nhận hồi âm
  */
 import { useState } from 'react';
 import { useSession } from 'next-auth/react';
@@ -17,7 +17,7 @@ export default function MessagePage() {
   async function handleSend(e: React.FormEvent) {
     e.preventDefault();
     if (!subject.trim() || !content.trim()) {
-      setError('Vui lÃ²ng Äiá»n Äáº§y Äá»§ thÃ´ng tin.'); return;
+      setError('Vui lòng điền đầy đủ thông tin.'); return;
     }
     setLoading(true); setError('');
     try {
@@ -27,9 +27,9 @@ export default function MessagePage() {
         body: JSON.stringify({ subject, content }),
       });
       if (res.ok) setSent(true);
-      else setError('Gá»­i tháº¥t báº¡i. Vui lÃ²ng thá»­ láº¡i.');
+      else setError('Gửi thất bại. Vui lòng thử lại.');
     } catch {
-      setError('KhÃ´ng thá» káº¿t ná»i. Vui lÃ²ng thá»­ láº¡i.');
+      setError('Không thể kết nối. Vui lòng thử lại.');
     } finally {
       setLoading(false);
     }
@@ -41,12 +41,12 @@ export default function MessagePage() {
         maxWidth: 480, margin: '80px auto', padding: '0 24px',
         textAlign: 'center',
       }}>
-        <div style={{ fontSize: '3rem', marginBottom: 16 }}>ð¬</div>
+        <div style={{ fontSize: '3rem', marginBottom: 16 }}>📬</div>
         <h2 style={{ fontWeight: 800, fontSize: '1.4rem', color: 'var(--text)', marginBottom: 10 }}>
-          ÄÃ£ gá»­i rá»i
+          Đã gửi rồi
         </h2>
         <p style={{ fontSize: '0.9rem', color: 'var(--text-secondary)', lineHeight: 1.7 }}>
-          MÃ¬nh Äá»c má»i tin nháº¯n, nhÆ°ng khÃ´ng há»i Ã¢m. Cáº£m Æ¡n báº¡n ÄÃ£ dÃ nh thá»i gian nháº¯n. ð¿
+          Mình đọc mọi tin nhắn, nhưng không hồi âm. Cảm ơn bạn đã dành thời gian nhắn. 🌿
         </p>
       </div>
     );
@@ -55,14 +55,14 @@ export default function MessagePage() {
   return (
     <div style={{ maxWidth: 520, margin: '0 auto', padding: '40px 24px 96px' }}>
       <h1 style={{ fontSize: '1.5rem', fontWeight: 800, marginBottom: 6, color: 'var(--text)' }}>
-        Nháº¯n tin cho Querencia
+        Nhắn tin cho Querencia
       </h1>
       <p style={{
         fontSize: '0.85rem', color: 'var(--text-secondary)',
         lineHeight: 1.6, marginBottom: 32,
       }}>
-        MÃ¬nh Äá»c má»i tin nháº¯n. NhÆ°ng sáº½ khÃ´ng há»i Ã¢m â ÄÃ¢y lÃ  há»p thÆ° 1 chiá»u.
-        Báº¡n khÃ´ng cáº§n ÄÄng nháº­p Äá» gá»­i.
+        Mình đọc mọi tin nhắn. Nhưng sẽ không hồi âm — đây là hộp thư 1 chiều.
+        Bạn không cần đăng nhập để gửi.
       </p>
 
       <form onSubmit={handleSend} style={{ display: 'flex', flexDirection: 'column', gap: 16 }}>
@@ -71,13 +71,13 @@ export default function MessagePage() {
             display: 'block', fontSize: '0.82rem', fontWeight: 600,
             color: 'var(--text-secondary)', marginBottom: 6,
           }}>
-            Chá»§ Äá»
+            Chủ đề
           </label>
           <input
             type="text"
             value={subject}
             onChange={e => setSubject(e.target.value)}
-            placeholder="VÃ­ dá»¥: GÃ³p Ã½ vá» LÃ No"
+            placeholder="Ví dụ: Góp ý về LàNo"
             style={{
               width: '100%', padding: '11px 14px',
               border: '1.5px solid var(--border)', borderRadius: 10,
@@ -95,12 +95,12 @@ export default function MessagePage() {
             display: 'block', fontSize: '0.82rem', fontWeight: 600,
             color: 'var(--text-secondary)', marginBottom: 6,
           }}>
-            Ná»i dung
+            Nội dung
           </label>
           <textarea
             value={content}
             onChange={e => setContent(e.target.value)}
-            placeholder="Viáº¿t gÃ¬ cÅ©ng ÄÆ°á»£c â gÃ³p Ã½, bÃ¡o lá»i, hay chá» muá»n nÃ³i gÃ¬ ÄÃ³â¦"
+            placeholder="Viết gì cũng được — góp ý, báo lỗi, hay chỉ muốn nói gì đó…"
             rows={6}
             style={{
               width: '100%', padding: '11px 14px',
@@ -135,14 +135,14 @@ export default function MessagePage() {
             opacity: loading ? 0.7 : 1,
           }}
         >
-          {loading ? 'Äang gá»­iâ¦' : 'Gá»­i'}
+          {loading ? 'Đang gửi…' : 'Gửi'}
         </button>
 
         <p style={{
           fontSize: '0.72rem', color: 'var(--gray)',
           textAlign: 'center', lineHeight: 1.5,
         }}>
-          Dá»¯ liá»u báº¡n gá»­i khÃ´ng ÄÆ°á»£c chia sáº» hay bÃ¡n cho báº¥t ká»³ ai.
+          Dữ liệu bạn gửi không được chia sẻ hay bán cho bất kỳ ai.
         </p>
       </form>
     </div>

@@ -1,4 +1,4 @@
-ï»¿import React, { useEffect, useState } from 'react';
+import React, { useEffect, useState } from 'react';
 import {
   View, Text, FlatList, TouchableOpacity,
   StyleSheet, ActivityIndicator,
@@ -42,8 +42,8 @@ export function PinnedMessagesScreen({ route, navigation }: Props) {
       ) : pinned.length === 0 ? (
         <View style={s.center}>
           <Icon name="pin" size={40} color={colors.grayLight}/>
-          <Text style={s.emptyTitle}>ChÆ°a cÃ³ tin nháº¯n nÃ o ÄÆ°á»£c ghim</Text>
-          <Text style={s.emptySub}>Giá»¯ lÃ¢u tin nháº¯n Äá» ghim</Text>
+          <Text style={s.emptyTitle}>Chưa có tin nhắn nào được ghim</Text>
+          <Text style={s.emptySub}>Giữ lâu tin nhắn để ghim</Text>
         </View>
       ) : (
         <FlatList
@@ -51,7 +51,7 @@ export function PinnedMessagesScreen({ route, navigation }: Props) {
           keyExtractor={m => m.id}
           contentContainerStyle={{ padding: spacing.md }}
           ListHeaderComponent={
-            <Text style={s.count}>{pinned.length} tin nháº¯n ÄÆ°á»£c ghim</Text>
+            <Text style={s.count}>{pinned.length} tin nhắn được ghim</Text>
           }
           renderItem={({ item }) => (
             <View style={s.item}>

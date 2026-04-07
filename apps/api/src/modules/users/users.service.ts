@@ -1,4 +1,4 @@
-ï»¿import { Injectable, NotFoundException, ForbiddenException, Inject } from '@nestjs/common';
+﻿import { Injectable, NotFoundException, ForbiddenException, Inject } from '@nestjs/common';
 import { eq, and } from 'drizzle-orm';
 import { DB_TOKEN } from '../../database/database.module';
 import { REDIS_SESSION } from '../../redis/redis.module';
@@ -14,16 +14,16 @@ export class UsersService {
   ) {}
 
   async blockUser(blockerId: string, targetId: string) {
-    if (blockerId === targetId) throw new ForbiddenException('KhÃ´ng thá» tá»± cháº·n');
+    if (blockerId === targetId) throw new ForbiddenException('Không thể tự chặn');
 
     const target = await this.db.query.users.findFirst({ where: eq(users.id, targetId) });
-    if (!target) throw new NotFoundException('NgÆ°á»i dÃ¹ng khÃ´ng tá»n táº¡i');
+    if (!target) throw new NotFoundException('Người dùng không tồn tại');
 
     await this.db.insert(userBlocks)
       .values({ blockerId, blockedId: targetId })
       .onConflictDoNothing();
 
-    // Cache block list trong Redis (TTL 1h) Äá» guard check nhanh
+    // Cache block list trong Redis (TTL 1h) để guard check nhanh
     await this.redis.sadd(`blocks:${blockerId}`, targetId);
     await this.redis.expire(`blocks:${blockerId}`, 3600);
 
@@ -39,7 +39,7 @@ export class UsersService {
   }
 
   async isBlocked(blockerId: string, targetId: string): Promise<boolean> {
-    // Check Redis cache trÆ°á»c
+    // Check Redis cache trước
     const cached = await this.redis.sismember(`blocks:${blockerId}`, targetId);
     if (cached) return true;
     const row = await this.db.query.userBlocks.findFirst({
@@ -49,7 +49,7 @@ export class UsersService {
   }
 
   async reportUser(reporterId: string, targetId: string, reason: string) {
-    if (reporterId === targetId) throw new ForbiddenException('KhÃ´ng thá» tá»± bÃ¡o cÃ¡o');
+    if (reporterId === targetId) throw new ForbiddenException('Không thể tự báo cáo');
 
     await this.db.insert(userReports)
       .values({ reporterId, reportedId: targetId, reason })

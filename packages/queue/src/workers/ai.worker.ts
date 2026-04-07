@@ -1,4 +1,4 @@
-ï»¿import { Worker, Job } from 'bullmq';
+﻿import { Worker, Job } from 'bullmq';
 import { bullMQConnection } from '@querencia/redis';
 import { AI_QUEUE, AiJobData } from '../jobs/ai-job';
 

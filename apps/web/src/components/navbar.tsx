@@ -1,4 +1,4 @@
-ï»¿'use client';
+'use client';
 import { useState, useRef, useEffect } from 'react';
 import { useI18n, LOCALES } from '../lib/i18n';
 import Link            from 'next/link';
@@ -6,7 +6,7 @@ import { useSession, signOut } from 'next-auth/react';
 import { useProfile }  from '../hooks/use-profile';
 import { usePathname } from 'next/navigation';
 
-// Animated logo â wave cháº¡y liÃªn tá»¥c
+// Animated logo — wave chạy liên tục
 const AnimatedLogo = ({ size = 22, color = '#4a7c59' }: { size?: number; color?: string }) => (
   <svg xmlns="http://www.w3.org/2000/svg" viewBox="14 14 88 88" width={size} height={size} style={{ flexShrink: 0 }}>
     <style>{`
@@ -77,7 +77,7 @@ export function Navbar() {
       {/* Right */}
       <div style={{ display: 'flex', alignItems: 'center', gap: 8 }}>
 
-        {/* ð Language switcher */}
+        {/* 🌐 Language switcher */}
         <div ref={langRef} style={{ position: 'relative' }}>
           <button onClick={() => setLangOpen(o => !o)} title="Language" style={{
             display: 'flex', alignItems: 'center', gap: 4,
@@ -85,7 +85,7 @@ export function Navbar() {
             borderRadius: 8, padding: '4px 9px', cursor: 'pointer',
             fontSize: '0.78rem', color: '#666', transition: 'all 0.15s',
           }}>
-            ð <span style={{ fontSize: '0.9rem' }}>{LOCALES.find(l => l.code === locale)?.flag}</span>
+            🌐 <span style={{ fontSize: '0.9rem' }}>{LOCALES.find(l => l.code === locale)?.flag}</span>
           </button>
           {langOpen && (
             <div style={{

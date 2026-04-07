@@ -1,4 +1,4 @@
-ï»¿import { ExceptionFilter, Catch, ArgumentsHost, HttpException, HttpStatus, Logger } from '@nestjs/common';
+﻿import { ExceptionFilter, Catch, ArgumentsHost, HttpException, HttpStatus, Logger } from '@nestjs/common';
 
 @Catch()
 export class AllExceptionsFilter implements ExceptionFilter {
@@ -17,7 +17,7 @@ export class AllExceptionsFilter implements ExceptionFilter {
       : 'Internal server error';
 
     if (status >= 500) {
-      this.logger.error(`${req.method} ${req.url} â ${status}`, exception instanceof Error ? exception.stack : String(exception));
+      this.logger.error(`${req.method} ${req.url} → ${status}`, exception instanceof Error ? exception.stack : String(exception));
     }
 
     res.status(status).json({

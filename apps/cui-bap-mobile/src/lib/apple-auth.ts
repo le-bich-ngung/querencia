@@ -1,11 +1,11 @@
-ï»¿/**
- * Apple Sign-In â báº¯t buá»c cho App Store náº¿u app cÃ³ Google Sign-In
+/**
+ * Apple Sign-In — bắt buộc cho App Store nếu app có Google Sign-In
  * Package: @invertase/react-native-apple-authentication
  *
- * LÆ°u Ã½:
- * - Chá» hoáº¡t Äá»ng trÃªn iOS 13+ vÃ  macOS 10.15+
- * - Cáº§n Apple Developer account ($99/nÄm) Äá» build iOS
- * - TrÃªn Android: Apple cÅ©ng cung cáº¥p web-based flow (nhÆ°ng Ã­t dÃ¹ng)
+ * Lưu ý:
+ * - Chỉ hoạt động trên iOS 13+ và macOS 10.15+
+ * - Cần Apple Developer account ($99/năm) để build iOS
+ * - Trên Android: Apple cũng cung cấp web-based flow (nhưng ít dùng)
  */
 import appleAuth, {
   AppleAuthRequestScope,
@@ -26,13 +26,13 @@ export interface AppleAuthResult {
 
 /**
  * Trigger Apple Sign-In
- * â Apple tráº£ identityToken (JWT)
- * â Gá»­i lÃªn Querencia server verify + táº¡o session
+ * → Apple trả identityToken (JWT)
+ * → Gửi lên Querencia server verify + tạo session
  *
- * LÆ°u Ã½ Äáº·c biá»t cá»§a Apple:
- * - Apple chá» tráº£ email + tÃªn láº§n Äáº¦U TIÃN ÄÄng nháº­p
- * - Nhá»¯ng láº§n sau chá» tráº£ userIdentifier
- * â Server cáº§n lÆ°u email tá»« láº§n Äáº§u
+ * Lưu ý đặc biệt của Apple:
+ * - Apple chỉ trả email + tên lần ĐẦU TIÊN đăng nhập
+ * - Những lần sau chỉ trả userIdentifier
+ * → Server cần lưu email từ lần đầu
  */
 export async function signInWithApple(): Promise<AppleAuthResult> {
   const appleAuthRequest = await appleAuth.performRequest({
@@ -47,11 +47,11 @@ export async function signInWithApple(): Promise<AppleAuthResult> {
 
   if (!identityToken) throw new Error('Apple Sign-In failed: no identity token');
 
-  // Build full name tá»« Apple (chá» cÃ³ láº§n Äáº§u)
+  // Build full name từ Apple (chỉ có lần đầu)
   const name = [fullName?.givenName, fullName?.familyName]
     .filter(Boolean).join(' ') || undefined;
 
-  // Gá»­i lÃªn Querencia server
+  // Gửi lên Querencia server
   const data = await api.appleAuth(identityToken, name, email);
 
   return {

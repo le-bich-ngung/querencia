@@ -1,5 +1,5 @@
-ï»¿/**
- * Forward Message â chuyá»n tiáº¿p tin nháº¯n sang conversation khÃ¡c
+/**
+ * Forward Message — chuyển tiếp tin nhắn sang conversation khác
  */
 import React, { useState } from 'react';
 import {
@@ -60,7 +60,7 @@ export function ForwardMessageModal({ visible, message, onClose, onSent }: Props
       <View style={s.container}>
         {/* Header */}
         <View style={s.header}>
-          <Text style={s.title}>Chuyá»n tiáº¿p Äáº¿n</Text>
+          <Text style={s.title}>Chuyển tiếp đến</Text>
           <TouchableOpacity onPress={onClose}>
             <Icon name="close" size={22} color={colors.text}/>
           </TouchableOpacity>
@@ -81,7 +81,7 @@ export function ForwardMessageModal({ visible, message, onClose, onSent }: Props
             style={s.search}
             value={search}
             onChangeText={setSearch}
-            placeholder="TÃ¬m cuá»c trÃ² chuyá»n..."
+            placeholder="Tìm cuộc trò chuyện..."
             placeholderTextColor={colors.gray}
           />
         </View>
@@ -102,7 +102,7 @@ export function ForwardMessageModal({ visible, message, onClose, onSent }: Props
               >
                 <View style={[s.avatar, item.type === 'group' && { backgroundColor: '#7c5cbf' }]}>
                   <Text style={s.avatarTxt}>
-                    {item.type === 'group' ? 'ð¥' : item.name[0]?.toUpperCase()}
+                    {item.type === 'group' ? '👥' : item.name[0]?.toUpperCase()}
                   </Text>
                 </View>
                 <Text style={s.convName}>{item.name}</Text>
@@ -124,7 +124,7 @@ export function ForwardMessageModal({ visible, message, onClose, onSent }: Props
 
         {sent.length > 0 && (
           <TouchableOpacity style={s.doneBtn} onPress={() => { onSent(); onClose(); }}>
-            <Text style={s.doneBtnText}>Xong Â· ÄÃ£ gá»­i Äáº¿n {sent.length} cuá»c trÃ² chuyá»n</Text>
+            <Text style={s.doneBtnText}>Xong · Đã gửi đến {sent.length} cuộc trò chuyện</Text>
           </TouchableOpacity>
         )}
       </View>

@@ -1,33 +1,33 @@
-ï»¿'use client';
+'use client';
 /**
- * Pricing â $0.50/ngÃ y flat
- * GÃ³i: 1 ngÃ y Â· 7 ngÃ y Â· 30 ngÃ y â cÃ¹ng giÃ¡, chá» khÃ¡c sá» láº§n thanh toÃ¡n
- * Q: 10Q expiring + 1Q permanent má»i ngÃ y
+ * Pricing — $0.50/ngày flat
+ * Gói: 1 ngày · 7 ngày · 30 ngày — cùng giá, chỉ khác số lần thanh toán
+ * Q: 10Q expiring + 1Q permanent mỗi ngày
  */
 import { useState } from 'react';
 import Link         from 'next/link';
 import { useSession } from 'next-auth/react';
 
-const PRICE_PER_DAY = 0.50; // USD, flat, khÃ´ng discount
+const PRICE_PER_DAY = 0.50; // USD, flat, không discount
 
 const PLANS = [
   {
     days:  1,
-    label: '1 ngÃ y',
+    label: '1 ngày',
     badge: null,
-    desc:  'Thá»­ trÆ°á»c. Máº¥t thÃ¬ chá» máº¥t $0.50.',
+    desc:  'Thử trước. Mất thì chỉ mất $0.50.',
   },
   {
     days:  7,
-    label: '7 ngÃ y',
-    badge: 'Phá» biáº¿n',
-    desc:  'Má»t tuáº§n khÃ´ng cáº§n lo thanh toÃ¡n láº¡i.',
+    label: '7 ngày',
+    badge: 'Phổ biến',
+    desc:  'Một tuần không cần lo thanh toán lại.',
   },
   {
     days:  30,
-    label: '30 ngÃ y',
+    label: '30 ngày',
     badge: null,
-    desc:  'Má»t thÃ¡ng yÃªn tÃ¢m. Váº«n hoÃ n tiá»n náº¿u cáº§n.',
+    desc:  'Một tháng yên tâm. Vẫn hoàn tiền nếu cần.',
   },
 ];
 
@@ -64,20 +64,20 @@ export default function PricingPage() {
           letterSpacing: '0.06em', textTransform: 'uppercase',
           marginBottom: 20,
         }}>
-          Minh báº¡ch Â· KhÃ´ng trick Â· KhÃ´ng tá»± gia háº¡n
+          Minh bạch · Không trick · Không tự gia hạn
         </div>
         <h1 style={{
           fontSize: 'clamp(2rem, 4vw, 2.8rem)',
           fontWeight: 800, letterSpacing: -1.5,
           color: 'var(--text)', marginBottom: 14,
         }}>
-          $0.50 / ngÃ y. Váº­y thÃ´i.
+          $0.50 / ngày. Vậy thôi.
         </h1>
         <p style={{
           fontSize: '1rem', color: 'var(--text-secondary)',
           maxWidth: 480, margin: '0 auto', lineHeight: 1.7,
         }}>
-          KhÃ´ng cÃ³ gÃ³i nÃ o tá»t hÆ¡n gÃ³i nÃ o. CÃ¹ng má»t giÃ¡ â chá» khÃ¡c sá» láº§n báº¡n pháº£i báº¥m thanh toÃ¡n.
+          Không có gói nào tốt hơn gói nào. Cùng một giá — chỉ khác số lần bạn phải bấm thanh toán.
         </p>
       </div>
 
@@ -147,7 +147,7 @@ export default function PricingPage() {
         }}>
           <QSymbol size={18}/>
           <span style={{ fontWeight: 700, fontSize: '0.9rem', color: 'var(--text)' }}>
-            Q báº¡n nháº­n ÄÆ°á»£c vá»i gÃ³i {selected} ngÃ y
+            Q bạn nhận được với gói {selected} ngày
           </span>
         </div>
         <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: 12 }}>
@@ -159,10 +159,10 @@ export default function PricingPage() {
               {qExpiring}
             </div>
             <div style={{ fontSize: '0.78rem', fontWeight: 600, color: '#92400e', marginTop: 4 }}>
-              Q háº¿t háº¡n sau 24h
+              Q hết hạn sau 24h
             </div>
             <div style={{ fontSize: '0.7rem', color: '#b45309', marginTop: 3 }}>
-              {10} Q Ã {selected} ngÃ y Â· cáº¥p má»i Äáº§u ngÃ y
+              {10} Q × {selected} ngày · cấp mỗi đầu ngày
             </div>
           </div>
           <div style={{
@@ -173,10 +173,10 @@ export default function PricingPage() {
               {qPermanent}
             </div>
             <div style={{ fontSize: '0.78rem', fontWeight: 600, color: '#2d5a3d', marginTop: 4 }}>
-              Q khÃ´ng háº¿t háº¡n
+              Q không hết hạn
             </div>
             <div style={{ fontSize: '0.7rem', color: '#4a7c59', marginTop: 3 }}>
-              1 Q Ã {selected} ngÃ y Â· dÃ¹ng báº¥t cá»© lÃºc nÃ o
+              1 Q × {selected} ngày · dùng bất cứ lúc nào
             </div>
           </div>
         </div>
@@ -184,8 +184,8 @@ export default function PricingPage() {
           marginTop: 14, fontSize: '0.75rem', color: 'var(--text-secondary)',
           lineHeight: 1.6, paddingTop: 12, borderTop: '1px solid var(--border)',
         }}>
-          ð¡ Háº¿t 24h cÃ²n Q expiring chÆ°a dÃ¹ng â táº·ng cho ngÆ°á»i quen hoáº·c treo Q Pool cho cá»ng Äá»ng.
-          3 giá» trÆ°á»c khi háº¿t háº¡n sáº½ cÃ³ popup nháº¯c.
+          💡 Hết 24h còn Q expiring chưa dùng → tặng cho người quen hoặc treo Q Pool cho cộng đồng.
+          3 giờ trước khi hết hạn sẽ có popup nhắc.
         </div>
       </div>
 
@@ -209,37 +209,37 @@ export default function PricingPage() {
           e.currentTarget.style.transform = '';
         }}
       >
-        Mua {selected} ngÃ y Pro â ${total.toFixed(2)}
+        Mua {selected} ngày Pro — ${total.toFixed(2)}
       </Link>
       <p style={{ textAlign: 'center', fontSize: '0.75rem', color: 'var(--gray)' }}>
-        KhÃ´ng tá»± gia háº¡n Â· HoÃ n tiá»n ngÃ y trá»n váº¹n chÆ°a dÃ¹ng Â· PhÃ­ giao dá»ch do báº¡n chá»u
+        Không tự gia hạn · Hoàn tiền ngày trọn vẹn chưa dùng · Phí giao dịch do bạn chịu
       </p>
 
-      {/* Refund policy â rÃµ rÃ ng, ÄÆ¡n giáº£n */}
+      {/* Refund policy — rõ ràng, đơn giản */}
       <div style={{
         marginTop: 40, border: '1.5px solid var(--border)',
         borderRadius: 14, padding: '24px', background: 'var(--bg)',
       }}>
         <h3 style={{ fontWeight: 800, fontSize: '1rem', marginBottom: 14, color: 'var(--text)' }}>
-          ð¸ HoÃ n tiá»n â cÃ¡ch tÃ­nh
+          💸 Hoàn tiền — cách tính
         </h3>
         <div style={{
           background: 'var(--bg-surface)', borderRadius: 10,
           padding: '16px', marginBottom: 14,
           fontSize: '0.82rem', color: 'var(--text-secondary)', lineHeight: 1.7,
         }}>
-          <strong style={{ color: 'var(--text)' }}>VÃ­ dá»¥ mua 7 ngÃ y ($3.50):</strong>
-          <br/>Äang dÃ¹ng ngÃ y thá»© 3, muá»n hoÃ n tiá»n giá»¯a chá»«ng:
+          <strong style={{ color: 'var(--text)' }}>Ví dụ mua 7 ngày ($3.50):</strong>
+          <br/>Đang dùng ngày thứ 3, muốn hoàn tiền giữa chừng:
           <ul style={{ paddingLeft: 18, margin: '8px 0 0', display: 'flex', flexDirection: 'column', gap: 4 }}>
-            <li>HoÃ n <strong>4 ngÃ y</strong> trá»n váº¹n chÆ°a dÃ¹ng (ngÃ y 4, 5, 6, 7)</li>
-            <li>Sá» tiá»n hoÃ n: 4 Ã $0.50 = <strong>$2.00</strong></li>
-            <li>NgÃ y 3 Äang dÃ¹ng â tiáº¿p tá»¥c Äáº¿n háº¿t 24h, sau ÄÃ³ tá»± háº¿t</li>
-            <li>PhÃ­ giao dá»ch hoÃ n: báº¡n tá»± chá»u (Paddle thu)</li>
+            <li>Hoàn <strong>4 ngày</strong> trọn vẹn chưa dùng (ngày 4, 5, 6, 7)</li>
+            <li>Số tiền hoàn: 4 × $0.50 = <strong>$2.00</strong></li>
+            <li>Ngày 3 đang dùng → tiếp tục đến hết 24h, sau đó tự hết</li>
+            <li>Phí giao dịch hoàn: bạn tự chịu (Paddle thu)</li>
           </ul>
         </div>
         <p style={{ fontSize: '0.75rem', color: 'var(--gray)', lineHeight: 1.5 }}>
-          HoÃ n ÄÆ°á»£c khi cÃ²n Ã­t nháº¥t 1 ngÃ y trá»n váº¹n chÆ°a ÄÆ°á»£c cáº¥p Q.
-          Q ÄÃ£ cáº¥p cho ngÃ y Äang dÃ¹ng khÃ´ng hoÃ n â báº¡n dÃ¹ng Äáº¿n háº¿t ngÃ y ÄÃ³.
+          Hoàn được khi còn ít nhất 1 ngày trọn vẹn chưa được cấp Q.
+          Q đã cấp cho ngày đang dùng không hoàn — bạn dùng đến hết ngày đó.
         </p>
       </div>
 
@@ -249,15 +249,15 @@ export default function PricingPage() {
         borderRadius: 14, padding: '24px', background: 'var(--bg)',
       }}>
         <h3 style={{ fontWeight: 800, fontSize: '1rem', marginBottom: 14, color: 'var(--text)' }}>
-          Chi phÃ­ Q má»i tool Pro
+          Chi phí Q mỗi tool Pro
         </h3>
         <div style={{ display: 'flex', flexDirection: 'column', gap: 0 }}>
           {[
-            { tool: 'PDF â Word',              q: 1, icon: 'ð' },
-            { tool: 'Screenshot Translator',   q: 2, icon: 'ð' },
-            { tool: 'Táº·ng Q cho ngÆ°á»i khÃ¡c',   q: '1â2', icon: 'ð' },
-            { tool: 'Táº¥t cáº£ 40+ tools khÃ¡c',   q: 0, icon: 'ð§' },
-            { tool: 'LÃ No, Nope, CÃ¹i Báº¯p',     q: 0, icon: 'ð¿' },
+            { tool: 'PDF → Word',              q: 1, icon: '📄' },
+            { tool: 'Screenshot Translator',   q: 2, icon: '🌐' },
+            { tool: 'Tặng Q cho người khác',   q: '1–2', icon: '🎁' },
+            { tool: 'Tất cả 40+ tools khác',   q: 0, icon: '🔧' },
+            { tool: 'LàNo, Nope, Cùi Bắp',     q: 0, icon: '🌿' },
           ].map((row, i, arr) => (
             <div key={row.tool} style={{
               display: 'flex', alignItems: 'center', gap: 12,
@@ -274,7 +274,7 @@ export default function PricingPage() {
                 color: row.q === 0 ? '#4a7c59' : '#b45309',
                 padding: '2px 8px', borderRadius: 999,
               }}>
-                {row.q === 0 ? 'Miá»n phÃ­' : `${row.q} Q`}
+                {row.q === 0 ? 'Miễn phí' : `${row.q} Q`}
               </span>
             </div>
           ))}
@@ -288,13 +288,13 @@ export default function PricingPage() {
         background: 'var(--bg-surface)',
       }}>
         <p style={{ fontSize: '0.85rem', color: 'var(--text-secondary)', marginBottom: 10 }}>
-          LÃ No, Nope, CÃ¹i Báº¯p vÃ  40+ tools â miá»n phÃ­, khÃ´ng cáº§n tráº£ gÃ¬.
+          LàNo, Nope, Cùi Bắp và 40+ tools — miễn phí, không cần trả gì.
         </p>
         <Link href="/auth/register" style={{
           fontSize: '0.82rem', color: '#4a7c59',
           fontWeight: 700, textDecoration: 'none',
         }}>
-          ÄÄng kÃ½ miá»n phÃ­ â
+          Đăng ký miễn phí →
         </Link>
       </div>
     </div>

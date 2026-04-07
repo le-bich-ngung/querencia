@@ -1,7 +1,7 @@
-ï»¿/**
+/**
  * Offline Message Queue
- * Khi gá»­i tin nháº¯n tháº¥t báº¡i do máº¥t máº¡ng â lÆ°u vÃ o MMKV queue
- * Khi máº¡ng trá» láº¡i (NetInfo) â tá»± Äá»ng retry theo thá»© tá»±
+ * Khi gửi tin nhắn thất bại do mất mạng → lưu vào MMKV queue
+ * Khi mạng trở lại (NetInfo) → tự động retry theo thứ tự
  */
 import { MMKV }    from 'react-native-mmkv';
 import NetInfo     from '@react-native-community/netinfo';
@@ -20,7 +20,7 @@ export interface QueuedMessage {
   retries:   number;
 }
 
-// ââ Queue operations ââââââââââââââââââââââââââââââââââââââââââ
+// ── Queue operations ──────────────────────────────────────────
 function readQueue(): QueuedMessage[] {
   try {
     const raw = storage.getString(KEY);
@@ -51,7 +51,7 @@ export function getQueueSize(): number {
   return readQueue().length;
 }
 
-// ââ Flush â gá»­i táº¥t cáº£ pending khi máº¡ng cÃ³ láº¡i âââââââââââââââ
+// ── Flush — gửi tất cả pending khi mạng có lại ───────────────
 let isFlushing = false;
 
 export async function flushQueue(): Promise<void> {
@@ -68,23 +68,23 @@ export async function flushQueue(): Promise<void> {
         ? await api.sendMsg(msg.convId, msg.body)
         : await api.sendGroupMsg(msg.convId, msg.body);
 
-      // Replace optimistic vá»i real message
+      // Replace optimistic với real message
       store.updateMessage(msg.convId, msg.tempId, {
         ...sent, id: sent.id, pending: false, receiptStatus: 'sent',
       });
       dequeue(msg.tempId);
     } catch {
-      // Update retry count â bá» qua náº¿u ÄÃ£ retry > 5 láº§n
+      // Update retry count — bỏ qua nếu đã retry > 5 lần
       const q = readQueue();
       const idx = q.findIndex(m => m.tempId === msg.tempId);
       if (idx >= 0) {
         q[idx].retries++;
         if (q[idx].retries > 5) {
-          // ÄÃ¡nh dáº¥u failed
+          // Đánh dấu failed
           store.updateMessage(msg.convId, msg.tempId, {
-            isDeleted: true, content: '[Gá»­i tháº¥t báº¡i â khÃ´ng cÃ³ máº¡ng]', pending: false,
+            isDeleted: true, content: '[Gửi thất bại — không có mạng]', pending: false,
           });
-          q.splice(idx, 1); // xÃ³a khá»i queue
+          q.splice(idx, 1); // xóa khỏi queue
         }
         writeQueue(q);
       }
@@ -93,7 +93,7 @@ export async function flushQueue(): Promise<void> {
   isFlushing = false;
 }
 
-// ââ Auto-retry khi máº¡ng trá» láº¡i ââââââââââââââââââââââââââââââ
+// ── Auto-retry khi mạng trở lại ──────────────────────────────
 export function startOfflineQueueListener(): () => void {
   const unsubscribe = NetInfo.addEventListener(state => {
     if (state.isConnected && state.isInternetReachable) {

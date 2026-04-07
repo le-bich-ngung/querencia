@@ -1,7 +1,7 @@
-ï»¿import { Redis } from 'ioredis';
+﻿import { Redis } from 'ioredis';
 
-// DB1 â Q Quota engine (atomic INCR â trÃ¡nh race condition)
-// TTL 24h tá»± reset má»i ngÃ y
+// DB1 — Q Quota engine (atomic INCR — tránh race condition)
+// TTL 24h tự reset mỗi ngày
 export const quotaRedis = new Redis(
   process.env.REDIS_DB1_QUOTA_URL!,
   { db: 1, lazyConnect: true, maxRetriesPerRequest: 3 }
@@ -13,7 +13,7 @@ export async function incrementQuota(userId: string, cost = 1): Promise<number> 
   const key = `quota:${userId}:${today()}`;
   const used = await quotaRedis.incrby(key, cost);
   if (used === cost) {
-    // First call today â set TTL 24h + buffer
+    // First call today — set TTL 24h + buffer
     await quotaRedis.expire(key, 86400 + 3600);
   }
   return used;

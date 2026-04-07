@@ -1,4 +1,4 @@
-ï»¿// Smart History â lÆ°u lá»ch sá»­ Äá»c vÃ  chat trong localStorage
+// Smart History — lưu lịch sử đọc và chat trong localStorage
 
 export const lanoHistory = {
   get: (): { role: string; content: string }[] => {
@@ -10,7 +10,7 @@ export const lanoHistory = {
     try {
       const h = lanoHistory.get();
       h.push({ role, content });
-      // Giá»¯ tá»i Äa 50 messages
+      // Giữ tối đa 50 messages
       if (h.length > 50) h.splice(0, h.length - 50);
       localStorage.setItem('lano_history', JSON.stringify(h));
     } catch {}

@@ -1,6 +1,6 @@
-ï»¿/**
- * CÃ¹i Báº¯p Controller â REST endpoints
- * Migrated tá»« querencia-backend/api/app_logic.py (cuibap_router)
+﻿/**
+ * Cùi Bắp Controller — REST endpoints
+ * Migrated từ querencia-backend/api/app_logic.py (cuibap_router)
  * Prefix: /api/v1/cuibap
  */
 import {
@@ -13,36 +13,36 @@ import { JwtAuthGuard } from '../../common/guards/jwt-auth.guard';
 import { CurrentUser } from '../../common/decorators/current-user.decorator';
 import { CuiBapService } from './cui-bap.service';
 
-@ApiTags('CÃ¹i Báº¯p')
+@ApiTags('Cùi Bắp')
 @Controller('cuibap')
 @UseGuards(JwtAuthGuard)
 @ApiBearerAuth()
 export class CuiBapController {
   constructor(private readonly cuiBapService: CuiBapService) {}
 
-  // ââ FILE UPLOAD âââââââââââââââââââââââââââââââââââââââââââââ
+  // ── FILE UPLOAD ─────────────────────────────────────────────
   @Post('upload')
   @UseInterceptors(FileInterceptor('file', { limits: { fileSize: 25 * 1024 * 1024 } }))
-  @ApiOperation({ summary: 'Upload file â Cloudflare R2 (max 25MB, tá»± xÃ³a 7 ngÃ y)' })
+  @ApiOperation({ summary: 'Upload file → Cloudflare R2 (max 25MB, tự xóa 7 ngày)' })
   uploadFile(@CurrentUser('id') userId: string, @UploadedFile() file: Express.Multer.File) {
     return this.cuiBapService.uploadFile(userId, file);
   }
 
-  // ââ CONVERSATIONS ââââââââââââââââââââââââââââââââââââââââââââ
+  // ── CONVERSATIONS ────────────────────────────────────────────
   @Get('conversations')
-  @ApiOperation({ summary: 'Láº¥y danh sÃ¡ch cuá»c trÃ² chuyá»n DM' })
+  @ApiOperation({ summary: 'Lấy danh sách cuộc trò chuyện DM' })
   getConversations(@CurrentUser('id') userId: string) {
     return this.cuiBapService.getConversations(userId);
   }
 
   @Post('conversations')
-  @ApiOperation({ summary: 'Táº¡o hoáº·c láº¥y cuá»c trÃ² chuyá»n vá»i user khÃ¡c' })
+  @ApiOperation({ summary: 'Tạo hoặc lấy cuộc trò chuyện với user khác' })
   getOrCreate(@CurrentUser('id') userId: string, @Body('target_user_id') targetId: string) {
     return this.cuiBapService.getOrCreateConversation(userId, targetId);
   }
 
   @Get('conversations/:id/messages')
-  @ApiOperation({ summary: 'Láº¥y tin nháº¯n trong DM' })
+  @ApiOperation({ summary: 'Lấy tin nhắn trong DM' })
   getMessages(
     @Param('id') convId: string,
     @CurrentUser('id') userId: string,
@@ -53,7 +53,7 @@ export class CuiBapController {
   }
 
   @Post('conversations/:id/messages')
-  @ApiOperation({ summary: 'Gá»­i tin nháº¯n DM' })
+  @ApiOperation({ summary: 'Gửi tin nhắn DM' })
   sendMessage(
     @Param('id') convId: string,
     @CurrentUser('id') senderId: string,
@@ -64,14 +64,14 @@ export class CuiBapController {
 
   @Post('conversations/:id/read')
   @HttpCode(HttpStatus.OK)
-  @ApiOperation({ summary: 'ÄÃ¡nh dáº¥u ÄÃ£ Äá»c' })
+  @ApiOperation({ summary: 'Đánh dấu đã đọc' })
   markRead(@Param('id') convId: string, @CurrentUser('id') userId: string) {
     return this.cuiBapService.markRead(convId, userId);
   }
 
-  // ââ MESSAGES âââââââââââââââââââââââââââââââââââââââââââââââââ
+  // ── MESSAGES ─────────────────────────────────────────────────
   @Patch('messages/:id')
-  @ApiOperation({ summary: 'Sá»­a tin nháº¯n' })
+  @ApiOperation({ summary: 'Sửa tin nhắn' })
   editMessage(
     @Param('id') msgId: string,
     @CurrentUser('id') userId: string,
@@ -82,13 +82,13 @@ export class CuiBapController {
 
   @Delete('messages/:id')
   @HttpCode(HttpStatus.NO_CONTENT)
-  @ApiOperation({ summary: 'XÃ³a tin nháº¯n (soft delete)' })
+  @ApiOperation({ summary: 'Xóa tin nhắn (soft delete)' })
   deleteMessage(@Param('id') msgId: string, @CurrentUser('id') userId: string) {
     return this.cuiBapService.deleteMessage(msgId, userId);
   }
 
   @Post('messages/:id/react')
-  @ApiOperation({ summary: 'ThÃªm/xÃ³a reaction emoji' })
+  @ApiOperation({ summary: 'Thêm/xóa reaction emoji' })
   addReaction(
     @Param('id') msgId: string,
     @CurrentUser('id') userId: string,
@@ -98,26 +98,26 @@ export class CuiBapController {
   }
 
   @Post('messages/:id/pin')
-  @ApiOperation({ summary: 'Ghim/bá» ghim tin nháº¯n' })
+  @ApiOperation({ summary: 'Ghim/bỏ ghim tin nhắn' })
   pinMessage(@Param('id') msgId: string, @CurrentUser('id') userId: string) {
     return this.cuiBapService.pinMessage(msgId, userId);
   }
 
-  // ââ GROUPS âââââââââââââââââââââââââââââââââââââââââââââââââââ
+  // ── GROUPS ───────────────────────────────────────────────────
   @Get('groups')
-  @ApiOperation({ summary: 'Láº¥y danh sÃ¡ch nhÃ³m' })
+  @ApiOperation({ summary: 'Lấy danh sách nhóm' })
   getGroups(@CurrentUser('id') userId: string) {
     return this.cuiBapService.getGroups(userId);
   }
 
   @Post('groups')
-  @ApiOperation({ summary: 'Táº¡o nhÃ³m má»i (max 100 members)' })
+  @ApiOperation({ summary: 'Tạo nhóm mới (max 100 members)' })
   createGroup(@CurrentUser('id') userId: string, @Body() body: any) {
     return this.cuiBapService.createGroup(userId, body);
   }
 
   @Post('groups/:id/members')
-  @ApiOperation({ summary: 'ThÃªm thÃ nh viÃªn vÃ o nhÃ³m' })
+  @ApiOperation({ summary: 'Thêm thành viên vào nhóm' })
   addMember(
     @Param('id') groupId: string,
     @CurrentUser('id') userId: string,
@@ -139,7 +139,7 @@ export class CuiBapController {
 
   @Delete('groups/:id/members/:userId')
   @HttpCode(HttpStatus.NO_CONTENT)
-  @ApiOperation({ summary: 'XÃ³a thÃ nh viÃªn / rá»i nhÃ³m' })
+  @ApiOperation({ summary: 'Xóa thành viên / rời nhóm' })
   removeMember(
     @Param('id') groupId: string,
     @Param('userId') targetUserId: string,
@@ -149,7 +149,7 @@ export class CuiBapController {
   }
 
   @Get('groups/:id/messages')
-  @ApiOperation({ summary: 'Láº¥y tin nháº¯n trong nhÃ³m' })
+  @ApiOperation({ summary: 'Lấy tin nhắn trong nhóm' })
   getGroupMessages(
     @Param('id') groupId: string,
     @CurrentUser('id') userId: string,
@@ -160,7 +160,7 @@ export class CuiBapController {
   }
 
   @Post('groups/:id/messages')
-  @ApiOperation({ summary: 'Gá»­i tin nháº¯n nhÃ³m' })
+  @ApiOperation({ summary: 'Gửi tin nhắn nhóm' })
   sendGroupMessage(
     @Param('id') groupId: string,
     @CurrentUser('id') senderId: string,
@@ -169,15 +169,15 @@ export class CuiBapController {
     return this.cuiBapService.sendGroupMessage(groupId, senderId, body);
   }
 
-  // ââ POLLS ââââââââââââââââââââââââââââââââââââââââââââââââââââ
+  // ── POLLS ────────────────────────────────────────────────────
   @Post('groups/:id/polls')
-  @ApiOperation({ summary: 'Táº¡o poll trong nhÃ³m' })
+  @ApiOperation({ summary: 'Tạo poll trong nhóm' })
   createPoll(@Param('id') groupId: string, @CurrentUser('id') userId: string, @Body() body: any) {
     return this.cuiBapService.createPoll(groupId, userId, body);
   }
 
   @Post('polls/:id/vote')
-  @ApiOperation({ summary: 'Bá» phiáº¿u poll' })
+  @ApiOperation({ summary: 'Bỏ phiếu poll' })
   votePoll(
     @Param('id') pollId: string,
     @CurrentUser('id') userId: string,
@@ -186,15 +186,15 @@ export class CuiBapController {
     return this.cuiBapService.votePoll(pollId, userId, optionIndex);
   }
 
-  // ââ SETTINGS âââââââââââââââââââââââââââââââââââââââââââââââââ
+  // ── SETTINGS ─────────────────────────────────────────────────
   @Get('settings')
-  @ApiOperation({ summary: 'Láº¥y cÃ i Äáº·t CÃ¹i Báº¯p (theme, font, background, notifications)' })
+  @ApiOperation({ summary: 'Lấy cài đặt Cùi Bắp (theme, font, background, notifications)' })
   getSettings(@CurrentUser('id') userId: string) {
     return this.cuiBapService.getSettings(userId);
   }
 
   @Patch('settings')
-  @ApiOperation({ summary: 'Cáº­p nháº­t cÃ i Äáº·t' })
+  @ApiOperation({ summary: 'Cập nhật cài đặt' })
   updateSettings(@CurrentUser('id') userId: string, @Body() body: any) {
     return this.cuiBapService.updateSettings(userId, body);
   }

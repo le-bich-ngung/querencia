@@ -1,10 +1,10 @@
-ï»¿/**
- * Rate Limiting â Redis sliding window
- * KhÃ¡c nhau theo endpoint vÃ  plan:
- *   - Auth endpoints:  20 req/15 phÃºt (chá»ng brute force)
+﻿/**
+ * Rate Limiting — Redis sliding window
+ * Khác nhau theo endpoint và plan:
+ *   - Auth endpoints:  20 req/15 phút (chống brute force)
  *   - AI endpoints:    free=10/h, pro=60/h
  *   - API chung:       free=200/h, pro=1000/h
- *   - Upload:          10 files/phÃºt
+ *   - Upload:          10 files/phút
  */
 import {
   Injectable, CanActivate, ExecutionContext,
@@ -18,10 +18,10 @@ export const THROTTLE_KEY = 'throttle';
 export interface ThrottleConfig {
   limit:    number; // max requests
   window:   number; // seconds
-  keyExtra?: string; // thÃªm vÃ o key Äá» tÃ¡ch biá»t endpoint
+  keyExtra?: string; // thêm vào key để tách biệt endpoint
 }
 
-/** Decorator cho tá»«ng endpoint */
+/** Decorator cho từng endpoint */
 export const Throttle = (config: ThrottleConfig) =>
   (target: any, key?: string, desc?: any) => {
     Reflect.defineMetadata(THROTTLE_KEY, config, desc?.value ?? target);
@@ -45,7 +45,7 @@ export class ThrottleGuard implements CanActivate {
 
   async canActivate(ctx: ExecutionContext): Promise<boolean> {
     const req  = ctx.switchToHttp().getRequest();
-    const user = req.user; // tá»« JwtAuthGuard
+    const user = req.user; // từ JwtAuthGuard
     const ip   = req.ip ?? req.headers['x-forwarded-for'] ?? 'unknown';
 
     // Endpoint-specific config
@@ -57,18 +57,18 @@ export class ThrottleGuard implements CanActivate {
     const plan   = user?.plan ?? 'free';
     const limits = config ?? this.DEFAULT[plan] ?? this.DEFAULT.free;
 
-    // Key: káº¿t há»£p user/IP + endpoint
+    // Key: kết hợp user/IP + endpoint
     const identifier = user?.id ?? `ip:${ip}`;
     const extra      = config?.keyExtra ?? ctx.getHandler().name;
     const key        = `rl:${identifier}:${extra}`;
     const now        = Math.floor(Date.now() / 1000);
     const windowStart = now - limits.window;
 
-    // Sliding window vá»i Redis sorted set
+    // Sliding window với Redis sorted set
     const pipeline = this.redis.pipeline();
-    pipeline.zremrangebyscore(key, '-inf', windowStart); // xÃ³a entries cÅ©
-    pipeline.zadd(key, now, `${now}-${Math.random()}`); // thÃªm request hiá»n táº¡i
-    pipeline.zcard(key);                                 // Äáº¿m total trong window
+    pipeline.zremrangebyscore(key, '-inf', windowStart); // xóa entries cũ
+    pipeline.zadd(key, now, `${now}-${Math.random()}`); // thêm request hiện tại
+    pipeline.zcard(key);                                 // đếm total trong window
     pipeline.expire(key, limits.window + 1);             // TTL
 
     const results = await pipeline.exec();
@@ -80,14 +80,14 @@ export class ThrottleGuard implements CanActivate {
         {
           statusCode: 429,
           error:      'Too Many Requests',
-          message:    `QuÃ¡ nhiá»u request. Thá»­ láº¡i sau ${limits.window} giÃ¢y.`,
+          message:    `Quá nhiều request. Thử lại sau ${limits.window} giây.`,
           retryAfter: limits.window,
         },
         HttpStatus.TOO_MANY_REQUESTS,
       );
     }
 
-    // ThÃªm headers chuáº©n
+    // Thêm headers chuẩn
     const res = ctx.switchToHttp().getResponse();
     res.setHeader('X-RateLimit-Limit',     limits.limit);
     res.setHeader('X-RateLimit-Remaining', Math.max(0, limits.limit - count));

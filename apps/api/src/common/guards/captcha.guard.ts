@@ -1,7 +1,7 @@
-ï»¿/**
- * Captcha Guard â Cloudflare Turnstile
- * Báº­t tá»± Äá»ng trÃªn: /auth/register, /auth/login (khi cÃ³ nghi ngá» bot)
- * Verify server-side vá»i Cloudflare API
+﻿/**
+ * Captcha Guard — Cloudflare Turnstile
+ * Bật tự động trên: /auth/register, /auth/login (khi có nghi ngờ bot)
+ * Verify server-side với Cloudflare API
  */
 import {
   Injectable, CanActivate, ExecutionContext,
@@ -31,7 +31,7 @@ export class CaptchaGuard implements CanActivate {
 
   async canActivate(ctx: ExecutionContext): Promise<boolean> {
     const required = this.reflector.get<boolean>(REQUIRE_CAPTCHA, ctx.getHandler());
-    if (!required || !this.secret) return true; // dev mode: skip náº¿u khÃ´ng cÃ³ secret
+    if (!required || !this.secret) return true; // dev mode: skip nếu không có secret
 
     const req   = ctx.switchToHttp().getRequest();
     const token = req.body?.captchaToken ?? req.headers['x-captcha-token'];
@@ -67,7 +67,7 @@ export class CaptchaGuard implements CanActivate {
       return data.success;
     } catch (e) {
       this.logger.error('Captcha verify failed:', e);
-      return false; // fail open trong production Äá» khÃ´ng block user tháº­t
+      return false; // fail open trong production để không block user thật
     }
   }
 }

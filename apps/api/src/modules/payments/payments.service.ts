@@ -1,4 +1,4 @@
-ï»¿import { Injectable, Inject } from '@nestjs/common';
+﻿import { Injectable, Inject } from '@nestjs/common';
 import { eq } from 'drizzle-orm';
 import { DB_TOKEN } from '../../database/database.module';
 import { proOrders } from '@querencia/db';

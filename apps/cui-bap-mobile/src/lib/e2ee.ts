@@ -1,20 +1,20 @@
-ï»¿/**
- * End-to-End Encryption â Signal Protocol
+/**
+ * End-to-End Encryption — Signal Protocol
  * 
  * Architecture:
- *   1. Má»i user cÃ³ Identity Key pair (long-term) + Signed PreKey + One-Time PreKeys
- *   2. Keys upload lÃªn server khi ÄÄng kÃ½
- *   3. Khi gá»­i tin nháº¯n láº§n Äáº§u cho ai:
- *      - Fetch public keys cá»§a ngÆ°á»i nháº­n tá»« server
- *      - Thá»±c hiá»n X3DH key agreement â shared secret
- *      - Encrypt báº±ng Double Ratchet
- *   4. Server chá» tháº¥y encrypted ciphertext, khÃ´ng Äá»c ÄÆ°á»£c
+ *   1. Mỗi user có Identity Key pair (long-term) + Signed PreKey + One-Time PreKeys
+ *   2. Keys upload lên server khi đăng ký
+ *   3. Khi gửi tin nhắn lần đầu cho ai:
+ *      - Fetch public keys của người nhận từ server
+ *      - Thực hiện X3DH key agreement → shared secret
+ *      - Encrypt bằng Double Ratchet
+ *   4. Server chỉ thấy encrypted ciphertext, không đọc được
  *
- * Trade-offs ÄÃ£ cháº¥p nháº­n:
- *   - Search tin nháº¯n: chá» search local (device)
+ * Trade-offs đã chấp nhận:
+ *   - Search tin nhắn: chỉ search local (device)
  *   - Cloud backup: backup encrypted blob
- *   - Multi-device: cáº§n key exchange riÃªng cho má»i thiáº¿t bá»
- *   - Moderation: server khÃ´ng filter ÄÆ°á»£c ná»i dung
+ *   - Multi-device: cần key exchange riêng cho mỗi thiết bị
+ *   - Moderation: server không filter được nội dung
  */
 
 import {
@@ -29,7 +29,7 @@ import { MMKV } from 'react-native-mmkv';
 
 const storage = new MMKV({ id: 'e2ee-keys' });
 
-// ââ Signal Protocol Store â lÆ°u keys vÃ o MMKV (encrypted) ââââ
+// ── Signal Protocol Store — lưu keys vào MMKV (encrypted) ────
 export class SignalStore implements StorageType {
   // Identity key pair
   async getIdentityKeyPair() {
@@ -44,7 +44,7 @@ export class SignalStore implements StorageType {
   async isTrustedIdentity(identifier: string, identityKey: ArrayBuffer): Promise<boolean> {
     const trusted = storage.getString(`identity:${identifier}`);
     if (!trusted) {
-      // First time â trust and store (Trust On First Use)
+      // First time — trust and store (Trust On First Use)
       await this.saveIdentity(identifier, identityKey);
       return true;
     }
@@ -120,7 +120,7 @@ export class SignalStore implements StorageType {
   }
 }
 
-// ââ Key generation + registration âââââââââââââââââââââââââââââ
+// ── Key generation + registration ─────────────────────────────
 export interface PublicKeyBundle {
   registrationId:   number;
   identityKey:      string; // base64
@@ -170,7 +170,7 @@ export async function generateAndStoreKeys(): Promise<PublicKeyBundle> {
   };
 }
 
-// ââ Encrypt message âââââââââââââââââââââââââââââââââââââââââââ
+// ── Encrypt message ───────────────────────────────────────────
 export interface EncryptedMessage {
   type:       number;  // 1 = PreKeyWhisperMessage, 2 = WhisperMessage
   body:       string;  // base64 ciphertext
@@ -182,12 +182,12 @@ export async function encryptMessage(
   recipientId:  string,
   deviceId:     number,
   plaintext:    string,
-  recipientBundle?: PublicKeyBundle, // chá» cáº§n láº§n Äáº§u
+  recipientBundle?: PublicKeyBundle, // chỉ cần lần đầu
 ): Promise<EncryptedMessage> {
   const store   = new SignalStore();
   const address = new SignalProtocolAddress(recipientId, deviceId);
 
-  // Náº¿u cÃ³ bundle â build session láº§n Äáº§u (X3DH)
+  // Nếu có bundle → build session lần đầu (X3DH)
   if (recipientBundle) {
     const sessionBuilder = new SessionBuilder(store, address);
     const preKeyBundle: PreKeyBundle = {
@@ -219,7 +219,7 @@ export async function encryptMessage(
   };
 }
 
-// ââ Decrypt message âââââââââââââââââââââââââââââââââââââââââââ
+// ── Decrypt message ───────────────────────────────────────────
 export async function decryptMessage(
   senderId:  string,
   deviceId:  number,
@@ -233,17 +233,17 @@ export async function decryptMessage(
   let decrypted: ArrayBuffer;
 
   if (encrypted.type === 3) {
-    // PreKeyWhisperMessage â láº§n Äáº§u nháº­n tá»« sender nÃ y
+    // PreKeyWhisperMessage — lần đầu nhận từ sender này
     decrypted = await cipher.decryptPreKeyWhisperMessage(ciphertext, 'binary');
   } else {
-    // WhisperMessage â session ÄÃ£ cÃ³
+    // WhisperMessage — session đã có
     decrypted = await cipher.decryptWhisperMessage(ciphertext, 'binary');
   }
 
   return new TextDecoder().decode(decrypted);
 }
 
-// ââ Check náº¿u cáº§n fetch keys má»i âââââââââââââââââââââââââââââ
+// ── Check nếu cần fetch keys mới ─────────────────────────────
 export function hasSession(recipientId: string, deviceId: number): boolean {
   const key = `session:${recipientId}.${deviceId}`;
   return storage.contains(key);
@@ -253,7 +253,7 @@ export function getLocalRegistrationId(): number {
   return storage.getNumber('registrationId') ?? 0;
 }
 
-// ââ Helpers âââââââââââââââââââââââââââââââââââââââââââââââââââ
+// ── Helpers ───────────────────────────────────────────────────
 function arrayBufferToBase64(buffer: ArrayBuffer): string {
   const bytes = new Uint8Array(buffer);
   let binary  = '';

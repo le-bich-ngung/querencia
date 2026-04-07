@@ -1,4 +1,4 @@
-ï»¿import React, { useState } from 'react';
+import React, { useState } from 'react';
 import { View, Text, TextInput, TouchableOpacity, StyleSheet, Alert } from 'react-native';
 import type { NativeStackScreenProps } from '@react-navigation/native-stack';
 import type { RootStackParams } from '../../navigation';
@@ -18,8 +18,8 @@ export function NewChatScreen({ navigation }: Props) {
   const { setConversations, setGroups } = useChatStore();
 
   async function handle() {
-    if (mode==='direct'&&!email.trim()) { Alert.alert('Nháº­p email ngÆ°á»i nháº­n'); return; }
-    if (mode==='group'&&!name.trim())   { Alert.alert('Nháº­p tÃªn nhÃ³m'); return; }
+    if (mode==='direct'&&!email.trim()) { Alert.alert('Nhập email người nhận'); return; }
+    if (mode==='group'&&!name.trim())   { Alert.alert('Nhập tên nhóm'); return; }
     setLoading(true);
     try {
       if (mode==='direct') {
@@ -33,7 +33,7 @@ export function NewChatScreen({ navigation }: Props) {
         setGroups(grps);
         navigation.replace('Chat',{convId:d.id, convType:'group', name:name.trim()});
       }
-    } catch (e:any) { Alert.alert('Lá»i',e.message); }
+    } catch (e:any) { Alert.alert('Lỗi',e.message); }
     finally { setLoading(false); }
   }
 
@@ -42,27 +42,27 @@ export function NewChatScreen({ navigation }: Props) {
       <View style={s.tabs}>
         {(['direct','group'] as Mode[]).map(m=>(
           <TouchableOpacity key={m} onPress={()=>setMode(m)} style={[s.tab, mode===m&&s.tabOn]}>
-            <Text style={[s.tabTxt, mode===m&&s.tabTxtOn]}>{m==='direct'?'ð¬ Chat 1-1':'ð¥ NhÃ³m má»i'}</Text>
+            <Text style={[s.tabTxt, mode===m&&s.tabTxtOn]}>{m==='direct'?'💬 Chat 1-1':'👥 Nhóm mới'}</Text>
           </TouchableOpacity>
         ))}
       </View>
       {mode==='direct' ? (
         <>
-          <Text style={s.label}>Email ngÆ°á»i nháº­n</Text>
+          <Text style={s.label}>Email người nhận</Text>
           <TextInput style={s.input} value={email} onChangeText={setEmail}
             placeholder="ban@email.com" placeholderTextColor={colors.gray}
             keyboardType="email-address" autoCapitalize="none" autoFocus/>
         </>
       ) : (
         <>
-          <Text style={s.label}>TÃªn nhÃ³m *</Text>
-          <TextInput style={s.input} value={name} onChangeText={setName} placeholder="NhÃ³m cá»§a mÃ¬nh" placeholderTextColor={colors.gray} autoFocus/>
-          <Text style={s.label}>MÃ´ táº£</Text>
-          <TextInput style={s.input} value={desc} onChangeText={setDesc} placeholder="TÃ¹y chá»n" placeholderTextColor={colors.gray}/>
+          <Text style={s.label}>Tên nhóm *</Text>
+          <TextInput style={s.input} value={name} onChangeText={setName} placeholder="Nhóm của mình" placeholderTextColor={colors.gray} autoFocus/>
+          <Text style={s.label}>Mô tả</Text>
+          <TextInput style={s.input} value={desc} onChangeText={setDesc} placeholder="Tùy chọn" placeholderTextColor={colors.gray}/>
         </>
       )}
       <TouchableOpacity style={[s.btn, loading&&s.btnOff]} onPress={handle} disabled={loading}>
-        <Text style={s.btnTxt}>{loading?'Äang táº¡o...':(mode==='direct'?'Báº¯t Äáº§u chat':'Táº¡o nhÃ³m')}</Text>
+        <Text style={s.btnTxt}>{loading?'Đang tạo...':(mode==='direct'?'Bắt đầu chat':'Tạo nhóm')}</Text>
       </TouchableOpacity>
     </View>
   );

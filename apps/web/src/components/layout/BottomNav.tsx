@@ -1,10 +1,10 @@
-ï»¿'use client';
+'use client';
 /**
- * Bottom Navigation â cá» Äá»nh, luÃ´n hiá»n thá»
- * 5 tab: Home Â· Apps Â· Tools Â· Read Â· Account
+ * Bottom Navigation — cố định, luôn hiển thị
+ * 5 tab: Home · Apps · Tools · Read · Account
  *
- * Apps    â sub-menu: Nope, CÃ¹i Báº¯p, LÃ No
- * Account â profile, Q wallet, Message (feedback 1 chiá»u), settings, pricing, logout
+ * Apps    → sub-menu: Nope, Cùi Bắp, LàNo
+ * Account → profile, Q wallet, Message (feedback 1 chiều), settings, pricing, logout
  */
 import { useState }    from 'react';
 import Link            from 'next/link';
@@ -12,7 +12,7 @@ import { usePathname } from 'next/navigation';
 import { useSession, signOut } from 'next-auth/react';
 import { useProfile }  from '../../hooks/use-profile';
 
-// ââ Icons âââââââââââââââââââââââââââââââââââââââââââââââââââââ
+// ── Icons ─────────────────────────────────────────────────────
 type IconProps = { active: boolean };
 
 const HomeIcon = ({ active }: IconProps) => (
@@ -62,7 +62,7 @@ const AccountIcon = ({ active }: IconProps) => (
   </svg>
 );
 
-// ââ Q Logo ââââââââââââââââââââââââââââââââââââââââââââââââââââ
+// ── Q Logo ────────────────────────────────────────────────────
 const QSymbol = ({ size = 13, color = '#4a7c59' }: { size?: number; color?: string }) => (
   <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 120 120" width={size} height={size}>
     <defs><clipPath id="qBNav"><circle cx="55" cy="55" r="32"/></clipPath></defs>
@@ -74,7 +74,7 @@ const QSymbol = ({ size = 13, color = '#4a7c59' }: { size?: number; color?: stri
   </svg>
 );
 
-// ââ Main component ââââââââââââââââââââââââââââââââââââââââââââ
+// ── Main component ────────────────────────────────────────────
 export function BottomNav() {
   const pathname            = usePathname();
   const { data: session }   = useSession();
@@ -82,7 +82,7 @@ export function BottomNav() {
   const [appsOpen, setApps] = useState(false);
   const [acctOpen, setAcct] = useState(false);
 
-  // áº¨n á» auth pages
+  // Ẩn ở auth pages
   if (pathname.startsWith('/auth')) return null;
 
   const name       = user?.name ?? session?.user?.name ?? '';
@@ -107,7 +107,7 @@ export function BottomNav() {
       {/* Spacer */}
       <div style={{ height: 52 }}/>
 
-      {/* Q strip â chá» hiá»n khi logged in vÃ  cÃ³ Q */}
+      {/* Q strip — chỉ hiện khi logged in và có Q */}
       {session && totalQ > 0 && (
         <div style={{
           position: 'fixed', bottom: 52, left: 0, right: 0,
@@ -133,7 +133,7 @@ export function BottomNav() {
                 borderLeft: '1px solid rgba(255,255,255,0.12)',
                 paddingLeft: 6, marginLeft: 1,
               }}>
-                {qExpiring} háº¿t háº¡n
+                {qExpiring} hết hạn
               </span>
             )}
           </Link>
@@ -175,9 +175,9 @@ export function BottomNav() {
             Apps
           </div>
           {[
-            { href: '/dashboard/nope',    emoji: 'ð¿', name: 'Nope',     desc: 'Chia sáº» kinh nghiá»m sá»ng' },
-            { href: '/dashboard/cui-bap', emoji: 'ð½', name: 'CÃ¹i Báº¯p', desc: 'Nháº¯n tin riÃªng tÆ°' },
-            { href: '/dashboard/lano',    emoji: 'ð§', name: 'LÃ No',     desc: 'AI láº¯ng nghe báº¡n' },
+            { href: '/dashboard/nope',    emoji: '🌿', name: 'Nope',     desc: 'Chia sẻ kinh nghiệm sống' },
+            { href: '/dashboard/cui-bap', emoji: '🌽', name: 'Cùi Bắp', desc: 'Nhắn tin riêng tư' },
+            { href: '/dashboard/lano',    emoji: '🎧', name: 'LàNo',     desc: 'AI lắng nghe bạn' },
           ].map(app => (
             <Link
               key={app.href}
@@ -209,7 +209,7 @@ export function BottomNav() {
                   {app.desc}
                 </div>
               </div>
-              <span style={{ marginLeft: 'auto', color: 'var(--gray)', fontSize: '0.85rem' }}>âº</span>
+              <span style={{ marginLeft: 'auto', color: 'var(--gray)', fontSize: '0.85rem' }}>›</span>
             </Link>
           ))}
         </div>
@@ -270,7 +270,7 @@ export function BottomNav() {
                       color: plan === 'free' ? '#4a7c59' : '#856404',
                       padding: '2px 7px', borderRadius: 999,
                     }}>
-                      {plan === 'free' ? 'Free' : 'â­ Pro'}
+                      {plan === 'free' ? 'Free' : '⭐ Pro'}
                     </span>
                   </div>
                 </div>
@@ -278,12 +278,12 @@ export function BottomNav() {
 
               {/* Menu items */}
               {[
-                { href: '/wallet',           icon: 'ð®', label: 'Q Wallet', sub: `${totalQ} Q cÃ²n láº¡i` },
-                { href: '/pricing',          icon: 'â­', label: 'NÃ¢ng cáº¥p Pro', sub: '$0.50/ngÃ y Â· 1/7/30 ngÃ y' },
-                { href: '/q-pool',           icon: 'ð', label: 'Q Pool', sub: 'Táº·ng Q cho cá»ng Äá»ng' },
-                { href: '/settings/profile', icon: 'ð¤', label: 'TÃ i khoáº£n', sub: 'ThÃ´ng tin cÃ¡ nhÃ¢n' },
-                { href: '/settings',         icon: 'âï¸', label: 'CÃ i Äáº·t', sub: 'Giao diá»n, thÃ´ng bÃ¡o' },
-                { href: '/message',          icon: 'âï¸', label: 'Nháº¯n tin cho Querencia', sub: 'Gá»­i feedback Â· KhÃ´ng há»i Ã¢m' },
+                { href: '/wallet',           icon: '🔮', label: 'Q Wallet', sub: `${totalQ} Q còn lại` },
+                { href: '/pricing',          icon: '⭐', label: 'Nâng cấp Pro', sub: '$0.50/ngày · 1/7/30 ngày' },
+                { href: '/q-pool',           icon: '🎁', label: 'Q Pool', sub: 'Tặng Q cho cộng đồng' },
+                { href: '/settings/profile', icon: '👤', label: 'Tài khoản', sub: 'Thông tin cá nhân' },
+                { href: '/settings',         icon: '⚙️', label: 'Cài đặt', sub: 'Giao diện, thông báo' },
+                { href: '/message',          icon: '✉️', label: 'Nhắn tin cho Querencia', sub: 'Gửi feedback · Không hồi âm' },
               ].map((item, i, arr) => (
                 <Link
                   key={item.href}
@@ -310,7 +310,7 @@ export function BottomNav() {
                       {item.sub}
                     </div>
                   </div>
-                  <span style={{ color: 'var(--gray)', fontSize: '0.85rem' }}>âº</span>
+                  <span style={{ color: 'var(--gray)', fontSize: '0.85rem' }}>›</span>
                 </Link>
               ))}
 
@@ -328,9 +328,9 @@ export function BottomNav() {
                 onMouseEnter={e => (e.currentTarget.style.background = '#fdecea')}
                 onMouseLeave={e => (e.currentTarget.style.background = '')}
               >
-                <span style={{ fontSize: '1.1rem', width: 24, textAlign: 'center' }}>ðª</span>
+                <span style={{ fontSize: '1.1rem', width: 24, textAlign: 'center' }}>🚪</span>
                 <span style={{ fontSize: '0.85rem', fontWeight: 600, color: '#c0392b' }}>
-                  ÄÄng xuáº¥t
+                  Đăng xuất
                 </span>
               </button>
             </>
@@ -341,7 +341,7 @@ export function BottomNav() {
                 fontSize: '0.85rem', color: 'var(--text-secondary)',
                 textAlign: 'center', marginBottom: 8,
               }}>
-                ÄÄng nháº­p Äá» dÃ¹ng Äáº§y Äá»§ tÃ­nh nÄng
+                Đăng nhập để dùng đầy đủ tính năng
               </p>
               <Link href="/auth/register" onClick={closeAll} style={{
                 display: 'block', textAlign: 'center',
@@ -349,7 +349,7 @@ export function BottomNav() {
                 background: '#4a7c59', color: '#fff',
                 textDecoration: 'none', fontWeight: 700, fontSize: '0.9rem',
               }}>
-                ÄÄng kÃ½ miá»n phÃ­
+                Đăng ký miễn phí
               </Link>
               <Link href="/auth/login" onClick={closeAll} style={{
                 display: 'block', textAlign: 'center',
@@ -358,14 +358,14 @@ export function BottomNav() {
                 color: 'var(--text)',
                 textDecoration: 'none', fontWeight: 600, fontSize: '0.9rem',
               }}>
-                ÄÄng nháº­p
+                Đăng nhập
               </Link>
             </div>
           )}
         </div>
       )}
 
-      {/* ââ Bottom nav bar ââ */}
+      {/* ── Bottom nav bar ── */}
       <nav style={{
         position: 'fixed', bottom: 0, left: 0, right: 0, height: 52,
         background: 'rgba(255,255,255,0.94)',
@@ -417,14 +417,14 @@ export function BottomNav() {
           onClick={() => { setApps(false); setAcct(o => !o); }}
           icon={<AccountIcon active={acctActive || acctOpen}/>}
           badge={!session ? undefined : totalQ > 0 ? undefined : undefined}
-          showDot={!session} // dot nháº¯c chÆ°a ÄÄng nháº­p
+          showDot={!session} // dot nhắc chưa đăng nhập
         />
       </nav>
     </>
   );
 }
 
-// ââ Tab sub-components ââââââââââââââââââââââââââââââââââââââââ
+// ── Tab sub-components ────────────────────────────────────────
 
 function TabLink({ href, label, active, onClick, icon }: {
   href: string; label: string; active: boolean;

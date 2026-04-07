@@ -1,4 +1,4 @@
-ï»¿export interface Quote {
+export interface Quote {
   text: string;
   author?: string;
 }
@@ -15,18 +15,18 @@ export const QUOTES: Quote[] = [
   { text: "The good life is one inspired by love and guided by knowledge.", author: "Bertrand Russell" },
   { text: "Life is not measured by the number of breaths we take, but by the moments that take our breath away.", author: "Maya Angelou" },
   { text: "We do not remember days, we remember moments.", author: "Cesare Pavese" },
-  { text: "Life shrinks or expands in proportion to one's courage.", author: "AnaÃ¯s Nin" },
+  { text: "Life shrinks or expands in proportion to one's courage.", author: "Anaïs Nin" },
   { text: "The big lesson in life is never be scared of anyone or anything.", author: "Frank Sinatra" },
   { text: "Life is short, and it is here to be lived.", author: "Kate Winslet" },
   { text: "Live as if you were to die tomorrow. Learn as if you were to live forever.", author: "Mahatma Gandhi" },
-  { text: "The most important thing is to enjoy your life â to be happy â it's all that matters.", author: "Audrey Hepburn" },
+  { text: "The most important thing is to enjoy your life — to be happy — it's all that matters.", author: "Audrey Hepburn" },
 
   // On courage & fear
   { text: "Courage is not the absence of fear, but the judgment that something else is more important than fear.", author: "Ambrose Redmoon" },
   { text: "Everything you've ever wanted is on the other side of fear.", author: "George Addair" },
   { text: "You gain strength, courage, and confidence by every experience in which you really stop to look fear in the face.", author: "Eleanor Roosevelt" },
   { text: "Do one thing every day that scares you.", author: "Eleanor Roosevelt" },
-  { text: "Courage is resistance to fear, mastery of fear â not absence of fear.", author: "Mark Twain" },
+  { text: "Courage is resistance to fear, mastery of fear — not absence of fear.", author: "Mark Twain" },
   { text: "Fear is the thief of dreams.", author: "Brian Krans" },
   { text: "The cave you fear to enter holds the treasure you seek.", author: "Joseph Campbell" },
   { text: "I learned that courage was not the absence of fear, but the triumph over it.", author: "Nelson Mandela" },
@@ -199,7 +199,7 @@ export const QUOTES: Quote[] = [
   { text: "Adopt the pace of nature: her secret is patience.", author: "Ralph Waldo Emerson" },
   { text: "Have patience. All things are difficult before they become easy.", author: "Saadi" },
   { text: "Patience, persistence and perspiration make an unbeatable combination for success.", author: "Napoleon Hill" },
-  { text: "The strongest of all warriors are these two â Time and Patience.", author: "Leo Tolstoy" },
+  { text: "The strongest of all warriors are these two — Time and Patience.", author: "Leo Tolstoy" },
 
   // On words & language
   { text: "Words are, of course, the most powerful drug used by mankind.", author: "Rudyard Kipling" },
@@ -221,9 +221,9 @@ export const QUOTES: Quote[] = [
   { text: "Trust yourself. You know more than you think you do.", author: "Benjamin Spock" },
 
   // On mindfulness & presence
-  { text: "The present moment is the only moment available to us, and it is the door to all moments.", author: "ThÃ­ch Nháº¥t Háº¡nh" },
+  { text: "The present moment is the only moment available to us, and it is the door to all moments.", author: "Thích Nhất Hạnh" },
   { text: "If you are depressed you are living in the past. If you are anxious you are living in the future. If you are at peace you are living in the present.", author: "Lao Tzu" },
-  { text: "In today's rush, we all think too much â seek too much â want too much â and forget about the joy of just being.", author: "Eckhart Tolle" },
+  { text: "In today's rush, we all think too much — seek too much — want too much — and forget about the joy of just being.", author: "Eckhart Tolle" },
   { text: "Do not dwell in the past, do not dream of the future, concentrate the mind on the present moment.", author: "Buddha" },
   { text: "The secret of health for both mind and body is not to mourn for the past, nor to worry about the future, but to live the present moment wisely and earnestly.", author: "Buddha" },
   { text: "Wherever you are, be all there.", author: "Jim Elliot" },
@@ -253,7 +253,7 @@ export const QUOTES: Quote[] = [
   { text: "Our life is what our thoughts make it.", author: "Marcus Aurelius" },
   { text: "Change your thoughts and you change your world.", author: "Norman Vincent Peale" },
   { text: "The mind is not a vessel to be filled, but a fire to be kindled.", author: "Plutarch" },
-  { text: "You have power over your mind â not outside events. Realize this, and you will find strength.", author: "Marcus Aurelius" },
+  { text: "You have power over your mind — not outside events. Realize this, and you will find strength.", author: "Marcus Aurelius" },
   { text: "The empires of the future are the empires of the mind.", author: "Winston Churchill" },
 
   // On hard work
@@ -266,15 +266,15 @@ export const QUOTES: Quote[] = [
 
   // On perspective
   { text: "Everything we hear is an opinion, not a fact. Everything we see is a perspective, not the truth.", author: "Marcus Aurelius" },
-  { text: "We don't see things as they are, we see them as we are.", author: "AnaÃ¯s Nin" },
+  { text: "We don't see things as they are, we see them as we are.", author: "Anaïs Nin" },
   { text: "The world as we have created it is a process of our thinking. It cannot be changed without changing our thinking.", author: "Albert Einstein" },
   { text: "It is not the mountain we conquer, but ourselves.", author: "Edmund Hillary" },
   { text: "Change the way you look at things and the things you look at change.", author: "Wayne Dyer" },
 
   // On impermanence
   { text: "This too shall pass.", author: "Persian Adage" },
-  { text: "Nothing is permanent in this wicked world â not even our troubles.", author: "Charlie Chaplin" },
-  { text: "Impermanence is a principle of harmony. When we don't struggle against it, we are in harmony with reality.", author: "Pema ChÃ¶drÃ¶n" },
+  { text: "Nothing is permanent in this wicked world — not even our troubles.", author: "Charlie Chaplin" },
+  { text: "Impermanence is a principle of harmony. When we don't struggle against it, we are in harmony with reality.", author: "Pema Chödrön" },
   { text: "Everything is temporary. Emotions, thoughts, people and scenery. Do not become attached, just flow with it.", author: "Unknown" },
   { text: "The flower that blooms in adversity is the rarest and most beautiful of all.", author: "Mulan" },
 
@@ -288,7 +288,7 @@ export const QUOTES: Quote[] = [
   // On solitude & thinking
   { text: "To think is to practice brain chemistry.", author: "Deepak Chopra" },
   { text: "Great thoughts come from the heart.", author: "Luc de Clapiers" },
-  { text: "I think, therefore I am.", author: "RenÃ© Descartes" },
+  { text: "I think, therefore I am.", author: "René Descartes" },
   { text: "Few is the number who think with their own mind and feel with their own heart.", author: "Albert Einstein" },
 
   // On suffering & pain
@@ -384,10 +384,10 @@ export const QUOTES: Quote[] = [
   { text: "Stay hungry, stay foolish.", author: "Steve Jobs" },
   { text: "Think different.", author: "Apple" },
   { text: "To infinity and beyond.", author: "Buzz Lightyear" },
-  { text: "Carpe diem â seize the day.", author: "Horace" },
-  { text: "Amor fati â love your fate.", author: "Friedrich Nietzsche" },
-  { text: "Memento mori â remember that you will die.", author: "Stoic Maxim" },
-  { text: "Cogito ergo sum â I think, therefore I am.", author: "RenÃ© Descartes" },
+  { text: "Carpe diem — seize the day.", author: "Horace" },
+  { text: "Amor fati — love your fate.", author: "Friedrich Nietzsche" },
+  { text: "Memento mori — remember that you will die.", author: "Stoic Maxim" },
+  { text: "Cogito ergo sum — I think, therefore I am.", author: "René Descartes" },
 
   // Vietnamese wisdom (translated)
   { text: "Learning is like rowing upstream: not to advance is to drop back.", author: "Chinese Proverb" },

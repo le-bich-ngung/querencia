@@ -1,7 +1,7 @@
-ï»¿import { Redis } from 'ioredis';
+﻿import { Redis } from 'ioredis';
 import { createHash } from 'crypto';
 
-// DB2 â AI result cache (TTL 1h, hash key tá»« prompt)
+// DB2 — AI result cache (TTL 1h, hash key từ prompt)
 export const aiCacheRedis = new Redis(
   process.env.REDIS_DB2_AI_CACHE_URL!,
   { db: 2, lazyConnect: true, maxRetriesPerRequest: 2 }

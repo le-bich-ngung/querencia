@@ -1,4 +1,4 @@
-ï»¿import React, { useState } from 'react';
+import React, { useState } from 'react';
 import {
   TouchableOpacity, Text, View, StyleSheet,
   ActivityIndicator, Alert, Platform,
@@ -12,7 +12,7 @@ export function AppleSignInButton() {
   const [loading, setLoading] = useState(false);
   const setAuth = useAuthStore(s => s.setAuth);
 
-  // Chá» hiá»n trÃªn iOS
+  // Chỉ hiện trên iOS
   if (!isAppleAuthAvailable()) return null;
 
   async function handle() {
@@ -23,7 +23,7 @@ export function AppleSignInButton() {
       setupE2EE().catch(() => {});
     } catch (e: any) {
       if (e.code !== '1001') { // 1001 = user cancelled
-        Alert.alert('Lá»i ÄÄng nháº­p', e.message ?? 'KhÃ´ng thá» ÄÄng nháº­p vá»i Apple.');
+        Alert.alert('Lỗi đăng nhập', e.message ?? 'Không thể đăng nhập với Apple.');
       }
     } finally { setLoading(false); }
   }
@@ -35,7 +35,7 @@ export function AppleSignInButton() {
       ) : (
         <>
           <Text style={s.appleIcon}></Text>
-          <Text style={s.label}>Tiáº¿p tá»¥c vá»i Apple</Text>
+          <Text style={s.label}>Tiếp tục với Apple</Text>
         </>
       )}
     </TouchableOpacity>

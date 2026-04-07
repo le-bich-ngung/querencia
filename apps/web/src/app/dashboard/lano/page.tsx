@@ -1,4 +1,4 @@
-ï»¿'use client';
+'use client';
 import { useState } from 'react';
 import { useI18n } from '../../../lib/i18n';
 
@@ -50,7 +50,7 @@ export default function LanoPage() {
           display: 'flex', alignItems: 'center', justifyContent: 'center',
           fontSize: '2rem', margin: '0 auto 28px',
           animation: 'float 3s ease-in-out infinite',
-        }}>ð§</div>
+        }}>🎧</div>
 
         {/* Badge */}
         <div style={{
@@ -71,7 +71,7 @@ export default function LanoPage() {
           fontWeight: 400, letterSpacing: -1.2, lineHeight: 1.1,
           color: '#f0efeb', marginBottom: 16,
         }}>
-          LÃ No
+          LàNo
         </h1>
         <p style={{
           fontSize: '1rem', color: 'rgba(240,239,235,0.45)',

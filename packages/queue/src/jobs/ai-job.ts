@@ -1,4 +1,4 @@
-ï»¿import { Queue } from 'bullmq';
+﻿import { Queue } from 'bullmq';
 import { bullMQConnection } from '@querencia/redis';
 
 export const AI_QUEUE = 'ai-tasks';

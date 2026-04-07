@@ -1,13 +1,13 @@
-ï»¿/**
- * Security Middleware â CORS, headers báº£o máº­t, captcha trigger
- * Gáº¯n vÃ o app.module.ts qua NestMiddleware
+﻿/**
+ * Security Middleware — CORS, headers bảo mật, captcha trigger
+ * Gắn vào app.module.ts qua NestMiddleware
  */
 import { Injectable, NestMiddleware, Logger } from '@nestjs/common';
 import { Request, Response, NextFunction } from 'express';
 import { InjectRedis } from '@nestjs-modules/ioredis';
 import type { Redis } from 'ioredis';
 
-// Danh sÃ¡ch domain ÄÆ°á»£c phÃ©p â cháº·t, khÃ´ng wildcard
+// Danh sách domain được phép — chặt, không wildcard
 const ALLOWED_ORIGINS = [
   'https://querencia.com.vn',
   'https://www.querencia.com.vn',
@@ -23,7 +23,7 @@ export class SecurityMiddleware implements NestMiddleware {
   use(req: Request, res: Response, next: NextFunction) {
     const origin = req.headers.origin ?? '';
 
-    // ââ CORS ââââââââââââââââââââââââââââââââââââââââââââââââââ
+    // ── CORS ──────────────────────────────────────────────────
     if (ALLOWED_ORIGINS.includes(origin)) {
       res.setHeader('Access-Control-Allow-Origin',      origin);
       res.setHeader('Access-Control-Allow-Credentials', 'true');
@@ -38,13 +38,13 @@ export class SecurityMiddleware implements NestMiddleware {
       return;
     }
 
-    // ââ Security headers âââââââââââââââââââââââââââââââââââââ
+    // ── Security headers ─────────────────────────────────────
     res.setHeader('X-Content-Type-Options',   'nosniff');
     res.setHeader('X-Frame-Options',          'SAMEORIGIN');
     res.setHeader('X-XSS-Protection',         '1; mode=block');
     res.setHeader('Referrer-Policy',          'strict-origin-when-cross-origin');
     res.setHeader('Permissions-Policy',       'camera=(), microphone=(), geolocation=()');
-    // Chá» cho Cloudflare + Fly.io proxy
+    // Chỉ cho Cloudflare + Fly.io proxy
     res.setHeader('Content-Security-Policy',
       "default-src 'self'; " +
       "script-src 'self' 'unsafe-inline' https://challenges.cloudflare.com; " +
@@ -53,8 +53,8 @@ export class SecurityMiddleware implements NestMiddleware {
       "connect-src 'self' https://querencia-api.fly.dev https://querencia-ai.fly.dev"
     );
 
-    // ââ Remove fingerprinting headers ââââââââââââââââââââââââ
-    res.removeHeader('X-Powered-By'); // khÃ´ng Äá» lá» NestJS/Express
+    // ── Remove fingerprinting headers ────────────────────────
+    res.removeHeader('X-Powered-By'); // không để lộ NestJS/Express
 
     next();
   }
