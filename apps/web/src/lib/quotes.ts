@@ -1,3 +1,4 @@
+// utf-8 ok
 export interface Quote {
   text: string;
   author?: string;
