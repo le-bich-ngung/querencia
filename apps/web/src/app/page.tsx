@@ -71,7 +71,10 @@ function LetterDrop() {
     }, 5000);
     return function() { clearInterval(timer); };
   }, []);
-   return (
+  return (
+    <div key={key} style={{ display: 'inline-flex', alignItems: 'baseline', letterSpacing: -3, lineHeight: 1 }}>
+      {letters.map(function(letter, i) {
+        var isCia = i >= 5;
         var fallDelay = i * 0.18;
         var shimmerDelay = 8 * 0.18 + 0.8 + 0.3;
         return (
