@@ -6,6 +6,7 @@ import { LumenProvider } from '../components/ui/LumenMode';
 import '../styles/globals.css';
 
 export const metadata: Metadata = {
+  charset: 'utf-8',
   title:       { default: 'Querencia', template: '%s — Querencia' },
   description: 'Nope · Cùi Bắp · LàNo · Tools — Một hệ sinh thái, một tài khoản.',
   themeColor:  '#4a7c59',
