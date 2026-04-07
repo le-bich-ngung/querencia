@@ -87,7 +87,7 @@ function LetterDrop() {
             opacity: isCia ? 1 : 0.3,
             animation: 'letterSlide 1.2s cubic-bezier(0.34,1,0.64,1) ' + fallDelay + 's both, shimmerStrong 2s ease ' + shimmerDelay + 's 1',
           }}>
-            {letter === 'i' ? (<>i<svg style={{ position: 'absolute', left: '62%', top: '0.12em', transform: 'translateX(-50%)', width: '0.20em', height: '0.20em' }} viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg"><path d="M12 21.35l-1.45-1.32C5.4 15.36 2 12.28 2 8.5 2 5.42 4.42 3 7.5 3c1.74 0 3.41.81 4.5 2.09C13.09 3.81 14.76 3 16.5 3 19.58 3 22 5.42 22 8.5c0 3.78-3.4 6.86-8.55 11.54L12 21.35z" fill="#ef4444"/></svg></>) : letter}
+            {letter === 'i' ? (<>i<svg style={{ position: 'absolute', left: '60%', top: '0.12em', transform: 'translateX(-50%)', width: '0.20em', height: '0.20em' }} viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg"><path d="M12 21.35l-1.45-1.32C5.4 15.36 2 12.28 2 8.5 2 5.42 4.42 3 7.5 3c1.74 0 3.41.81 4.5 2.09C13.09 3.81 14.76 3 16.5 3 19.58 3 22 5.42 22 8.5c0 3.78-3.4 6.86-8.55 11.54L12 21.35z" fill="#ef4444"/></svg></>) : letter}
           </span>
         );
       })}
