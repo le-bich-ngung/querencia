@@ -71,9 +71,7 @@ function LetterDrop() {
     }, 5000);
     return function() { clearInterval(timer); };
   }, []);
-
-  x 0.18s = 1.44s + 0.8s  = 2.24s  shimmer
-  return (
+   return (
         var fallDelay = i * 0.18;
         var shimmerDelay = 8 * 0.18 + 0.8 + 0.3;
         return (
