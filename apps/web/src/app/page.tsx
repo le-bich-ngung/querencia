@@ -114,12 +114,16 @@ function LetterDrop() {
     var timer = setInterval(function() { setKey(function(k) { return k + 1; }); }, 5000);
     return function() { clearInterval(timer); };
   }, []);
+  // Last letter 'a' is index 7, delay = 7 * 0.18 = 1.26s
+  // Heart slides in after 'a' finishes: delay = 1.26 + 0.4 = 1.66s
+  // Shimmer fires after heart lands: delay = 1.66 + 0.5 = 2.16s + 0.8s total anim = ~3s
+  var heartDelay = 7 * 0.18 + 0.4;
+  var shimmerDelay = heartDelay + 0.5;
   return (
-    <div key={key} style={{ display: 'inline-flex', alignItems: 'baseline', letterSpacing: -3, lineHeight: 1 }}>
+    <div key={key} style={{ display: 'inline-flex', alignItems: 'baseline', letterSpacing: -3, lineHeight: 1, position: 'relative' }}>
       {letters.map(function(letter, i) {
         var isCia = i >= 5;
         var fallDelay = i * 0.18;
-        var shimmerDelay = 8 * 0.18 + 0.8 + 0.3;
         return (
           <span key={i} style={{
             display: 'inline-block', position: 'relative',
@@ -129,10 +133,25 @@ function LetterDrop() {
             opacity: isCia ? 1 : 0.3,
             animation: 'letterSlide 1.2s cubic-bezier(0.34,1,0.64,1) ' + fallDelay + 's both, shimmerStrong 2s ease ' + shimmerDelay + 's 1',
           }}>
-            {letter === 'i' ? (<>i<svg style={{ position: 'absolute', left: '58%', top: '0.1em', transform: 'translateX(-50%)', width: '0.28em', height: '0.28em' }} viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg"><path d="M12 21.35l-1.45-1.32C5.4 15.36 2 12.28 2 8.5 2 5.42 4.42 3 7.5 3c1.74 0 3.41.81 4.5 2.09C13.09 3.81 14.76 3 16.5 3 19.58 3 22 5.42 22 8.5c0 3.78-3.4 6.86-8.55 11.54L12 21.35z" fill="#ef4444"/></svg></>) : letter}
+            {letter}
           </span>
         );
       })}
+      {/* Heart slides in from right after 'a', rests leaning against 'a' */}
+      <span style={{
+        display: 'inline-block',
+        fontSize: 'clamp(1.2rem, 3.5vw, 2.8rem)',
+        lineHeight: 1,
+        marginLeft: 'clamp(4px, 0.8vw, 12px)',
+        alignSelf: 'flex-end',
+        marginBottom: '0.05em',
+        animation: 'heartSlideIn 0.7s cubic-bezier(0.34,1.4,0.64,1) ' + heartDelay + 's both, shimmerStrong 2s ease ' + shimmerDelay + 's 1',
+      }}>
+        <svg viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg"
+          style={{ width: 'clamp(1.2rem, 3.5vw, 2.8rem)', height: 'clamp(1.2rem, 3.5vw, 2.8rem)', display: 'block' }}>
+          <path d="M12 21.35l-1.45-1.32C5.4 15.36 2 12.28 2 8.5 2 5.42 4.42 3 7.5 3c1.74 0 3.41.81 4.5 2.09C13.09 3.81 14.76 3 16.5 3 19.58 3 22 5.42 22 8.5c0 3.78-3.4 6.86-8.55 11.54L12 21.35z" fill="#ef4444"/>
+        </svg>
+      </span>
     </div>
   );
 }
@@ -285,9 +304,7 @@ export default function HomePage() {
           <span style={{ fontFamily: "'Space Grotesk', sans-serif", fontWeight: 400, fontSize: '0.85rem', letterSpacing: -0.3, color: '#f0efeb', lineHeight: 1 }}>
             <span style={{ opacity: 0.3 }}>ueren</span>
             <span style={{ color: '#4a7c59' }}>c</span>
-            <span style={{ position: 'relative', display: 'inline-block', color: '#4a7c59' }}>i
-              <svg style={{ position: 'absolute', left: '60%', top: '0.1em', transform: 'translateX(-50%)', width: '0.28em', height: '0.28em' }} viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg"><path d="M12 21.35l-1.45-1.32C5.4 15.36 2 12.28 2 8.5 2 5.42 4.42 3 7.5 3c1.74 0 3.41.81 4.5 2.09C13.09 3.81 14.76 3 16.5 3 19.58 3 22 5.42 22 8.5c0 3.78-3.4 6.86-8.55 11.54L12 21.35z" fill="#ef4444"/></svg>
-            </span>
+            <span style={{ color: '#4a7c59' }}>i</span>
             <span style={{ color: '#4a7c59' }}>a</span>
           </span>
         </Link>
@@ -604,6 +621,7 @@ export default function HomePage() {
         @keyframes waveRun { 0%{stroke-dashoffset:160;} 100%{stroke-dashoffset:-160;} }
         @keyframes scrollLeft { 0%{transform:translateX(0);} 100%{transform:translateX(-33.33%);} }
         @keyframes blink { 0%,100%{opacity:1;} 50%{opacity:0;} }
+        @keyframes heartSlideIn { from { opacity:0; transform:translateX(80px); } to { opacity:1; transform:translateX(0); } }
       `}</style>
     </div>
   );
