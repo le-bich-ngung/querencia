@@ -77,6 +77,23 @@ var MENTAL_MODELS = [
   { title: 'Dangerous Questions', sub: 'The art of world-changing questions', desc: 'The right question matters more than the right answer. The most naive questions often lead to the biggest breakthroughs.', icon: '💡' },
 ];
 
+
+var CONVENTIONS_EN = [
+  { name: 'UN Convention on the Law of the Sea (UNCLOS)', year: 1982, summary: 'Defines the rights and responsibilities of nations regarding ocean use, marine environment protection, and management of natural resources.' },
+  { name: 'Convention on the Rights of the Child (CRC)', year: 1989, summary: 'Protects the civil, political, economic, social and cultural rights of children worldwide.' },
+  { name: 'Convention Against Torture (CAT)', year: 1984, summary: 'Prevents torture and other cruel, inhuman or degrading treatment or punishment.' },
+  { name: 'Convention on the Elimination of Discrimination Against Women (CEDAW)', year: 1979, summary: 'Eliminates all forms of discrimination against women and ensures equal rights in all areas.' },
+  { name: 'Paris Agreement on Climate Change', year: 2015, summary: 'Reduces greenhouse gas emissions and limits global temperature rise to below 2°C above pre-industrial levels.' },
+];
+
+var CONVENTIONS_VI = [
+  { name: 'Công ước Liên Hợp Quốc về Luật Biển (UNCLOS)', year: 1982, summary: 'Quy định quyền và nghĩa vụ của các quốc gia đối với việc sử dụng biển, bảo vệ môi trường biển và quản lý tài nguyên thiên nhiên.' },
+  { name: 'Công ước về Quyền Trẻ em (CRC)', year: 1989, summary: 'Bảo vệ quyền dân sự, chính trị, kinh tế, xã hội và văn hóa của trẻ em trên toàn thế giới.' },
+  { name: 'Công ước Chống Tra tấn (CAT)', year: 1984, summary: 'Ngăn chặn tra tấn và các hình thức đối xử tàn bạo, vô nhân đạo hoặc hạ thấp phẩm giá con người.' },
+  { name: 'Công ước Xóa bỏ Phân biệt Đối xử với Phụ nữ (CEDAW)', year: 1979, summary: 'Xóa bỏ mọi hình thức phân biệt đối xử với phụ nữ và đảm bảo quyền bình đẳng trong mọi lĩnh vực.' },
+  { name: 'Hiệp ước Paris về Biến đổi Khí hậu', year: 2015, summary: 'Giảm phát thải khí nhà kính và hạn chế mức tăng nhiệt độ toàn cầu xuống dưới 2°C so với thời kỳ tiền công nghiệp.' },
+];
+
 var MOCK_Q_POOL = [
   { id: '1', amount: 2, type: 'expiring', expiresIn: '1g 42p', donor: null, claimed: 0 },
   { id: '2', amount: 1, type: 'expiring', expiresIn: '2g 15p', donor: 'An N.', claimed: 3 },
