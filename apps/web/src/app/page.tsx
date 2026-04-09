@@ -71,10 +71,10 @@ var INTERNATIONAL_CONVENTIONS = [
 ];
 
 var MENTAL_MODELS = [
-  { title: 'First Principles Thinking', sub: 'Think from first principles', desc: 'Break problems down to fundamental truths and rebuild from scratch. How Elon Musk designed rockets 10x cheaper.', icon: '⚗️' },
-  { title: 'Second-Order Thinking', sub: 'Think about consequences of consequences', desc: 'Don't just ask "what does this cause?" but "what does that cause next?" See beyond immediate effects.', icon: '♟️' },
-  { title: 'Mental Models', sub: 'Thinking frameworks of geniuses', desc: 'A collection of thinking frameworks from many fields — physics, psychology, economics — to solve complex problems.', icon: '🧠' },
-  { title: 'Dangerous Questions', sub: 'The art of world-changing questions', desc: 'The right question matters more than the right answer. The most "naive" questions often lead to the biggest breakthroughs.', icon: '💡' },
+  { title: 'First Principles Thinking', sub: '{t('home.mental.label')} tu nguyen ly goc', desc: 'Phá vỡ vấn đề thanh các sự thật cơ bản nhất, sau đó xây dựng lại từ đầu. Cách Elon Musk thiết kế tên lửa rẻ hơn 10 lần.', icon: '⚗️' },
+  { title: 'Second-Order Thinking', sub: 'Think about consequences of consequences', desc: 'Không chỉ hỏi "dieu nay gay ra gi?" ma con "dieu do gay ra gi tiep theo?" Nhìn xa hơn hậu quả trực tiếp.', icon: '♟️' },
+  { title: 'Mental Models', sub: 'Mô hình tư duy của thiên tài', desc: 'Tập hợp các khung tư duy từ nhiều lĩnh vực - vat ly, tam ly hoc, kinh te - để giải quyết vấn đề phức tạp.', icon: '🧠' },
+  { title: 'Dangerous Questions', sub: 'Nghệ thuật đặt câu hỏi thay đổi thế giới', desc: 'Câu hỏi đúng quan trọng hơn câu trả lời đúng. Những câu hỏi "ngớ ngẩn" nhất thường dẫn đến đột phá lớn nhất.', icon: '💡' },
 ];
 
 var MOCK_Q_POOL = [
