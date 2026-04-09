@@ -341,7 +341,7 @@ export default function HomePage() {
         <div style={{ position: 'absolute', width: 600, height: 600, borderRadius: '50%', top: '5%', left: '15%', background: 'radial-gradient(circle, rgba(74,124,89,0.1) 0%, transparent 70%)', pointerEvents: 'none' }} />
         <div style={{ position: 'absolute', width: 400, height: 400, borderRadius: '50%', bottom: '10%', right: '10%', background: 'radial-gradient(circle, rgba(74,124,89,0.06) 0%, transparent 70%)', pointerEvents: 'none' }} />
         <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'center', gap: 0, marginRight: -8, marginBottom: 16 }}>
-          <div style={{ display: 'inline-block', marginRight: -2, animation: 'shimmerHero 1.8s ease 2.16s 1' }}>
+          <div style={{ display: 'inline-block', marginRight: -2, animation: 'shimmerHero 1.8s ease 2.16s 1, shimmerLogo 5s ease 6s infinite' }}>
             <svg xmlns="http://www.w3.org/2000/svg" viewBox="14 14 88 88" style={{ width: 'clamp(2.8rem, 8.5vw, 6.5rem)', height: 'clamp(2.8rem, 8.5vw, 6.5rem)' }}>
               <defs><clipPath id="qchero"><circle cx="55" cy="55" r="32"/></clipPath></defs>
               <circle cx="55" cy="55" r="38" fill="none" stroke={SAGE} strokeWidth="7" strokeLinecap="round"/>
@@ -618,11 +618,11 @@ export default function HomePage() {
         @keyframes letterSlide { from { opacity:0; transform:translateX(60px); } to { opacity:1; transform:translateX(0); } }
         @keyframes shimmerStrong { 0%{filter:brightness(1);} 20%{filter:brightness(1.5);} 40%{filter:brightness(5) drop-shadow(0 0 30px rgba(255,255,255,1)) drop-shadow(0 0 60px rgba(200,255,200,1));} 70%{filter:brightness(2);} 100%{filter:brightness(1);} }
         @keyframes shimmerLogo { 0%,85%,100%{filter:brightness(1);} 90%{filter:brightness(1.8) drop-shadow(0 0 6px rgba(74,124,89,0.8));} }
-        @keyframes shimmerHero { 0%{filter:brightness(1);} 20%{filter:brightness(1.5);} 40%{filter:brightness(5) drop-shadow(0 0 30px rgba(74,124,89,1)) drop-shadow(0 0 50px rgba(100,200,100,0.9));} 70%{filter:brightness(2);} 100%{filter:brightness(1);} }
+        @keyframes shimmerHero { 0%{filter:brightness(1);} 15%{filter:brightness(2);} 35%{filter:brightness(6) drop-shadow(0 0 40px rgba(74,124,89,1)) drop-shadow(0 0 80px rgba(150,255,150,1));} 65%{filter:brightness(2.5);} 100%{filter:brightness(1);} }
         @keyframes waveRun { 0%{stroke-dashoffset:160;} 100%{stroke-dashoffset:-160;} }
         @keyframes scrollLeft { 0%{transform:translateX(0);} 100%{transform:translateX(-33.33%);} }
         @keyframes blink { 0%,100%{opacity:1;} 50%{opacity:0;} }
-        @keyframes heartSlideIn { 0%{opacity:0;transform:translateX(80px);} 65%{opacity:1;transform:translateX(-12px);} 78%{transform:translateX(-12px);} 88%{transform:translateX(2px);} 100%{opacity:1;transform:translateX(-4px);} }
+        @keyframes heartSlideIn { 0%{opacity:0;transform:translateX(70px) rotate(0deg);} 60%{opacity:1;transform:translateX(-6px) rotate(-5deg);} 75%{transform:translateX(2px) rotate(-18deg);} 100%{opacity:1;transform:translateX(0px) rotate(-20deg);} }
       `}</style>
     </div>
   );
