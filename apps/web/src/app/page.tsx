@@ -145,7 +145,7 @@ function LetterDrop() {
         marginLeft: '0.05em',
         position: 'relative',
         bottom: '-0.05em',
-        animation: 'heartSlideIn 0.8s ease-out ' + heartDelay + 's both, shimmerStrong 2s ease ' + shimmerDelay + 's 1',
+        animation: 'heartSlideIn 1.6s cubic-bezier(0.25, 0.46, 0.45, 0.94) ' + heartDelay + 's both, shimmerStrong 2s ease ' + shimmerDelay + 's 1',
       }}>
         <svg viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg"
           style={{ width: 'clamp(0.7rem, 2vw, 1.6rem)', height: 'clamp(0.7rem, 2vw, 1.6rem)', display: 'block' }}>
@@ -341,7 +341,7 @@ export default function HomePage() {
         <div style={{ position: 'absolute', width: 600, height: 600, borderRadius: '50%', top: '5%', left: '15%', background: 'radial-gradient(circle, rgba(74,124,89,0.1) 0%, transparent 70%)', pointerEvents: 'none' }} />
         <div style={{ position: 'absolute', width: 400, height: 400, borderRadius: '50%', bottom: '10%', right: '10%', background: 'radial-gradient(circle, rgba(74,124,89,0.06) 0%, transparent 70%)', pointerEvents: 'none' }} />
         <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'center', gap: 0, marginRight: -8, marginBottom: 16 }}>
-          <div style={{ display: 'inline-block', marginRight: -2, animation: 'shimmerHero 1.8s ease 2.16s 1, shimmerLogo 5s ease 6s infinite' }}>
+          <div style={{ display: 'inline-block', marginRight: -2, animation: 'shimmerStrong 2s ease 2.16s 1, shimmerLogo 5s ease 7s infinite' }}>
             <svg xmlns="http://www.w3.org/2000/svg" viewBox="14 14 88 88" style={{ width: 'clamp(2.8rem, 8.5vw, 6.5rem)', height: 'clamp(2.8rem, 8.5vw, 6.5rem)' }}>
               <defs><clipPath id="qchero"><circle cx="55" cy="55" r="32"/></clipPath></defs>
               <circle cx="55" cy="55" r="38" fill="none" stroke={SAGE} strokeWidth="7" strokeLinecap="round"/>
@@ -622,7 +622,7 @@ export default function HomePage() {
         @keyframes waveRun { 0%{stroke-dashoffset:160;} 100%{stroke-dashoffset:-160;} }
         @keyframes scrollLeft { 0%{transform:translateX(0);} 100%{transform:translateX(-33.33%);} }
         @keyframes blink { 0%,100%{opacity:1;} 50%{opacity:0;} }
-        @keyframes heartSlideIn { 0%{opacity:0;transform:translateX(70px) rotate(0deg);} 60%{opacity:1;transform:translateX(-6px) rotate(-5deg);} 75%{transform:translateX(2px) rotate(-18deg);} 100%{opacity:1;transform:translateX(0px) rotate(-20deg);} }
+        @keyframes heartSlideIn { 0%{opacity:0;transform:translateX(90px) rotate(0deg);} 30%{opacity:1;} 100%{opacity:1;transform:translateX(0px) rotate(-22deg);} }
       `}</style>
     </div>
   );
