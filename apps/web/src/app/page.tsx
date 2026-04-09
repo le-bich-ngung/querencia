@@ -43,23 +43,23 @@ var FREE_TOOLS = [
 ];
 
 var PAID_TOOLS = [
-  { name: 'OCR', desc: 'Nhận dang chu tu anh', icon: '🔍', href: '/tools/ocr' },
-  { name: 'Screenshot Translator', desc: 'Dịch nội dung trong ảnh', icon: '🌐', href: '/tools/screenshot-translator' },
-  { name: 'Smart Table Extractor', desc: 'Trích bảng từ ảnh & PDF', icon: '📊', href: '/tools/smart-table-extractor' },
-  { name: 'Image Editor', desc: 'Chỉnh sửa ảnh nâng cao', icon: '🖼️', href: '/tools/image-editor' },
-  { name: 'Collage', desc: 'Ghép ảnh nghệ thuật', icon: '🎨', href: '/tools/collage' },
-  { name: 'Add Watermark', desc: 'Thêm watermark vào ảnh', icon: '💧', href: '/tools/add-watermark' },
-  { name: 'Convert Image', desc: 'Chuyển đổi định dạng ảnh', icon: '🔄', href: '/tools/convert-image' },
-  { name: 'Compress Image', desc: 'Nén ảnh chất lượng cao', icon: '📦', href: '/tools/compress-image' },
-  { name: 'PDF Tool', desc: 'Xử lý PDF toàn diện', icon: '📄', href: '/tools/pdf-tool' },
-  { name: 'PDF to Word', desc: 'Chuyển PDF sang Word', icon: '📝', href: '/tools/pdf-to-word' },
-  { name: 'PDF Reader', desc: 'Đọc & annotate PDF', icon: '📖', href: '/tools/pdf-reader' },
-  { name: 'CV Builder', desc: 'Tạo CV chuyên nghiệp', icon: '💼', href: '/tools/cv-builder' },
-  { name: 'Audio Recorder', desc: 'Ghi âm & lưu trữ', icon: '🎙️', href: '/tools/audio-recorder' },
-  { name: 'Screen Recorder', desc: 'Quay màn hình', icon: '🎬', href: '/tools/screen-recorder' },
-  { name: 'File Vault', desc: 'Lưu trữ file bảo mật', icon: '🔒', href: '/tools/file-vault' },
-  { name: 'Diary', desc: 'Nhật ký cá nhân', icon: '📓', href: '/tools/diary' },
-  { name: 'Flashcards', desc: 'Học từ vựng thông minh', icon: '🃏', href: '/tools/flashcards' },
+  { name: 'OCR', desc: 'Recognize text from images', icon: '🔍', href: '/tools/ocr' },
+  { name: 'Screenshot Translator', desc: 'Translate content in images', icon: '🌐', href: '/tools/screenshot-translator' },
+  { name: 'Smart Table Extractor', desc: 'Extract tables from images & PDFs', icon: '📊', href: '/tools/smart-table-extractor' },
+  { name: 'Image Editor', desc: 'Advanced image editing', icon: '🖼️', href: '/tools/image-editor' },
+  { name: 'Collage', desc: 'Artistic photo collage', icon: '🎨', href: '/tools/collage' },
+  { name: 'Add Watermark', desc: 'Add watermark to images', icon: '💧', href: '/tools/add-watermark' },
+  { name: 'Convert Image', desc: 'Convert image formats', icon: '🔄', href: '/tools/convert-image' },
+  { name: 'Compress Image', desc: 'High-quality image compression', icon: '📦', href: '/tools/compress-image' },
+  { name: 'PDF Tool', desc: 'Comprehensive PDF processing', icon: '📄', href: '/tools/pdf-tool' },
+  { name: 'PDF to Word', desc: 'Convert PDF to Word', icon: '📝', href: '/tools/pdf-to-word' },
+  { name: 'PDF Reader', desc: 'Read & annotate PDFs', icon: '📖', href: '/tools/pdf-reader' },
+  { name: 'CV Builder', desc: 'Build professional CVs', icon: '💼', href: '/tools/cv-builder' },
+  { name: 'Audio Recorder', desc: 'Record & store audio', icon: '🎙️', href: '/tools/audio-recorder' },
+  { name: 'Screen Recorder', desc: 'Screen recording', icon: '🎬', href: '/tools/screen-recorder' },
+  { name: 'File Vault', desc: 'Secure file storage', icon: '🔒', href: '/tools/file-vault' },
+  { name: 'Diary', desc: 'Personal diary', icon: '📓', href: '/tools/diary' },
+  { name: 'Flashcards', desc: 'Smart vocabulary learning', icon: '🃏', href: '/tools/flashcards' },
 ];
 
 var INTERNATIONAL_CONVENTIONS = [
@@ -71,8 +71,8 @@ var INTERNATIONAL_CONVENTIONS = [
 ];
 
 var MENTAL_MODELS = [
-  { title: 'First Principles Thinking', sub: 'Tư duy tu nguyen ly goc', desc: 'Phá vỡ vấn đề thanh các sự thật cơ bản nhất, sau đó xây dựng lại từ đầu. Cách Elon Musk thiết kế tên lửa rẻ hơn 10 lần.', icon: '⚗️' },
-  { title: 'Second-Order Thinking', sub: 'Tư duy hau qua bac hai', desc: 'Không chỉ hỏi "dieu nay gay ra gi?" ma con "dieu do gay ra gi tiep theo?" Nhìn xa hơn hậu quả trực tiếp.', icon: '♟️' },
+  { title: 'First Principles Thinking', sub: '{t('home.mental.label')} tu nguyen ly goc', desc: 'Phá vỡ vấn đề thanh các sự thật cơ bản nhất, sau đó xây dựng lại từ đầu. Cách Elon Musk thiết kế tên lửa rẻ hơn 10 lần.', icon: '⚗️' },
+  { title: 'Second-Order Thinking', sub: 'Think about consequences of consequences', desc: 'Không chỉ hỏi "dieu nay gay ra gi?" ma con "dieu do gay ra gi tiep theo?" Nhìn xa hơn hậu quả trực tiếp.', icon: '♟️' },
   { title: 'Mental Models', sub: 'Mô hình tư duy của thiên tài', desc: 'Tập hợp các khung tư duy từ nhiều lĩnh vực - vat ly, tam ly hoc, kinh te - để giải quyết vấn đề phức tạp.', icon: '🧠' },
   { title: 'Dangerous Questions', sub: 'Nghệ thuật đặt câu hỏi thay đổi thế giới', desc: 'Câu hỏi đúng quan trọng hơn câu trả lời đúng. Những câu hỏi "ngớ ngẩn" nhất thường dẫn đến đột phá lớn nhất.', icon: '💡' },
 ];
@@ -180,7 +180,7 @@ function BookNotifyForm() {
   }
   if (sent) return (
     <div style={{ padding: '16px 24px', background: 'rgba(74,124,89,0.08)', border: '1px solid rgba(74,124,89,0.15)', borderRadius: 12, color: SAGE, fontSize: '0.9rem' }}>
-      Đã đăng ký! Chúng mình sẽ báo bạn khi sách ra mắt..
+      {t('home.book.sent')}.
     </div>
   );
   return (
@@ -189,11 +189,11 @@ function BookNotifyForm() {
         type="email"
         value={email}
         onChange={function(e) { setEmail(e.target.value); }}
-        placeholder="Email của bạn"
+        placeholder={t('home.book.email') || 'Your email'}
         style={{ padding: '11px 18px', border: '1.5px solid rgba(0,0,0,0.1)', borderRadius: 100, fontSize: '0.88rem', outline: 'none', fontFamily: 'inherit', minWidth: 240, background: '#fff' }}
       />
       <button onClick={handleSubmit} style={{ padding: '11px 24px', background: SAGE, color: '#fff', border: 'none', borderRadius: 100, cursor: 'pointer', fontFamily: 'inherit', fontSize: '0.88rem', fontWeight: 600 }}>
-        Thông báo cho tôi
+        {t('home.book.btn')}
       </button>
     </div>
   );
@@ -276,6 +276,7 @@ export default function HomePage() {
 
   var currentQuote = QUOTES[quoteIdx];
   var companyQuote = COMPANY_QUOTES[locale] || COMPANY_QUOTES.en;
+  var INTERNATIONAL_CONVENTIONS = locale === 'vi' ? CONVENTIONS_VI : CONVENTIONS_EN;
   var currentConv = INTERNATIONAL_CONVENTIONS[convIdx];
   var availableQ = MOCK_Q_POOL.filter(function(p) { return !claimedQ.includes(p.id); });
 
@@ -284,7 +285,7 @@ export default function HomePage() {
     var col = props.color || SAGE;
     var animStyle = props.animated ? { strokeDasharray: 160, animation: 'waveRun 2s linear infinite' } : {};
     return (
-      <svg xmlns="http://www.w3.org/2000/svg" viewBox="13 13 86 86" width={sz} height={sz} style={{ flexShrink: 0, display: 'inline-block', verticalAlign: 'text-bottom', marginRight: 3 }}>
+      <svg xmlns="http://www.w3.org/2000/svg" viewBox="13 13 86 86" width={sz} height={sz} style={{ flexShrink: 0, display: 'inline-block', verticalAlign: 'text-bottom', marginRight: 2 }}>
         <defs><clipPath id={'qc' + (props.id || '')}><circle cx="55" cy="55" r="32"/></clipPath></defs>
         <circle cx="55" cy="55" r="38" fill="none" stroke={col} strokeWidth="7" strokeLinecap="round"/>
         <line x1="81" y1="79" x2="98" y2="98" stroke={col} strokeWidth="7" strokeLinecap="round"/>
@@ -365,9 +366,9 @@ export default function HomePage() {
             <QSymbol size={22} color={SAGE} />
             <h2 style={{ fontFamily: "'Space Grotesk', sans-serif", fontSize: '1.6rem', fontWeight: 800, color: '#f0efeb', letterSpacing: -0.5, margin: 0 }}>Q Pool</h2>
           </div>
-          <p style={{ fontSize: '0.88rem', color: 'rgba(240,239,235,0.4)', marginBottom: 36, lineHeight: 1.6 }}>Q được tặng treo bởi cộng đồng. Ai cần vào nhận. Q expiring hết hạn sau 24h.</p>
+          <p style={{ fontSize: '0.88rem', color: 'rgba(240,239,235,0.4)', marginBottom: 36, lineHeight: 1.6 }}>{t('home.qpool.desc')}</p>
           <div style={{ display: 'flex', gap: 16, marginBottom: 28, flexWrap: 'wrap' }}>
-            {[{ label: 'Q đang treo', value: String(availableQ.length) }, { label: 'Đã nhận hôm nay', value: '47' }, { label: 'Người tặng', value: '12' }].map(function(s) {
+            {[{ label: t('home.qpool.available'), value: String(availableQ.length) }, { label: t('home.qpool.claimed'), value: '47' }, { label: t('home.qpool.donors'), value: '12' }].map(function(s) {
               return (
                 <div key={s.label} style={{ flex: 1, minWidth: 100, background: 'rgba(74,124,89,0.06)', border: '1px solid rgba(74,124,89,0.12)', borderRadius: 12, padding: '14px 18px', textAlign: 'center' }}>
                   <div style={{ fontSize: '1.5rem', fontWeight: 800, color: SAGE }}>{s.value}</div>
@@ -380,7 +381,7 @@ export default function HomePage() {
             {availableQ.length === 0 ? (
               <div style={{ textAlign: 'center', padding: '40px 0', color: 'rgba(240,239,235,0.3)' }}>
                 <div style={{ fontSize: '2rem', marginBottom: 8 }}>🌿</div>
-                <p style={{ fontSize: '0.88rem' }}>Pool đang trống. Kiểm tra lại sau!</p>
+                <p style={{ fontSize: '0.88rem' }}>{t('home.qpool.empty')}</p>
               </div>
             ) : availableQ.map(function(item) {
               return (
@@ -395,19 +396,19 @@ export default function HomePage() {
                     <div style={{ display: 'flex', alignItems: 'center', gap: 6, marginBottom: 3 }}>
                       <span style={{ fontWeight: 700, fontSize: '0.88rem', color: '#f0efeb' }}>{item.amount} Q</span>
                       <span style={{ fontSize: '0.62rem', fontWeight: 600, background: item.type === 'permanent' ? 'rgba(74,124,89,0.15)' : 'rgba(245,158,11,0.1)', color: item.type === 'permanent' ? SAGE : '#b45309', padding: '1px 7px', borderRadius: 999 }}>
-                        {item.type === 'permanent' ? 'không hết hạn' : 'hết hạn trong ' + item.expiresIn}
+                        {item.type === 'permanent' ? t('home.qpool.permanent') : t('home.qpool.expires') + ' ' + item.expiresIn}
                       </span>
                     </div>
                     <div style={{ fontSize: '0.72rem', color: 'rgba(240,239,235,0.3)' }}>
-                      {item.donor ? 'Tặng bởi ' + item.donor : 'Tặng ẩn danh'}{item.claimed > 0 ? ' · ' + item.claimed + ' người đã nhận' : ''}
+                      {item.donor ? t('home.qpool.by') + ' ' + item.donor : t('home.qpool.anon')}{item.claimed > 0 ? ' · ' + item.claimed + ' ' + t('home.qpool.people') : ''}
                     </div>
                   </div>
                   {session ? (
                     <button onClick={function() { handleClaim(item.id); }} disabled={!!loadingQ} style={{ padding: '7px 16px', borderRadius: 8, background: loadingQ === item.id ? 'rgba(74,124,89,0.2)' : SAGE, color: '#fff', border: 'none', cursor: loadingQ ? 'not-allowed' : 'pointer', fontFamily: 'inherit', fontSize: '0.8rem', fontWeight: 600, flexShrink: 0 }}>
-                      {loadingQ === item.id ? '...' : 'Nhận'}
+                      {loadingQ === item.id ? '...' : t('home.qpool.claim')}
                     </button>
                   ) : (
-                    <Link href="/auth/login" style={{ padding: '7px 16px', borderRadius: 8, background: 'rgba(255,255,255,0.05)', border: '1px solid rgba(255,255,255,0.08)', color: 'rgba(240,239,235,0.4)', textDecoration: 'none', fontSize: '0.8rem', fontWeight: 600, flexShrink: 0 }}>Đăng nhập</Link>
+                    <Link href="/auth/login" style={{ padding: '7px 16px', borderRadius: 8, background: 'rgba(255,255,255,0.05)', border: '1px solid rgba(255,255,255,0.08)', color: 'rgba(240,239,235,0.4)', textDecoration: 'none', fontSize: '0.8rem', fontWeight: 600, flexShrink: 0 }}>{t('home.qpool.login')}</Link>
                   )}
                 </div>
               );
@@ -415,7 +416,7 @@ export default function HomePage() {
           </div>
           {session && (
             <div style={{ marginTop: 24, textAlign: 'center' }}>
-              <Link href="/wallet/gift?pool=true" style={{ fontSize: '0.82rem', color: SAGE, textDecoration: 'none', fontWeight: 500, opacity: 0.7 }}>Có Q sắp hết hạn? Tặng treo vào Pool →</Link>
+              <Link href="/wallet/gift?pool=true" style={{ fontSize: '0.82rem', color: SAGE, textDecoration: 'none', fontWeight: 500, opacity: 0.7 }}>{t('home.qpool.gift')}</Link>
             </div>
           )}
         </div>
@@ -424,9 +425,9 @@ export default function HomePage() {
       {/* 3. FREE TOOLS */}
       <section style={{ background: '#fafaf8', padding: '80px 0 60px' }}>
         <div style={{ maxWidth: 1100, margin: '0 auto', padding: '0 24px' }}>
-          <p style={{ fontSize: '0.65rem', fontWeight: 700, letterSpacing: '0.14em', textTransform: 'uppercase', color: '#bbb', marginBottom: 8 }}>Tools miễn phí</p>
-          <h2 style={{ fontFamily: 'Georgia, serif', fontSize: 'clamp(1.6rem, 3.5vw, 2.4rem)', fontWeight: 400, letterSpacing: -1, color: '#111', margin: '0 0 10px' }}>Dùng thoải mái, không giới hạn.</h2>
-          <p style={{ fontSize: '0.88rem', color: '#888', marginBottom: 40 }}>Không cần tài khoản. Không quảng cáo. Không thu thập dữ liệu.</p>
+          <p style={{ fontSize: '0.65rem', fontWeight: 700, letterSpacing: '0.14em', textTransform: 'uppercase', color: '#bbb', marginBottom: 8 }}>{t('home.freetools.label') || 'Free tools'}</p>
+          <h2 style={{ fontFamily: 'Georgia, serif', fontSize: 'clamp(1.6rem, 3.5vw, 2.4rem)', fontWeight: 400, letterSpacing: -1, color: '#111', margin: '0 0 10px' }}>{t('home.freetools.title')}</h2>
+          <p style={{ fontSize: '0.88rem', color: '#888', marginBottom: 40 }}>{t('home.freetools.sub')}</p>
         </div>
         <div style={{ position: 'relative', overflow: 'hidden', marginBottom: 48 }}>
           <div style={{ position: 'absolute', left: 0, top: 0, bottom: 0, width: 80, background: 'linear-gradient(to right, #fafaf8, transparent)', zIndex: 2, pointerEvents: 'none' }} />
@@ -465,9 +466,9 @@ export default function HomePage() {
       <section style={{ background: '#0c0e0c', padding: '80px 24px', position: 'relative' }}>
         <div style={{ position: 'absolute', inset: 0, background: 'radial-gradient(ellipse at 30% 60%, rgba(74,124,89,0.07) 0%, transparent 60%)', pointerEvents: 'none' }} />
         <div style={{ maxWidth: 1100, margin: '0 auto', position: 'relative' }}>
-          <p style={{ fontSize: '0.65rem', fontWeight: 700, letterSpacing: '0.14em', textTransform: 'uppercase', color: 'rgba(74,124,89,0.6)', marginBottom: 8 }}>Tools có phí · Nguồn thu duy nhất</p>
-          <h2 style={{ fontFamily: 'Georgia, serif', fontSize: 'clamp(1.6rem, 3.5vw, 2.4rem)', fontWeight: 400, letterSpacing: -1, color: '#f0efeb', margin: '0 0 10px' }}>Công cụ nâng cao, đúng giá trị.</h2>
-          <p style={{ fontSize: '0.88rem', color: 'rgba(240,239,235,0.35)', marginBottom: 40 }}>Dùng Q để trả phí. Không cần đăng ký gói. Trả khi dùng.</p>
+          <p style={{ fontSize: '0.65rem', fontWeight: 700, letterSpacing: '0.14em', textTransform: 'uppercase', color: 'rgba(74,124,89,0.6)', marginBottom: 8 }}>{t('home.paidtools.label')}</p>
+          <h2 style={{ fontFamily: 'Georgia, serif', fontSize: 'clamp(1.6rem, 3.5vw, 2.4rem)', fontWeight: 400, letterSpacing: -1, color: '#f0efeb', margin: '0 0 10px' }}>{t('home.paidtools.title')}</h2>
+          <p style={{ fontSize: '0.88rem', color: 'rgba(240,239,235,0.35)', marginBottom: 40 }}>{t('home.paidtools.sub')}</p>
           <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fill, minmax(200px, 1fr))', gap: 12 }}>
             {PAID_TOOLS.map(function(tool) {
               return (
@@ -487,28 +488,28 @@ export default function HomePage() {
       {/* 5. APPS */}
       <section style={{ background: '#fafaf8', padding: '80px 24px' }}>
         <div style={{ maxWidth: 1100, margin: '0 auto' }}>
-          <p style={{ fontSize: '0.65rem', fontWeight: 700, letterSpacing: '0.14em', textTransform: 'uppercase', color: '#bbb', marginBottom: 8 }}>Ứng dụng</p>
-          <h2 style={{ fontFamily: 'Georgia, serif', fontSize: 'clamp(1.6rem, 3.5vw, 2.4rem)', fontWeight: 400, letterSpacing: -1, color: '#111', margin: '0 0 40px' }}>Ba ứng dụng. Một tài khoản.</h2>
+          <p style={{ fontSize: '0.65rem', fontWeight: 700, letterSpacing: '0.14em', textTransform: 'uppercase', color: '#bbb', marginBottom: 8 }}>{t('home.apps.label')}</p>
+          <h2 style={{ fontFamily: 'Georgia, serif', fontSize: 'clamp(1.6rem, 3.5vw, 2.4rem)', fontWeight: 400, letterSpacing: -1, color: '#111', margin: '0 0 40px' }}>{t('home.apps.title')}</h2>
           <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(280px, 1fr))', gap: 16 }}>
             <div style={{ background: '#fff', border: '1.5px solid rgba(0,0,0,0.06)', borderRadius: 20, padding: '32px 28px', display: 'flex', flexDirection: 'column', gap: 14 }}>
               <div style={{ fontSize: '2.5rem' }}>🌿</div>
               <h3 style={{ fontFamily: 'Georgia, serif', fontSize: '2rem', fontWeight: 400, color: '#4a7c59', margin: 0, letterSpacing: -0.5 }}>Nope</h3>
               <p style={{ fontSize: '0.85rem', color: '#888', lineHeight: 1.5, margin: 0 }}>Câu chuyện thật từ người thật. Không quảng cáo, khong thuat toan.</p>
-              <Link href="/dashboard/nope" style={{ display: 'inline-block', padding: '9px 20px', background: '#4a7c59', color: '#fff', borderRadius: 100, textDecoration: 'none', fontSize: '0.82rem', fontWeight: 600, alignSelf: 'flex-start' }}>Dùng ngay →</Link>
+              <Link href="/dashboard/nope" style={{ display: 'inline-block', padding: '9px 20px', background: '#4a7c59', color: '#fff', borderRadius: 100, textDecoration: 'none', fontSize: '0.82rem', fontWeight: 600, alignSelf: 'flex-start' }}>Use now →</Link>
             </div>
             <div style={{ background: '#fff', border: '1.5px solid rgba(0,0,0,0.06)', borderRadius: 20, padding: '32px 28px', display: 'flex', flexDirection: 'column', gap: 14 }}>
               <div style={{ fontSize: '2.5rem' }}>🌽</div>
               <h3 style={{ fontFamily: 'Georgia, serif', fontSize: '2rem', fontWeight: 400, color: '#f59e0b', margin: 0, letterSpacing: -0.5 }}>Cui Bap</h3>
-              <p style={{ fontSize: '0.85rem', color: '#888', lineHeight: 1.5, margin: 0 }}>Nhắn tin riêng tư. Không quảng cáo. Không bán dữ liệu.</p>
-              <Link href="/dashboard/cui-bap" style={{ display: 'inline-block', padding: '9px 20px', background: '#f59e0b', color: '#fff', borderRadius: 100, textDecoration: 'none', fontSize: '0.82rem', fontWeight: 600, alignSelf: 'flex-start' }}>Dùng ngay →</Link>
+              <p style={{ fontSize: '0.85rem', color: '#888', lineHeight: 1.5, margin: 0 }}>{t('home.cuibap.desc')}</p>
+              <Link href="/dashboard/cui-bap" style={{ display: 'inline-block', padding: '9px 20px', background: '#f59e0b', color: '#fff', borderRadius: 100, textDecoration: 'none', fontSize: '0.82rem', fontWeight: 600, alignSelf: 'flex-start' }}>Use now →</Link>
             </div>
             <div style={{ background: '#fff', border: '1.5px solid rgba(0,0,0,0.06)', borderRadius: 20, padding: '32px 28px', display: 'flex', flexDirection: 'column', gap: 14 }}>
               <div style={{ fontSize: '2.5rem' }}>🎧</div>
               <h3 style={{ fontFamily: 'Georgia, serif', fontSize: '2rem', fontWeight: 400, color: '#8b5cf6', margin: 0, letterSpacing: -0.5 }}>LaNo</h3>
-              <p style={{ fontSize: '0.85rem', color: '#888', lineHeight: 1.5, margin: 0 }}>AI lắng nghe bạn. Không phán xét. Không ghi nhớ.</p>
+              <p style={{ fontSize: '0.85rem', color: '#888', lineHeight: 1.5, margin: 0 }}>{t('home.lano.desc')}</p>
               <div style={{ display: 'flex', flexWrap: 'wrap', gap: 8 }}>
-                <Link href="/dashboard/lano" style={{ display: 'inline-block', padding: '9px 20px', background: '#8b5cf6', color: '#fff', borderRadius: 100, textDecoration: 'none', fontSize: '0.82rem', fontWeight: 600 }}>Dùng ngay →</Link>
-                <Link href="/dashboard/lano/setup" style={{ display: 'inline-block', padding: '9px 20px', background: 'rgba(139,92,246,0.08)', color: '#8b5cf6', border: '1px solid rgba(139,92,246,0.2)', borderRadius: 100, textDecoration: 'none', fontSize: '0.82rem', fontWeight: 600 }}>Chọn cách trò chuyện</Link>
+                <Link href="/dashboard/lano" style={{ display: 'inline-block', padding: '9px 20px', background: '#8b5cf6', color: '#fff', borderRadius: 100, textDecoration: 'none', fontSize: '0.82rem', fontWeight: 600 }}>Use now →</Link>
+                <Link href="/dashboard/lano/setup" style={{ display: 'inline-block', padding: '9px 20px', background: 'rgba(139,92,246,0.08)', color: '#8b5cf6', border: '1px solid rgba(139,92,246,0.2)', borderRadius: 100, textDecoration: 'none', fontSize: '0.82rem', fontWeight: 600 }}>{t('home.lano.btn2')}</Link>
               </div>
             </div>
           </div>
@@ -534,8 +535,8 @@ export default function HomePage() {
       {/* 7. INTERNATIONAL CONVENTIONS */}
       <section style={{ background: '#fafaf8', padding: '80px 24px' }}>
         <div style={{ maxWidth: 860, margin: '0 auto' }}>
-          <p style={{ fontSize: '0.65rem', fontWeight: 700, letterSpacing: '0.14em', textTransform: 'uppercase', color: '#bbb', marginBottom: 8 }}>Công ước quốc tế đa phương</p>
-          <h2 style={{ fontFamily: 'Georgia, serif', fontSize: 'clamp(1.4rem, 3vw, 2rem)', fontWeight: 400, letterSpacing: -0.5, color: '#111', margin: '0 0 40px' }}>Những văn bản định hình thế giới.</h2>
+          <p style={{ fontSize: '0.65rem', fontWeight: 700, letterSpacing: '0.14em', textTransform: 'uppercase', color: '#bbb', marginBottom: 8 }}>{t('home.conventions.label')}</p>
+          <h2 style={{ fontFamily: 'Georgia, serif', fontSize: 'clamp(1.4rem, 3vw, 2rem)', fontWeight: 400, letterSpacing: -0.5, color: '#111', margin: '0 0 40px' }}>{t('home.conventions.title')}</h2>
           <div style={{ opacity: convVisible ? 1 : 0, transition: 'opacity 0.5s ease', minHeight: 160 }}>
             <div style={{ borderLeft: '3px solid ' + SAGE, paddingLeft: 24 }}>
               <div style={{ display: 'flex', alignItems: 'center', gap: 10, marginBottom: 10 }}>
@@ -557,8 +558,8 @@ export default function HomePage() {
       <section style={{ background: '#0c0e0c', padding: '80px 24px', position: 'relative' }}>
         <div style={{ position: 'absolute', inset: 0, background: 'radial-gradient(ellipse at 80% 30%, rgba(74,124,89,0.06) 0%, transparent 60%)', pointerEvents: 'none' }} />
         <div style={{ maxWidth: 1100, margin: '0 auto', position: 'relative' }}>
-          <p style={{ fontSize: '0.65rem', fontWeight: 700, letterSpacing: '0.14em', textTransform: 'uppercase', color: 'rgba(74,124,89,0.5)', marginBottom: 8 }}>Tư duy</p>
-          <h2 style={{ fontFamily: 'Georgia, serif', fontSize: 'clamp(1.6rem, 3.5vw, 2.4rem)', fontWeight: 400, letterSpacing: -1, color: '#f0efeb', margin: '0 0 40px' }}>Bốn framework thay đổi cách bạn nghĩ.</h2>
+          <p style={{ fontSize: '0.65rem', fontWeight: 700, letterSpacing: '0.14em', textTransform: 'uppercase', color: 'rgba(74,124,89,0.5)', marginBottom: 8 }}>{t('home.mental.label')}</p>
+          <h2 style={{ fontFamily: 'Georgia, serif', fontSize: 'clamp(1.6rem, 3.5vw, 2.4rem)', fontWeight: 400, letterSpacing: -1, color: '#f0efeb', margin: '0 0 40px' }}>{t('home.mental.title')}</h2>
           <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(240px, 1fr))', gap: 14 }}>
             {MENTAL_MODELS.map(function(model) {
               return (
@@ -579,12 +580,12 @@ export default function HomePage() {
       {/* 9. SACH LA */}
       <section style={{ background: '#fafaf8', padding: '80px 24px' }}>
         <div style={{ maxWidth: 640, margin: '0 auto', textAlign: 'center' }}>
-          <p style={{ fontSize: '0.65rem', fontWeight: 700, letterSpacing: '0.14em', textTransform: 'uppercase', color: '#bbb', marginBottom: 16 }}>Sắp ra mắt</p>
+          <p style={{ fontSize: '0.65rem', fontWeight: 700, letterSpacing: '0.14em', textTransform: 'uppercase', color: '#bbb', marginBottom: 16 }}>{t('home.book.label')}</p>
           <h2 style={{ fontFamily: 'Georgia, serif', fontSize: 'clamp(2rem, 5vw, 3.5rem)', fontWeight: 400, letterSpacing: -1.5, color: '#111', margin: '0 0 18px', lineHeight: 1.1 }}>
             Sach <span style={{ color: SAGE, fontStyle: 'italic' }}>La.</span>
           </h2>
           <p style={{ fontSize: '0.92rem', color: '#777', lineHeight: 1.7, marginBottom: 36 }}>
-            Một cuốn sách đang được viết. Về việc là chính mình — không hơn, không kém. Đăng ký để nhận thông báo khi sách ra mắt.
+            {t('home.book.desc')}
           </p>
           <BookNotifyForm />
         </div>
@@ -594,22 +595,22 @@ export default function HomePage() {
       <section style={{ background: '#070908', padding: '80px 24px', position: 'relative' }}>
         <div style={{ position: 'absolute', inset: 0, background: 'radial-gradient(ellipse at center bottom, rgba(74,124,89,0.05) 0%, transparent 60%)', pointerEvents: 'none' }} />
         <div style={{ maxWidth: 580, margin: '0 auto', textAlign: 'center', position: 'relative' }}>
-          <p style={{ fontSize: '0.65rem', fontWeight: 700, letterSpacing: '0.14em', textTransform: 'uppercase', color: 'rgba(74,124,89,0.5)', marginBottom: 12 }}>Nói với chúng mình</p>
-          <h2 style={{ fontFamily: 'Georgia, serif', fontSize: 'clamp(1.5rem, 3.5vw, 2.2rem)', fontWeight: 400, letterSpacing: -0.5, color: '#f0efeb', margin: '0 0 10px' }}>Bạn muốn Querencia thế nào??</h2>
+          <p style={{ fontSize: '0.65rem', fontWeight: 700, letterSpacing: '0.14em', textTransform: 'uppercase', color: 'rgba(74,124,89,0.5)', marginBottom: 12 }}>{t('home.feedback.label')}</p>
+          <h2 style={{ fontFamily: 'Georgia, serif', fontSize: 'clamp(1.5rem, 3.5vw, 2.2rem)', fontWeight: 400, letterSpacing: -0.5, color: '#f0efeb', margin: '0 0 10px' }}>{t('home.feedback.title')}?</h2>
           <p style={{ fontSize: '0.85rem', color: 'rgba(240,239,235,0.3)', marginBottom: 32 }}>Feedback của bạn định hình Querencia.. Cần đăng nhập để gửi..</p>
           {feedbackSent ? (
             <div style={{ padding: '20px', background: 'rgba(74,124,89,0.1)', border: '1px solid rgba(74,124,89,0.2)', borderRadius: 12, color: SAGE, fontSize: '0.9rem' }}>
-              Cảm ơn bạn! Chúng mình đã nhận được feedback..
+              {t('home.feedback.sent')}.
             </div>
           ) : session ? (
             <div style={{ display: 'flex', flexDirection: 'column', gap: 12 }}>
               <textarea value={feedback} onChange={function(e) { setFeedback(e.target.value); }} placeholder="Chia sẻ ý kiến của bạn về Querencia......" style={{ width: '100%', minHeight: 120, padding: '14px 16px', background: 'rgba(255,255,255,0.04)', border: '1px solid rgba(255,255,255,0.08)', borderRadius: 12, color: '#f0efeb', fontSize: '0.88rem', fontFamily: 'inherit', resize: 'vertical', outline: 'none', boxSizing: 'border-box' }} />
               <button onClick={handleFeedback} disabled={!feedback.trim()} style={{ padding: '12px 28px', background: feedback.trim() ? SAGE : 'rgba(74,124,89,0.2)', color: '#fff', border: 'none', borderRadius: 100, cursor: feedback.trim() ? 'pointer' : 'not-allowed', fontFamily: 'inherit', fontSize: '0.88rem', fontWeight: 600, transition: 'all 0.15s', alignSelf: 'center' }}>
-                Gửi feedback
+                {t('home.feedback.btn')}
               </button>
             </div>
           ) : (
-            <Link href="/auth/login" style={{ display: 'inline-block', padding: '11px 28px', background: 'rgba(255,255,255,0.05)', border: '1px solid rgba(255,255,255,0.08)', color: 'rgba(240,239,235,0.6)', borderRadius: 100, textDecoration: 'none', fontSize: '0.88rem', fontWeight: 600 }}>Đăng nhập để gửi feedback</Link>
+            <Link href="/auth/login" style={{ display: 'inline-block', padding: '11px 28px', background: 'rgba(255,255,255,0.05)', border: '1px solid rgba(255,255,255,0.08)', color: 'rgba(240,239,235,0.6)', borderRadius: 100, textDecoration: 'none', fontSize: '0.88rem', fontWeight: 600 }}>{t('home.feedback.login')}</Link>
           )}
         </div>
       </section>
