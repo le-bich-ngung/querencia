@@ -304,7 +304,7 @@ export default function HomePage() {
     var col = props.color || SAGE;
     var animStyle = props.animated ? { strokeDasharray: 160, animation: 'waveRun 2s linear infinite' } : {};
     return (
-      <svg xmlns="http://www.w3.org/2000/svg" viewBox="13 13 86 86" width={sz} height={sz} style={{ flexShrink: 0, display: 'inline-block', verticalAlign: 'text-bottom', marginRight: 2 }}>
+      <svg xmlns="http://www.w3.org/2000/svg" viewBox="13 13 86 86" width={sz} height={sz} style={{ flexShrink: 0, display: 'inline-block', verticalAlign: 'text-bottom', marginRight: -1 }}>
         <defs><clipPath id={'qc' + (props.id || '')}><circle cx="55" cy="55" r="32"/></clipPath></defs>
         <circle cx="55" cy="55" r="38" fill="none" stroke={col} strokeWidth="7" strokeLinecap="round"/>
         <line x1="81" y1="79" x2="98" y2="98" stroke={col} strokeWidth="7" strokeLinecap="round"/>
@@ -371,7 +371,7 @@ export default function HomePage() {
           </div>
           <h1 style={{ margin: 0, padding: 0, lineHeight: 1 }}><LetterDrop /></h1>
         </div>
-        <p style={{ fontSize: 'clamp(0.75rem, 1.8vw, 1rem)', fontWeight: 700, letterSpacing: '0.28em', textTransform: 'uppercase', color: SAGE, marginBottom: 48 }}>Tech and more</p>
+        <p style={{ fontSize: 'clamp(0.75rem, 1.8vw, 1rem)', fontWeight: 700, letterSpacing: '0.28em', color: SAGE, marginBottom: 48 }}>tech and more</p>
         <div style={{ fontFamily: 'Georgia, serif', fontSize: 'clamp(0.95rem, 2.2vw, 1.25rem)', color: 'rgba(240,239,235,0.38)', lineHeight: 1.75, maxWidth: 580, fontStyle: 'italic', minHeight: 70 }}>
           <Typewriter text={'"' + companyQuote + '"'} />
         </div>
