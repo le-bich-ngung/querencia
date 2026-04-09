@@ -145,7 +145,7 @@ function LetterDrop() {
         marginLeft: '0.05em',
         position: 'relative',
         bottom: '-0.05em',
-        animation: 'letterSlide 1.2s cubic-bezier(0.34,1,0.64,1) ' + heartDelay + 's both, heartLean 1.6s ease-in-out ' + (heartDelay + 1.2) + 's both, shimmerStrong 5s ease ' + shimmerDelay + 's infinite',
+        animation: 'heartEnter 2.8s cubic-bezier(0.25,0.46,0.45,0.94) ' + heartDelay + 's both, shimmerStrong 5s ease ' + shimmerDelay + 's infinite',
       }}>
         <svg viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg"
           style={{ width: 'clamp(0.7rem, 2vw, 1.6rem)', height: 'clamp(0.7rem, 2vw, 1.6rem)', display: 'block' }}>
@@ -624,7 +624,8 @@ export default function HomePage() {
         @keyframes scrollLeft { 0%{transform:translateX(0);} 100%{transform:translateX(-33.33%);} }
         @keyframes blink { 0%,100%{opacity:1;} 50%{opacity:0;} }
         @keyframes heartSlide { 0%{opacity:0;transform:translateX(90px);} 100%{opacity:1;transform:translateX(0px);} }
-        @keyframes heartLean { 0%{transform:rotate(0deg);} 100%{transform:rotate(-22deg);} }
+        @keyframes heartLean { 0%{transform:translateX(0) rotate(0deg);} 100%{transform:translateX(0) rotate(-22deg);} }
+        @keyframes heartEnter { 0%{opacity:0;transform:translateX(60px) rotate(0deg);} 42%{opacity:1;transform:translateX(0px) rotate(0deg);} 100%{opacity:1;transform:translateX(0px) rotate(-22deg);} }
       `}</style>
     </div>
   );
