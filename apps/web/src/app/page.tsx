@@ -145,7 +145,7 @@ function LetterDrop() {
         marginLeft: '0.05em',
         position: 'relative',
         bottom: '-0.05em',
-        animation: 'heartSlide 0.9s cubic-bezier(0.25, 0.46, 0.45, 0.94) ' + heartDelay + 's both, heartLean 1.4s ease-in-out ' + (heartDelay + 0.9) + 's both, shimmerStrong 5s ease ' + shimmerDelay + 's infinite',
+        animation: 'letterSlide 1.2s cubic-bezier(0.34,1,0.64,1) ' + heartDelay + 's both, heartLean 1.6s ease-in-out ' + (heartDelay + 1.2) + 's both, shimmerStrong 5s ease ' + shimmerDelay + 's infinite',
       }}>
         <svg viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg"
           style={{ width: 'clamp(0.7rem, 2vw, 1.6rem)', height: 'clamp(0.7rem, 2vw, 1.6rem)', display: 'block' }}>
