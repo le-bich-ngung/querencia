@@ -187,6 +187,8 @@ function QSymbol({ size = 14, color = 'currentColor' }: { size?: number; color?:
 }
 
 function BookNotifyForm() {
+  var i18n = useI18n();
+  var t = i18n.t;
   var emailState = useState('');
   var email = emailState[0]; var setEmail = emailState[1];
   var sentState = useState(false);
