@@ -304,7 +304,7 @@ export default function HomePage() {
     var col = props.color || SAGE;
     var animStyle = props.animated ? { strokeDasharray: 160, animation: 'waveRun 2s linear infinite' } : {};
     return (
-      <svg xmlns="http://www.w3.org/2000/svg" viewBox="13 13 86 86" width={sz} height={sz} style={{ flexShrink: 0, display: 'inline-block', verticalAlign: 'text-bottom', marginRight: -1 }}>
+      <svg xmlns="http://www.w3.org/2000/svg" viewBox="13 13 86 86" width={sz} height={sz} style={{ flexShrink: 0, display: 'inline-block', verticalAlign: 'text-bottom', marginRight: 1 }}>
         <defs><clipPath id={'qc' + (props.id || '')}><circle cx="55" cy="55" r="32"/></clipPath></defs>
         <circle cx="55" cy="55" r="38" fill="none" stroke={col} strokeWidth="7" strokeLinecap="round"/>
         <line x1="81" y1="79" x2="98" y2="98" stroke={col} strokeWidth="7" strokeLinecap="round"/>
@@ -321,7 +321,7 @@ export default function HomePage() {
       <nav style={{ position: 'fixed', top: 16, left: '50%', transform: 'translateX(-50%)', zIndex: 200, display: 'flex', alignItems: 'center', gap: 10, background: 'rgba(8,10,8,0.88)', backdropFilter: 'blur(20px)', border: '1px solid rgba(255,255,255,0.08)', borderRadius: 100, padding: '7px 14px 7px 10px' }}>
         <Link href="/" style={{ display: 'flex', alignItems: 'baseline', gap: 0, textDecoration: 'none' }}>
           <LogoSVG size={11} animated={false} id="nav" />
-          <span style={{ fontFamily: "'Space Grotesk', sans-serif", fontWeight: 400, fontSize: '0.85rem', letterSpacing: -0.3, color: '#f0efeb', lineHeight: 1 }}>
+          <span style={{ fontFamily: "'Space Grotesk', sans-serif", fontWeight: 400, fontSize: '0.85rem', color: '#f0efeb', lineHeight: 1 }}>
             <span style={{ opacity: 0.3 }}>ueren</span>
             <span style={{ color: '#4a7c59' }}>c</span>
             <span style={{ color: '#4a7c59' }}>i</span>
@@ -371,7 +371,7 @@ export default function HomePage() {
           </div>
           <h1 style={{ margin: 0, padding: 0, lineHeight: 1 }}><LetterDrop /></h1>
         </div>
-        <p style={{ fontSize: 'clamp(0.75rem, 1.8vw, 1rem)', fontWeight: 700, letterSpacing: '0.28em', color: SAGE, marginBottom: 48 }}>tech and more</p>
+        <p style={{ fontSize: 'clamp(0.75rem, 1.8vw, 1rem)', fontWeight: 700, letterSpacing: '0.28em', color: SAGE, marginBottom: 48 }}>Tech and more</p>
         <div style={{ fontFamily: 'Georgia, serif', fontSize: 'clamp(0.95rem, 2.2vw, 1.25rem)', color: 'rgba(240,239,235,0.38)', lineHeight: 1.75, maxWidth: 580, fontStyle: 'italic', minHeight: 70 }}>
           <Typewriter text={'"' + companyQuote + '"'} />
         </div>
@@ -444,7 +444,7 @@ export default function HomePage() {
       {/* 3. FREE TOOLS */}
       <section style={{ background: '#fafaf8', padding: '80px 0 60px' }}>
         <div style={{ maxWidth: 1100, margin: '0 auto', padding: '0 24px' }}>
-          <p style={{ fontSize: '0.65rem', fontWeight: 700, letterSpacing: '0.14em', textTransform: 'uppercase', color: '#bbb', marginBottom: 8 }}>{t('home.freetools.label') || 'Free tools'}</p>
+          <p style={{ fontSize: '0.65rem', fontWeight: 700, color: '#bbb', marginBottom: 8 }}>{t('home.freetools.label') || 'Free tools'}</p>
           <h2 style={{ fontFamily: 'Georgia, serif', fontSize: 'clamp(1.6rem, 3.5vw, 2.4rem)', fontWeight: 400, letterSpacing: -1, color: '#111', margin: '0 0 10px' }}>{t('home.freetools.title')}</h2>
           <p style={{ fontSize: '0.88rem', color: '#888', marginBottom: 40 }}>{t('home.freetools.sub')}</p>
         </div>
@@ -485,7 +485,7 @@ export default function HomePage() {
       <section style={{ background: '#0c0e0c', padding: '80px 24px', position: 'relative' }}>
         <div style={{ position: 'absolute', inset: 0, background: 'radial-gradient(ellipse at 30% 60%, rgba(74,124,89,0.07) 0%, transparent 60%)', pointerEvents: 'none' }} />
         <div style={{ maxWidth: 1100, margin: '0 auto', position: 'relative' }}>
-          <p style={{ fontSize: '0.65rem', fontWeight: 700, letterSpacing: '0.14em', textTransform: 'uppercase', color: 'rgba(74,124,89,0.6)', marginBottom: 8 }}>{t('home.paidtools.label')}</p>
+          <p style={{ fontSize: '0.65rem', fontWeight: 700, color: 'rgba(74,124,89,0.6)', marginBottom: 8 }}>{t('home.paidtools.label')}</p>
           <h2 style={{ fontFamily: 'Georgia, serif', fontSize: 'clamp(1.6rem, 3.5vw, 2.4rem)', fontWeight: 400, letterSpacing: -1, color: '#f0efeb', margin: '0 0 10px' }}>{t('home.paidtools.title')}</h2>
           <p style={{ fontSize: '0.88rem', color: 'rgba(240,239,235,0.35)', marginBottom: 40 }}>{t('home.paidtools.sub')}</p>
           <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fill, minmax(200px, 1fr))', gap: 12 }}>
@@ -507,7 +507,7 @@ export default function HomePage() {
       {/* 5. APPS */}
       <section style={{ background: '#fafaf8', padding: '80px 24px' }}>
         <div style={{ maxWidth: 1100, margin: '0 auto' }}>
-          <p style={{ fontSize: '0.65rem', fontWeight: 700, letterSpacing: '0.14em', textTransform: 'uppercase', color: '#bbb', marginBottom: 8 }}>{t('home.apps.label')}</p>
+          <p style={{ fontSize: '0.65rem', fontWeight: 700, color: '#bbb', marginBottom: 8 }}>{t('home.apps.label')}</p>
           <h2 style={{ fontFamily: 'Georgia, serif', fontSize: 'clamp(1.6rem, 3.5vw, 2.4rem)', fontWeight: 400, letterSpacing: -1, color: '#111', margin: '0 0 40px' }}>{t('home.apps.title')}</h2>
           <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(280px, 1fr))', gap: 16 }}>
             <div style={{ background: '#fff', border: '1.5px solid rgba(0,0,0,0.06)', borderRadius: 20, padding: '32px 28px', display: 'flex', flexDirection: 'column', gap: 14 }}>
@@ -539,7 +539,7 @@ export default function HomePage() {
       <section style={{ background: '#070908', padding: '90px 24px', minHeight: 340, display: 'flex', alignItems: 'center', position: 'relative' }}>
         <div style={{ position: 'absolute', inset: 0, background: 'radial-gradient(ellipse at center, rgba(74,124,89,0.04) 0%, transparent 60%)', pointerEvents: 'none' }} />
         <div style={{ maxWidth: 720, margin: '0 auto', textAlign: 'center', width: '100%', position: 'relative' }}>
-          <p style={{ fontSize: '0.65rem', fontWeight: 700, letterSpacing: '0.14em', textTransform: 'uppercase', color: 'rgba(240,239,235,0.2)', marginBottom: 32 }}>From Read</p>
+          <p style={{ fontSize: '0.65rem', fontWeight: 700, color: 'rgba(240,239,235,0.2)', marginBottom: 32 }}>From Read</p>
           <div style={{ opacity: quoteVisible ? 1 : 0, transition: 'opacity 0.6s ease', minHeight: 140 }}>
             <blockquote style={{ fontFamily: 'Georgia, serif', fontSize: 'clamp(1.1rem, 2.8vw, 1.7rem)', fontWeight: 400, fontStyle: 'italic', color: 'rgba(240,239,235,0.75)', lineHeight: 1.65, marginBottom: 18 }}>
               "{currentQuote.text}"
@@ -554,7 +554,7 @@ export default function HomePage() {
       {/* 7. INTERNATIONAL CONVENTIONS */}
       <section style={{ background: '#fafaf8', padding: '80px 24px' }}>
         <div style={{ maxWidth: 860, margin: '0 auto' }}>
-          <p style={{ fontSize: '0.65rem', fontWeight: 700, letterSpacing: '0.14em', textTransform: 'uppercase', color: '#bbb', marginBottom: 8 }}>{t('home.conventions.label')}</p>
+          <p style={{ fontSize: '0.65rem', fontWeight: 700, color: '#bbb', marginBottom: 8 }}>{t('home.conventions.label')}</p>
           <h2 style={{ fontFamily: 'Georgia, serif', fontSize: 'clamp(1.4rem, 3vw, 2rem)', fontWeight: 400, letterSpacing: -0.5, color: '#111', margin: '0 0 40px' }}>{t('home.conventions.title')}</h2>
           <div style={{ opacity: convVisible ? 1 : 0, transition: 'opacity 0.5s ease', minHeight: 160 }}>
             <div style={{ borderLeft: '3px solid ' + SAGE, paddingLeft: 24 }}>
@@ -577,7 +577,7 @@ export default function HomePage() {
       <section style={{ background: '#0c0e0c', padding: '80px 24px', position: 'relative' }}>
         <div style={{ position: 'absolute', inset: 0, background: 'radial-gradient(ellipse at 80% 30%, rgba(74,124,89,0.06) 0%, transparent 60%)', pointerEvents: 'none' }} />
         <div style={{ maxWidth: 1100, margin: '0 auto', position: 'relative' }}>
-          <p style={{ fontSize: '0.65rem', fontWeight: 700, letterSpacing: '0.14em', textTransform: 'uppercase', color: 'rgba(74,124,89,0.5)', marginBottom: 8 }}>{t('home.mental.label')}</p>
+          <p style={{ fontSize: '0.65rem', fontWeight: 700, color: 'rgba(74,124,89,0.5)', marginBottom: 8 }}>{t('home.mental.label')}</p>
           <h2 style={{ fontFamily: 'Georgia, serif', fontSize: 'clamp(1.6rem, 3.5vw, 2.4rem)', fontWeight: 400, letterSpacing: -1, color: '#f0efeb', margin: '0 0 40px' }}>{t('home.mental.title')}</h2>
           <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(240px, 1fr))', gap: 14 }}>
             {MENTAL_MODELS.map(function(model) {
@@ -586,7 +586,7 @@ export default function HomePage() {
                   onMouseEnter={function(e) { (e.currentTarget as HTMLElement).style.borderColor = 'rgba(74,124,89,0.25)'; (e.currentTarget as HTMLElement).style.background = 'rgba(74,124,89,0.04)'; }}
                   onMouseLeave={function(e) { (e.currentTarget as HTMLElement).style.borderColor = 'rgba(255,255,255,0.05)'; (e.currentTarget as HTMLElement).style.background = 'rgba(255,255,255,0.02)'; }}>
                   <div style={{ fontSize: '1.8rem', marginBottom: 12 }}>{model.icon}</div>
-                  <div style={{ fontSize: '0.7rem', fontWeight: 700, letterSpacing: '0.08em', textTransform: 'uppercase', color: SAGE, marginBottom: 6 }}>{model.sub}</div>
+                  <div style={{ fontSize: '0.7rem', fontWeight: 700, color: SAGE, marginBottom: 6 }}>{model.sub}</div>
                   <h3 style={{ fontFamily: 'Georgia, serif', fontSize: '1.15rem', fontWeight: 400, color: '#f0efeb', margin: '0 0 10px', lineHeight: 1.3 }}>{model.title}</h3>
                   <p style={{ fontSize: '0.8rem', color: 'rgba(240,239,235,0.35)', lineHeight: 1.6, margin: 0 }}>{model.desc}</p>
                 </div>
@@ -599,7 +599,7 @@ export default function HomePage() {
       {/* 9. SACH LA */}
       <section style={{ background: '#fafaf8', padding: '80px 24px' }}>
         <div style={{ maxWidth: 640, margin: '0 auto', textAlign: 'center' }}>
-          <p style={{ fontSize: '0.65rem', fontWeight: 700, letterSpacing: '0.14em', textTransform: 'uppercase', color: '#bbb', marginBottom: 16 }}>{t('home.book.label')}</p>
+          <p style={{ fontSize: '0.65rem', fontWeight: 700, color: '#bbb', marginBottom: 16 }}>{t('home.book.label')}</p>
           <h2 style={{ fontFamily: 'Georgia, serif', fontSize: 'clamp(2rem, 5vw, 3.5rem)', fontWeight: 400, letterSpacing: -1.5, color: '#111', margin: '0 0 18px', lineHeight: 1.1 }}>
             Sach <span style={{ color: SAGE, fontStyle: 'italic' }}>La.</span>
           </h2>
@@ -614,7 +614,7 @@ export default function HomePage() {
       <section style={{ background: '#070908', padding: '80px 24px', position: 'relative' }}>
         <div style={{ position: 'absolute', inset: 0, background: 'radial-gradient(ellipse at center bottom, rgba(74,124,89,0.05) 0%, transparent 60%)', pointerEvents: 'none' }} />
         <div style={{ maxWidth: 580, margin: '0 auto', textAlign: 'center', position: 'relative' }}>
-          <p style={{ fontSize: '0.65rem', fontWeight: 700, letterSpacing: '0.14em', textTransform: 'uppercase', color: 'rgba(74,124,89,0.5)', marginBottom: 12 }}>{t('home.feedback.label')}</p>
+          <p style={{ fontSize: '0.65rem', fontWeight: 700, color: 'rgba(74,124,89,0.5)', marginBottom: 12 }}>{t('home.feedback.label')}</p>
           <h2 style={{ fontFamily: 'Georgia, serif', fontSize: 'clamp(1.5rem, 3.5vw, 2.2rem)', fontWeight: 400, letterSpacing: -0.5, color: '#f0efeb', margin: '0 0 10px' }}>{t('home.feedback.title')}?</h2>
           <p style={{ fontSize: '0.85rem', color: 'rgba(240,239,235,0.3)', marginBottom: 32 }}>Feedback của bạn định hình Querencia.. Cần đăng nhập để gửi..</p>
           {feedbackSent ? (
