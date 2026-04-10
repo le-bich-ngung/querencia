@@ -102,55 +102,27 @@ var MOCK_Q_POOL = [
 ];
 
 function Typewriter({ text }) {
-  var state = useState(0);
-  var charCount = state[0]; var setCharCount = state[1];
-  var doneState = useState(false);
-  var done = doneState[0]; var setDone = doneState[1];
-  var phaseState = useState('dots'); // 'dots' | 'reveal'
-  var phase = phaseState[0]; var setPhase = phaseState[1];
-  var dotsState = useState(0);
-  var dots = dotsState[0]; var setDots = dotsState[1];
+  var keyState = useState(0);
+  var cycleKey = keyState[0]; var setCycleKey = keyState[1];
 
   useEffect(function() {
-    setCharCount(0); setDone(false); setPhase('dots'); setDots(0);
-    // Phase 1: show 3 dots slowly, then start reveal
-    var dotTimer = setInterval(function() {
-      setDots(function(d) {
-        if (d >= 3) {
-          clearInterval(dotTimer);
-          setPhase('reveal');
-          return d;
-        }
-        return d + 1;
-      });
-    }, 400);
-    return function() { clearInterval(dotTimer); };
-  }, [text]);
+    // Loop every 10s after first reveal
+    var timer = setTimeout(function() {
+      function loop() {
+        setCycleKey(function(k) { return k + 1; });
+        timer = setTimeout(loop, 10000);
+      }
+      timer = setTimeout(loop, 10000);
+    }, 10000);
+    return function() { clearTimeout(timer); };
+  }, []);
 
-  useEffect(function() {
-    if (phase !== 'reveal') return;
-    setCharCount(0);
-    var i = 0;
-    var t = setInterval(function() {
-      if (i < text.length) { i++; setCharCount(i); }
-      else { setDone(true); clearInterval(t); }
-    }, 55);
-    return function() { clearInterval(t); };
-  }, [phase, text]);
-
-  if (phase === 'dots') {
-    return (
-      <span style={{ opacity: 0.3 }}>
-        {dots >= 1 ? '.' : ''}{dots >= 2 ? '.' : ''}{dots >= 3 ? '.' : ''}
-      </span>
-    );
-  }
   return (
-    <span>
-      <span style={{ opacity: charCount > 0 ? 1 : 0, transition: 'opacity 0.3s' }}>
-        {text.slice(0, charCount)}
-      </span>
-      {!done && <span style={{ opacity: 0.4, marginLeft: 1, animation: 'blink 0.9s step-end infinite' }}>|</span>}
+    <span key={cycleKey} style={{
+      display: 'inline-block',
+      animation: 'blurReveal 2.4s cubic-bezier(0.25,0.46,0.45,0.94) forwards',
+    }}>
+      {text}
     </span>
   );
 }
@@ -181,7 +153,7 @@ function LetterDrop() {
             fontSize: 'clamp(3rem, 9vw, 7rem)', fontWeight: 300,
             color: isCia ? '#4a7c59' : '#f0efeb',
             opacity: isCia ? 1 : 0.3,
-            animation: 'letterSlide 1.2s cubic-bezier(0.34,1,0.64,1) ' + fallDelay + 's both, shimmerStrong 5s ease 4.46s infinite',
+            animation: 'letterSlide 1.2s cubic-bezier(0.34,1,0.64,1) ' + fallDelay + 's both, shimmerFlash 1.5s ease 4.96s 1, shimmerLoop 5s ease 6.46s infinite',
           }}>
             {letter}
           </span>
@@ -195,7 +167,7 @@ function LetterDrop() {
         marginLeft: '0.05em',
         position: 'relative',
         bottom: '-0.05em',
-        animation: 'heartEnter 2.8s cubic-bezier(0.25,0.46,0.45,0.94) ' + heartDelay + 's both, shimmerStrong 5s ease 4.46s infinite',
+        animation: 'heartEnter 2.8s cubic-bezier(0.25,0.46,0.45,0.94) ' + heartDelay + 's both, shimmerFlash 1.5s ease 4.96s 1, shimmerLoop 5s ease 6.46s infinite',
       }}>
         <svg viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg"
           style={{ width: 'clamp(0.7rem, 2vw, 1.6rem)', height: 'clamp(0.7rem, 2vw, 1.6rem)', display: 'block' }}>
@@ -337,7 +309,7 @@ export default function HomePage() {
     var col = props.color || SAGE;
     var animStyle = props.animated ? { strokeDasharray: 160, animation: 'waveRun 2s linear infinite' } : {};
     return (
-      <svg xmlns="http://www.w3.org/2000/svg" viewBox="13 13 86 86" width={sz} height={sz} style={{ flexShrink: 0, display: 'inline-block', verticalAlign: 'text-bottom', marginRight: 2 }}>
+      <svg xmlns="http://www.w3.org/2000/svg" viewBox="13 13 86 86" width={sz} height={sz} style={{ flexShrink: 0, display: 'inline-block', verticalAlign: 'text-bottom', marginRight: 1 }}>
         <defs><clipPath id={'qc' + (props.id || '')}><circle cx="55" cy="55" r="32"/></clipPath></defs>
         <circle cx="55" cy="55" r="38" fill="none" stroke={col} strokeWidth="7" strokeLinecap="round"/>
         <line x1="81" y1="79" x2="98" y2="98" stroke={col} strokeWidth="7" strokeLinecap="round"/>
@@ -395,7 +367,7 @@ export default function HomePage() {
         <div style={{ position: 'absolute', width: 400, height: 400, borderRadius: '50%', bottom: '10%', right: '10%', background: 'radial-gradient(circle, rgba(74,124,89,0.06) 0%, transparent 70%)', pointerEvents: 'none' }} />
         <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'center', gap: 0, marginRight: -8, marginBottom: 16 }}>
           <div style={{ display: 'inline-block', marginRight: -2 }}>
-            <svg xmlns="http://www.w3.org/2000/svg" viewBox="14 14 88 88" style={{ width: 'clamp(2.8rem, 8.5vw, 6.5rem)', height: 'clamp(2.8rem, 8.5vw, 6.5rem)', animation: 'shimmerStrong 5s ease 4.46s infinite' }}>
+            <svg xmlns="http://www.w3.org/2000/svg" viewBox="14 14 88 88" style={{ width: 'clamp(2.8rem, 8.5vw, 6.5rem)', height: 'clamp(2.8rem, 8.5vw, 6.5rem)', animation: 'shimmerFlash 1.5s ease 4.96s 1, shimmerLoop 5s ease 6.46s infinite' }}>
               <defs><clipPath id="qchero"><circle cx="55" cy="55" r="32"/></clipPath></defs>
               <circle cx="55" cy="55" r="38" fill="none" stroke={SAGE} strokeWidth="7" strokeLinecap="round"/>
               <line x1="81" y1="79" x2="98" y2="98" stroke={SAGE} strokeWidth="7" strokeLinecap="round"/>
@@ -674,6 +646,9 @@ export default function HomePage() {
         @keyframes waveRun { 0%{stroke-dashoffset:160;} 100%{stroke-dashoffset:-160;} }
         @keyframes scrollLeft { 0%{transform:translateX(0);} 100%{transform:translateX(-33.33%);} }
         @keyframes blink { 0%,100%{opacity:1;} 50%{opacity:0;} }
+        @keyframes blurReveal { 0%{opacity:0;filter:blur(16px);} 60%{opacity:1;filter:blur(4px);} 100%{opacity:1;filter:blur(0px);} }
+        @keyframes shimmerFlash { 0%{filter:brightness(1);} 30%{filter:brightness(5) drop-shadow(0 0 30px rgba(255,255,255,1)) drop-shadow(0 0 50px rgba(150,255,150,1));} 100%{filter:brightness(1);} }
+        @keyframes shimmerLoop { 0%,100%{filter:brightness(1);} 8%{filter:brightness(4) drop-shadow(0 0 20px rgba(255,255,255,0.9)) drop-shadow(0 0 40px rgba(150,255,150,0.8));} 20%{filter:brightness(1);} }
         @keyframes heartSlide { 0%{opacity:0;transform:translateX(90px);} 100%{opacity:1;transform:translateX(0px);} }
         @keyframes heartLean { 0%{transform:translateX(0) rotate(0deg);} 100%{transform:translateX(0) rotate(-22deg);} }
         @keyframes heartEnter { 0%{opacity:0;transform:translateX(60px) rotate(0deg);} 42%{opacity:1;transform:translateX(0px) rotate(0deg);} 100%{opacity:1;transform:translateX(-6px) rotate(-28deg);} }
