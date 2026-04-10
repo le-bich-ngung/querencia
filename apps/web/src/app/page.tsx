@@ -102,27 +102,30 @@ var MOCK_Q_POOL = [
 ];
 
 function Typewriter({ text }) {
-  var keyState = useState(0);
-  var cycleKey = keyState[0]; var setCycleKey = keyState[1];
+  var cycleState = useState(0);
+  var cycle = cycleState[0]; var setCycle = cycleState[1];
 
   useEffect(function() {
-    // Loop every 10s after first reveal
-    var timer = setTimeout(function() {
-      function loop() {
-        setCycleKey(function(k) { return k + 1; });
-        timer = setTimeout(loop, 10000);
-      }
-      timer = setTimeout(loop, 10000);
+    var timer = setInterval(function() {
+      setCycle(function(c) { return c + 1; });
     }, 10000);
-    return function() { clearTimeout(timer); };
+    return function() { clearInterval(timer); };
   }, []);
 
   return (
-    <span key={cycleKey} style={{
-      display: 'inline-block',
-      animation: 'blurReveal 2.4s cubic-bezier(0.25,0.46,0.45,0.94) forwards',
-    }}>
-      {text}
+    <span key={cycle} style={{ position: 'relative', display: 'inline-block' }}>
+      {/* Text that fades in */}
+      <span style={{ animation: 'textReveal 2s ease-out forwards' }}>
+        {text}
+      </span>
+      {/* Light beam overlay that sweeps across */}
+      <span style={{
+        position: 'absolute', top: 0, left: 0, right: 0, bottom: 0,
+        background: 'linear-gradient(90deg, transparent 0%, rgba(255,255,255,0.0) 30%, rgba(255,255,255,0.6) 50%, rgba(255,255,255,0.0) 70%, transparent 100%)',
+        backgroundSize: '200% 100%',
+        animation: 'lightSweep 1.8s ease-out forwards',
+        pointerEvents: 'none',
+      }} />
     </span>
   );
 }
@@ -132,7 +135,7 @@ function LetterDrop() {
   var cycle = useState(0);
   var key = cycle[0]; var setKey = cycle[1];
   useEffect(function() {
-    var timer = setInterval(function() { setKey(function(k) { return k + 1; }); }, 5000);
+    var timer = setInterval(function() { setKey(function(k) { return k + 1; }); }, 8000);
     return function() { clearInterval(timer); };
   }, []);
   // Last letter 'a' is index 7, delay = 7 * 0.18 = 1.26s
@@ -153,7 +156,7 @@ function LetterDrop() {
             fontSize: 'clamp(3rem, 9vw, 7rem)', fontWeight: 300,
             color: isCia ? '#4a7c59' : '#f0efeb',
             opacity: isCia ? 1 : 0.3,
-            animation: 'letterSlide 1.2s cubic-bezier(0.34,1,0.64,1) ' + fallDelay + 's both, shimmerFlash 1.5s ease 4.96s 1, shimmerLoop 5s ease 6.46s infinite',
+            animation: 'letterSlide 1.2s cubic-bezier(0.34,1,0.64,1) ' + fallDelay + 's both, shimmerFlash 8s ease 4.96s infinite',
           }}>
             {letter}
           </span>
@@ -167,7 +170,7 @@ function LetterDrop() {
         marginLeft: '0.05em',
         position: 'relative',
         bottom: '-0.05em',
-        animation: 'heartEnter 2.8s cubic-bezier(0.25,0.46,0.45,0.94) ' + heartDelay + 's both, shimmerFlash 1.5s ease 4.96s 1, shimmerLoop 5s ease 6.46s infinite',
+        animation: 'heartEnter 2.8s cubic-bezier(0.25,0.46,0.45,0.94) ' + heartDelay + 's both, shimmerFlash 8s ease 4.96s infinite',
       }}>
         <svg viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg"
           style={{ width: 'clamp(0.7rem, 2vw, 1.6rem)', height: 'clamp(0.7rem, 2vw, 1.6rem)', display: 'block' }}>
@@ -309,7 +312,7 @@ export default function HomePage() {
     var col = props.color || SAGE;
     var animStyle = props.animated ? { strokeDasharray: 160, animation: 'waveRun 2s linear infinite' } : {};
     return (
-      <svg xmlns="http://www.w3.org/2000/svg" viewBox="13 13 86 86" width={sz} height={sz} style={{ flexShrink: 0, display: 'inline-block', verticalAlign: 'text-bottom', marginRight: 1 }}>
+      <svg xmlns="http://www.w3.org/2000/svg" viewBox="13 13 86 86" width={sz} height={sz} style={{ flexShrink: 0, display: 'inline-block', verticalAlign: 'text-bottom', marginRight: 0 }}>
         <defs><clipPath id={'qc' + (props.id || '')}><circle cx="55" cy="55" r="32"/></clipPath></defs>
         <circle cx="55" cy="55" r="38" fill="none" stroke={col} strokeWidth="7" strokeLinecap="round"/>
         <line x1="81" y1="79" x2="98" y2="98" stroke={col} strokeWidth="7" strokeLinecap="round"/>
@@ -367,7 +370,7 @@ export default function HomePage() {
         <div style={{ position: 'absolute', width: 400, height: 400, borderRadius: '50%', bottom: '10%', right: '10%', background: 'radial-gradient(circle, rgba(74,124,89,0.06) 0%, transparent 70%)', pointerEvents: 'none' }} />
         <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'center', gap: 0, marginRight: -8, marginBottom: 16 }}>
           <div style={{ display: 'inline-block', marginRight: -2 }}>
-            <svg xmlns="http://www.w3.org/2000/svg" viewBox="14 14 88 88" style={{ width: 'clamp(2.8rem, 8.5vw, 6.5rem)', height: 'clamp(2.8rem, 8.5vw, 6.5rem)', animation: 'shimmerFlash 1.5s ease 4.96s 1, shimmerLoop 5s ease 6.46s infinite' }}>
+            <svg xmlns="http://www.w3.org/2000/svg" viewBox="14 14 88 88" style={{ width: 'clamp(2.8rem, 8.5vw, 6.5rem)', height: 'clamp(2.8rem, 8.5vw, 6.5rem)', animation: 'shimmerFlash 8s ease 4.96s infinite' }}>
               <defs><clipPath id="qchero"><circle cx="55" cy="55" r="32"/></clipPath></defs>
               <circle cx="55" cy="55" r="38" fill="none" stroke={SAGE} strokeWidth="7" strokeLinecap="round"/>
               <line x1="81" y1="79" x2="98" y2="98" stroke={SAGE} strokeWidth="7" strokeLinecap="round"/>
@@ -647,8 +650,9 @@ export default function HomePage() {
         @keyframes scrollLeft { 0%{transform:translateX(0);} 100%{transform:translateX(-33.33%);} }
         @keyframes blink { 0%,100%{opacity:1;} 50%{opacity:0;} }
         @keyframes blurReveal { 0%{opacity:0;filter:blur(16px);} 60%{opacity:1;filter:blur(4px);} 100%{opacity:1;filter:blur(0px);} }
-        @keyframes shimmerFlash { 0%{filter:brightness(1);} 30%{filter:brightness(5) drop-shadow(0 0 30px rgba(255,255,255,1)) drop-shadow(0 0 50px rgba(150,255,150,1));} 100%{filter:brightness(1);} }
-        @keyframes shimmerLoop { 0%,100%{filter:brightness(1);} 8%{filter:brightness(4) drop-shadow(0 0 20px rgba(255,255,255,0.9)) drop-shadow(0 0 40px rgba(150,255,150,0.8));} 20%{filter:brightness(1);} }
+        @keyframes textReveal { 0%{opacity:0;} 20%{opacity:0.2;} 100%{opacity:1;} }
+        @keyframes lightSweep { 0%{background-position:200% 0;opacity:1;} 80%{background-position:-20% 0;opacity:1;} 100%{background-position:-40% 0;opacity:0;} }
+        @keyframes shimmerFlash { 0%{filter:brightness(1);} 10%{filter:brightness(1.5);} 18%{filter:brightness(5) drop-shadow(0 0 40px rgba(255,255,255,1)) drop-shadow(0 0 70px rgba(100,255,150,1));} 30%{filter:brightness(1.5);} 45%{filter:brightness(1);} 100%{filter:brightness(1);} }
         @keyframes heartSlide { 0%{opacity:0;transform:translateX(90px);} 100%{opacity:1;transform:translateX(0px);} }
         @keyframes heartLean { 0%{transform:translateX(0) rotate(0deg);} 100%{transform:translateX(0) rotate(-22deg);} }
         @keyframes heartEnter { 0%{opacity:0;transform:translateX(60px) rotate(0deg);} 42%{opacity:1;transform:translateX(0px) rotate(0deg);} 100%{opacity:1;transform:translateX(-6px) rotate(-28deg);} }
