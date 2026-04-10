@@ -104,28 +104,40 @@ var MOCK_Q_POOL = [
 function Typewriter({ text }) {
   var cycleState = useState(0);
   var cycle = cycleState[0]; var setCycle = cycleState[1];
+  var displayState = useState('');
+  var displayed = displayState[0]; var setDisplayed = displayState[1];
+  var doneState = useState(false);
+  var done = doneState[0]; var setDone = doneState[1];
 
   useEffect(function() {
-    var timer = setInterval(function() {
+    setDisplayed(''); setDone(false);
+    var i = 0;
+    var t = setInterval(function() {
+      if (i < text.length) { i++; setDisplayed(text.slice(0, i)); }
+      else { setDone(true); clearInterval(t); }
+    }, 70);
+    return function() { clearInterval(t); };
+  }, [text, cycle]);
+
+  useEffect(function() {
+    if (!done) return;
+    var timer = setTimeout(function() {
       setCycle(function(c) { return c + 1; });
     }, 10000);
-    return function() { clearInterval(timer); };
-  }, []);
+    return function() { clearTimeout(timer); };
+  }, [done]);
 
   return (
-    <span key={cycle} style={{ position: 'relative', display: 'inline-block' }}>
-      {/* Text that fades in */}
-      <span style={{ animation: 'textReveal 2s ease-out forwards' }}>
-        {text}
-      </span>
-      {/* Light beam overlay that sweeps across */}
-      <span style={{
-        position: 'absolute', top: 0, left: 0, right: 0, bottom: 0,
-        background: 'linear-gradient(90deg, transparent 0%, rgba(255,255,255,0.0) 30%, rgba(255,255,255,0.6) 50%, rgba(255,255,255,0.0) 70%, transparent 100%)',
-        backgroundSize: '200% 100%',
-        animation: 'lightSweep 1.8s ease-out forwards',
-        pointerEvents: 'none',
-      }} />
+    <span>
+      {displayed}
+      {!done && (
+        <span style={{
+          display: 'inline-block', width: '2px', height: '1em',
+          background: 'rgba(240,239,235,0.5)',
+          marginLeft: '2px', verticalAlign: 'text-bottom',
+          animation: 'blink 0.8s step-end infinite',
+        }} />
+      )}
     </span>
   );
 }
@@ -156,7 +168,7 @@ function LetterDrop() {
             fontSize: 'clamp(3rem, 9vw, 7rem)', fontWeight: 300,
             color: isCia ? '#4a7c59' : '#f0efeb',
             opacity: isCia ? 1 : 0.3,
-            animation: 'letterSlide 1.2s cubic-bezier(0.34,1,0.64,1) ' + fallDelay + 's both, shimmerFlash 8s ease 4.96s infinite',
+            animation: 'letterSlide 1.2s cubic-bezier(0.34,1,0.64,1) ' + fallDelay + 's both, shimmerFlash 8s ease 4.56s infinite',
           }}>
             {letter}
           </span>
@@ -170,7 +182,7 @@ function LetterDrop() {
         marginLeft: '0.05em',
         position: 'relative',
         bottom: '-0.05em',
-        animation: 'heartEnter 2.8s cubic-bezier(0.25,0.46,0.45,0.94) ' + heartDelay + 's both, shimmerFlash 8s ease 4.96s infinite',
+        animation: 'heartEnter 2.8s cubic-bezier(0.25,0.46,0.45,0.94) ' + heartDelay + 's both, shimmerFlash 8s ease 4.56s infinite',
       }}>
         <svg viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg"
           style={{ width: 'clamp(0.7rem, 2vw, 1.6rem)', height: 'clamp(0.7rem, 2vw, 1.6rem)', display: 'block' }}>
@@ -312,7 +324,7 @@ export default function HomePage() {
     var col = props.color || SAGE;
     var animStyle = props.animated ? { strokeDasharray: 160, animation: 'waveRun 2s linear infinite' } : {};
     return (
-      <svg xmlns="http://www.w3.org/2000/svg" viewBox="13 13 86 86" width={sz} height={sz} style={{ flexShrink: 0, display: 'inline-block', verticalAlign: 'text-bottom', marginRight: 0 }}>
+      <svg xmlns="http://www.w3.org/2000/svg" viewBox="13 13 86 86" width={sz} height={sz} style={{ flexShrink: 0, display: 'inline-block', verticalAlign: 'text-bottom', marginRight: 1 }}>
         <defs><clipPath id={'qc' + (props.id || '')}><circle cx="55" cy="55" r="32"/></clipPath></defs>
         <circle cx="55" cy="55" r="38" fill="none" stroke={col} strokeWidth="7" strokeLinecap="round"/>
         <line x1="81" y1="79" x2="98" y2="98" stroke={col} strokeWidth="7" strokeLinecap="round"/>
@@ -370,7 +382,7 @@ export default function HomePage() {
         <div style={{ position: 'absolute', width: 400, height: 400, borderRadius: '50%', bottom: '10%', right: '10%', background: 'radial-gradient(circle, rgba(74,124,89,0.06) 0%, transparent 70%)', pointerEvents: 'none' }} />
         <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'center', gap: 0, marginRight: -8, marginBottom: 16 }}>
           <div style={{ display: 'inline-block', marginRight: -2 }}>
-            <svg xmlns="http://www.w3.org/2000/svg" viewBox="14 14 88 88" style={{ width: 'clamp(2.8rem, 8.5vw, 6.5rem)', height: 'clamp(2.8rem, 8.5vw, 6.5rem)', animation: 'shimmerFlash 8s ease 4.96s infinite' }}>
+            <svg xmlns="http://www.w3.org/2000/svg" viewBox="14 14 88 88" style={{ width: 'clamp(2.8rem, 8.5vw, 6.5rem)', height: 'clamp(2.8rem, 8.5vw, 6.5rem)', animation: 'shimmerFlash 8s ease 4.56s infinite' }}>
               <defs><clipPath id="qchero"><circle cx="55" cy="55" r="32"/></clipPath></defs>
               <circle cx="55" cy="55" r="38" fill="none" stroke={SAGE} strokeWidth="7" strokeLinecap="round"/>
               <line x1="81" y1="79" x2="98" y2="98" stroke={SAGE} strokeWidth="7" strokeLinecap="round"/>
