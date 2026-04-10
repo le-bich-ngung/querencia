@@ -4,6 +4,7 @@ import { BottomNav }     from '../components/layout/BottomNav';
 import { GlobalFooter } from '../components/layout/GlobalFooter';
 import { LumenProvider } from '../components/ui/LumenMode';
 import '../styles/globals.css';
+import { CookieConsent } from '../components/ui/CookieConsent';
 
 export const metadata: Metadata = {
   charset: 'utf-8',
@@ -32,6 +33,7 @@ export default function RootLayout({ children }: { children: React.ReactNode }) 
         <Providers>
           <LumenProvider>
             <main style={{ minHeight: '100vh' }}>{children}</main>
+            <CookieConsent />
             <GlobalFooter />
             <BottomNav />
           </LumenProvider>
