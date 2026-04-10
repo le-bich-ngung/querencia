@@ -112,7 +112,7 @@ function Typewriter({ text }) {
     var t = setInterval(function() {
       if (i < text.length) { i++; setDisplayed(text.slice(0, i)); }
       else { setDone(true); clearInterval(t); }
-    }, 32);
+    }, 80);
     return function() { clearInterval(t); };
   }, [text]);
   return (
@@ -149,7 +149,7 @@ function LetterDrop() {
             fontSize: 'clamp(3rem, 9vw, 7rem)', fontWeight: 300,
             color: isCia ? '#4a7c59' : '#f0efeb',
             opacity: isCia ? 1 : 0.3,
-            animation: 'letterSlide 1.2s cubic-bezier(0.34,1,0.64,1) ' + fallDelay + 's both, shimmerStrong 5s ease ' + shimmerDelay + 's infinite',
+            animation: 'letterSlide 1.2s cubic-bezier(0.34,1,0.64,1) ' + fallDelay + 's both, shimmerStrong 5s ease 2.84s infinite',
           }}>
             {letter}
           </span>
@@ -163,7 +163,7 @@ function LetterDrop() {
         marginLeft: '0.05em',
         position: 'relative',
         bottom: '-0.05em',
-        animation: 'heartEnter 2.8s cubic-bezier(0.25,0.46,0.45,0.94) ' + heartDelay + 's both, shimmerStrong 5s ease ' + shimmerDelay + 's infinite',
+        animation: 'heartEnter 2.8s cubic-bezier(0.25,0.46,0.45,0.94) ' + heartDelay + 's both, shimmerStrong 5s ease 2.84s infinite',
       }}>
         <svg viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg"
           style={{ width: 'clamp(0.7rem, 2vw, 1.6rem)', height: 'clamp(0.7rem, 2vw, 1.6rem)', display: 'block' }}>
@@ -305,7 +305,7 @@ export default function HomePage() {
     var col = props.color || SAGE;
     var animStyle = props.animated ? { strokeDasharray: 160, animation: 'waveRun 2s linear infinite' } : {};
     return (
-      <svg xmlns="http://www.w3.org/2000/svg" viewBox="13 13 86 86" width={sz} height={sz} style={{ flexShrink: 0, display: 'inline-block', verticalAlign: 'text-bottom', marginRight: -2 }}>
+      <svg xmlns="http://www.w3.org/2000/svg" viewBox="13 13 86 86" width={sz} height={sz} style={{ flexShrink: 0, display: 'inline-block', verticalAlign: 'text-bottom', marginRight: 0 }}>
         <defs><clipPath id={'qc' + (props.id || '')}><circle cx="55" cy="55" r="32"/></clipPath></defs>
         <circle cx="55" cy="55" r="38" fill="none" stroke={col} strokeWidth="7" strokeLinecap="round"/>
         <line x1="81" y1="79" x2="98" y2="98" stroke={col} strokeWidth="7" strokeLinecap="round"/>
@@ -363,7 +363,7 @@ export default function HomePage() {
         <div style={{ position: 'absolute', width: 400, height: 400, borderRadius: '50%', bottom: '10%', right: '10%', background: 'radial-gradient(circle, rgba(74,124,89,0.06) 0%, transparent 70%)', pointerEvents: 'none' }} />
         <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'center', gap: 0, marginRight: -8, marginBottom: 16 }}>
           <div style={{ display: 'inline-block', marginRight: -2 }}>
-            <svg xmlns="http://www.w3.org/2000/svg" viewBox="14 14 88 88" style={{ width: 'clamp(2.8rem, 8.5vw, 6.5rem)', height: 'clamp(2.8rem, 8.5vw, 6.5rem)', animation: 'shimmerStrong 5s ease 2.16s infinite' }}>
+            <svg xmlns="http://www.w3.org/2000/svg" viewBox="14 14 88 88" style={{ width: 'clamp(2.8rem, 8.5vw, 6.5rem)', height: 'clamp(2.8rem, 8.5vw, 6.5rem)', animation: 'shimmerStrong 5s ease 2.84s infinite' }}>
               <defs><clipPath id="qchero"><circle cx="55" cy="55" r="32"/></clipPath></defs>
               <circle cx="55" cy="55" r="38" fill="none" stroke={SAGE} strokeWidth="7" strokeLinecap="round"/>
               <line x1="81" y1="79" x2="98" y2="98" stroke={SAGE} strokeWidth="7" strokeLinecap="round"/>
@@ -372,9 +372,9 @@ export default function HomePage() {
           </div>
           <h1 style={{ margin: 0, padding: 0, lineHeight: 1 }}><LetterDrop /></h1>
         </div>
-        <p style={{ fontSize: 'clamp(0.75rem, 1.8vw, 1rem)', fontWeight: 500, color: SAGE, marginBottom: 48 }}>Tech and more</p>
+        <p style={{ fontSize: 'clamp(1rem, 2.5vw, 1.4rem)', fontWeight: 600, color: SAGE, marginBottom: 32 }}>Tech and more</p>
         <div style={{ fontFamily: "'Be Vietnam Pro', sans-serif", fontSize: 'clamp(0.95rem, 2.2vw, 1.25rem)', color: 'rgba(240,239,235,0.38)', lineHeight: 1.75, maxWidth: 580, fontStyle: 'italic', minHeight: 70 }}>
-          <Typewriter text={'"' + companyQuote + '"'} />
+          <Typewriter text={companyQuote} />
         </div>
       </section>
 
@@ -386,7 +386,7 @@ export default function HomePage() {
             <QSymbol size={22} color={SAGE} />
             <h2 style={{ fontFamily: "'Space Grotesk', sans-serif", fontSize: '1.6rem', fontWeight: 800, color: '#f0efeb', letterSpacing: -0.5, margin: 0 }}>Q Pool</h2>
           </div>
-          <p style={{ fontSize: '0.88rem', color: 'rgba(240,239,235,0.4)', marginBottom: 36, lineHeight: 1.6 }}>{t('home.qpool.desc')}</p>
+          
           <div style={{ display: 'flex', gap: 16, marginBottom: 28, flexWrap: 'wrap' }}>
             {[{ label: t('home.qpool.available'), value: String(availableQ.length) }, { label: t('home.qpool.claimed'), value: '47' }, { label: t('home.qpool.donors'), value: '12' }].map(function(s) {
               return (
@@ -445,9 +445,9 @@ export default function HomePage() {
       {/* 3. FREE TOOLS */}
       <section style={{ background: '#fafaf8', padding: '80px 0 60px' }}>
         <div style={{ maxWidth: 1100, margin: '0 auto', padding: '0 24px' }}>
-          <p style={{ fontSize: '0.65rem', fontWeight: 700, color: '#bbb', marginBottom: 8 }}>{t('home.freetools.label') || 'Free tools'}</p>
-          <h2 style={{ fontFamily: "'Be Vietnam Pro', sans-serif", fontSize: 'clamp(1.6rem, 3.5vw, 2.4rem)', fontWeight: 400, letterSpacing: -1, color: '#111', margin: '0 0 10px' }}>{t('home.freetools.title')}</h2>
-          <p style={{ fontSize: '0.88rem', color: '#888', marginBottom: 40 }}>{t('home.freetools.sub')}</p>
+          <p style={{ fontSize: '0.65rem', fontWeight: 700, color: '#bbb', marginBottom: 8 }}></p>
+          
+          
         </div>
         <div style={{ position: 'relative', overflow: 'hidden', marginBottom: 48 }}>
           <div style={{ position: 'absolute', left: 0, top: 0, bottom: 0, width: 80, background: 'linear-gradient(to right, #fafaf8, transparent)', zIndex: 2, pointerEvents: 'none' }} />
@@ -486,9 +486,9 @@ export default function HomePage() {
       <section style={{ background: '#0c0e0c', padding: '80px 24px', position: 'relative' }}>
         <div style={{ position: 'absolute', inset: 0, background: 'radial-gradient(ellipse at 30% 60%, rgba(74,124,89,0.07) 0%, transparent 60%)', pointerEvents: 'none' }} />
         <div style={{ maxWidth: 1100, margin: '0 auto', position: 'relative' }}>
-          <p style={{ fontSize: '0.65rem', fontWeight: 700, color: 'rgba(74,124,89,0.6)', marginBottom: 8 }}>{t('home.paidtools.label')}</p>
-          <h2 style={{ fontFamily: "'Be Vietnam Pro', sans-serif", fontSize: 'clamp(1.6rem, 3.5vw, 2.4rem)', fontWeight: 400, letterSpacing: -1, color: '#f0efeb', margin: '0 0 10px' }}>{t('home.paidtools.title')}</h2>
-          <p style={{ fontSize: '0.88rem', color: 'rgba(240,239,235,0.35)', marginBottom: 40 }}>{t('home.paidtools.sub')}</p>
+          
+          
+          
           <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fill, minmax(200px, 1fr))', gap: 12 }}>
             {PAID_TOOLS.map(function(tool) {
               return (
@@ -508,8 +508,8 @@ export default function HomePage() {
       {/* 5. APPS */}
       <section style={{ background: '#fafaf8', padding: '80px 24px' }}>
         <div style={{ maxWidth: 1100, margin: '0 auto' }}>
-          <p style={{ fontSize: '0.65rem', fontWeight: 700, color: '#bbb', marginBottom: 8 }}>{t('home.apps.label')}</p>
-          <h2 style={{ fontFamily: "'Be Vietnam Pro', sans-serif", fontSize: 'clamp(1.6rem, 3.5vw, 2.4rem)', fontWeight: 400, letterSpacing: -1, color: '#111', margin: '0 0 40px' }}>{t('home.apps.title')}</h2>
+          
+          
           <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(280px, 1fr))', gap: 16 }}>
             <div style={{ background: '#fff', border: '1.5px solid rgba(0,0,0,0.06)', borderRadius: 20, padding: '32px 28px', display: 'flex', flexDirection: 'column', gap: 14 }}>
               <div style={{ fontSize: '2.5rem' }}>🌿</div>
@@ -519,13 +519,13 @@ export default function HomePage() {
             </div>
             <div style={{ background: '#fff', border: '1.5px solid rgba(0,0,0,0.06)', borderRadius: 20, padding: '32px 28px', display: 'flex', flexDirection: 'column', gap: 14 }}>
               <div style={{ fontSize: '2.5rem' }}>🌽</div>
-              <h3 style={{ fontFamily: "'Be Vietnam Pro', sans-serif", fontSize: '2rem', fontWeight: 400, color: '#f59e0b', margin: 0, letterSpacing: -0.5 }}>Cui Bap</h3>
+              <h3 style={{ fontFamily: "'Be Vietnam Pro', sans-serif", fontSize: '2rem', fontWeight: 400, color: '#f59e0b', margin: 0, letterSpacing: -0.5 }}>Cùi Bắp</h3>
               <p style={{ fontSize: '0.85rem', color: '#888', lineHeight: 1.5, margin: 0 }}>{t('home.cuibap.desc')}</p>
               <Link href="/dashboard/cui-bap" style={{ display: 'inline-block', padding: '9px 20px', background: '#f59e0b', color: '#fff', borderRadius: 100, textDecoration: 'none', fontSize: '0.82rem', fontWeight: 600, alignSelf: 'flex-start' }}>Use now →</Link>
             </div>
             <div style={{ background: '#fff', border: '1.5px solid rgba(0,0,0,0.06)', borderRadius: 20, padding: '32px 28px', display: 'flex', flexDirection: 'column', gap: 14 }}>
               <div style={{ fontSize: '2.5rem' }}>🎧</div>
-              <h3 style={{ fontFamily: "'Be Vietnam Pro', sans-serif", fontSize: '2rem', fontWeight: 400, color: '#8b5cf6', margin: 0, letterSpacing: -0.5 }}>LaNo</h3>
+              <h3 style={{ fontFamily: "'Be Vietnam Pro', sans-serif", fontSize: '2rem', fontWeight: 400, color: '#8b5cf6', margin: 0, letterSpacing: -0.5 }}>LàNo</h3>
               <p style={{ fontSize: '0.85rem', color: '#888', lineHeight: 1.5, margin: 0 }}>{t('home.lano.desc')}</p>
               <div style={{ display: 'flex', flexWrap: 'wrap', gap: 8 }}>
                 <Link href="/dashboard/lano" style={{ display: 'inline-block', padding: '9px 20px', background: '#8b5cf6', color: '#fff', borderRadius: 100, textDecoration: 'none', fontSize: '0.82rem', fontWeight: 600 }}>Use now →</Link>
@@ -578,8 +578,8 @@ export default function HomePage() {
       <section style={{ background: '#0c0e0c', padding: '80px 24px', position: 'relative' }}>
         <div style={{ position: 'absolute', inset: 0, background: 'radial-gradient(ellipse at 80% 30%, rgba(74,124,89,0.06) 0%, transparent 60%)', pointerEvents: 'none' }} />
         <div style={{ maxWidth: 1100, margin: '0 auto', position: 'relative' }}>
-          <p style={{ fontSize: '0.65rem', fontWeight: 700, color: 'rgba(74,124,89,0.5)', marginBottom: 8 }}>{t('home.mental.label')}</p>
-          <h2 style={{ fontFamily: "'Be Vietnam Pro', sans-serif", fontSize: 'clamp(1.6rem, 3.5vw, 2.4rem)', fontWeight: 400, letterSpacing: -1, color: '#f0efeb', margin: '0 0 40px' }}>{t('home.mental.title')}</h2>
+          
+          
           <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(240px, 1fr))', gap: 14 }}>
             {MENTAL_MODELS.map(function(model) {
               return (
@@ -602,11 +602,9 @@ export default function HomePage() {
         <div style={{ maxWidth: 640, margin: '0 auto', textAlign: 'center' }}>
           <p style={{ fontSize: '0.65rem', fontWeight: 700, color: '#bbb', marginBottom: 16 }}>{t('home.book.label')}</p>
           <h2 style={{ fontFamily: "'Be Vietnam Pro', sans-serif", fontSize: 'clamp(2rem, 5vw, 3.5rem)', fontWeight: 400, letterSpacing: -1.5, color: '#111', margin: '0 0 18px', lineHeight: 1.1 }}>
-            Sach <span style={{ color: SAGE, fontStyle: 'italic' }}>La.</span>
+            Sách
           </h2>
-          <p style={{ fontSize: '0.92rem', color: '#777', lineHeight: 1.7, marginBottom: 36 }}>
-            {t('home.book.desc')}
-          </p>
+          
           <BookNotifyForm />
         </div>
       </section>
@@ -615,9 +613,9 @@ export default function HomePage() {
       <section style={{ background: '#070908', padding: '80px 24px', position: 'relative' }}>
         <div style={{ position: 'absolute', inset: 0, background: 'radial-gradient(ellipse at center bottom, rgba(74,124,89,0.05) 0%, transparent 60%)', pointerEvents: 'none' }} />
         <div style={{ maxWidth: 580, margin: '0 auto', textAlign: 'center', position: 'relative' }}>
-          <p style={{ fontSize: '0.65rem', fontWeight: 700, color: 'rgba(74,124,89,0.5)', marginBottom: 12 }}>{t('home.feedback.label')}</p>
-          <h2 style={{ fontFamily: "'Be Vietnam Pro', sans-serif", fontSize: 'clamp(1.5rem, 3.5vw, 2.2rem)', fontWeight: 400, letterSpacing: -0.5, color: '#f0efeb', margin: '0 0 10px' }}>{t('home.feedback.title')}?</h2>
-          <p style={{ fontSize: '0.85rem', color: 'rgba(240,239,235,0.3)', marginBottom: 32 }}>Feedback của bạn định hình Querencia.. Cần đăng nhập để gửi..</p>
+          
+          <h2 style={{ fontFamily: "'Be Vietnam Pro', sans-serif", fontSize: 'clamp(1.5rem, 3.5vw, 2.2rem)', fontWeight: 400, letterSpacing: -0.5, color: '#f0efeb', margin: '0 0 10px' }}>{t('home.feedback.title')}</h2>
+          <p style={{ fontSize: '0.85rem', color: 'rgba(240,239,235,0.3)', marginBottom: 32 }}>{t('home.feedback.sub')}</p>
           {feedbackSent ? (
             <div style={{ padding: '20px', background: 'rgba(74,124,89,0.1)', border: '1px solid rgba(74,124,89,0.2)', borderRadius: 12, color: SAGE, fontSize: '0.9rem' }}>
               {t('home.feedback.sent')}.

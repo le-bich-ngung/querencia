@@ -16,7 +16,7 @@ export function GlobalFooter() {
           {/* Logo wordmark */}
           <div style={{ display: 'flex', alignItems: 'baseline', gap: 0 }}>
             <svg xmlns="http://www.w3.org/2000/svg" viewBox="22 22 72 72" width="12" height="12"
-              style={{ flexShrink: 0, display: 'inline-block', verticalAlign: 'baseline', position: 'relative', top: '1px', marginRight: 2 }}>
+              style={{ flexShrink: 0, display: 'inline-block', verticalAlign: 'baseline', position: 'relative', top: '1px', marginRight: 3 }}>
               <defs><clipPath id="qcfoot"><circle cx="55" cy="55" r="26"/></clipPath></defs>
               <circle cx="55" cy="55" r="30" fill="none" stroke={SAGE} strokeWidth="6" strokeLinecap="round"/>
               <line x1="75" y1="75" x2="88" y2="88" stroke={SAGE} strokeWidth="6" strokeLinecap="round"/>
@@ -42,9 +42,9 @@ export function GlobalFooter() {
             ].map(function(l) {
               return (
                 <Link key={l.label} href={l.href}
-                  style={{ fontSize: '0.72rem', color: '#bbb', textDecoration: 'none', transition: 'color 0.15s' }}
-                  onMouseEnter={function(e) { e.currentTarget.style.color = SAGE; }}
-                  onMouseLeave={function(e) { e.currentTarget.style.color = '#bbb'; }}
+                  style={{ fontSize: '0.72rem', color: SAGE, textDecoration: 'none', transition: 'opacity 0.15s', opacity: 0.7 }}
+                  onMouseEnter={function(e) { e.currentTarget.style.opacity = '1'; }}
+                  onMouseLeave={function(e) { e.currentTarget.style.opacity = '0.7'; }}
                 >{l.label}</Link>
               );
             })}
