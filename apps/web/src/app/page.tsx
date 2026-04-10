@@ -102,23 +102,55 @@ var MOCK_Q_POOL = [
 ];
 
 function Typewriter({ text }) {
-  var state = useState('');
-  var displayed = state[0]; var setDisplayed = state[1];
+  var state = useState(0);
+  var charCount = state[0]; var setCharCount = state[1];
   var doneState = useState(false);
   var done = doneState[0]; var setDone = doneState[1];
+  var phaseState = useState('dots'); // 'dots' | 'reveal'
+  var phase = phaseState[0]; var setPhase = phaseState[1];
+  var dotsState = useState(0);
+  var dots = dotsState[0]; var setDots = dotsState[1];
+
   useEffect(function() {
-    setDisplayed(''); setDone(false);
+    setCharCount(0); setDone(false); setPhase('dots'); setDots(0);
+    // Phase 1: show 3 dots slowly, then start reveal
+    var dotTimer = setInterval(function() {
+      setDots(function(d) {
+        if (d >= 3) {
+          clearInterval(dotTimer);
+          setPhase('reveal');
+          return d;
+        }
+        return d + 1;
+      });
+    }, 400);
+    return function() { clearInterval(dotTimer); };
+  }, [text]);
+
+  useEffect(function() {
+    if (phase !== 'reveal') return;
+    setCharCount(0);
     var i = 0;
     var t = setInterval(function() {
-      if (i < text.length) { i++; setDisplayed(text.slice(0, i)); }
+      if (i < text.length) { i++; setCharCount(i); }
       else { setDone(true); clearInterval(t); }
-    }, 80);
+    }, 55);
     return function() { clearInterval(t); };
-  }, [text]);
+  }, [phase, text]);
+
+  if (phase === 'dots') {
+    return (
+      <span style={{ opacity: 0.3 }}>
+        {dots >= 1 ? '.' : ''}{dots >= 2 ? '.' : ''}{dots >= 3 ? '.' : ''}
+      </span>
+    );
+  }
   return (
     <span>
-      {displayed}
-      {!done && <span style={{ borderRight: '2px solid rgba(240,239,235,0.4)', marginLeft: 1, animation: 'blink 0.7s step-end infinite' }} />}
+      <span style={{ opacity: charCount > 0 ? 1 : 0, transition: 'opacity 0.3s' }}>
+        {text.slice(0, charCount)}
+      </span>
+      {!done && <span style={{ opacity: 0.4, marginLeft: 1, animation: 'blink 0.9s step-end infinite' }}>|</span>}
     </span>
   );
 }
@@ -135,8 +167,8 @@ function LetterDrop() {
   // Heart slides in after 'a' finishes: delay = 1.26 + 0.4 = 1.66s
   // Shimmer fires after heart lands: delay = 1.66 + 0.5 = 2.16s + 0.8s total anim = ~3s
   var heartDelay = 7 * 0.18 + 0.4;
-  var heartTouchA = heartDelay + 2.8 * 0.42;
-  var shimmerDelay = heartTouchA;
+  var heartLands = heartDelay + 2.8;
+  var shimmerDelay = heartLands;
   return (
     <div key={key} style={{ display: 'inline-flex', alignItems: 'baseline', letterSpacing: -3, lineHeight: 1, position: 'relative' }}>
       {letters.map(function(letter, i) {
@@ -149,7 +181,7 @@ function LetterDrop() {
             fontSize: 'clamp(3rem, 9vw, 7rem)', fontWeight: 300,
             color: isCia ? '#4a7c59' : '#f0efeb',
             opacity: isCia ? 1 : 0.3,
-            animation: 'letterSlide 1.2s cubic-bezier(0.34,1,0.64,1) ' + fallDelay + 's both, shimmerStrong 5s ease 2.84s infinite',
+            animation: 'letterSlide 1.2s cubic-bezier(0.34,1,0.64,1) ' + fallDelay + 's both, shimmerStrong 5s ease 4.46s infinite',
           }}>
             {letter}
           </span>
@@ -163,7 +195,7 @@ function LetterDrop() {
         marginLeft: '0.05em',
         position: 'relative',
         bottom: '-0.05em',
-        animation: 'heartEnter 2.8s cubic-bezier(0.25,0.46,0.45,0.94) ' + heartDelay + 's both, shimmerStrong 5s ease 2.84s infinite',
+        animation: 'heartEnter 2.8s cubic-bezier(0.25,0.46,0.45,0.94) ' + heartDelay + 's both, shimmerStrong 5s ease 4.46s infinite',
       }}>
         <svg viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg"
           style={{ width: 'clamp(0.7rem, 2vw, 1.6rem)', height: 'clamp(0.7rem, 2vw, 1.6rem)', display: 'block' }}>
@@ -305,7 +337,7 @@ export default function HomePage() {
     var col = props.color || SAGE;
     var animStyle = props.animated ? { strokeDasharray: 160, animation: 'waveRun 2s linear infinite' } : {};
     return (
-      <svg xmlns="http://www.w3.org/2000/svg" viewBox="13 13 86 86" width={sz} height={sz} style={{ flexShrink: 0, display: 'inline-block', verticalAlign: 'text-bottom', marginRight: 0 }}>
+      <svg xmlns="http://www.w3.org/2000/svg" viewBox="13 13 86 86" width={sz} height={sz} style={{ flexShrink: 0, display: 'inline-block', verticalAlign: 'text-bottom', marginRight: 2 }}>
         <defs><clipPath id={'qc' + (props.id || '')}><circle cx="55" cy="55" r="32"/></clipPath></defs>
         <circle cx="55" cy="55" r="38" fill="none" stroke={col} strokeWidth="7" strokeLinecap="round"/>
         <line x1="81" y1="79" x2="98" y2="98" stroke={col} strokeWidth="7" strokeLinecap="round"/>
@@ -363,7 +395,7 @@ export default function HomePage() {
         <div style={{ position: 'absolute', width: 400, height: 400, borderRadius: '50%', bottom: '10%', right: '10%', background: 'radial-gradient(circle, rgba(74,124,89,0.06) 0%, transparent 70%)', pointerEvents: 'none' }} />
         <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'center', gap: 0, marginRight: -8, marginBottom: 16 }}>
           <div style={{ display: 'inline-block', marginRight: -2 }}>
-            <svg xmlns="http://www.w3.org/2000/svg" viewBox="14 14 88 88" style={{ width: 'clamp(2.8rem, 8.5vw, 6.5rem)', height: 'clamp(2.8rem, 8.5vw, 6.5rem)', animation: 'shimmerStrong 5s ease 2.84s infinite' }}>
+            <svg xmlns="http://www.w3.org/2000/svg" viewBox="14 14 88 88" style={{ width: 'clamp(2.8rem, 8.5vw, 6.5rem)', height: 'clamp(2.8rem, 8.5vw, 6.5rem)', animation: 'shimmerStrong 5s ease 4.46s infinite' }}>
               <defs><clipPath id="qchero"><circle cx="55" cy="55" r="32"/></clipPath></defs>
               <circle cx="55" cy="55" r="38" fill="none" stroke={SAGE} strokeWidth="7" strokeLinecap="round"/>
               <line x1="81" y1="79" x2="98" y2="98" stroke={SAGE} strokeWidth="7" strokeLinecap="round"/>
@@ -373,7 +405,7 @@ export default function HomePage() {
           <h1 style={{ margin: 0, padding: 0, lineHeight: 1 }}><LetterDrop /></h1>
         </div>
         <p style={{ fontSize: 'clamp(1rem, 2.5vw, 1.4rem)', fontWeight: 600, color: SAGE, marginBottom: 32 }}>Tech and more</p>
-        <div style={{ fontFamily: "'Be Vietnam Pro', sans-serif", fontSize: 'clamp(0.95rem, 2.2vw, 1.25rem)', color: 'rgba(240,239,235,0.38)', lineHeight: 1.75, maxWidth: 580, fontStyle: 'italic', minHeight: 70 }}>
+        <div style={{ fontFamily: "'Be Vietnam Pro', sans-serif", fontSize: 'clamp(0.82rem, 1.6vw, 1rem)', color: 'rgba(240,239,235,0.5)', lineHeight: 1.5, maxWidth: 900, whiteSpace: 'nowrap', overflow: 'hidden', textOverflow: 'ellipsis' }}>
           <Typewriter text={companyQuote} />
         </div>
       </section>
@@ -644,7 +676,7 @@ export default function HomePage() {
         @keyframes blink { 0%,100%{opacity:1;} 50%{opacity:0;} }
         @keyframes heartSlide { 0%{opacity:0;transform:translateX(90px);} 100%{opacity:1;transform:translateX(0px);} }
         @keyframes heartLean { 0%{transform:translateX(0) rotate(0deg);} 100%{transform:translateX(0) rotate(-22deg);} }
-        @keyframes heartEnter { 0%{opacity:0;transform:translateX(60px) rotate(0deg);} 42%{opacity:1;transform:translateX(0px) rotate(0deg);} 100%{opacity:1;transform:translateX(-3px) rotate(-22deg);} }
+        @keyframes heartEnter { 0%{opacity:0;transform:translateX(60px) rotate(0deg);} 42%{opacity:1;transform:translateX(0px) rotate(0deg);} 100%{opacity:1;transform:translateX(-6px) rotate(-28deg);} }
       `}</style>
     </div>
   );
