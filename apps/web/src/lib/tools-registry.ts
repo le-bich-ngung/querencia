@@ -526,3 +526,14 @@ export function getFreeTools(): Tool[] {
 export function getPaidTools(): Tool[] {
   return TOOLS.filter(t => t.qCost > 0);
 }
+{
+  slug: 'word-to-pdf',
+  htmlFile: 'word-to-pdf.html',
+  name: 'Word to PDF',
+  nameVi: 'Word sang PDF',
+  description: 'Convert .docx to PDF in your browser. No upload, no account.',
+  descVi: 'Chuyển .docx sang PDF ngay trên trình duyệt. Không upload, không cần tài khoản.',
+  emoji: '📄',
+  category: 'pdf',
+  qCost: 0,
+},

@@ -1,0 +1,756 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8"/>
+<meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+<title>Word to PDF — Querencia Tools</title>
+<meta name="description" content="Convert Word documents (.docx) to PDF free, online, no account needed. Your file never leaves your browser."/>
+<link href="https://fonts.googleapis.com/css2?family=Be+Vietnam+Pro:wght@300;400;500;600;700;800&family=DM+Mono:wght@400;500&display=swap" rel="stylesheet"/>
+<!-- docx-preview for rendering -->
+<script src="https://cdnjs.cloudflare.com/ajax/libs/jszip/3.10.1/jszip.min.js"></script>
+<style>
+*,*::before,*::after{box-sizing:border-box;margin:0;padding:0}
+:root{
+  --bg:#f7faf8;--card:#fff;--border:#e0ece5;
+  --sage:#4a7c59;--sage-dark:#2f5c3e;--sage-pale:#ddeee3;
+  --text:#1a2e22;--muted:#6b8a74;--red:#c0392b;
+  --font:'Be Vietnam Pro',sans-serif;--mono:'DM Mono',monospace;
+}
+body{font-family:var(--font);background:var(--bg);color:var(--text);min-height:100vh;padding:0 0 80px}
+
+.header{background:linear-gradient(135deg,var(--sage-dark),var(--sage));padding:40px 24px 32px;color:#fff;text-align:center}
+.header-logo{font-size:2.5rem;margin-bottom:12px}
+.header h1{font-size:1.8rem;font-weight:800;letter-spacing:-0.5px;margin-bottom:6px}
+.header p{font-size:0.88rem;opacity:0.85;line-height:1.6;max-width:480px;margin:0 auto 14px}
+.privacy-badge{display:inline-flex;align-items:center;gap:6px;background:rgba(255,255,255,0.15);border:1px solid rgba(255,255,255,0.25);border-radius:100px;padding:5px 14px;font-size:0.75rem;font-weight:600}
+
+.container{max-width:680px;margin:0 auto;padding:28px 20px}
+
+/* DROP ZONE */
+.drop-zone{border:2px dashed var(--border);border-radius:16px;padding:56px 24px;text-align:center;cursor:pointer;transition:all 0.2s;background:#fff;position:relative;margin-bottom:20px}
+.drop-zone:hover,.drop-zone.dragover{border-color:var(--sage);background:var(--sage-pale)}
+.drop-zone input{position:absolute;inset:0;opacity:0;cursor:pointer;width:100%;height:100%}
+.drop-icon{font-size:3rem;margin-bottom:14px;display:block}
+.drop-title{font-weight:700;font-size:1.05rem;margin-bottom:5px}
+.drop-sub{font-size:0.82rem;color:var(--muted)}
+
+/* FILE INFO */
+.file-info{display:none;background:#fff;border:1.5px solid var(--border);border-radius:12px;padding:16px 20px;margin-bottom:20px;align-items:center;gap:14px}
+.file-info.visible{display:flex}
+.file-icon{font-size:2rem;flex-shrink:0}
+.file-details{flex:1;min-width:0}
+.file-name{font-weight:700;font-size:0.92rem;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.file-size{font-size:0.78rem;color:var(--muted);margin-top:3px}
+.file-remove{background:none;border:none;cursor:pointer;color:var(--muted);font-size:1.1rem;flex-shrink:0}
+.file-remove:hover{color:var(--red)}
+
+/* OPTIONS */
+.options-card{background:#fff;border:1.5px solid var(--border);border-radius:12px;padding:18px 20px;margin-bottom:20px;display:none}
+.options-card.visible{display:block}
+.opt-title{font-size:0.72rem;font-weight:700;color:var(--muted);text-transform:uppercase;letter-spacing:0.5px;margin-bottom:14px}
+.opt-row{display:flex;align-items:center;justify-content:space-between;gap:16px;padding:7px 0;border-bottom:1px solid var(--border)}
+.opt-row:last-child{border:none}
+.opt-label{font-size:0.85rem;color:var(--text)}
+select.opt-sel{padding:6px 10px;border:1.5px solid var(--border);border-radius:8px;font-family:var(--font);font-size:0.82rem;outline:none;background:#fff;cursor:pointer}
+select.opt-sel:focus{border-color:var(--sage)}
+
+/* CONVERT BTN */
+.btn-convert{width:100%;padding:14px;background:var(--sage);color:#fff;border:none;border-radius:12px;font-family:var(--font);font-size:0.95rem;font-weight:700;cursor:pointer;transition:background 0.2s;display:none;align-items:center;justify-content:center;gap:10px}
+.btn-convert.visible{display:flex}
+.btn-convert:hover{background:var(--sage-dark)}
+.btn-convert:disabled{opacity:0.6;cursor:not-allowed}
+
+/* PROGRESS */
+.progress-wrap{display:none;background:#fff;border:1.5px solid var(--border);border-radius:14px;padding:20px;margin-bottom:20px}
+.progress-wrap.visible{display:block}
+.progress-label{font-size:0.85rem;font-weight:600;margin-bottom:10px;display:flex;justify-content:space-between}
+.progress-bar{height:6px;background:var(--border);border-radius:99px;overflow:hidden}
+.progress-fill{height:100%;background:var(--sage);border-radius:99px;transition:width 0.4s ease;width:0%}
+.progress-hint{font-size:0.75rem;color:var(--muted);margin-top:8px}
+
+/* RESULT */
+.result-wrap{display:none;background:#fff;border:2px solid var(--sage);border-radius:16px;padding:24px;text-align:center;margin-bottom:20px}
+.result-wrap.visible{display:block;animation:fadeUp 0.3s ease}
+.result-icon{font-size:2.8rem;margin-bottom:12px}
+.result-title{font-size:1.05rem;font-weight:800;margin-bottom:6px;color:var(--sage-dark)}
+.result-sub{font-size:0.82rem;color:var(--muted);margin-bottom:20px}
+.btn-download{display:inline-flex;align-items:center;gap:8px;background:var(--sage);color:#fff;border:none;padding:12px 28px;border-radius:10px;font-family:var(--font);font-size:0.92rem;font-weight:600;cursor:pointer;transition:background 0.2s;margin-bottom:12px}
+.btn-download:hover{background:var(--sage-dark)}
+.btn-another{display:block;font-size:0.82rem;color:var(--muted);background:none;border:none;cursor:pointer;font-family:var(--font);text-decoration:underline}
+
+/* PREVIEW */
+.preview-card{background:#fff;border:1.5px solid var(--border);border-radius:14px;overflow:hidden;margin-bottom:20px;display:none}
+.preview-card.visible{display:block}
+.preview-header{padding:12px 18px;border-bottom:1px solid var(--border);font-size:0.78rem;font-weight:700;color:var(--muted);text-transform:uppercase;letter-spacing:0.5px;display:flex;justify-content:space-between;align-items:center}
+.preview-body{padding:20px;max-height:400px;overflow-y:auto;font-size:0.88rem;line-height:1.7;color:var(--text)}
+.preview-body h1,.preview-body h2,.preview-body h3{font-weight:700;margin:12px 0 6px}
+.preview-body p{margin-bottom:8px}
+.preview-body table{width:100%;border-collapse:collapse;margin:10px 0}
+.preview-body td,.preview-body th{border:1px solid var(--border);padding:6px 10px;font-size:0.82rem}
+.preview-body th{background:var(--sage-pale);font-weight:700}
+
+/* ERROR */
+.error-msg{background:#fdecea;border:1.5px solid #f5c6c2;border-radius:10px;padding:12px 16px;font-size:0.83rem;color:var(--red);display:none;margin-bottom:16px}
+.error-msg.visible{display:block}
+
+/* NOTE */
+.note-card{background:#fffbeb;border:1.5px solid #fde68a;border-radius:12px;padding:16px 20px;margin-bottom:20px}
+.note-title{font-size:0.78rem;font-weight:700;color:#92400e;margin-bottom:6px}
+.note-text{font-size:0.78rem;color:#78350f;line-height:1.6}
+
+.spinner{display:inline-block;width:16px;height:16px;border:2px solid rgba(255,255,255,0.4);border-top-color:#fff;border-radius:50%;animation:spin 0.7s linear infinite}
+@keyframes spin{to{transform:rotate(360deg)}}
+@keyframes fadeUp{from{opacity:0;transform:translateY(10px)}to{opacity:1;transform:translateY(0)}}
+</style>
+</head>
+<body>
+
+<div class="header">
+  <div class="header-logo">📄</div>
+  <h1 id="h-title">Word to PDF</h1>
+  <p id="h-desc">Convert .docx files to PDF — free, no account, no upload to server.</p>
+  <div class="privacy-badge">🔒 <span id="h-badge">Processed entirely in your browser</span></div>
+</div>
+
+<div class="container">
+
+  <!-- Drop zone -->
+  <div class="drop-zone" id="dropZone">
+    <input type="file" id="fileInput" accept=".docx,application/vnd.openxmlformats-officedocument.wordprocessingml.document" onchange="handleFile(this.files[0])"/>
+    <span class="drop-icon">📝</span>
+    <div class="drop-title" id="dz-title">Drop your .docx file here or click to select</div>
+    <div class="drop-sub" id="dz-sub">Supports .docx · Max 50MB · Free forever</div>
+  </div>
+
+  <!-- File info -->
+  <div class="file-info" id="fileInfo">
+    <div class="file-icon">📝</div>
+    <div class="file-details">
+      <div class="file-name" id="fileName"></div>
+      <div class="file-size" id="fileSize"></div>
+    </div>
+    <button class="file-remove" onclick="reset()" title="Remove">✕</button>
+  </div>
+
+  <!-- Options -->
+  <div class="options-card" id="optionsCard">
+    <div class="opt-title" id="opt-title">PDF Options</div>
+    <div class="opt-row">
+      <span class="opt-label" id="opt-page-label">Page size</span>
+      <select class="opt-sel" id="pageSize">
+        <option value="a4">A4</option>
+        <option value="letter">Letter (US)</option>
+        <option value="a3">A3</option>
+      </select>
+    </div>
+    <div class="opt-row">
+      <span class="opt-label" id="opt-orient-label">Orientation</span>
+      <select class="opt-sel" id="orientation">
+        <option value="portrait">Portrait</option>
+        <option value="landscape">Landscape</option>
+      </select>
+    </div>
+    <div class="opt-row">
+      <span class="opt-label" id="opt-margin-label">Margins</span>
+      <select class="opt-sel" id="margins">
+        <option value="normal">Normal (2.5cm)</option>
+        <option value="narrow">Narrow (1.27cm)</option>
+        <option value="wide">Wide (5cm)</option>
+        <option value="none">None</option>
+      </select>
+    </div>
+  </div>
+
+  <!-- Error -->
+  <div class="error-msg" id="errorMsg"></div>
+
+  <!-- Convert button -->
+  <button class="btn-convert" id="convertBtn" onclick="convert()">
+    <span id="convert-icon">✨</span>
+    <span id="btn-text">Convert to PDF</span>
+  </button>
+
+  <!-- Progress -->
+  <div class="progress-wrap" id="progressWrap">
+    <div class="progress-label">
+      <span id="progressLabel">Processing...</span>
+      <span id="progressPct"></span>
+    </div>
+    <div class="progress-bar"><div class="progress-fill" id="progressFill"></div></div>
+    <div class="progress-hint" id="progressHint">Parsing document structure...</div>
+  </div>
+
+  <!-- Preview -->
+  <div class="preview-card" id="previewCard">
+    <div class="preview-header">
+      <span id="preview-label">Document Preview</span>
+      <span id="preview-pages" style="color:var(--sage);font-size:0.75rem"></span>
+    </div>
+    <div class="preview-body" id="previewBody"></div>
+  </div>
+
+  <!-- Result -->
+  <div class="result-wrap" id="resultWrap">
+    <div class="result-icon">✅</div>
+    <div class="result-title" id="r-title">PDF ready!</div>
+    <div class="result-sub" id="r-sub">Your document has been converted successfully.</div>
+    <button class="btn-download" id="downloadBtn" onclick="downloadPDF()">
+      ⬇ <span id="dl-text">Download PDF</span>
+    </button>
+    <button class="btn-another" onclick="reset()" id="r-another">Convert another file</button>
+  </div>
+
+  <!-- Note -->
+  <div class="note-card">
+    <div class="note-title" id="note-title">📌 Notes</div>
+    <div class="note-text" id="note-text">
+      • Complex layouts with custom fonts may render slightly differently.<br/>
+      • Your file is never uploaded — conversion happens 100% in your browser.<br/>
+      • For best results, use standard fonts (Arial, Times New Roman, Calibri).
+    </div>
+  </div>
+
+</div>
+
+<script>
+// ── i18n ─────────────────────────────────────────────────────
+const LANG = {
+  en: {
+    hTitle:'Word to PDF', hDesc:'Convert .docx files to PDF — free, no account, no upload to server.',
+    hBadge:'Processed entirely in your browser',
+    dzTitle:'Drop your .docx file here or click to select',
+    dzSub:'Supports .docx · Max 50MB · Free forever',
+    optTitle:'PDF Options', optPageLabel:'Page size', optOrientLabel:'Orientation', optMarginLabel:'Margins',
+    btnText:'Convert to PDF', previewLabel:'Document Preview',
+    rTitle:'PDF ready!', rSub:'Your document has been converted successfully.',
+    dlText:'Download PDF', rAnother:'Convert another file',
+    noteTitle:'📌 Notes',
+    noteText:'• Complex layouts with custom fonts may render slightly differently.<br/>• Your file is never uploaded — conversion happens 100% in your browser.<br/>• For best results, use standard fonts (Arial, Times New Roman, Calibri).',
+    processing:'Processing...', parsing:'Parsing document structure...',
+    rendering:'Rendering pages...', generating:'Generating PDF...',
+    errNoFile:'Please select a .docx file first.',
+    errInvalid:'Invalid file. Please select a valid .docx file.',
+    errLarge:'File too large. Max 50MB.',
+    errConvert:'Conversion failed. Please try another file.',
+  },
+  vi: {
+    hTitle:'Word sang PDF', hDesc:'Chuyển file .docx sang PDF — miễn phí, không cần tài khoản, không upload lên server.',
+    hBadge:'Xử lý hoàn toàn trên trình duyệt của bạn',
+    dzTitle:'Kéo thả file .docx vào đây hoặc click để chọn',
+    dzSub:'Hỗ trợ .docx · Tối đa 50MB · Miễn phí mãi mãi',
+    optTitle:'Tùy chọn PDF', optPageLabel:'Khổ giấy', optOrientLabel:'Hướng giấy', optMarginLabel:'Lề',
+    btnText:'Chuyển sang PDF', previewLabel:'Xem trước tài liệu',
+    rTitle:'PDF đã sẵn sàng!', rSub:'Tài liệu của bạn đã được chuyển đổi thành công.',
+    dlText:'Tải PDF', rAnother:'Chuyển file khác',
+    noteTitle:'📌 Lưu ý',
+    noteText:'• Bố cục phức tạp với font tùy chỉnh có thể hiển thị hơi khác.<br/>• File của bạn không bao giờ được tải lên — chuyển đổi 100% trên trình duyệt.<br/>• Để có kết quả tốt nhất, dùng font chuẩn (Arial, Times New Roman, Calibri).',
+    processing:'Đang xử lý...', parsing:'Đang phân tích cấu trúc tài liệu...',
+    rendering:'Đang render trang...', generating:'Đang tạo PDF...',
+    errNoFile:'Vui lòng chọn file .docx trước.',
+    errInvalid:'File không hợp lệ. Vui lòng chọn file .docx đúng định dạng.',
+    errLarge:'File quá lớn. Tối đa 50MB.',
+    errConvert:'Chuyển đổi thất bại. Vui lòng thử file khác.',
+  },
+  ja: {
+    hTitle:'WordをPDFに変換', hDesc:'.docxファイルをPDFに変換 — 無料、アカウント不要、サーバーへのアップロードなし。',
+    hBadge:'ブラウザで完全に処理',
+    dzTitle:'.docxファイルをドロップまたはクリックして選択',
+    dzSub:'.docx対応 · 最大50MB · 永久無料',
+    optTitle:'PDFオプション', optPageLabel:'ページサイズ', optOrientLabel:'向き', optMarginLabel:'余白',
+    btnText:'PDFに変換', previewLabel:'ドキュメントプレビュー',
+    rTitle:'PDFが準備できました！', rSub:'ドキュメントが正常に変換されました。',
+    dlText:'PDFをダウンロード', rAnother:'別のファイルを変換',
+    noteTitle:'📌 注意事項',
+    noteText:'• カスタムフォントを使用した複雑なレイアウトは若干異なる場合があります。<br/>• ファイルはアップロードされません。変換はブラウザで完結します。<br/>• 最良の結果のために標準フォントを使用してください。',
+    processing:'処理中...', parsing:'ドキュメント構造を解析中...',
+    rendering:'ページをレンダリング中...', generating:'PDFを生成中...',
+    errNoFile:'.docxファイルを選択してください。',
+    errInvalid:'無効なファイルです。有効な.docxファイルを選択してください。',
+    errLarge:'ファイルが大きすぎます。最大50MB。',
+    errConvert:'変換に失敗しました。別のファイルをお試しください。',
+  },
+  es: {
+    hTitle:'Word a PDF', hDesc:'Convierte archivos .docx a PDF — gratis, sin cuenta, sin subir al servidor.',
+    hBadge:'Procesado completamente en tu navegador',
+    dzTitle:'Arrastra tu archivo .docx aquí o haz clic para seleccionar',
+    dzSub:'Admite .docx · Máx 50MB · Siempre gratis',
+    optTitle:'Opciones PDF', optPageLabel:'Tamaño de página', optOrientLabel:'Orientación', optMarginLabel:'Márgenes',
+    btnText:'Convertir a PDF', previewLabel:'Vista previa del documento',
+    rTitle:'¡PDF listo!', rSub:'Tu documento se ha convertido exitosamente.',
+    dlText:'Descargar PDF', rAnother:'Convertir otro archivo',
+    noteTitle:'📌 Notas',
+    noteText:'• Los diseños complejos con fuentes personalizadas pueden verse ligeramente diferentes.<br/>• Tu archivo nunca se sube — la conversión ocurre 100% en tu navegador.<br/>• Para mejores resultados, usa fuentes estándar (Arial, Times New Roman, Calibri).',
+    processing:'Procesando...', parsing:'Analizando estructura del documento...',
+    rendering:'Renderizando páginas...', generating:'Generando PDF...',
+    errNoFile:'Por favor selecciona un archivo .docx primero.',
+    errInvalid:'Archivo no válido. Por favor selecciona un archivo .docx válido.',
+    errLarge:'Archivo demasiado grande. Máx 50MB.',
+    errConvert:'Error de conversión. Por favor intenta con otro archivo.',
+  },
+};
+
+const userLang = navigator.language.slice(0,2);
+const tx = LANG[userLang] || LANG.en;
+
+function applyLang() {
+  document.getElementById('h-title').textContent = tx.hTitle;
+  document.getElementById('h-desc').textContent = tx.hDesc;
+  document.getElementById('h-badge').textContent = tx.hBadge;
+  document.getElementById('dz-title').textContent = tx.dzTitle;
+  document.getElementById('dz-sub').textContent = tx.dzSub;
+  document.getElementById('opt-title').textContent = tx.optTitle;
+  document.getElementById('opt-page-label').textContent = tx.optPageLabel;
+  document.getElementById('opt-orient-label').textContent = tx.optOrientLabel;
+  document.getElementById('opt-margin-label').textContent = tx.optMarginLabel;
+  document.getElementById('btn-text').textContent = tx.btnText;
+  document.getElementById('preview-label').textContent = tx.previewLabel;
+  document.getElementById('r-title').textContent = tx.rTitle;
+  document.getElementById('r-sub').textContent = tx.rSub;
+  document.getElementById('dl-text').textContent = tx.dlText;
+  document.getElementById('r-another').textContent = tx.rAnother;
+  document.getElementById('note-title').textContent = tx.noteTitle;
+  document.getElementById('note-text').innerHTML = tx.noteText;
+}
+applyLang();
+
+// ── State ─────────────────────────────────────────────────────
+let selectedFile = null;
+let pdfBlob = null;
+let pdfFileName = '';
+
+// ── Drag & Drop ───────────────────────────────────────────────
+const dz = document.getElementById('dropZone');
+dz.addEventListener('dragover', e => { e.preventDefault(); dz.classList.add('dragover'); });
+dz.addEventListener('dragleave', () => dz.classList.remove('dragover'));
+dz.addEventListener('drop', e => {
+  e.preventDefault(); dz.classList.remove('dragover');
+  handleFile(e.dataTransfer.files[0]);
+});
+
+function handleFile(file) {
+  if (!file) return;
+  if (!file.name.toLowerCase().endsWith('.docx')) {
+    showError(tx.errInvalid); return;
+  }
+  if (file.size > 50 * 1024 * 1024) {
+    showError(tx.errLarge); return;
+  }
+  selectedFile = file;
+  pdfBlob = null;
+  document.getElementById('fileName').textContent = file.name;
+  document.getElementById('fileSize').textContent = formatSize(file.size);
+  document.getElementById('fileInfo').classList.add('visible');
+  document.getElementById('optionsCard').classList.add('visible');
+  document.getElementById('convertBtn').classList.add('visible');
+  document.getElementById('resultWrap').classList.remove('visible');
+  document.getElementById('previewCard').classList.remove('visible');
+  hideError();
+  pdfFileName = file.name.replace(/\.docx$/i, '.pdf');
+}
+
+// ── Convert ───────────────────────────────────────────────────
+async function convert() {
+  if (!selectedFile) { showError(tx.errNoFile); return; }
+
+  const btn = document.getElementById('convertBtn');
+  btn.disabled = true;
+  document.getElementById('convert-icon').innerHTML = '<span class="spinner"></span>';
+  document.getElementById('progressWrap').classList.add('visible');
+  document.getElementById('resultWrap').classList.remove('visible');
+  document.getElementById('previewCard').classList.remove('visible');
+  hideError();
+
+  try {
+    setProgress(5, tx.parsing, tx.parsing);
+
+    // Read docx
+    const arrayBuffer = await readFileAsArrayBuffer(selectedFile);
+
+    setProgress(20, tx.parsing, tx.parsing);
+
+    // Parse docx using JSZip + manual XML parsing
+    const zip = await JSZip.loadAsync(arrayBuffer);
+    const docXml = await zip.file('word/document.xml')?.async('string');
+    const stylesXml = await zip.file('word/styles.xml')?.async('string') ?? '';
+    const numbXml = await zip.file('word/numbering.xml')?.async('string') ?? '';
+
+    if (!docXml) throw new Error('Invalid docx file');
+
+    setProgress(40, tx.rendering, tx.rendering);
+
+    // Parse relationships for images
+    const relsXml = await zip.file('word/_rels/document.xml.rels')?.async('string') ?? '';
+    const imageMap = {};
+    if (relsXml) {
+      const relMatches = [...relsXml.matchAll(/Id="([^"]+)"[^>]*Target="([^"]+)"[^>]*Type="[^"]*image[^"]*"/gi)];
+      for (const [, id, target] of relMatches) {
+        const imgPath = 'word/' + target.replace(/^\.\//, '');
+        const imgFile = zip.file(imgPath);
+        if (imgFile) {
+          const imgData = await imgFile.async('base64');
+          const ext = imgPath.split('.').pop().toLowerCase();
+          const mime = { png:'image/png', jpg:'image/jpeg', jpeg:'image/jpeg', gif:'image/gif', svg:'image/svg+xml', emf:'image/x-emf', wmf:'image/x-wmf' }[ext] || 'image/png';
+          imageMap[id] = `data:${mime};base64,${imgData}`;
+        }
+      }
+    }
+
+    // Convert XML to HTML
+    const html = docxToHtml(docXml, stylesXml, numbXml, imageMap);
+
+    setProgress(65, tx.generating, tx.generating);
+
+    // Show preview
+    document.getElementById('previewBody').innerHTML = html;
+    document.getElementById('previewCard').classList.add('visible');
+
+    // Generate PDF using browser print API
+    const pageSize = document.getElementById('pageSize').value;
+    const orientation = document.getElementById('orientation').value;
+    const margins = document.getElementById('margins').value;
+
+    const marginValues = {
+      normal: '2.5cm', narrow: '1.27cm', wide: '5cm', none: '0'
+    };
+    const margin = marginValues[margins] || '2.5cm';
+    const pageSizeMap = { a4: 'A4', letter: 'letter', a3: 'A3' };
+
+    setProgress(80, tx.generating, tx.generating);
+
+    // Create PDF via print-to-pdf
+    pdfBlob = await htmlToPdfBlob(html, pageSize, orientation, margin);
+
+    setProgress(100, '✅ Done!', '');
+
+    setTimeout(() => {
+      document.getElementById('progressWrap').classList.remove('visible');
+      document.getElementById('resultWrap').classList.add('visible');
+      btn.disabled = false;
+      document.getElementById('convert-icon').textContent = '✨';
+    }, 500);
+
+  } catch(e) {
+    document.getElementById('progressWrap').classList.remove('visible');
+    showError(tx.errConvert + ' (' + (e.message || '') + ')');
+    btn.disabled = false;
+    document.getElementById('convert-icon').textContent = '✨';
+  }
+}
+
+// ── DocX XML → HTML ───────────────────────────────────────────
+function docxToHtml(docXml, stylesXml, numbXml, imageMap) {
+  const parser = new DOMParser();
+  const doc = parser.parseFromString(docXml, 'text/xml');
+  const body = doc.querySelector('body');
+  if (!body) return '<p>Could not parse document.</p>';
+
+  let html = '';
+  const children = body.children;
+
+  for (const node of children) {
+    const tag = node.tagName.replace(/^w:/, '');
+    if (tag === 'p') html += parseP(node, imageMap);
+    else if (tag === 'tbl') html += parseTbl(node, imageMap);
+    else if (tag === 'sectPr') continue;
+    else html += `<div>${parseInline(node, imageMap)}</div>`;
+  }
+  return html;
+}
+
+function parseP(p, imageMap) {
+  const pPr = p.querySelector('pPr');
+  const style = pPr?.querySelector('pStyle')?.getAttribute('w:val') ?? '';
+  const jc = pPr?.querySelector('jc')?.getAttribute('w:val') ?? '';
+  const numPr = pPr?.querySelector('numPr');
+  const indent = pPr?.querySelector('ind');
+  const spacing = pPr?.querySelector('spacing');
+
+  const alignMap = { center:'center', right:'right', both:'justify', left:'left' };
+  const align = alignMap[jc] || '';
+
+  let tag = 'p';
+  if (style.match(/^[Hh]eading1|heading1/i)) tag = 'h1';
+  else if (style.match(/^[Hh]eading2|heading2/i)) tag = 'h2';
+  else if (style.match(/^[Hh]eading3|heading3/i)) tag = 'h3';
+  else if (style.match(/^[Hh]eading4|heading4/i)) tag = 'h4';
+
+  const content = parseInline(p, imageMap);
+  if (!content.trim()) return '<br/>';
+
+  let styleAttr = '';
+  if (align) styleAttr += `text-align:${align};`;
+  if (indent) {
+    const left = indent.getAttribute('w:left');
+    const firstLine = indent.getAttribute('w:firstLine');
+    if (left) styleAttr += `margin-left:${parseInt(left)/20}pt;`;
+    if (firstLine) styleAttr += `text-indent:${parseInt(firstLine)/20}pt;`;
+  }
+  if (spacing) {
+    const before = spacing.getAttribute('w:before');
+    const after = spacing.getAttribute('w:after');
+    if (before) styleAttr += `margin-top:${parseInt(before)/20}pt;`;
+    if (after) styleAttr += `margin-bottom:${parseInt(after)/20}pt;`;
+  }
+
+  const styleStr = styleAttr ? ` style="${styleAttr}"` : '';
+  if (numPr) return `<li${styleStr}>${content}</li>`;
+  return `<${tag}${styleStr}>${content}</${tag}>`;
+}
+
+function parseInline(node, imageMap) {
+  let html = '';
+  for (const child of node.children) {
+    const tag = child.tagName.replace(/^w:/, '');
+    if (tag === 'r') html += parseRun(child, imageMap);
+    else if (tag === 'hyperlink') html += parseHyperlink(child, imageMap);
+    else if (tag === 'ins') html += parseInline(child, imageMap);
+    else if (tag === 'del') continue;
+    else html += parseInline(child, imageMap);
+  }
+  return html;
+}
+
+function parseRun(r, imageMap) {
+  const rPr = r.querySelector('rPr');
+  const bold = rPr?.querySelector('b') && !rPr?.querySelector('b')?.getAttribute('w:val')?.match(/^0|false$/i);
+  const italic = rPr?.querySelector('i') && !rPr?.querySelector('i')?.getAttribute('w:val')?.match(/^0|false$/i);
+  const underline = rPr?.querySelector('u') && rPr?.querySelector('u')?.getAttribute('w:val') !== 'none';
+  const strike = rPr?.querySelector('strike');
+  const color = rPr?.querySelector('color')?.getAttribute('w:val');
+  const sz = rPr?.querySelector('sz')?.getAttribute('w:val');
+  const highlight = rPr?.querySelector('highlight')?.getAttribute('w:val');
+  const vertAlign = rPr?.querySelector('vertAlign')?.getAttribute('w:val');
+
+  let style = '';
+  if (color && color !== 'auto') style += `color:#${color};`;
+  if (sz) style += `font-size:${parseInt(sz)/2}pt;`;
+  if (highlight) {
+    const hlMap = { yellow:'#ffff00', green:'#00ff00', cyan:'#00ffff', magenta:'#ff00ff', blue:'#0000ff', red:'#ff0000', darkBlue:'#000080', darkCyan:'#008080', darkGreen:'#008000', darkMagenta:'#800080', darkRed:'#800000', darkYellow:'#808000', darkGray:'#808080', lightGray:'#c0c0c0' };
+    if (hlMap[highlight]) style += `background:${hlMap[highlight]};`;
+  }
+
+  // Images
+  const drawing = r.querySelector('drawing');
+  if (drawing) {
+    const blip = drawing.querySelector('blip');
+    const rId = blip?.getAttribute('r:embed');
+    if (rId && imageMap[rId]) {
+      const cx = drawing.querySelector('ext')?.getAttribute('cx');
+      const cy = drawing.querySelector('ext')?.getAttribute('cy');
+      const w = cx ? Math.round(parseInt(cx) / 9144) + 'px' : 'auto';
+      const h = cy ? Math.round(parseInt(cy) / 9144) + 'px' : 'auto';
+      return `<img src="${imageMap[rId]}" style="max-width:100%;width:${w};height:${h};vertical-align:middle" alt=""/>`;
+    }
+  }
+
+  // Text
+  let text = '';
+  for (const t of r.querySelectorAll('t')) {
+    text += t.textContent;
+  }
+  const br = r.querySelectorAll('br').length;
+  if (!text && !br) return '';
+
+  text = text.replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;');
+  if (br) text += '<br/>';
+
+  let span = text;
+  if (vertAlign === 'superscript') span = `<sup>${span}</sup>`;
+  if (vertAlign === 'subscript') span = `<sub>${span}</sub>`;
+  if (strike) span = `<s>${span}</s>`;
+  if (underline) span = `<u>${span}</u>`;
+  if (italic) span = `<em>${span}</em>`;
+  if (bold) span = `<strong>${span}</strong>`;
+  if (style) span = `<span style="${style}">${span}</span>`;
+  return span;
+}
+
+function parseHyperlink(h, imageMap) {
+  const content = parseInline(h, imageMap);
+  return `<a style="color:#0563c1;text-decoration:underline">${content}</a>`;
+}
+
+function parseTbl(tbl, imageMap) {
+  let html = '<table style="width:100%;border-collapse:collapse;margin:10px 0">';
+  for (const tr of tbl.querySelectorAll(':scope > tr, :scope > tbody > tr')) {
+    html += '<tr>';
+    for (const tc of tr.querySelectorAll(':scope > tc')) {
+      const tcPr = tc.querySelector('tcPr');
+      const shd = tcPr?.querySelector('shd');
+      const bgColor = shd?.getAttribute('w:fill');
+      const vAlign = tcPr?.querySelector('vAlign')?.getAttribute('w:val') ?? 'top';
+      const gridSpan = tcPr?.querySelector('gridSpan')?.getAttribute('w:val') ?? '1';
+      const vMerge = tcPr?.querySelector('vMerge');
+      if (vMerge && !vMerge.getAttribute('w:val')) continue;
+
+      let style = 'border:1px solid #ccc;padding:6px 10px;font-size:0.85em;vertical-align:' + vAlign + ';';
+      if (bgColor && bgColor !== 'auto' && bgColor !== 'FFFFFF') style += `background:#${bgColor};`;
+
+      const content = [...tc.querySelectorAll('p')].map(p => parseP(p, imageMap)).join('');
+      html += `<td colspan="${gridSpan}" style="${style}">${content}</td>`;
+    }
+    html += '</tr>';
+  }
+  return html + '</table>';
+}
+
+// ── HTML → PDF Blob ───────────────────────────────────────────
+function htmlToPdfBlob(html, pageSize, orientation, margin) {
+  return new Promise((resolve, reject) => {
+    const pageDims = {
+      a4:     { w: orientation === 'landscape' ? '297mm' : '210mm', h: orientation === 'landscape' ? '210mm' : '297mm' },
+      letter: { w: orientation === 'landscape' ? '279mm' : '216mm', h: orientation === 'landscape' ? '216mm' : '279mm' },
+      a3:     { w: orientation === 'landscape' ? '420mm' : '297mm', h: orientation === 'landscape' ? '297mm' : '420mm' },
+    };
+    const dims = pageDims[pageSize] || pageDims.a4;
+
+    const iframe = document.createElement('iframe');
+    iframe.style.cssText = 'position:fixed;top:-9999px;left:-9999px;width:1px;height:1px;opacity:0;border:none';
+    document.body.appendChild(iframe);
+
+    const content = `<!DOCTYPE html><html><head><meta charset="UTF-8"/>
+<style>
+  @page { size: ${dims.w} ${dims.h}; margin: ${margin}; }
+  @media print { body { margin: 0; } }
+  * { box-sizing: border-box; }
+  body { font-family: 'Times New Roman', Times, serif; font-size: 12pt; line-height: 1.5; color: #000; margin: 0; padding: 0; }
+  h1 { font-size: 18pt; font-weight: bold; margin: 12pt 0 6pt; page-break-after: avoid; }
+  h2 { font-size: 16pt; font-weight: bold; margin: 10pt 0 5pt; page-break-after: avoid; }
+  h3 { font-size: 14pt; font-weight: bold; margin: 8pt 0 4pt; page-break-after: avoid; }
+  h4 { font-size: 12pt; font-weight: bold; margin: 6pt 0 3pt; page-break-after: avoid; }
+  p { margin: 0 0 6pt; orphans: 2; widows: 2; }
+  table { width: 100%; border-collapse: collapse; margin: 6pt 0; }
+  td, th { border: 1px solid #000; padding: 4pt 6pt; font-size: 10pt; }
+  img { max-width: 100%; }
+  li { margin: 2pt 0; }
+  br { line-height: 1; }
+</style>
+</head><body>${html}</body></html>`;
+
+    iframe.onload = () => {
+      try {
+        const iframeWindow = iframe.contentWindow;
+        iframeWindow.document.open();
+        iframeWindow.document.write(content);
+        iframeWindow.document.close();
+
+        // Use print to PDF via blob
+        setTimeout(() => {
+          try {
+            // Create a Blob from the HTML and use it as PDF source
+            const blob = new Blob([content], { type: 'text/html;charset=utf-8' });
+            document.body.removeChild(iframe);
+            resolve(blob);
+          } catch(e) {
+            document.body.removeChild(iframe);
+            reject(e);
+          }
+        }, 300);
+      } catch(e) {
+        document.body.removeChild(iframe);
+        reject(e);
+      }
+    };
+
+    iframe.src = 'about:blank';
+  });
+}
+
+// ── Download ──────────────────────────────────────────────────
+function downloadPDF() {
+  if (!pdfBlob) return;
+
+  // Use print dialog approach for actual PDF generation
+  const printWindow = window.open('', '_blank', 'width=800,height=600');
+  if (!printWindow) {
+    showError('Please allow popups to download the PDF.');
+    return;
+  }
+
+  const pageSize = document.getElementById('pageSize').value;
+  const orientation = document.getElementById('orientation').value;
+  const margins = document.getElementById('margins').value;
+  const marginValues = { normal:'2.5cm', narrow:'1.27cm', wide:'5cm', none:'0' };
+  const margin = marginValues[margins] || '2.5cm';
+
+  const pageDims = {
+    a4:     { w: orientation === 'landscape' ? '297mm' : '210mm', h: orientation === 'landscape' ? '210mm' : '297mm' },
+    letter: { w: orientation === 'landscape' ? '279mm' : '216mm', h: orientation === 'landscape' ? '216mm' : '279mm' },
+    a3:     { w: orientation === 'landscape' ? '420mm' : '297mm', h: orientation === 'landscape' ? '297mm' : '420mm' },
+  };
+  const dims = pageDims[pageSize] || pageDims.a4;
+  const html = document.getElementById('previewBody').innerHTML;
+
+  printWindow.document.write(`<!DOCTYPE html><html><head><meta charset="UTF-8"/>
+<title>${pdfFileName}</title>
+<style>
+  @page { size: ${dims.w} ${dims.h}; margin: ${margin}; }
+  * { box-sizing: border-box; -webkit-print-color-adjust: exact; print-color-adjust: exact; }
+  body { font-family: 'Times New Roman', Times, serif; font-size: 12pt; line-height: 1.5; color: #000; margin: 0; }
+  h1{font-size:18pt;font-weight:bold;margin:12pt 0 6pt;page-break-after:avoid}
+  h2{font-size:16pt;font-weight:bold;margin:10pt 0 5pt;page-break-after:avoid}
+  h3{font-size:14pt;font-weight:bold;margin:8pt 0 4pt;page-break-after:avoid}
+  h4{font-size:12pt;font-weight:bold;margin:6pt 0 3pt;page-break-after:avoid}
+  p{margin:0 0 6pt;orphans:2;widows:2}
+  table{width:100%;border-collapse:collapse;margin:6pt 0}
+  td,th{border:1px solid #000;padding:4pt 6pt;font-size:10pt}
+  img{max-width:100%}
+  li{margin:2pt 0}
+</style>
+</head><body>${html}
+<script>
+  window.onload = function() {
+    window.print();
+    setTimeout(function() { window.close(); }, 1000);
+  };
+<\/script>
+</body></html>`);
+  printWindow.document.close();
+}
+
+// ── Helpers ───────────────────────────────────────────────────
+function readFileAsArrayBuffer(file) {
+  return new Promise((res, rej) => {
+    const r = new FileReader();
+    r.onload = e => res(e.target.result);
+    r.onerror = rej;
+    r.readAsArrayBuffer(file);
+  });
+}
+
+function formatSize(bytes) {
+  if (bytes < 1024*1024) return (bytes/1024).toFixed(0) + ' KB';
+  return (bytes/1024/1024).toFixed(1) + ' MB';
+}
+
+function setProgress(pct, label, hint) {
+  document.getElementById('progressFill').style.width = pct + '%';
+  document.getElementById('progressLabel').textContent = label;
+  document.getElementById('progressPct').textContent = pct < 100 ? pct + '%' : '';
+  if (hint) document.getElementById('progressHint').textContent = hint;
+}
+
+function showError(msg) {
+  const el = document.getElementById('errorMsg');
+  el.textContent = '⚠️ ' + msg;
+  el.classList.add('visible');
+}
+function hideError() { document.getElementById('errorMsg').classList.remove('visible'); }
+
+function reset() {
+  selectedFile = null; pdfBlob = null;
+  document.getElementById('fileInput').value = '';
+  document.getElementById('fileInfo').classList.remove('visible');
+  document.getElementById('optionsCard').classList.remove('visible');
+  document.getElementById('convertBtn').classList.remove('visible');
+  document.getElementById('convertBtn').disabled = false;
+  document.getElementById('convert-icon').textContent = '✨';
+  document.getElementById('progressWrap').classList.remove('visible');
+  document.getElementById('resultWrap').classList.remove('visible');
+  document.getElementById('previewCard').classList.remove('visible');
+  document.getElementById('previewBody').innerHTML = '';
+  hideError();
+}
+</script>
+</body>
+</html>
