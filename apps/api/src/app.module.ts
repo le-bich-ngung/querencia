@@ -24,6 +24,7 @@ import { SecurityMiddleware } from './common/middleware/security.middleware';
 import { AllExceptionsFilter } from './common/filters/http-exception.filter';
 import { APP_FILTER }         from '@nestjs/core';
 import { AppController }      from './app.controller';
+import { FileShareModule } from './modules/file-share/file-share.module';
 
 @Module({
   imports: [
@@ -43,6 +44,7 @@ import { AppController }      from './app.controller';
     WebhooksModule,
     E2eeModule,
     MetaModule,
+    FileShareModule,
   ],
   controllers: [AppController],
   providers: [

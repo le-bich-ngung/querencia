@@ -27,10 +27,18 @@
 
 html, body {
   height: 100%;
-  font-family: 'Plus Jakarta Sans', sans-serif;
+  font-family: 'Be Vietnam Pro', sans-serif;
   background: var(--bg);
   color: var(--text);
   -webkit-font-smoothing: antialiased;
+  /* Fix Vietnamese diacritics spacing issue */
+  letter-spacing: 0;
+  word-spacing: 0;
+}
+
+/* Prevent letterSpacing from affecting Vietnamese combining characters */
+*:lang(vi) {
+  letter-spacing: 0 !important;
 }
 
 a {
