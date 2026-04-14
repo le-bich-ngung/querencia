@@ -513,6 +513,30 @@ export const TOOLS: Tool[] = [
     category: 'utility',
     qCost: 1,
   },
+,
+  {
+    slug: 'word-to-pdf',
+    htmlFile: 'word-to-pdf.html',
+    name: 'Word to PDF',
+    nameVi: 'Word sang PDF',
+    description: 'Convert .docx to PDF in your browser. No upload, no account.',
+    descVi: 'Chuyển .docx sang PDF ngay trên trình duyệt. Không upload, không cần tài khoản.',
+    emoji: '📄',
+    category: 'pdf',
+    qCost: 0,
+  },
+  {
+    slug: 'file-share',
+    htmlFile: 'file-share.html',
+    name: 'Secure File Share',
+    nameVi: 'Chia sẻ file bảo mật',
+    description: 'Share files with end-to-end encryption. Link self-destructs. No account needed.',
+    descVi: 'Chia sẻ file mã hóa đầu cuối. Link tự hủy. Không cần tài khoản.',
+    emoji: '🔒',
+    category: 'privacy',
+    qCost: 0,
+    isNew: true,
+  }
 ];
 
 export function getToolBySlug(slug: string): Tool | undefined {
@@ -526,14 +550,3 @@ export function getFreeTools(): Tool[] {
 export function getPaidTools(): Tool[] {
   return TOOLS.filter(t => t.qCost > 0);
 }
-{
-  slug: 'word-to-pdf',
-  htmlFile: 'word-to-pdf.html',
-  name: 'Word to PDF',
-  nameVi: 'Word sang PDF',
-  description: 'Convert .docx to PDF in your browser. No upload, no account.',
-  descVi: 'Chuyển .docx sang PDF ngay trên trình duyệt. Không upload, không cần tài khoản.',
-  emoji: '📄',
-  category: 'pdf',
-  qCost: 0,
-},
