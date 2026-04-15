@@ -513,14 +513,14 @@ export const TOOLS: Tool[] = [
     category: 'utility',
     qCost: 1,
   },
-,
+];
   {
     slug: 'word-to-pdf',
     htmlFile: 'word-to-pdf.html',
     name: 'Word to PDF',
     nameVi: 'Word sang PDF',
     description: 'Convert .docx to PDF in your browser. No upload, no account.',
-    descVi: 'Chuyển .docx sang PDF ngay trên trình duyệt. Không upload, không cần tài khoản.',
+    descVi: 'Chuyen file .docx sang PDF tren trinh duyet. Khong can tai khoan.',
     emoji: '📄',
     category: 'pdf',
     qCost: 0,
@@ -529,14 +529,14 @@ export const TOOLS: Tool[] = [
     slug: 'file-share',
     htmlFile: 'file-share.html',
     name: 'Secure File Share',
-    nameVi: 'Chia sẻ file bảo mật',
+    nameVi: 'Chia se file bao mat',
     description: 'Share files with end-to-end encryption. Link self-destructs. No account needed.',
-    descVi: 'Chia sẻ file mã hóa đầu cuối. Link tự hủy. Không cần tài khoản.',
+    descVi: 'Chia se file ma hoa dau cuoi. Link tu huy. Khong can tai khoan.',
     emoji: '🔒',
     category: 'privacy',
     qCost: 0,
     isNew: true,
-  }
+  },
 ];
 
 export function getToolBySlug(slug: string): Tool | undefined {
