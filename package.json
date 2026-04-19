@@ -1,47 +1,47 @@
 {
-    "name":  "querencia",
-    "version":  "0.1.0",
-    "private":  true,
-    "description":  "Querencia ecosystem — Nope · Cùi B?p · LàNo · Tools",
-    "workspaces":  [
-                       "apps/*",
-                       "packages/*"
-                   ],
-    "scripts":  {
-                    "dev":  "turbo dev",
-                    "dev:web":  "turbo dev --filter=@querencia/web",
-                    "dev:api":  "turbo dev --filter=@querencia/api",
-                    "dev:ai":  "turbo dev --filter=@querencia/ai-service",
-                    "build":  "turbo build \"--filter=@querencia/web\" --force",
-                    "test":  "turbo test",
-                    "lint":  "turbo lint",
-                    "typecheck":  "turbo typecheck",
-                    "db:generate":  "turbo db:generate --filter=@querencia/db",
-                    "db:migrate":  "turbo db:migrate --filter=@querencia/db",
-                    "db:seed":  "turbo db:seed --filter=@querencia/db",
-                    "format":  "prettier --write \"**/*.{ts,tsx,js,json,md}\""
-                },
-    "devDependencies":  {
-                            "turbo":  "^2.0.0",
-                            "prettier":  "^3.0.0",
-                            "@types/node":  "^20.0.0",
-                            "typescript":  "^5.4.0"
-                        },
-    "engines":  {
-                    "node":  "\u003e=20.0.0",
-                    "pnpm":  "\u003e=9.0.0"
-                },
-    "packageManager":  "pnpm@9.0.0",
-    "pnpm":  {
-                 "overrides":  {
-                                   "metro-source-map":  "0.80.12",
-                                   "metro-core":  "0.80.12",
-                                   "metro-resolver":  "0.80.12",
-                                   "metro-runtime":  "0.80.12",
-                                   "metro-config":  "0.80.12",
-                                   "metro-transform-worker":  "0.80.12",
-                                   "metro":  "0.80.12",
-                                   "metro-babel-transformer":  "0.80.12"
-                               }
-             }
+  "name": "querencia",
+  "version": "0.1.0",
+  "private": true,
+  "description": "Querencia ecosystem â€” Nope Â· CÃ¹i Báº¯p Â· LÃ No Â· Tools",
+  "workspaces": [
+    "apps/*",
+    "packages/*"
+  ],
+  "scripts": {
+    "dev": "turbo dev",
+    "dev:web": "turbo dev --filter=@querencia/web",
+    "dev:api": "turbo dev --filter=@querencia/api",
+    "dev:ai": "turbo dev --filter=@querencia/ai-service",
+    "build": "turbo build \"--filter=@querencia/web\" --force",
+    "test": "turbo test",
+    "lint": "turbo lint",
+    "typecheck": "turbo typecheck",
+    "db:generate": "turbo db:generate --filter=@querencia/db",
+    "db:migrate": "turbo db:migrate --filter=@querencia/db",
+    "db:seed": "turbo db:seed --filter=@querencia/db",
+    "format": "prettier --write \"**/*.{ts,tsx,js,json,md}\""
+  },
+  "devDependencies": {
+    "turbo": "^2.0.0",
+    "prettier": "^3.0.0",
+    "@types/node": "^20.0.0",
+    "typescript": "^5.4.0"
+  },
+  "engines": {
+    "node": ">=20.0.0",
+    "pnpm": ">=9.0.0"
+  },
+  "packageManager": "pnpm@9.0.0",
+  "pnpm": {
+    "overrides": {
+      "metro": "0.80.12",
+      "metro-config": "0.80.12",
+      "metro-core": "0.80.12",
+      "metro-transform-worker": "0.80.12",
+      "metro-runtime": "0.80.12",
+      "metro-source-map": "0.80.12",
+      "metro-resolver": "0.80.12",
+      "metro-babel-transformer": "0.80.12"
+    }
+  }
 }
