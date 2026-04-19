@@ -27,11 +27,14 @@ class MainApplication : Application(), ReactApplication {
 
   override fun onCreate() {
     super.onCreate()
-    SoLoader.init(this, false)
-    try {
-      SoLoader.loadLibrary("reactnative")
-    } catch (e: Exception) {
-      // ignore
+    val soDir = applicationInfo.nativeLibraryDir
+    val executor = java.io.File(soDir, "libhermes_executor.so")
+    val hermes = java.io.File(soDir, "libhermes.so")
+    if (!executor.exists() && hermes.exists()) {
+      try {
+        hermes.copyTo(executor, overwrite = true)
+      } catch (e: Exception) {}
     }
+    SoLoader.init(this, false)
   }
 }
