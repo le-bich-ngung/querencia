@@ -1,0 +1,54 @@
+name: Android Build
+
+on:
+  push:
+    branches: [main]
+  workflow_dispatch:
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      - name: Setup Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: '20'
+
+      - name: Setup pnpm
+        uses: pnpm/action-setup@v3
+        with:
+          version: 9
+
+      - name: Install dependencies
+        run: pnpm install
+        working-directory: .
+
+      - name: Setup Java
+        uses: actions/setup-java@v4
+        with:
+          distribution: 'temurin'
+          java-version: '17'
+
+      - name: Generate RN config
+        run: npx react-native config > android/build/react-native-config.json
+        working-directory: apps/cui-bap-mobile
+
+      - name: Bundle JS
+        run: |
+          mkdir -p android/app/src/main/assets
+          npx react-native bundle --platform android --dev false --entry-file index.js --bundle-output android/app/src/main/assets/index.android.bundle --assets-dest android/app/src/main/res
+        working-directory: apps/cui-bap-mobile
+
+      - name: Build APK
+        run: ./gradlew assembleDebug --no-daemon
+        working-directory: apps/cui-bap-mobile/android
+
+      - name: Upload APK
+        uses: actions/upload-artifact@v4
+        with:
+          name: app-debug
+          path: apps/cui-bap-mobile/android/app/build/outputs/apk/debug/app-debug.apk

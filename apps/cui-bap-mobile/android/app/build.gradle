@@ -35,4 +35,22 @@ android {
 dependencies {
     implementation("com.facebook.react:react-android")
     implementation("com.facebook.react:hermes-android")
+    implementation("com.facebook.react:hermes-engine:0.73.6") {
+        exclude group: "com.facebook.react"
+    }
+}
+android.applicationVariants.all { variant ->
+    variant.packageApplicationProvider.get().doFirst {
+        def mergeTaskName = "merge${variant.name.capitalize()}NativeLibs"
+        def libDir = new File(buildDir, "intermediates/merged_native_libs/${variant.name}/${mergeTaskName}/out/lib")
+        if (libDir.exists()) {
+            libDir.eachDir { abiDir ->
+                def hermes = new File(abiDir, "libhermes.so")
+                def executor = new File(abiDir, "libhermes_executor.so")
+                if (hermes.exists() && !executor.exists()) {
+                    executor.bytes = hermes.bytes
+                }
+            }
+        }
+    }
 }

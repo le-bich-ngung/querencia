@@ -5,7 +5,6 @@ import com.facebook.react.PackageList
 import com.facebook.react.ReactApplication
 import com.facebook.react.ReactNativeHost
 import com.facebook.react.ReactPackage
-import com.facebook.react.defaults.DefaultNewArchitectureEntryPoint.load
 import com.facebook.react.defaults.DefaultReactNativeHost
 import com.facebook.soloader.SoLoader
 
@@ -16,16 +15,14 @@ class MainApplication : Application(), ReactApplication {
             PackageList(this).packages.apply {
             }
         override fun getJSMainModuleName(): String = "index"
-        override fun getUseDeveloperSupport(): Boolean = BuildConfig.DEBUG
-        override val isNewArchEnabled: Boolean = BuildConfig.IS_NEW_ARCHITECTURE_ENABLED
+        override fun getUseDeveloperSupport(): Boolean = false
+        override val isNewArchEnabled: Boolean = false
         override val isHermesEnabled: Boolean = BuildConfig.IS_HERMES_ENABLED
       }
 
-  override fun onCreate() {
+override fun onCreate() {
     super.onCreate()
+    // RN 0.76: patch SoLoader to handle renamed libraries
+    System.loadLibrary("reactnative")
     SoLoader.init(this, false)
-    if (BuildConfig.IS_NEW_ARCHITECTURE_ENABLED) {
-      load()
-    }
-  }
-}
+}}

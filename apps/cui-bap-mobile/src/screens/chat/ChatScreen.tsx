@@ -114,14 +114,15 @@ function Bubble({ msg, isOut, onLongPress, myId }: {
 
           /* Text */
           ) : (
-            <Text style={[ms.txt, isOut && ms.txtOut]}>
-              {msg.content}
-              {msg.isEdited && <Text style={{ opacity: 0.5, fontSize: 10 }}> (đã sửa)</Text>}
-            </Text>
-            {/* Link preview cho text messages có chứa URL */}
-            {msg.content && extractUrls(msg.content).length > 0 && (
-              <LinkPreview text={msg.content} isOut={isOut}/>
-            )}
+            <>
+               <Text style={[ms.txt, isOut && ms.txtOut]}>
+                 {msg.content}
+                 {msg.isEdited && <Text style={{ opacity: 0.5, fontSize: 10 }}> (đã sửa)</Text>}
+               </Text>
+               {msg.content && extractUrls(msg.content).length > 0 && (
+                 <LinkPreview text={msg.content} isOut={isOut}/>
+               )}
+            </>
           )}
         </View>
 

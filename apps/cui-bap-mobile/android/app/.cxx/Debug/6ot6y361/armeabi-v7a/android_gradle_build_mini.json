@@ -36,9 +36,9 @@
       "abi": "armeabi-v7a",
       "output": "C:\\q\\querencia-project\\apps\\cui-bap-mobile\\android\\app\\build\\intermediates\\cxx\\Debug\\6ot6y361\\obj\\armeabi-v7a\\libreact_codegen_safeareacontext.so",
       "runtimeFiles": [
-        "C:\\Users\\lbngu\\.gradle\\caches\\8.8\\transforms\\2036f0a17b5b559bdfbcbc2693bc2ce7\\transformed\\jetified-fbjni-0.6.0\\prefab\\modules\\fbjni\\libs\\android.armeabi-v7a\\libfbjni.so",
-        "C:\\Users\\lbngu\\.gradle\\caches\\8.8\\transforms\\f80549d59ef50a541ba873583a5f4e81\\transformed\\jetified-react-android-0.76.3-debug\\prefab\\modules\\jsi\\libs\\android.armeabi-v7a\\libjsi.so",
-        "C:\\Users\\lbngu\\.gradle\\caches\\8.8\\transforms\\f80549d59ef50a541ba873583a5f4e81\\transformed\\jetified-react-android-0.76.3-debug\\prefab\\modules\\reactnative\\libs\\android.armeabi-v7a\\libreactnative.so"
+        "C:\\Users\\lbngu\\.gradle\\caches\\transforms-4\\763c5f7b76d6f68658cac083f571d4ac\\transformed\\jetified-fbjni-0.6.0\\prefab\\modules\\fbjni\\libs\\android.armeabi-v7a\\libfbjni.so",
+        "C:\\Users\\lbngu\\.gradle\\caches\\transforms-4\\fd1502b0c8345db89a658c9be859a4c6\\transformed\\jetified-react-android-0.76.3-debug\\prefab\\modules\\jsi\\libs\\android.armeabi-v7a\\libjsi.so",
+        "C:\\Users\\lbngu\\.gradle\\caches\\transforms-4\\fd1502b0c8345db89a658c9be859a4c6\\transformed\\jetified-react-android-0.76.3-debug\\prefab\\modules\\reactnative\\libs\\android.armeabi-v7a\\libreactnative.so"
       ]
     },
     "react_codegen_RNPermissionsSpec::@7ad697819b753921c957": {
@@ -56,9 +56,9 @@
       "abi": "armeabi-v7a",
       "output": "C:\\q\\querencia-project\\apps\\cui-bap-mobile\\android\\app\\build\\intermediates\\cxx\\Debug\\6ot6y361\\obj\\armeabi-v7a\\libreact_codegen_rnscreens.so",
       "runtimeFiles": [
-        "C:\\Users\\lbngu\\.gradle\\caches\\8.8\\transforms\\f80549d59ef50a541ba873583a5f4e81\\transformed\\jetified-react-android-0.76.3-debug\\prefab\\modules\\reactnative\\libs\\android.armeabi-v7a\\libreactnative.so",
-        "C:\\Users\\lbngu\\.gradle\\caches\\8.8\\transforms\\f80549d59ef50a541ba873583a5f4e81\\transformed\\jetified-react-android-0.76.3-debug\\prefab\\modules\\jsi\\libs\\android.armeabi-v7a\\libjsi.so",
-        "C:\\Users\\lbngu\\.gradle\\caches\\8.8\\transforms\\2036f0a17b5b559bdfbcbc2693bc2ce7\\transformed\\jetified-fbjni-0.6.0\\prefab\\modules\\fbjni\\libs\\android.armeabi-v7a\\libfbjni.so"
+        "C:\\Users\\lbngu\\.gradle\\caches\\transforms-4\\fd1502b0c8345db89a658c9be859a4c6\\transformed\\jetified-react-android-0.76.3-debug\\prefab\\modules\\reactnative\\libs\\android.armeabi-v7a\\libreactnative.so",
+        "C:\\Users\\lbngu\\.gradle\\caches\\transforms-4\\fd1502b0c8345db89a658c9be859a4c6\\transformed\\jetified-react-android-0.76.3-debug\\prefab\\modules\\jsi\\libs\\android.armeabi-v7a\\libjsi.so",
+        "C:\\Users\\lbngu\\.gradle\\caches\\transforms-4\\763c5f7b76d6f68658cac083f571d4ac\\transformed\\jetified-fbjni-0.6.0\\prefab\\modules\\fbjni\\libs\\android.armeabi-v7a\\libfbjni.so"
       ]
     },
     "appmodules::@6890427a1f51a3e7e1df": {
@@ -68,9 +68,9 @@
       "runtimeFiles": [
         "C:\\q\\querencia-project\\apps\\cui-bap-mobile\\android\\app\\build\\intermediates\\cxx\\Debug\\6ot6y361\\obj\\armeabi-v7a\\libreact_codegen_safeareacontext.so",
         "C:\\q\\querencia-project\\apps\\cui-bap-mobile\\android\\app\\build\\intermediates\\cxx\\Debug\\6ot6y361\\obj\\armeabi-v7a\\libreact_codegen_rnscreens.so",
-        "C:\\Users\\lbngu\\.gradle\\caches\\8.8\\transforms\\2036f0a17b5b559bdfbcbc2693bc2ce7\\transformed\\jetified-fbjni-0.6.0\\prefab\\modules\\fbjni\\libs\\android.armeabi-v7a\\libfbjni.so",
-        "C:\\Users\\lbngu\\.gradle\\caches\\8.8\\transforms\\f80549d59ef50a541ba873583a5f4e81\\transformed\\jetified-react-android-0.76.3-debug\\prefab\\modules\\jsi\\libs\\android.armeabi-v7a\\libjsi.so",
-        "C:\\Users\\lbngu\\.gradle\\caches\\8.8\\transforms\\f80549d59ef50a541ba873583a5f4e81\\transformed\\jetified-react-android-0.76.3-debug\\prefab\\modules\\reactnative\\libs\\android.armeabi-v7a\\libreactnative.so"
+        "C:\\Users\\lbngu\\.gradle\\caches\\transforms-4\\763c5f7b76d6f68658cac083f571d4ac\\transformed\\jetified-fbjni-0.6.0\\prefab\\modules\\fbjni\\libs\\android.armeabi-v7a\\libfbjni.so",
+        "C:\\Users\\lbngu\\.gradle\\caches\\transforms-4\\fd1502b0c8345db89a658c9be859a4c6\\transformed\\jetified-react-android-0.76.3-debug\\prefab\\modules\\jsi\\libs\\android.armeabi-v7a\\libjsi.so",
+        "C:\\Users\\lbngu\\.gradle\\caches\\transforms-4\\fd1502b0c8345db89a658c9be859a4c6\\transformed\\jetified-react-android-0.76.3-debug\\prefab\\modules\\reactnative\\libs\\android.armeabi-v7a\\libreactnative.so"
       ]
     },
     "react_codegen_RNHapticFeedbackSpec::@a83561f277f6afbb326c": {

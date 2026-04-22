@@ -4,7 +4,6 @@ import React, { useEffect, useState, useCallback } from 'react';
 import { View, Text, FlatList, TouchableOpacity, TextInput, StyleSheet, RefreshControl, ActivityIndicator } from 'react-native';
 import type { NativeStackScreenProps } from '@react-navigation/native-stack';
 import type { RootStackParams } from '../../navigation';
-import { ConvOptionsModal } from '../../components/chat/ConvOptionsModal';
 import { useChatStore } from '../../store/chat.store';
 import { api } from '../../lib/api';
 import { useSocket } from '../../hooks/useSocket';
