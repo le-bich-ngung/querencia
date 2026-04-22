@@ -34,7 +34,9 @@ jobs:
           java-version: '17'
 
       - name: Generate RN config
-        run: npx react-native config > android/build/react-native-config.json
+        run: |
+          mkdir -p android/build
+          npx react-native config > android/build/react-native-config.json
         working-directory: apps/cui-bap-mobile
 
       - name: Bundle JS
