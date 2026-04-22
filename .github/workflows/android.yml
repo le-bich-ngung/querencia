@@ -46,7 +46,9 @@ jobs:
         working-directory: apps/cui-bap-mobile
 
       - name: Build APK
-        run: ./gradlew assembleDebug --no-daemon
+        run: |
+          chmod +x gradlew
+          ./gradlew assembleDebug --no-daemon
         working-directory: apps/cui-bap-mobile/android
 
       - name: Upload APK
