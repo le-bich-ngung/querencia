@@ -50,6 +50,8 @@ jobs:
         
       - name: Build APK
         run: |
+          ls -la
+          file ./gradlew
           chmod +x ./gradlew
           ./gradlew assembleDebug --no-daemon
         working-directory: apps/cui-bap-mobile/android
