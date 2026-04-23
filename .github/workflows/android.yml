@@ -49,7 +49,9 @@ jobs:
         run: git update-index --chmod=+x apps/cui-bap-mobile/android/gradlew
         
       - name: Build APK
-        run: bash gradlew assembleDebug --no-daemon
+        run: |
+          chmod +x ./gradlew
+          ./gradlew assembleDebug --no-daemon
         working-directory: apps/cui-bap-mobile/android
 
       - name: Upload APK
