@@ -23,15 +23,32 @@ jobs:
         with:
           version: 9
 
-      - name: Install dependencies
-        run: pnpm install
-        working-directory: .
-
       - name: Setup Java
         uses: actions/setup-java@v4
         with:
           distribution: 'temurin'
           java-version: '17'
+
+      - name: Prepare Gradle Wrapper
+        working-directory: apps/cui-bap-mobile/android
+        run: |
+          # 1. Xóa file cũ/bị lỗi
+          rm -rf gradle/wrapper/gradle-wrapper.jar
+          
+          # 2. Lấy version từ file properties
+          VERSION=$(grep "distributionUrl" gradle/wrapper/gradle-wrapper.properties | cut -d'-' -f2)
+          echo "Detected Gradle version: $VERSION"
+          
+          # 3. Tải lại wrapper chuẩn từ Gradle
+          # Lưu ý: Lệnh này sẽ tự tạo lại file .jar chuẩn dựa trên phiên bản đã phát hiện
+          ./gradlew wrapper --gradle-version $VERSION
+          
+          # 4. Cấp quyền thực thi
+          chmod +x gradlew
+
+      - name: Install dependencies
+        run: pnpm install
+        working-directory: .
 
       - name: Generate RN config
         run: |
@@ -45,24 +62,8 @@ jobs:
           npx react-native bundle --platform android --dev false --entry-file index.js --bundle-output android/app/src/main/assets/index.android.bundle --assets-dest android/app/src/main/res
         working-directory: apps/cui-bap-mobile
 
-      - name: Fix gradlew permission
-        run: git update-index --chmod=+x apps/cui-bap-mobile/android/gradlew
-
-      - name: Debug gradle wrapper
-        run: |
-          ls -la gradle/wrapper/
-          cat gradlew | head -3
-        working-directory: apps/cui-bap-mobile/android
-
-      - name: Run gradlew
-        run: ./gradlew --version
-        working-directory: apps/cui-bap-mobile/android
-
       - name: Build APK
         run: |
-          ls -la
-          file ./gradlew
-          chmod +x ./gradlew
           ./gradlew assembleDebug --no-daemon
         working-directory: apps/cui-bap-mobile/android
 
