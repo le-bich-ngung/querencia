@@ -41,8 +41,9 @@ jobs:
 
       - name: Generate RN config
         run: |
-          mkdir -p android/build
+          mkdir -p android/build/generated/autolinking
           npx react-native config > android/build/react-native-config.json
+          cp android/build/react-native-config.json android/build/generated/autolinking/autolinking.json
         working-directory: apps/cui-bap-mobile
 
       - name: Bundle JS
