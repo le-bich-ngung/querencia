@@ -34,16 +34,24 @@ jobs:
         run: |
           mkdir -p gradle/wrapper
           
-          # Tải lại file từ URL chính thức của Gradle (phiên bản 8.7)
-          # Sử dụng --retry 3 để đảm bảo tải thành công qua mạng
+          # Tải bản bin.zip
           curl -L --retry 3 https://services.gradle.org/distributions/gradle-8.7-bin.zip -o gradle-8.7-bin.zip
           
-          # Giải nén chỉ file jar cần thiết
-          unzip -o gradle-8.7-bin.zip "gradle-8.7/gradle/wrapper/gradle-wrapper.jar" -d temp_gradle
-          mv temp_gradle/gradle-8.7/gradle/wrapper/gradle-wrapper.jar gradle/wrapper/gradle-wrapper.jar
+          # Giải nén tất cả vào thư mục tạm
+          mkdir -p temp_unzip
+          unzip -q gradle-8.7-bin.zip -d temp_unzip
+          
+          # Tìm file jar bằng lệnh find và copy nó vào đúng chỗ (dù nó nằm ở đâu trong zip)
+          find temp_unzip -name "gradle-wrapper.jar" -exec cp {} gradle/wrapper/gradle-wrapper.jar \;
+          
+          # Kiểm tra xem file đã được copy chưa
+          if [ ! -f "gradle/wrapper/gradle-wrapper.jar" ]; then
+            echo "Error: gradle-wrapper.jar not found after unzip!"
+            exit 1
+          fi
           
           # Dọn dẹp
-          rm -rf gradle-8.7-bin.zip temp_gradle
+          rm -rf gradle-8.7-bin.zip temp_unzip
           
           # Cấp quyền thực thi
           chmod +x gradlew
