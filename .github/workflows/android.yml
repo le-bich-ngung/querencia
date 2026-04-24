@@ -29,22 +29,16 @@ jobs:
           distribution: 'temurin'
           java-version: '17'
 
-      - name: Prepare Gradle Wrapper
+      - name: Force Fix Gradle Wrapper
         working-directory: apps/cui-bap-mobile/android
         run: |
-          # 1. Xóa file cũ/bị lỗi
-          rm -rf gradle/wrapper/gradle-wrapper.jar
+          # 1. Tải trực tiếp file .jar sạch từ trang chủ Gradle (Phiên bản 8.7)
+          mkdir -p gradle/wrapper
+          wget -q https://raw.githubusercontent.com/gradle/gradle/v8.7/gradle/wrapper/gradle-wrapper.jar -O gradle/wrapper/gradle-wrapper.jar
           
-          # 2. Lấy version từ file properties
-          VERSION=$(grep "distributionUrl" gradle/wrapper/gradle-wrapper.properties | cut -d'-' -f2)
-          echo "Detected Gradle version: $VERSION"
-          
-          # 3. Tải lại wrapper chuẩn từ Gradle
-          # Lưu ý: Lệnh này sẽ tự tạo lại file .jar chuẩn dựa trên phiên bản đã phát hiện
-          ./gradlew wrapper --gradle-version $VERSION
-          
-          # 4. Cấp quyền thực thi
+          # 2. Cấp quyền thực thi
           chmod +x gradlew
+          chmod +x gradle/wrapper/gradle-wrapper.jar
 
       - name: Install dependencies
         run: pnpm install
