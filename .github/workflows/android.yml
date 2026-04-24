@@ -29,34 +29,10 @@ jobs:
           distribution: 'temurin'
           java-version: '17'
 
-      - name: Force Fix Gradle Wrapper
-        working-directory: apps/cui-bap-mobile/android
-        run: |
-          mkdir -p gradle/wrapper
-          
-          # Tải bản bin.zip
-          curl -L --retry 3 https://services.gradle.org/distributions/gradle-8.7-bin.zip -o gradle-8.7-bin.zip
-          
-          # Giải nén tất cả vào thư mục tạm
-          mkdir -p temp_unzip
-          unzip -q gradle-8.7-bin.zip -d temp_unzip
-          
-          # Tìm file jar bằng lệnh find và copy nó vào đúng chỗ (dù nó nằm ở đâu trong zip)
-          find temp_unzip -name "gradle-wrapper.jar" -exec cp {} gradle/wrapper/gradle-wrapper.jar \;
-          
-          # Kiểm tra xem file đã được copy chưa
-          if [ ! -f "gradle/wrapper/gradle-wrapper.jar" ]; then
-            echo "Error: gradle-wrapper.jar not found after unzip!"
-            exit 1
-          fi
-          
-          # Dọn dẹp
-          rm -rf gradle-8.7-bin.zip temp_unzip
-          
-          # Cấp quyền thực thi
-          chmod +x gradlew
-          chmod +x gradle/wrapper/gradle-wrapper.jar
-          
+      # Dùng actions/setup-gradle để tự cấu hình Gradle mà không cần quan tâm đến file JAR hỏng
+      - name: Setup Gradle
+        uses: gradle/actions/setup-gradle@v4
+
       - name: Install dependencies
         run: pnpm install
         working-directory: .
@@ -75,7 +51,8 @@ jobs:
 
       - name: Build APK
         run: |
-          ./gradlew assembleDebug --no-daemon
+          # Sử dụng lệnh 'gradle' thay vì './gradlew' để bỏ qua file JAR bị lỗi
+          gradle assembleDebug --no-daemon
         working-directory: apps/cui-bap-mobile/android
 
       - name: Upload APK
