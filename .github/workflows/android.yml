@@ -50,9 +50,12 @@ jobs:
 
       - name: Debug gradle wrapper
         run: |
-          java -version
           ls -la gradle/wrapper/
-          cat gradlew | head -5
+          cat gradlew | head -3
+        working-directory: apps/cui-bap-mobile/android
+
+      - name: Run gradlew
+        run: ./gradlew --version
         working-directory: apps/cui-bap-mobile/android
 
       - name: Build APK
