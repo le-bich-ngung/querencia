@@ -47,7 +47,15 @@ jobs:
 
       - name: Fix gradlew permission
         run: git update-index --chmod=+x apps/cui-bap-mobile/android/gradlew
-        
+
+      - name: Debug gradle wrapper
+        run: |
+          java -version
+          ls -la gradle/wrapper/
+          java -jar gradle/wrapper/gradle-wrapper.jar --version || true
+          cat gradlew | head -5
+        working-directory: apps/cui-bap-mobile/android
+
       - name: Build APK
         run: |
           ls -la
