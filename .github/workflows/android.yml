@@ -29,9 +29,11 @@ jobs:
           distribution: 'temurin'
           java-version: '17'
 
-      # Dùng actions/setup-gradle để tự cấu hình Gradle mà không cần quan tâm đến file JAR hỏng
+      # Dùng đúng phiên bản Gradle 8.10.2 thay vì 9.4.1 để tránh lỗi Kotlin
       - name: Setup Gradle
         uses: gradle/actions/setup-gradle@v4
+        with:
+          gradle-version: '8.10.2'
 
       - name: Install dependencies
         run: pnpm install
@@ -51,7 +53,7 @@ jobs:
 
       - name: Build APK
         run: |
-          # Sử dụng lệnh 'gradle' thay vì './gradlew' để bỏ qua file JAR bị lỗi
+          # Dùng gradle 8.10.2 đã được setup ở trên
           gradle assembleDebug --no-daemon
         working-directory: apps/cui-bap-mobile/android
 
