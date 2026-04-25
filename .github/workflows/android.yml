@@ -52,13 +52,20 @@ jobs:
           npx react-native bundle --platform android --dev false --entry-file index.js --bundle-output android/app/src/main/assets/index.android.bundle --assets-dest android/app/src/main/res
         working-directory: apps/cui-bap-mobile
 
-      - name: Build APK
+      - name: Patch libhermes_executor
         run: |
-          # Dùng gradle 8.10.2 đã được setup ở trên
-          gradle assembleDebug --no-daemon
+          ./gradlew assembleDebug --no-daemon
+          MERGED_LIB=app/build/intermediates/merged_native_libs/debug/mergeDebugNativeLibs/out/lib
+          for ABI in arm64-v8a armeabi-v7a x86 x86_64; do
+            if [ -f "$MERGED_LIB/$ABI/libhermes.so" ] && [ ! -f "$MERGED_LIB/$ABI/libhermes_executor.so" ]; then
+              cp "$MERGED_LIB/$ABI/libhermes.so" "$MERGED_LIB/$ABI/libhermes_executor.so"
+              echo "Copied libhermes_executor.so for $ABI"
+            fi
+          done
+          ./gradlew packageDebug --no-daemon
         working-directory: apps/cui-bap-mobile/android
 
-      - name: Upload APK
+            - name: Upload APK
         uses: actions/upload-artifact@v4
         with:
           name: app-debug
