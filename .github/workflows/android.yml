@@ -49,19 +49,11 @@ jobs:
 
       - name: Build and Patch
         run: |
-          # 1. Tải lại gradle-wrapper.jar chuẩn từ source của Gradle
-          mkdir -p gradle/wrapper
-          curl -L "https://services.gradle.org/distributions/gradle-8.10.2-bin.zip" -o gradle-8.10.2-bin.zip
-          # Hoặc tải trực tiếp file jar từ repo chính thức
-          curl -L "https://raw.githubusercontent.com/gradle/gradle/v8.10.2/gradle/wrapper/gradle-wrapper.jar" -o gradle/wrapper/gradle-wrapper.jar
+          # 1. Bỏ qua gradlew, dùng lệnh 'gradle' trực tiếp
+          # Gradle đã được cấu hình ở bước setup-gradle trước đó
+          gradle assembleDebug --no-daemon
           
-          # 2. Cấp quyền thực thi
-          chmod +x gradlew
-          
-          # 3. Build app
-          ./gradlew assembleDebug --no-daemon
-          
-          # 4. Patch
+          # 2. Patch
           find . -name "libhermes.so" -exec sh -c '
             dir=$(dirname "$1")
             if [ ! -f "$dir/libhermes_executor.so" ]; then
@@ -69,8 +61,8 @@ jobs:
             fi
           ' sh {} \;
           
-          # 5. Đóng gói
-          ./gradlew packageDebug --no-daemon
+          # 3. Đóng gói
+          gradle packageDebug --no-daemon
         working-directory: apps/cui-bap-mobile/android
 
       - name: Upload APK
