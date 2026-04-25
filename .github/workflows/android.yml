@@ -19,30 +19,24 @@ jobs:
       - uses: gradle/actions/setup-gradle@v4
         with: {gradle-version: '8.10.2'}
 
-      - name: Install
+      - name: Install dependencies
         run: pnpm install
         working-directory: .
 
-      - name: Build and Force Patch
+      # TẠO FILE NGAY TẠI ĐÂY, TRƯỚC BẤT KỲ LỆNH GRADLE NÀO
+      - name: Create Autolinking File
         run: |
-          # 1. Build xong trước
+          mkdir -p android/build/generated/autolinking
+          echo '{"dependencies":{}}' > android/build/generated/autolinking/autolinking.json
+        working-directory: apps/cui-bap-mobile
+
+      - name: Build APK
+        run: |
+          # Build bình thường
           gradle assembleDebug --no-daemon
-          
-          # 2. Tìm tất cả các file libhermes.so và copy thành libhermes_executor.so
-          # Đây là cách đảm bảo 100% file nằm đúng chỗ trong các thư mục con
-          find . -name "libhermes.so" | while read -r lib; do
-            target=$(echo "$lib" | sed 's/libhermes.so/libhermes_executor.so/')
-            if [ ! -f "$target" ]; then
-              cp "$lib" "$target"
-              echo "Force copied: $target"
-            fi
-          done
-          
-          # 3. Đóng gói lại lần cuối
-          gradle packageDebug --no-daemon
         working-directory: apps/cui-bap-mobile/android
 
-      - name: Upload
+      - name: Upload APK
         uses: actions/upload-artifact@v4
         with:
           name: app-debug
