@@ -52,6 +52,15 @@ jobs:
           npx react-native bundle --platform android --dev false --entry-file index.js --bundle-output android/app/src/main/assets/index.android.bundle --assets-dest android/app/src/main/res
         working-directory: apps/cui-bap-mobile
 
+      - name: Fix gradle wrapper jar
+        run: |
+          curl -L "https://github.com/gradle/gradle/raw/v8.7.0/gradle/wrapper/gradle-wrapper.jar" -o gradle/wrapper/gradle-wrapper.jar
+        working-directory: apps/cui-bap-mobile/android
+
+      - name: Patch libhermes_executor
+        run: |
+          ./gradlew assembleDebug --no-daemon
+          ...
       - name: Patch libhermes_executor
         run: |
           ./gradlew assembleDebug --no-daemon
