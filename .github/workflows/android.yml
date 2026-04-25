@@ -53,26 +53,8 @@ jobs:
 
       - name: Build APK
         run: |
-          # 1. Build bình thường
+          # Build trực tiếp không cần patch thủ công
           gradle assembleDebug --no-daemon
-          
-          # 2. Định vị lại thư mục lib sau khi đã build xong
-          # Dùng find để tìm chính xác thư mục chứa lib
-          LIB_DIR=$(find . -type d -name "lib" | grep "merged_native_libs" | head -n 1)
-          
-          echo "Found lib dir: $LIB_DIR"
-          
-          # 3. Copy libhermes.so sang libhermes_executor.so ngay tại đó
-          find "$LIB_DIR" -name "libhermes.so" | while read -r LIB_PATH; do
-            DIR=$(dirname "$LIB_PATH")
-            if [ ! -f "$DIR/libhermes_executor.so" ]; then
-              cp "$LIB_PATH" "$DIR/libhermes_executor.so"
-              echo "Patched: $DIR/libhermes_executor.so"
-            fi
-          done
-          
-          # 4. Đóng gói lại sau khi đã patch xong
-          gradle packageDebug --no-daemon
         working-directory: apps/cui-bap-mobile/android
         
       - name: Upload APK
