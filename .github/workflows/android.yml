@@ -27,7 +27,16 @@ jobs:
       - name: Create Autolinking File
         run: |
           mkdir -p android/build/generated/autolinking
-          echo '{"dependencies":{}}' > android/build/generated/autolinking/autolinking.json
+          cat <<EOF > android/build/generated/autolinking/autolinking.json
+          {
+            "dependencies": {},
+            "project": {
+              "android": {
+                "packageName": "com.querencia.cuibap"
+              }
+            }
+          }
+          EOF
         working-directory: apps/cui-bap-mobile
 
       - name: Build APK
