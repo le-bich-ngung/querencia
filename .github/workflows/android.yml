@@ -29,7 +29,6 @@ jobs:
           distribution: 'temurin'
           java-version: '17'
 
-      # Dùng đúng phiên bản Gradle 8.10.2 thay vì 9.4.1 để tránh lỗi Kotlin
       - name: Setup Gradle
         uses: gradle/actions/setup-gradle@v4
         with:
@@ -52,18 +51,12 @@ jobs:
           npx react-native bundle --platform android --dev false --entry-file index.js --bundle-output android/app/src/main/assets/index.android.bundle --assets-dest android/app/src/main/res
         working-directory: apps/cui-bap-mobile
 
-      - name: Fix gradle wrapper jar
+      - name: Build and Patch
         run: |
-          curl -L "https://github.com/gradle/gradle/raw/v8.7.0/gradle/wrapper/gradle-wrapper.jar" -o gradle/wrapper/gradle-wrapper.jar
-        working-directory: apps/cui-bap-mobile/android
-
-      - name: Patch libhermes_executor
-        run: |
-          ./gradlew assembleDebug --no-daemon
-          ...
-      - name: Patch libhermes_executor
-        run: |
-          ./gradlew assembleDebug --no-daemon
+          # Build bước đầu để tạo file native
+          gradle assembleDebug --no-daemon
+          
+          # Patch libhermes_executor
           MERGED_LIB=app/build/intermediates/merged_native_libs/debug/mergeDebugNativeLibs/out/lib
           for ABI in arm64-v8a armeabi-v7a x86 x86_64; do
             if [ -f "$MERGED_LIB/$ABI/libhermes.so" ] && [ ! -f "$MERGED_LIB/$ABI/libhermes_executor.so" ]; then
@@ -71,7 +64,9 @@ jobs:
               echo "Copied libhermes_executor.so for $ABI"
             fi
           done
-          ./gradlew packageDebug --no-daemon
+          
+          # Đóng gói lại
+          gradle packageDebug --no-daemon
         working-directory: apps/cui-bap-mobile/android
 
       - name: Upload APK
