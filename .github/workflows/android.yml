@@ -28,6 +28,13 @@ jobs:
           distribution: 'temurin'
           java-version: '17'
 
+      # Cấu hình ép buộc sử dụng Gradle 8.10.2
+      - name: Setup Gradle
+        uses: gradle/actions/setup-gradle@v4
+        with:
+          gradle-version: '8.10.2'
+          gradle-distribution: 'wrapper'
+
       - name: Install dependencies
         run: pnpm install
         working-directory: .
@@ -49,20 +56,23 @@ jobs:
 
       - name: Build and Patch
         run: |
-          # 1. Bỏ qua gradlew, dùng lệnh 'gradle' trực tiếp
-          # Gradle đã được cấu hình ở bước setup-gradle trước đó
-          gradle assembleDebug --no-daemon
+          # Đảm bảo gradlew có quyền thực thi
+          chmod +x gradlew
           
-          # 2. Patch
+          # Build app dùng wrapper 8.10.2
+          ./gradlew assembleDebug --no-daemon
+          
+          # Patch libhermes_executor tự động
           find . -name "libhermes.so" -exec sh -c '
             dir=$(dirname "$1")
             if [ ! -f "$dir/libhermes_executor.so" ]; then
               cp "$1" "$dir/libhermes_executor.so"
+              echo "Patched: $dir/libhermes_executor.so"
             fi
           ' sh {} \;
           
-          # 3. Đóng gói
-          gradle packageDebug --no-daemon
+          # Đóng gói
+          ./gradlew packageDebug --no-daemon
         working-directory: apps/cui-bap-mobile/android
 
       - name: Upload APK
