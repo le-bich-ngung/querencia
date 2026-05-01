@@ -47,6 +47,18 @@ jobs:
           EOF
         working-directory: apps/cui-bap-mobile
 
+      - name: Generate RN config
+        run: |
+          mkdir -p android/build
+          npx react-native config > android/build/react-native-config.json
+        working-directory: apps/cui-bap-mobile
+
+      - name: Bundle JS
+        run: |
+          mkdir -p android/app/src/main/assets
+          npx react-native bundle --platform android --dev false --entry-file index.js --bundle-output android/app/src/main/assets/index.android.bundle --assets-dest android/app/src/main/res
+        working-directory: apps/cui-bap-mobile
+
       - name: Rebuild Gradle Wrapper
         run: |
           # 1. Xóa file cũ bị hỏng
