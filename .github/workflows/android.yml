@@ -68,8 +68,10 @@ jobs:
         run: |
           gradle assembleDebug --no-daemon
           MERGED_LIB=app/build/intermediates/merged_native_libs/debug/mergeDebugNativeLibs/out/lib
-          echo "=== libs in x86_64 ==="
+          echo "=== All libs in x86_64 ==="
           ls $MERGED_LIB/x86_64/
+          echo "=== CMake output ==="
+          find app/.cxx -name "*.so" 2>/dev/null | head -20
           gradle packageDebug --no-daemon
         working-directory: apps/cui-bap-mobile/android
         
