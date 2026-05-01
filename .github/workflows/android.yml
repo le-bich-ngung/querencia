@@ -59,21 +59,14 @@ jobs:
           npx react-native bundle --platform android --dev false --entry-file index.js --bundle-output android/app/src/main/assets/index.android.bundle --assets-dest android/app/src/main/res
         working-directory: apps/cui-bap-mobile
 
-      - name: Rebuild Gradle Wrapper
-        run: |
-          rm -rf gradle/wrapper/gradle-wrapper.jar
-          mkdir -p gradle/wrapper
-          curl -L "https://github.com/gradle/gradle/releases/download/v8.7.0/gradle-8.7-wrapper.jar" -o gradle/wrapper/gradle-wrapper.jar || \
-          curl -L "https://services.gradle.org/distributions/gradle-8.7-wrapper.jar" -o gradle/wrapper/gradle-wrapper.jar || \
-          wget "https://github.com/nicktindall/cyclon.p2p/raw/master/gradle/wrapper/gradle-wrapper.jar" -O gradle/wrapper/gradle-wrapper.jar
-          ls -la gradle/wrapper/
-        working-directory: apps/cui-bap-mobile/android
+      - name: Setup Gradle
+        uses: gradle/actions/setup-gradle@v4
+        with:
+          gradle-version: '8.7'
 
       - name: Build APK
         run: |
-          java -jar gradle/wrapper/gradle-wrapper.jar --version || true
-          cat gradlew | head -10
-          sh gradlew assembleDebug --no-daemon
+          gradle assembleDebug --no-daemon
         working-directory: apps/cui-bap-mobile/android
 
       - name: Upload APK
