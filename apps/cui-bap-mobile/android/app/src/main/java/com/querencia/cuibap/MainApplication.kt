@@ -1,5 +1,6 @@
 package com.querencia.cuibap
 
+import com.facebook.react.defaults.DefaultNewArchitectureEntryPoint.load
 import android.app.Application
 import com.facebook.react.PackageList
 import com.facebook.react.ReactApplication
