@@ -70,9 +70,9 @@ jobs:
 
       - name: Build APK
         run: |
-          ls -la gradle/wrapper/
-          file gradle/wrapper/gradle-wrapper.jar
-          ./gradlew assembleDebug --no-daemon
+          java -jar gradle/wrapper/gradle-wrapper.jar --version || true
+          cat gradlew | head -10
+          sh gradlew assembleDebug --no-daemon
         working-directory: apps/cui-bap-mobile/android
 
       - name: Upload APK
