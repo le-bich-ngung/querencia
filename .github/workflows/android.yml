@@ -61,15 +61,11 @@ jobs:
 
       - name: Rebuild Gradle Wrapper
         run: |
-          # 1. Xóa file cũ bị hỏng
           rm -rf gradle/wrapper/gradle-wrapper.jar
-          
-          # 2. Tải lại file chuẩn từ GitHub của chính dự án Gradle
           mkdir -p gradle/wrapper
-          curl -L "https://raw.githubusercontent.com/gradle/gradle/v8.10.2/gradle/wrapper/gradle-wrapper.jar" -o gradle/wrapper/gradle-wrapper.jar
-          
-          # 3. Đảm bảo quyền thực thi
+          curl -L "https://raw.githubusercontent.com/gradle/gradle/v8.7.0/gradle/wrapper/gradle-wrapper.jar" -o gradle/wrapper/gradle-wrapper.jar
           chmod +x gradlew
+          ls -la gradle/wrapper/
         working-directory: apps/cui-bap-mobile/android
 
       - name: Build APK
