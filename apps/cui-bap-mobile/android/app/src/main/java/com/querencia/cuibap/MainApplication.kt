@@ -16,13 +16,12 @@ class MainApplication : Application(), ReactApplication {
             }
         override fun getJSMainModuleName(): String = "index"
         override fun getUseDeveloperSupport(): Boolean = false
-        override val isNewArchEnabled: Boolean = false
+        override val isNewArchEnabled: Boolean = true
         override val isHermesEnabled: Boolean = BuildConfig.IS_HERMES_ENABLED
       }
 
 override fun onCreate() {
     super.onCreate()
-    // RN 0.76: patch SoLoader to handle renamed libraries
-    System.loadLibrary("reactnative")
     SoLoader.init(this, false)
+    load()
 }}
