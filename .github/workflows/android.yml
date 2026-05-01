@@ -68,16 +68,8 @@ jobs:
         run: |
           gradle assembleDebug --no-daemon
           MERGED_LIB=app/build/intermediates/merged_native_libs/debug/mergeDebugNativeLibs/out/lib
-          for ABI in arm64-v8a armeabi-v7a x86 x86_64; do
-            if [ -f "$MERGED_LIB/$ABI/libreactnative.so" ]; then
-              for LIB in libreact_featureflagsjni.so; do
-                if [ ! -f "$MERGED_LIB/$ABI/$LIB" ]; then
-                  cp "$MERGED_LIB/$ABI/libreactnative.so" "$MERGED_LIB/$ABI/$LIB"
-                  echo "Copied $LIB for $ABI"
-                fi
-              done
-            fi
-          done
+          echo "=== libs in x86_64 ==="
+          ls $MERGED_LIB/x86_64/
           gradle packageDebug --no-daemon
         working-directory: apps/cui-bap-mobile/android
         
