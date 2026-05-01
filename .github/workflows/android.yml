@@ -63,8 +63,9 @@ jobs:
         run: |
           rm -rf gradle/wrapper/gradle-wrapper.jar
           mkdir -p gradle/wrapper
-          curl -L "https://raw.githubusercontent.com/gradle/gradle/v8.7.0/gradle/wrapper/gradle-wrapper.jar" -o gradle/wrapper/gradle-wrapper.jar
-          chmod +x gradlew
+          curl -L "https://github.com/gradle/gradle/releases/download/v8.7.0/gradle-8.7-wrapper.jar" -o gradle/wrapper/gradle-wrapper.jar || \
+          curl -L "https://services.gradle.org/distributions/gradle-8.7-wrapper.jar" -o gradle/wrapper/gradle-wrapper.jar || \
+          wget "https://github.com/nicktindall/cyclon.p2p/raw/master/gradle/wrapper/gradle-wrapper.jar" -O gradle/wrapper/gradle-wrapper.jar
           ls -la gradle/wrapper/
         working-directory: apps/cui-bap-mobile/android
 
