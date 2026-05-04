@@ -8,3 +8,5 @@ target_link_libraries(react_featureflagsjni ${log-lib})
 
 add_library(react_newarchdefaults SHARED newarchdefaults.cpp)
 target_link_libraries(react_newarchdefaults ${log-lib})
+add_library(appmodules SHARED appmodules.cpp)
+target_link_libraries(appmodules ${log-lib})
