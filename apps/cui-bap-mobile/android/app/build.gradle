@@ -36,7 +36,6 @@ dependencies {
     implementation("com.facebook.react:react-android")
     implementation("com.facebook.react:hermes-android")
 }
-}
 android.applicationVariants.all { variant ->
     variant.packageApplicationProvider.get().doFirst {
         def mergeTaskName = "merge${variant.name.capitalize()}NativeLibs"
