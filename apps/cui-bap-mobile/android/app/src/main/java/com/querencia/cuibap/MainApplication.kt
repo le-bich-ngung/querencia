@@ -23,6 +23,7 @@ class MainApplication : Application(), ReactApplication {
 
 override fun onCreate() {
     super.onCreate()
+    System.loadLibrary("reactnative")
     SoLoader.init(this, false)
     load()
 }}
