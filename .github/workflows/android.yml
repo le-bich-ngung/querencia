@@ -69,6 +69,9 @@ jobs:
           gradle assembleDebug --no-daemon
           MERGED_LIB=app/build/intermediates/merged_native_libs/debug/mergeDebugNativeLibs/out/lib
           echo "=== All libs in x86_64 ==="
+          echo "=== Checking featureflags symbols ==="
+          nm -D $MERGED_LIB/x86_64/libreactnative.so 2>/dev/null | grep -i "featureflag" | head -10 || echo "nm not available"
+          find /usr/local/lib/android/sdk/ndk -name "libreact_featureflagsjni.so" 2>/dev/null | head -5 || echo "not found in NDK"
           ls $MERGED_LIB/x86_64/
           echo "=== CMake output ==="
           find app/.cxx -name "*.so" 2>/dev/null | head -20
