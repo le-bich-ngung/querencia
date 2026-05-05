@@ -1,4 +1,5 @@
 #include <jni.h>
+#include <dlfcn.h>
 
 extern "C" {
 
