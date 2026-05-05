@@ -1,7 +1,7 @@
 cmake_minimum_required(VERSION 3.13)
 project(featureflags)
 
-find_library(log-lib log)
+find_library(dl-lib dl)
 
 add_library(react_featureflagsjni SHARED stub.cpp)
 target_link_libraries(react_featureflagsjni ${log-lib})
@@ -13,4 +13,4 @@ target_link_libraries(appmodules ${log-lib})
 add_library(rninstance SHARED rninstance.cpp)
 target_link_libraries(rninstance ${log-lib})
 add_library(hermesinstancejni SHARED hermesinstancejni.cpp)
-target_link_libraries(hermesinstancejni ${log-lib})
+target_link_libraries(hermesinstancejni ${log-lib} ${dl-lib})
