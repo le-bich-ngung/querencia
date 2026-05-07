@@ -21,3 +21,6 @@ target_link_libraries(hermesinstancejni ${log-lib} ${dl-lib})
 
 add_library(hermes_executor SHARED hermes_executor.cpp)
 target_link_libraries(hermes_executor ${log-lib})
+
+add_library(react_devsupportjni SHARED react_devsupportjni.cpp)
+target_link_libraries(react_devsupportjni ${log-lib})
