@@ -41,5 +41,15 @@ Java_com_facebook_hermes_reactexecutor_HermesExecutor_initHybridDefaultConfig(
     JNIEnv* env, jclass clazz, jboolean enableDebugger, jstring debuggerName) {
     return nullptr;
 }
+JNIEXPORT jboolean JNICALL
+Java_com_facebook_react_internal_featureflags_ReactNativeFeatureFlagsCxxInterop_enableEagerRootViewAttachment(
+    JNIEnv* env, jclass clazz) { return JNI_FALSE; }
 
+JNIEXPORT jboolean JNICALL
+Java_com_facebook_react_internal_featureflags_ReactNativeFeatureFlagsCxxInterop_enableLongTaskAPI(
+    JNIEnv* env, jclass clazz) { return JNI_FALSE; }
+
+JNIEXPORT jboolean JNICALL
+Java_com_facebook_react_internal_featureflags_ReactNativeFeatureFlagsCxxInterop_enableUIConsistency(
+    JNIEnv* env, jclass clazz) { return JNI_FALSE; }
 } // extern "C"
