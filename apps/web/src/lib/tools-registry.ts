@@ -513,6 +513,18 @@ export const TOOLS: Tool[] = [
     category: 'utility',
     qCost: 1,
   },
+{
+    slug: 'vocab-trainer',
+    htmlFile: 'vocab-trainer.html',
+    name: 'Vocab Trainer',
+    nameVi: 'Học từ vựng',
+    description: 'Learn vocabulary with SM-2 spaced repetition, flip cards and multiple-choice quiz.',
+    descVi: 'Học từ vựng bằng thuật toán lặp lại ngắt quãng SM-2, lật thẻ hoặc trắc nghiệm.',
+    emoji: '📚',
+    category: 'utility',
+    qCost: 0,
+    isNew: true,
+  },
   {
     slug: 'word-to-pdf',
     htmlFile: 'word-to-pdf.html',
