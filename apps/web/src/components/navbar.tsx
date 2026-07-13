@@ -2,7 +2,7 @@
 import { useState, useRef, useEffect } from 'react';
 import { useI18n, LOCALES } from '../lib/i18n';
 import Link            from 'next/link';
-import { useSession, signOut } from 'next-auth/react';
+import { useSession, signOut, signIn } from 'next-auth/react';
 import { useProfile }  from '../hooks/use-profile';
 import { usePathname } from 'next/navigation';
 
@@ -166,19 +166,14 @@ export function Navbar() {
             )}
           </div>
         ) : (
-          <>
-            <Link href="/auth/login" style={{ fontSize: '0.82rem', color: '#666', textDecoration: 'none', padding: '5px 10px' }}>
-              {t('nav.signin')}
-            </Link>
-            <Link href="/auth/register" style={{
-              fontSize: '0.82rem', fontWeight: 600, color: '#fff',
-              background: '#4a7c59', borderRadius: 8, padding: '6px 14px',
-              textDecoration: 'none', transition: 'all 0.15s',
-            }}
-              onMouseEnter={e => (e.currentTarget.style.background = '#3d6b4a')}
-              onMouseLeave={e => (e.currentTarget.style.background = '#4a7c59')}
-            >{t('nav.getstarted')}</Link>
-          </>
+          <button onClick={() => signIn('google')} style={{
+            fontSize: '0.82rem', fontWeight: 600, color: '#fff',
+            background: '#4a7c59', border: 'none', borderRadius: 8, padding: '6px 14px',
+            cursor: 'pointer', transition: 'all 0.15s',
+          }}
+            onMouseEnter={e => (e.currentTarget.style.background = '#3d6b4a')}
+            onMouseLeave={e => (e.currentTarget.style.background = '#4a7c59')}
+          >{t('nav.getstarted')}</button>
         )}
       </div>
     </header>
