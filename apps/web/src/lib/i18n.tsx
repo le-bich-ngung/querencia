@@ -4,8 +4,8 @@ import { createContext, useContext, useState, useEffect, ReactNode } from 'react
 export type Locale = 'en' | 'vi' | 'ja' | 'es';
 
 export const LOCALES: { code: Locale; label: string; flag: string }[] = [
-  { code: 'vi', label: 'Tiếng Việt',  flag: '🇻🇳' },
   { code: 'en', label: 'English',     flag: '🇬🇧' },
+  { code: 'vi', label: 'Tiếng Việt',  flag: '🇻🇳' },
   { code: 'ja', label: '日本語',       flag: '🇯🇵' },
   { code: 'es', label: 'Español',     flag: '🇪🇸' },
 ];
@@ -64,6 +64,8 @@ const T: Record<Locale, Record<string, string>> = {
     'home.qpool.by': 'Gifted by',
     'home.qpool.anon': 'Anonymous gift',
     'home.qpool.people': 'people claimed',
+    'footer.tagline': 'Querencia is ad-free and always respects your privacy.',
+    'footer.rights': '© 2026 Querencia · All rights reserved',
   },
   vi: {
     'nav.pricing':       'Bảng giá',
@@ -233,10 +235,10 @@ const T: Record<Locale, Record<string, string>> = {
 };
 
 interface I18nCtx { locale: Locale; setLocale: (l: Locale) => void; t: (key: string) => string; }
-const I18nContext = createContext<I18nCtx>({ locale: 'vi', setLocale: () => {}, t: (k) => k });
+const I18nContext = createContext<I18nCtx>({ locale: 'en', setLocale: () => {}, t: (k) => k });
 
 export function I18nProvider({ children }: { children: ReactNode }) {
-  const [locale, setLocaleState] = useState<Locale>('vi');
+  const [locale, setLocaleState] = useState<Locale>('en');
 
   useEffect(() => {
     const saved = localStorage.getItem('qrncia_locale') as Locale;
@@ -248,7 +250,7 @@ export function I18nProvider({ children }: { children: ReactNode }) {
     localStorage.setItem('qrncia_locale', l);
   };
 
-  const t = (key: string) => T[locale][key] ?? T['vi'][key] ?? key;
+  const t = (key: string) => T[locale][key] ?? T['en'][key] ?? key;
 
   return <I18nContext.Provider value={{ locale, setLocale, t }}>{children}</I18nContext.Provider>;
 }
