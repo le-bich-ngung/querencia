@@ -9,7 +9,7 @@
 import { useState }    from 'react';
 import Link            from 'next/link';
 import { usePathname } from 'next/navigation';
-import { useSession, signOut } from 'next-auth/react';
+import { useSession, signOut, signIn } from 'next-auth/react';
 import { useProfile }  from '../../hooks/use-profile';
 
 // ── Icons ─────────────────────────────────────────────────────
@@ -59,6 +59,16 @@ const AccountIcon = ({ active }: IconProps) => (
     strokeWidth={active ? 0 : 2} strokeLinecap="round" strokeLinejoin="round">
     <circle cx="12" cy="8" r="4"/>
     <path d="M4 20c0-4 3.6-7 8-7s8 3 8 7"/>
+  </svg>
+);
+
+// ── Google logo ───────────────────────────────────────────────
+const GoogleIcon = () => (
+  <svg width="17" height="17" viewBox="0 0 24 24">
+    <path fill="#4285F4" d="M22.56 12.25c0-.78-.07-1.53-.2-2.25H12v4.26h5.92c-.26 1.37-1.04 2.53-2.21 3.31v2.77h3.57c2.08-1.92 3.28-4.74 3.28-8.09z"/>
+    <path fill="#34A853" d="M12 23c2.97 0 5.46-.98 7.28-2.66l-3.57-2.77c-.98.66-2.23 1.06-3.71 1.06-2.86 0-5.29-1.93-6.16-4.53H2.18v2.84C3.99 20.53 7.7 23 12 23z"/>
+    <path fill="#FBBC05" d="M5.84 14.09c-.22-.66-.35-1.36-.35-2.09s.13-1.43.35-2.09V7.07H2.18C1.43 8.55 1 10.22 1 12s.43 3.45 1.18 4.93l3.66-2.84z"/>
+    <path fill="#EA4335" d="M12 5.38c1.62 0 3.06.56 4.21 1.64l3.15-3.15C17.45 2.09 14.97 1 12 1 7.7 1 3.99 3.47 2.18 7.07l3.66 2.84c.87-2.6 3.3-4.53 6.16-4.53z"/>
   </svg>
 );
 
@@ -335,7 +345,7 @@ export function BottomNav() {
               </button>
             </>
           ) : (
-            /* Not logged in */
+            /* Not logged in — chỉ còn 1 nút Google */
             <div style={{ padding: '24px 18px', display: 'flex', flexDirection: 'column', gap: 10 }}>
               <p style={{
                 fontSize: '0.85rem', color: 'var(--text-secondary)',
@@ -343,23 +353,23 @@ export function BottomNav() {
               }}>
                 Đăng nhập để dùng đầy đủ tính năng
               </p>
-              <Link href="/auth/register" onClick={closeAll} style={{
-                display: 'block', textAlign: 'center',
-                padding: '12px', borderRadius: 10,
-                background: '#4a7c59', color: '#fff',
-                textDecoration: 'none', fontWeight: 700, fontSize: '0.9rem',
-              }}>
-                Đăng ký miễn phí
-              </Link>
-              <Link href="/auth/login" onClick={closeAll} style={{
-                display: 'block', textAlign: 'center',
-                padding: '11px', borderRadius: 10,
-                border: '1.5px solid var(--border)',
-                color: 'var(--text)',
-                textDecoration: 'none', fontWeight: 600, fontSize: '0.9rem',
-              }}>
-                Đăng nhập
-              </Link>
+              <button
+                onClick={() => { closeAll(); signIn('google'); }}
+                style={{
+                  display: 'flex', alignItems: 'center', justifyContent: 'center', gap: 10,
+                  padding: '12px', borderRadius: 10,
+                  border: '1.5px solid var(--border)',
+                  background: 'var(--bg)', color: 'var(--text)',
+                  cursor: 'pointer', fontFamily: 'inherit',
+                  fontWeight: 700, fontSize: '0.9rem',
+                  transition: 'background 0.12s',
+                }}
+                onMouseEnter={e => (e.currentTarget.style.background = 'var(--bg-surface)')}
+                onMouseLeave={e => (e.currentTarget.style.background = 'var(--bg)')}
+              >
+                <GoogleIcon/>
+                Tiếp tục với Google
+              </button>
             </div>
           )}
         </div>
