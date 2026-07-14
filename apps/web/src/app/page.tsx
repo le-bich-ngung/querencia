@@ -370,8 +370,7 @@ export default function HomePage() {
           <Link href="/dashboard/nope" style={{ fontSize: '0.78rem', fontWeight: 600, color: '#fff', background: SAGE, borderRadius: 100, padding: '5px 13px', textDecoration: 'none' }}>Dashboard</Link>
         ) : (
           <div style={{ display: 'flex', alignItems: 'center', gap: 4 }}>
-            <Link href="/auth/login" style={{ fontSize: '0.78rem', color: 'rgba(240,239,235,0.55)', textDecoration: 'none', padding: '4px 8px' }}>{t('nav.signin')}</Link>
-            <Link href="/auth/register" style={{ fontSize: '0.78rem', fontWeight: 600, color: '#fff', background: SAGE, borderRadius: 100, padding: '5px 13px', textDecoration: 'none' }}>{t('nav.getstarted')}</Link>
+            <button onClick={() => signIn('google')} style={{ fontSize: '0.78rem', fontWeight: 600, color: '#fff', background: SAGE, border: 'none', borderRadius: 100, padding: '5px 13px', cursor: 'pointer' }}>{t('nav.getstarted')}</button>
           </div>
         )}
       </nav>
