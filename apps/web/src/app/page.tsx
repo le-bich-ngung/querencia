@@ -1,7 +1,7 @@
 'use client';
 import { useEffect, useState, useRef } from 'react';
 import Link from 'next/link';
-import { useSession } from 'next-auth/react';
+import { useSession, signIn } from 'next-auth/react';
 import { useI18n, LOCALES } from '../lib/i18n';
 import { QUOTES } from '../lib/quotes';
 
