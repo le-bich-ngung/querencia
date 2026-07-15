@@ -1,5 +1,5 @@
 'use client';
-import { useState, useRef, useMemo, useEffect } from 'react';
+import { useState, useRef, useMemo } from 'react';
 import useSWR from 'swr';
 import { useSession, signIn } from 'next-auth/react';
 import * as XLSX from 'xlsx';
@@ -81,6 +81,21 @@ async function parseFile(file: File): Promise<VocabWord[]> {
   return words;
 }
 
+// ── Sample template download ──────────────────────────────────
+function downloadTemplate() {
+  const wb = XLSX.utils.book_new();
+  const data = [
+    ['STT', 'Từ vựng', 'Loại từ', 'Nghĩa'],
+    [1, 'example', 'n', 'ví dụ'],
+    [2, 'consider', 'v', 'xem xét, cân nhắc'],
+    [3, 'beautiful', 'adj', 'đẹp'],
+  ];
+  const ws = XLSX.utils.aoa_to_sheet(data);
+  ws['!cols'] = [{ wch: 6 }, { wch: 20 }, { wch: 12 }, { wch: 30 }];
+  XLSX.utils.book_append_sheet(wb, ws, 'Từ vựng mẫu');
+  XLSX.writeFile(wb, 'mau-tu-vung-querencia.xlsx');
+}
+
 // ── Q logo ────────────────────────────────────────────────────
 const QMark = ({ size = 20 }: { size?: number }) => (
   <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 120 120" width={size} height={size}>
@@ -115,7 +130,7 @@ export default function VocabTrainerPage() {
     setUploading(true); setUploadMsg('');
     try {
       const words = await parseFile(file);
-      if (words.length === 0) { setUploadMsg('Không đọc được từ nào — kiểm tra lại định dạng file.'); setUploading(false); return; }
+      if (words.length === 0) { setUploadMsg('Không đọc được từ nào — kiểm tra lại định dạng file (xem hướng dẫn cột phía trên).'); setUploading(false); return; }
       if (words.length > MAX_WORDS) { setUploadMsg(`File có ${words.length} từ, vượt quá giới hạn ${MAX_WORDS}.`); setUploading(false); return; }
       const setName_ = name.trim() || file.name.replace(/\.[^.]+$/, '');
       await vocabApi.create({ name: setName_, isPublic, words }, token);
@@ -215,6 +230,29 @@ export default function VocabTrainerPage() {
         {showUpload && (
           <div style={{ background: CARD, border: `1px solid ${LINE}`, borderRadius: 16, padding: 20, marginBottom: 20, animation: 'slideDown .2s ease' }}>
             <h3 style={{ fontSize: 14, marginBottom: 12, fontWeight: 600 }}>Tải bộ từ mới</h3>
+
+            {/* Column format guide */}
+            <div style={{ background: '#f3efe6', border: `1px solid ${LINE}`, borderRadius: 10, padding: '12px 14px', marginBottom: 14 }}>
+              <div style={{ fontSize: 11.5, fontWeight: 700, color: SAGE_DARK, marginBottom: 8 }}>📋 File cần có đúng các cột sau (theo thứ tự):</div>
+              <div style={{ display: 'grid', gridTemplateColumns: '40px 1fr 1fr 1.4fr', gap: 4, fontSize: 11, marginBottom: 8 }}>
+                <div style={{ fontWeight: 700, color: MUTED }}>STT</div>
+                <div style={{ fontWeight: 700, color: MUTED }}>Từ vựng</div>
+                <div style={{ fontWeight: 700, color: MUTED }}>Loại từ</div>
+                <div style={{ fontWeight: 700, color: MUTED }}>Nghĩa</div>
+                <div style={{ color: INK }}>1</div>
+                <div style={{ color: INK }}>example</div>
+                <div style={{ color: INK }}>n</div>
+                <div style={{ color: INK }}>ví dụ</div>
+              </div>
+              <p style={{ fontSize: 10.5, color: MUTED, margin: '0 0 8px', lineHeight: 1.5 }}>
+                Cột <strong>STT</strong> có thể bỏ qua (không bắt buộc). Dòng tiêu đề đầu tiên sẽ tự động bị bỏ qua khi đọc file.
+              </p>
+              <button onClick={downloadTemplate} style={{
+                fontSize: 11.5, fontWeight: 700, color: SAGE_DARK, background: 'transparent',
+                border: `1px solid ${SAGE}`, borderRadius: 8, padding: '6px 12px', cursor: 'pointer',
+              }}>⬇ Tải file mẫu (.xlsx)</button>
+            </div>
+
             <input
               type="text" placeholder="Tên bộ từ (vd: Passage 1 - 416 từ)" value={name} onChange={e => setName(e.target.value)}
               style={{ width: '100%', padding: 11, borderRadius: 10, border: `1px solid ${LINE}`, marginBottom: 10, fontFamily: 'inherit', fontSize: 13.5 }}
@@ -368,7 +406,6 @@ function StudyView({ set, mode, setMode, onBack, onSave }: {
     sm2(cardOf(current), q); persist(); next();
   }
 
-  // touch/mouse swipe
   function onDown(clientX: number) { setDragging(true); moved.current = false; startX.current = clientX; }
   function onMove(clientX: number) {
     if (!dragging) return;
@@ -422,7 +459,6 @@ function StudyView({ set, mode, setMode, onBack, onSave }: {
         </div>
         <div style={{ fontFamily: serifFont, fontSize: 17, fontWeight: 500, marginBottom: 14, textAlign: 'center' }}>{set.name}</div>
 
-        {/* stats bar */}
         <div style={{ display: 'flex', gap: 8, marginBottom: 16 }}>
           <StatChip label="Cần ôn" value={dueCount} />
           <StatChip label="Đã thuộc" value={learnedCount} />
