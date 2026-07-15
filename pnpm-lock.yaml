@@ -388,7 +388,17 @@ importers:
         specifier: ^6.0.2
         version: 6.0.3
 
-  packages/queue: {}
+  packages/queue:
+    dependencies:
+      bullmq:
+        specifier: ^5.0.0
+        version: 5.80.2
+      ioredis:
+        specifier: ^5.0.0
+        version: 5.11.1
+      resend:
+        specifier: ^3.2.0
+        version: 3.5.0(react-dom@18.3.1(react@18.3.1))(react@18.3.1)
 
   packages/redis: {}
 
