@@ -17,6 +17,7 @@ import { PaymentsModule }  from './modules/payments/payments.module';
 import { WebhooksModule }  from './modules/webhooks/webhooks.module';
 import { MetaModule }      from './modules/meta/meta.module';
 import { E2eeModule }      from './modules/e2ee/e2ee.module';
+import { VocabModule }     from './modules/vocab/vocab.module';
 
 import { JwtAuthGuard }       from './common/guards/jwt-auth.guard';
 import { ThrottleGuard }      from './common/guards/throttle.guard';
@@ -45,6 +46,7 @@ import { FileShareModule } from './modules/file-share/file-share.module';
     E2eeModule,
     MetaModule,
     FileShareModule,
+    VocabModule,
   ],
   controllers: [AppController],
   providers: [

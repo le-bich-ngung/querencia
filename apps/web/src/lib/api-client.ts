@@ -87,3 +87,34 @@ export const toolsApi = {
   useTool: (slug: string, token: string) =>
     apiRequest(`/tools/${slug}/use`, { method: 'POST', token }),
 };
+
+// ── Vocab Sets ───────────────────────────────────────────────
+export type VocabWord = { w: string; p?: string; m: string };
+export type VocabSetMeta = {
+  id: string; name: string; isPublic: boolean; wordCount: number;
+  userId: string; createdAt: string; updatedAt: string;
+};
+export type VocabSetDetail = VocabSetMeta & { words: VocabWord[] };
+
+export const vocabApi = {
+  listMine: (token: string) =>
+    apiRequest<VocabSetMeta[]>('/vocab-sets/mine', { token }),
+
+  listPublic: () =>
+    apiRequest<VocabSetMeta[]>('/vocab-sets/public'),
+
+  getMine: (id: string, token: string) =>
+    apiRequest<VocabSetDetail>(`/vocab-sets/mine/${id}`, { token }),
+
+  getPublic: (id: string) =>
+    apiRequest<VocabSetDetail>(`/vocab-sets/public/${id}`),
+
+  create: (data: { name: string; isPublic?: boolean; words: VocabWord[] }, token: string) =>
+    apiRequest<VocabSetMeta>('/vocab-sets', { method: 'POST', body: JSON.stringify(data), token }),
+
+  update: (id: string, data: { name?: string; isPublic?: boolean; words?: VocabWord[] }, token: string) =>
+    apiRequest<VocabSetMeta>(`/vocab-sets/${id}`, { method: 'PATCH', body: JSON.stringify(data), token }),
+
+  remove: (id: string, token: string) =>
+    apiRequest<{ success: boolean }>(`/vocab-sets/${id}`, { method: 'DELETE', token }),
+};

@@ -5,3 +5,4 @@ export * from './messages';
 export * from './tools';
 export * from './payments';
 export * from './vectors';
+export * from './vocab';
