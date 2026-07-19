@@ -1,1 +1,29 @@
-{"$schema":"https://turbo.build/schema.json","ui":"tui","tasks":{"build":{"dependsOn":["^build"],"inputs":["$TURBO_DEFAULT$",".env*","src/**/*.tsx","src/**/*.ts"],"outputs":[".next/**","!.next/cache/**","dist/**"]},"dev":{"cache":false,"persistent":true},"test":{"dependsOn":["build"],"outputs":["coverage/**"]},"lint":{},"typecheck":{"dependsOn":["^build"]},"db:generate":{"cache":false},"db:migrate":{"cache":false},"db:seed":{"cache":false}}}
+{
+  "$schema": "https://turbo.build/schema.json",
+  "ui": "tui",
+  "globalEnv": [
+    "NODE_ENV",
+    "NEXTAUTH_URL",
+    "NEXTAUTH_SECRET",
+    "GOOGLE_CLIENT_ID",
+    "GOOGLE_CLIENT_SECRET",
+    "API_SERVICE_URL",
+    "AI_SERVICE_URL",
+    "NEXT_PUBLIC_API_URL",
+    "DATABASE_URL"
+  ],
+  "tasks": {
+    "build": {
+      "dependsOn": ["^build"],
+      "inputs": ["$TURBO_DEFAULT$", ".env*", "src/**/*.tsx", "src/**/*.ts"],
+      "outputs": [".next/**", "!.next/cache/**", "dist/**"]
+    },
+    "dev": { "cache": false, "persistent": true },
+    "test": { "dependsOn": ["build"], "outputs": ["coverage/**"] },
+    "lint": {},
+    "typecheck": { "dependsOn": ["^build"] },
+    "db:generate": { "cache": false },
+    "db:migrate": { "cache": false },
+    "db:seed": { "cache": false }
+  }
+}
