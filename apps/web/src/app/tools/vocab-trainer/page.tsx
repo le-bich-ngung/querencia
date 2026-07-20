@@ -374,7 +374,7 @@ function StudyView({ set, mode, setMode, onBack, onSave }: {
   }
 
   const [words, setWords] = useState(set.words);
-  const [words, setWords] = useState(set.words);
+
 
   // Load SRS data từ localStorage sau khi mount (tránh hydration mismatch)
   useEffect(() => {
