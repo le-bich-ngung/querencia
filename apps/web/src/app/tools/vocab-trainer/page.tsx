@@ -1,5 +1,5 @@
 'use client';
-import { useState, useRef, useMemo } from 'react';
+import { useState, useRef, useMemo, useEffect } from 'react';
 import useSWR from 'swr';
 import { useSession, signIn } from 'next-auth/react';
 import * as XLSX from 'xlsx';
@@ -364,8 +364,8 @@ function StudyView({ set, mode, setMode, onBack, onSave }: {
   onBack: () => void; onSave: (s: VocabSetDetail) => void;
 }) {
   const storeKey = `querencia_vocab_srs_${set.id}`;
-  const storeRef = useRef<Record<string, SRSCard>>((() => {
-    try { const raw = localStorage.getItem(storeKey); return raw ? JSON.parse(raw) : {}; } catch { return {}; }
+  const storeRef = useRef<Record<string, SRSCard>>({});
+
   })());
   function persist() { try { localStorage.setItem(storeKey, JSON.stringify(storeRef.current)); } catch {} }
   function cardOf(idx: number): SRSCard {
@@ -375,7 +375,15 @@ function StudyView({ set, mode, setMode, onBack, onSave }: {
   }
 
   const [words, setWords] = useState(set.words);
-  const [editOpen, setEditOpen] = useState(false);
+  const [words, setWords] = useState(set.words);
+
+  // Load SRS data từ localStorage sau khi mount (tránh hydration mismatch)
+  useEffect(() => {
+    try {
+      const raw = localStorage.getItem(storeKey);
+      if (raw) storeRef.current = JSON.parse(raw);
+    } catch {}
+  }, [storeKey]);
   const [queue, setQueue] = useState<number[]>(() => buildQueue());
   const [current, setCurrent] = useState<number | null>(queue[0] ?? null);
   const [flipped, setFlipped] = useState(false);
