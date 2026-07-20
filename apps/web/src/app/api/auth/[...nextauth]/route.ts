@@ -80,7 +80,7 @@ const handler = NextAuth({
         // Refresh sớm 1 phút trước khi hết hạn
         if (now > expires - 60 * 1000) {
           try {
-            const res = await fetch(${API_URL}/api/v1/auth/refresh, {
+            const res = await fetch(`${API_URL}/api/v1/auth/refresh`, {
               method: 'POST',
               headers: { 'Content-Type': 'application/json' },
               body: JSON.stringify({ refresh_token: token.refreshToken }),
