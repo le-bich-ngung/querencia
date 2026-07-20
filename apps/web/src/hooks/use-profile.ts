@@ -13,12 +13,12 @@ export function useProfile() {
   const token = (session as any)?.accessToken as string | undefined;
 
   const { data: user, mutate: mutateUser } = useSWR(
-    token ? ['/api/v1/auth/me', token] : null,
+    token ? [(process.env.NEXT_PUBLIC_API_URL ?? 'https://querencia.fly.dev/api/v1') + '/auth/me', token] : null,
     fetcher,
   );
 
   const { data: quota } = useSWR(
-    token ? ['/api/v1/tools/quota', token] : null,
+    token ? [(process.env.NEXT_PUBLIC_API_URL ?? 'https://querencia.fly.dev/api/v1') + '/tools/quota', token] : null,
     fetcher,
     { refreshInterval: 60_000 },
   );
