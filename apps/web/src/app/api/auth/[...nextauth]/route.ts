@@ -73,25 +73,48 @@ const handler = NextAuth({
 
   callbacks: {
     async jwt({ token, user, account }) {
+      // Auto-refresh khi access token sắp hết hạn
+      if (token.accessToken && token.accessTokenExpires) {
+        const now = Date.now();
+        const expires = token.accessTokenExpires as number;
+        // Refresh sớm 1 phút trước khi hết hạn
+        if (now > expires - 60 * 1000) {
+          try {
+            const res = await fetch(${API_URL}/api/v1/auth/refresh, {
+              method: 'POST',
+              headers: { 'Content-Type': 'application/json' },
+              body: JSON.stringify({ refresh_token: token.refreshToken }),
+            });
+            if (res.ok) {
+              const data = await res.json();
+              token.accessToken = data.access_token;
+              token.refreshToken = data.refresh_token ?? token.refreshToken;
+              token.accessTokenExpires = Date.now() + 14 * 60 * 1000; // 14 phút
+            }
+          } catch {}
+        }
+      }
       if (user) {
         token.id           = user.id;
         token.plan         = (user as any).plan;
         token.accessToken  = (user as any).accessToken;
+        token.accessTokenExpires = Date.now() + 14 * 60 * 1000;
         token.refreshToken = (user as any).refreshToken;
       }
       // Google OAuth → gọi NestJS để upsert user + lấy JWT
       if (account?.provider === 'google' && account.access_token) {
         try {
-          const res = await fetch(`${API_URL}/api/v1/auth/google/token-exchange`, {
+          const res = await fetch(`${API_URL}/api/v1/auth/google/id-token`, {
             method:  'POST',
             headers: { 'Content-Type': 'application/json' },
-            body:    JSON.stringify({ google_access_token: account.access_token }),
+            body:    JSON.stringify({ id_token: account.access_token }),
           });
           if (res.ok) {
             const data = await res.json();
             token.id           = data.user.id;
             token.plan         = data.user.plan;
             token.accessToken  = data.access_token;
+            token.accessTokenExpires = Date.now() + 14 * 60 * 1000;
             token.refreshToken = data.refresh_token;
           }
         } catch {}
