@@ -530,10 +530,10 @@ function StudyView({ set, mode, setMode, onBack, onSave }: {
               </div>
             </div>
             <div style={{ display: 'flex', gap: 8 }}>
-              <button onClick={() => grade(1)} style={gradeBtn('#a4453a')}>Quên<small>&lt;1 ph</small></button>
-              <button onClick={() => grade(3)} style={gradeBtn('#c07a3e')}>Khó<small>ôn sớm</small></button>
-              <button onClick={() => grade(4)} style={gradeBtn(SAGE)}>Nhớ<small>vài ngày</small></button>
-              <button onClick={() => grade(5)} style={gradeBtn(SAGE_DARK)}>Dễ<small>lâu hơn</small></button>
+              <button onClick={() => grade(1)} style={gradeBtn('#a4453a')}>Quên<small> &lt;1 ph</small></button>
+              <button onClick={() => grade(3)} style={gradeBtn('#c07a3e')}>Khó<small> ôn sớm</small></button>
+              <button onClick={() => grade(4)} style={gradeBtn(SAGE)}>Nhớ<small> vài ngày</small></button>
+              <button onClick={() => grade(5)} style={gradeBtn(SAGE_DARK)}>Dễ<small> lâu hơn</small></button>
             </div>
           </>
         ) : (
