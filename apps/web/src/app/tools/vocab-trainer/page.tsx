@@ -366,7 +366,6 @@ function StudyView({ set, mode, setMode, onBack, onSave }: {
   const storeKey = `querencia_vocab_srs_${set.id}`;
   const storeRef = useRef<Record<string, SRSCard>>({});
 
-  })());
   function persist() { try { localStorage.setItem(storeKey, JSON.stringify(storeRef.current)); } catch {} }
   function cardOf(idx: number): SRSCard {
     const key = String(idx);
