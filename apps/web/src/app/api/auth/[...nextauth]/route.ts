@@ -107,7 +107,7 @@ const handler = NextAuth({
           const res = await fetch(`${API_URL}/api/v1/auth/google/id-token`, {
             method:  'POST',
             headers: { 'Content-Type': 'application/json' },
-            body:    JSON.stringify({ id_token: account.access_token }),
+            body:    JSON.stringify({ id_token: account.id_token }),
           });
           if (res.ok) {
             const data = await res.json();
