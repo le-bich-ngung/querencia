@@ -104,10 +104,10 @@ const handler = NextAuth({
       // Google OAuth → gọi NestJS để upsert user + lấy JWT
       if (account?.provider === 'google' && account.access_token) {
         try {
-          const res = await fetch(`${API_URL}/api/v1/auth/google/id-token`, {
+          const res = await fetch(`${API_URL}/api/v1/auth/google/token-exchange`, {
             method:  'POST',
             headers: { 'Content-Type': 'application/json' },
-            body:    JSON.stringify({ id_token: account.id_token }),
+            body:    JSON.stringify({ google_access_token: account.access_token }),
           });
           if (res.ok) {
             const data = await res.json();
