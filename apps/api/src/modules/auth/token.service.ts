@@ -1,6 +1,6 @@
 /**
- * Token Service — JWT lifecycle management
- * Access: 15m | Refresh: 7d (rotation — mỗi lần dùng cấp cái mới, hủy cái cũ)
+ * Token Service - JWT lifecycle management
+ * Access: 15m | Refresh: 7d (rotation - mỗi lần dùng cấp cái mới, hủy cái cũ)
  */
 import { Injectable, UnauthorizedException, Inject } from '@nestjs/common';
 import { JwtService } from '@nestjs/jwt';
@@ -51,7 +51,7 @@ export class TokenService {
     return { accessToken, refreshToken, family };
   }
 
-  /** Refresh rotation — nhận token cũ, cấp token mới, hủy token cũ */
+  /** Refresh rotation - nhận token cũ, cấp token mới, hủy token cũ */
   async rotate(refreshToken: string): Promise<{ accessToken: string; refreshToken: string; family: string }> {
     let payload: any;
     try {

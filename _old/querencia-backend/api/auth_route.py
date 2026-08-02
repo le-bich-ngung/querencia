@@ -58,7 +58,7 @@ def send_verification_email(email: str, username: str, token: str):
             """
         })
     except Exception as e:
-        # Không block đăng ký nếu email lỗi — log ra để debug
+        # Không block đăng ký nếu email lỗi - log ra để debug
         print(f"[EMAIL ERROR] {e}")
 
 
@@ -75,7 +75,7 @@ def register(user_data: UserCreate, db: Session = Depends(get_db)):
     if existing:
         raise HTTPException(status_code=400, detail="Email này đã được đăng ký rồi")
 
-    # Tạo token xác minh ngẫu nhiên — dùng 1 lần
+    # Tạo token xác minh ngẫu nhiên - dùng 1 lần
     verification_token = secrets.token_urlsafe(32)
 
     new_user = User(
@@ -98,7 +98,7 @@ def register(user_data: UserCreate, db: Session = Depends(get_db)):
 @router.get("/verify/{token}", response_class=HTMLResponse)
 def verify_email(token: str, db: Session = Depends(get_db)):
     """
-    XÁC MINH EMAIL — người dùng click link trong email
+    XÁC MINH EMAIL - người dùng click link trong email
     Tìm token → đánh dấu is_verified=True → xóa token → redirect về frontend
     """
     user = db.query(User).filter(User.verification_token == token).first()
@@ -136,7 +136,7 @@ def login(
     db: Session = Depends(get_db)
 ):
     """
-    ĐĂNG NHẬP — chỉ cho phép nếu email đã được xác minh
+    ĐĂNG NHẬP - chỉ cho phép nếu email đã được xác minh
     """
     user = db.query(User).filter(User.email == form_data.username).first()
 
@@ -227,7 +227,7 @@ def forgot_password(payload: dict, db: Session = Depends(get_db)):
 
 @router.get("/reset-password/{token}", response_class=HTMLResponse)
 def reset_password_page(token: str, db: Session = Depends(get_db)):
-    """Trang đặt lại mật khẩu — hiện form nhập mật khẩu mới"""
+    """Trang đặt lại mật khẩu - hiện form nhập mật khẩu mới"""
     user = db.query(User).filter(User.verification_token == token).first()
     if not user:
         return HTMLResponse(content="""

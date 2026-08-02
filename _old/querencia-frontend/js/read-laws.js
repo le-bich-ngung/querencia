@@ -29,7 +29,7 @@ const LAWS = [
   },
   {
     id: 'blds2015',
-    number: 'BLDS 2015 — Luật số 91/2015/QH13',
+    number: 'BLDS 2015 - Luật số 91/2015/QH13',
     title: 'Bộ luật Dân sự năm 2015',
     category: 'Dân sự',
     date: '24/11/2015',
@@ -38,7 +38,7 @@ const LAWS = [
   },
   {
     id: 'blhs2015',
-    number: 'BLHS 2015 — Luật số 100/2015/QH13',
+    number: 'BLHS 2015 - Luật số 100/2015/QH13',
     title: 'Bộ luật Hình sự năm 2015 (sửa đổi, bổ sung 2017)',
     category: 'Hình sự',
     date: '27/11/2015',
@@ -47,7 +47,7 @@ const LAWS = [
   },
   {
     id: 'bltths2015',
-    number: 'BLTTHS 2015 — Luật số 101/2015/QH13',
+    number: 'BLTTHS 2015 - Luật số 101/2015/QH13',
     title: 'Bộ luật Tố tụng Hình sự năm 2015',
     category: 'Hình sự',
     date: '27/11/2015',
@@ -56,7 +56,7 @@ const LAWS = [
   },
   {
     id: 'bllao2019',
-    number: 'BLLĐ 2019 — Luật số 45/2019/QH14',
+    number: 'BLLĐ 2019 - Luật số 45/2019/QH14',
     title: 'Bộ luật Lao động năm 2019',
     category: 'Lao động',
     date: '20/11/2019',
@@ -137,7 +137,7 @@ const LAWS = [
   },
   {
     id: 'lttds2015',
-    number: 'BLTTDS 2015 — Luật số 92/2015/QH13',
+    number: 'BLTTDS 2015 - Luật số 92/2015/QH13',
     title: 'Bộ luật Tố tụng Dân sự năm 2015',
     category: 'Dân sự',
     date: '25/11/2015',

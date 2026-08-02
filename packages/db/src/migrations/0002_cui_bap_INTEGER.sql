@@ -1,11 +1,11 @@
 -- ============================================================
--- Migration 0002 — Cùi Bắp tables (INTEGER version)
+-- Migration 0002 - Cùi Bắp tables (INTEGER version)
 -- Tất cả bảng Cùi Bắp đã có trong DB cũ
 -- File này chỉ thêm những gì còn thiếu
 -- ============================================================
 
 -- Polls (nếu chưa có)
--- Migration 0002 — Cùi Bắp tables (INTEGER version)
+-- Migration 0002 - Cùi Bắp tables (INTEGER version)
 
 CREATE TABLE IF NOT EXISTS cb_polls (
   id         SERIAL PRIMARY KEY,

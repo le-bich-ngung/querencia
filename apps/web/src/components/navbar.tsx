@@ -6,7 +6,7 @@ import { useSession, signOut, signIn } from 'next-auth/react';
 import { useProfile }  from '../hooks/use-profile';
 import { usePathname } from 'next/navigation';
 
-// Animated logo — wave chạy liên tục
+// Animated logo - wave chạy liên tục
 const AnimatedLogo = ({ size = 22, color = '#4a7c59' }: { size?: number; color?: string }) => (
   <svg xmlns="http://www.w3.org/2000/svg" viewBox="14 14 88 88" width={size} height={size} style={{ flexShrink: 0 }}>
     <style>{`

@@ -1,18 +1,18 @@
 /**
- * Auth Controller — NestJS
+ * Auth Controller - NestJS
  * Migrated từ querencia-backend/api/auth_route.py
  *
  * Endpoints (prefix: /api/v1/auth):
- *   POST /register          — đăng ký + gửi email xác nhận
- *   GET  /verify/:token     — xác minh email (redirect)
- *   POST /login             — đăng nhập → JWT
- *   POST /refresh           — refresh token rotation
- *   GET  /me                — thông tin user đang đăng nhập
- *   POST /forgot-password   — gửi email reset
- *   GET  /reset-password/:token  — trang đặt lại mật khẩu
- *   POST /reset-password/:token  — xử lý đặt lại
- *   GET  /google            — redirect đến Google OAuth
- *   GET  /google/callback   — nhận code từ Google
+ *   POST /register          - đăng ký + gửi email xác nhận
+ *   GET  /verify/:token     - xác minh email (redirect)
+ *   POST /login             - đăng nhập → JWT
+ *   POST /refresh           - refresh token rotation
+ *   GET  /me                - thông tin user đang đăng nhập
+ *   POST /forgot-password   - gửi email reset
+ *   GET  /reset-password/:token  - trang đặt lại mật khẩu
+ *   POST /reset-password/:token  - xử lý đặt lại
+ *   GET  /google            - redirect đến Google OAuth
+ *   GET  /google/callback   - nhận code từ Google
  */
 import {
   Controller, Post, Get, Body, Param, Redirect,
@@ -70,7 +70,7 @@ export class AuthController {
   async verifyEmail(@Param('token') token: string, @Res() res: Response) {
     try {
       const { username, redirectUrl } = await this.authService.verifyEmail(token);
-      // Trả HTML giống code cũ — tự redirect sau 2 giây
+      // Trả HTML giống code cũ - tự redirect sau 2 giây
       return res.send(`
         <html><body style="font-family:sans-serif;text-align:center;padding:60px">
           <h2 style="color:#4a7c59">✓ Tài khoản đã được xác nhận!</h2>
@@ -221,12 +221,12 @@ export class AuthController {
 
 
   // ── LOGOUT ───────────────────────────────────────────────────
-  // Thêm mới (code cũ không có) — thu hồi refresh token khỏi Redis db0
+  // Thêm mới (code cũ không có) - thu hồi refresh token khỏi Redis db0
   @UseGuards(JwtAuthGuard)
   @ApiBearerAuth()
   @Post('logout')
   @HttpCode(HttpStatus.OK)
-  @ApiOperation({ summary: 'Đăng xuất — thu hồi refresh token' })
+  @ApiOperation({ summary: 'Đăng xuất - thu hồi refresh token' })
   logout(@CurrentUser('id') userId: string) {
     return this.authService.logout(userId);
   }
@@ -257,19 +257,32 @@ export class AuthController {
     );
   }
 
+
+  // ── Google Access Token (web OAuth) ──────────────────────────
+  @Public()
+  @Post('google/token-exchange')
+  @HttpCode(HttpStatus.OK)
+  async googleTokenExchange(@Body() body: { google_access_token: string }) {
+    const res = await fetch('https://www.googleapis.com/oauth2/v2/userinfo', {
+      headers: { Authorization: 'Bearer ' + body.google_access_token },
+    });
+    if (!res.ok) throw new Error('Invalid Google access token');
+    const info = await res.json();
+    return this.authService.googleOAuthCallback(info.email, info.name, info.picture);
+  }
   // ── FCM Token (mobile push notification) ─────────────────────
   @Post('fcm-token')
   registerFcmToken(@CurrentUser() user: any, @Body() body: { fcmToken: string }) {
     return this.authService.registerFcmToken(user.id, body.fcmToken);
   }
 
-  // ── MFA — respond to push notification ───────────────────────
+  // ── MFA - respond to push notification ───────────────────────
   @Post('mfa/respond')
   respondMfa(@Body() body: { mfaToken: string; status: 'approved' | 'rejected' }) {
     return this.authService.respondMfa(body.mfaToken, body.status);
   }
 
-  // ── MFA — poll status (fallback khi WebSocket không dùng được)
+  // ── MFA - poll status (fallback khi WebSocket không dùng được)
   @Public()
   @Get('mfa/status/:token')
   checkMfaStatus(@Param('token') token: string) {

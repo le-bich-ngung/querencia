@@ -1,5 +1,5 @@
 /**
- * Nope — App chia sẻ kinh nghiệm sống
+ * Nope - App chia sẻ kinh nghiệm sống
  * Migrated từ querencia-backend/api/models.py (NopePost, NopeComment, etc.)
  * Giữ nguyên tên bảng để data production an toàn
  */

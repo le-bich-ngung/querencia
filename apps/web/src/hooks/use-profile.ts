@@ -1,5 +1,5 @@
 /**
- * useProfile — lấy thông tin user + quota breakdown từ API
+ * useProfile - lấy thông tin user + quota breakdown từ API
  * quota: { expiring: number, permanent: number, isPro: boolean }
  */
 import useSWR from 'swr';

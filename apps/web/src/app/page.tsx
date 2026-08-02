@@ -73,7 +73,7 @@ var INTERNATIONAL_CONVENTIONS = [
 var MENTAL_MODELS = [
   { title: 'First Principles Thinking', sub: 'Think from first principles', desc: 'Break problems down to fundamental truths and rebuild from scratch. How Elon Musk designed rockets 10x cheaper.', icon: '⚗️' },
   { title: 'Second-Order Thinking', sub: 'Think about consequences of consequences', desc: 'Not just asking what this causes, but what that causes next. See beyond immediate effects.', icon: '♟️' },
-  { title: 'Mental Models', sub: 'Thinking frameworks of geniuses', desc: 'A collection of frameworks from physics, psychology, economics — to solve complex problems.', icon: '🧠' },
+  { title: 'Mental Models', sub: 'Thinking frameworks of geniuses', desc: 'A collection of frameworks from physics, psychology, economics - to solve complex problems.', icon: '🧠' },
   { title: 'Dangerous Questions', sub: 'The art of world-changing questions', desc: 'The right question matters more than the right answer. The most naive questions often lead to the biggest breakthroughs.', icon: '💡' },
 ];
 

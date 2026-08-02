@@ -1,6 +1,6 @@
 'use client';
 /**
- * Bottom Navigation — cố định, luôn hiển thị
+ * Bottom Navigation - cố định, luôn hiển thị
  * 5 tab: Home · Apps · Tools · Read · Account
  *
  * Apps    → sub-menu: Nope, Cùi Bắp, LàNo
@@ -117,7 +117,7 @@ export function BottomNav() {
       {/* Spacer */}
       <div style={{ height: 52 }}/>
 
-      {/* Q strip — chỉ hiện khi logged in và có Q */}
+      {/* Q strip - chỉ hiện khi logged in và có Q */}
       {session && totalQ > 0 && (
         <div style={{
           position: 'fixed', bottom: 52, left: 0, right: 0,
@@ -345,7 +345,7 @@ export function BottomNav() {
               </button>
             </>
           ) : (
-            /* Not logged in — chỉ còn 1 nút Google */
+            /* Not logged in - chỉ còn 1 nút Google */
             <div style={{ padding: '24px 18px', display: 'flex', flexDirection: 'column', gap: 10 }}>
               <p style={{
                 fontSize: '0.85rem', color: 'var(--text-secondary)',

@@ -1,5 +1,5 @@
 /**
- * Watermark — nhúng vào file/ảnh khi export khỏi tools
+ * Watermark - nhúng vào file/ảnh khi export khỏi tools
  * Client-side hoàn toàn (Canvas API)
  *
  * Dùng cho:
@@ -101,7 +101,7 @@ function encodeToLSB(imageData: ImageData, text: string): ImageData {
   const binary = text.split('').map(c => c.charCodeAt(0).toString(2).padStart(8, '0')).join('') + '00000000';
   let bitIdx   = 0;
   for (let i = 0; i < data.length && bitIdx < binary.length; i += 4) {
-    // Chỉ modify kênh Blue (i+2) — ít ảnh hưởng visual nhất
+    // Chỉ modify kênh Blue (i+2) - ít ảnh hưởng visual nhất
     data[i + 2] = (data[i + 2] & ~1) | parseInt(binary[bitIdx++] ?? '0');
   }
   return imageData;

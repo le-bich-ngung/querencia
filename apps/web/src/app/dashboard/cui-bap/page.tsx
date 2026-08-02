@@ -1,6 +1,6 @@
 'use client';
 /**
- * Cùi Bắp — Trang chat chính
+ * Cùi Bắp - Trang chat chính
  * Layout: Sidebar (conv list) | Chat window
  * Mobile: slide giữa sidebar và chat
  */
@@ -513,8 +513,8 @@ export default function CuiBapPage() {
                   </div>
                 </div>
                 {/* Call buttons */}
-                <IconBtn title="Gọi thoại" onClick={() => alert('Gọi thoại — sắp có trên app!')}>📞</IconBtn>
-                <IconBtn title="Gọi video" onClick={() => alert('Gọi video — sắp có trên app!')}>📹</IconBtn>
+                <IconBtn title="Gọi thoại" onClick={() => alert('Gọi thoại - sắp có trên app!')}>📞</IconBtn>
+                <IconBtn title="Gọi video" onClick={() => alert('Gọi video - sắp có trên app!')}>📹</IconBtn>
               </div>
 
               {/* Messages */}
@@ -671,7 +671,7 @@ export default function CuiBapPage() {
               </div>
             </>
           ) : (
-            /* Empty state — no conv selected */
+            /* Empty state - no conv selected */
             <div style={{
               flex: 1, display: 'flex', flexDirection: 'column',
               alignItems: 'center', justifyContent: 'center',

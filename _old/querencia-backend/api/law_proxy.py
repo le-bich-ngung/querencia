@@ -95,7 +95,7 @@ def _rewrite_html(html: str, base_url: str) -> str:
     else:
         html = base_tag + style_inject + html
 
-    # Xóa script ngoài (tracking, ads) — giữ lại script inline cần thiết
+    # Xóa script ngoài (tracking, ads) - giữ lại script inline cần thiết
     html = re.sub(
         r'<script[^>]+src=["\'][^"\']*(?:google|facebook|analytics|ads|gtag|fbq)[^"\']*["\'][^>]*>.*?</script>',
         '', html, flags=re.DOTALL | re.IGNORECASE
@@ -129,7 +129,7 @@ async def proxy_law(
             response = await client.get(url)
             response.raise_for_status()
 
-        # Detect encoding — vbpl.vn thường dùng UTF-8 hoặc Windows-1252
+        # Detect encoding - vbpl.vn thường dùng UTF-8 hoặc Windows-1252
         content_type = response.headers.get("content-type", "")
         if "charset=" in content_type:
             encoding = content_type.split("charset=")[-1].strip()

@@ -8,7 +8,7 @@
     .hero-sub{margin-top:24px;font-size:1.05rem;color:var(--gray);font-weight:300;max-width:520px;line-height:1.7;opacity:0;animation:fadeUp 0.7s 0.35s forwards}
     .hero-cta{margin-top:40px;display:flex;gap:12px;opacity:0;animation:fadeUp 0.7s 0.5s forwards}
 
-    /* Nút bấm — 2 loại: đặc (primary) và viền (outline) */
+    /* Nút bấm - 2 loại: đặc (primary) và viền (outline) */
     .btn-primary{background:var(--sage);color:var(--white);border:none;padding:13px 28px;border-radius:30px;font-family:var(--font-body);font-size:0.88rem;font-weight:500;cursor:pointer;letter-spacing:0.02em;transition:background 0.2s,transform 0.15s}
     .btn-primary:hover{background:var(--sage-dark);transform:translateY(-1px)}
     .btn-outline{background:transparent;color:var(--black);border:1.5px solid var(--border);padding:13px 28px;border-radius:30px;font-family:var(--font-body);font-size:0.88rem;font-weight:500;cursor:pointer;transition:border-color 0.2s,transform 0.15s}
@@ -86,7 +86,7 @@
  
  
 /* ── TRANG MESSAGE ───────────────────────────────────────
-       Form gửi tin nhắn — kết nối với backend POST /message
+       Form gửi tin nhắn - kết nối với backend POST /message
        Các input có id để JS đọc giá trị khi submit           */
     .message-wrap{display:grid;grid-template-columns:1fr 1fr;min-height:calc(100vh - 64px)}
     .message-left{padding:64px;border-right:1px solid var(--border)}

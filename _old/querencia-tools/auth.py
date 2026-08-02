@@ -1,6 +1,6 @@
 # ============================================================
 # FILE: auth.py
-# NHIỆM VỤ: Xác thực JWT token — độc lập với backend chính
+# NHIỆM VỤ: Xác thực JWT token - độc lập với backend chính
 # Chỉ đọc bảng users, không ghi gì cả
 # ============================================================
 

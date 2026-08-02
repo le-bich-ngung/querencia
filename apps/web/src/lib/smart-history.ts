@@ -1,4 +1,4 @@
-// Smart History — lưu lịch sử đọc và chat trong localStorage
+// Smart History - lưu lịch sử đọc và chat trong localStorage
 
 export const lanoHistory = {
   get: (): { role: string; content: string }[] => {

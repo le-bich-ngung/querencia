@@ -79,7 +79,7 @@
 
 <div class="header">
   <h1>Readability Checker</h1>
-  <p>Kiểm tra văn bản của bạn dễ đọc không — phù hợp trình độ nào</p>
+  <p>Kiểm tra văn bản của bạn dễ đọc không - phù hợp trình độ nào</p>
 </div>
 
 <div class="main">
@@ -175,11 +175,11 @@ function analyze() {
   else                  { grade='Chuyên gia (Rất khó)'; gradeColor='#922b21'; scoreColor='#922b21'; meter=score; }
 
   const suggestions = [];
-  if (avgSentLen > 20) suggestions.push({icon:'✂️', text:`Câu trung bình ${avgSentLen} từ — hãy rút ngắn xuống dưới 20 từ/câu`});
-  if (longSents > 0) suggestions.push({icon:'📏', text:`${longSents} câu quá dài (>25 từ) — chia nhỏ để dễ đọc hơn`});
-  if (complexWords > 2) suggestions.push({icon:'📚', text:`${complexWords} từ phức tạp được phát hiện — dùng từ đơn giản hơn`});
-  if (passiveCount > 3) suggestions.push({icon:'🔄', text:`${passiveCount} cấu trúc bị động — chuyển sang chủ động để tự nhiên hơn`});
-  if (uniqueRatio < 40) suggestions.push({icon:'🔁', text:'Nhiều từ bị lặp lại — thêm từ đồng nghĩa để đa dạng hơn'});
+  if (avgSentLen > 20) suggestions.push({icon:'✂️', text:`Câu trung bình ${avgSentLen} từ - hãy rút ngắn xuống dưới 20 từ/câu`});
+  if (longSents > 0) suggestions.push({icon:'📏', text:`${longSents} câu quá dài (>25 từ) - chia nhỏ để dễ đọc hơn`});
+  if (complexWords > 2) suggestions.push({icon:'📚', text:`${complexWords} từ phức tạp được phát hiện - dùng từ đơn giản hơn`});
+  if (passiveCount > 3) suggestions.push({icon:'🔄', text:`${passiveCount} cấu trúc bị động - chuyển sang chủ động để tự nhiên hơn`});
+  if (uniqueRatio < 40) suggestions.push({icon:'🔁', text:'Nhiều từ bị lặp lại - thêm từ đồng nghĩa để đa dạng hơn'});
   if (!suggestions.length) suggestions.push({icon:'✅', text:'Văn bản của bạn rất tốt! Tiếp tục giữ phong cách này.'});
 
   document.getElementById('resultsPanel').innerHTML = `

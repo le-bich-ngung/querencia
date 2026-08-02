@@ -3,7 +3,7 @@
 <head>
 <meta charset="UTF-8"/>
 <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
-<title>JSON Formatter — Querencia</title>
+<title>JSON Formatter - Querencia</title>
 <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700&family=DM+Mono:wght@400;500&display=swap" rel="stylesheet"/>
 <style>
 *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
@@ -158,8 +158,8 @@ body { font-family: var(--font); background: var(--bg); color: var(--white);
     </div>
     <textarea id="inputEditor" placeholder='Paste JSON here…&#10;&#10;{"name": "Querencia", "version": 1}' oninput="onInput()" spellcheck="false"></textarea>
     <div class="stats-bar" id="inputStats">
-      <div class="stat">Size: <span id="statSize">—</span></div>
-      <div class="stat">Lines: <span id="statLines">—</span></div>
+      <div class="stat">Size: <span id="statSize">-</span></div>
+      <div class="stat">Lines: <span id="statLines">-</span></div>
     </div>
   </div>
 
@@ -178,9 +178,9 @@ body { font-family: var(--font); background: var(--bg); color: var(--white);
       <div class="error-box" id="errorBox"></div>
     </div>
     <div class="stats-bar" id="outputStats">
-      <div class="stat">Keys: <span id="statKeys">—</span></div>
-      <div class="stat">Depth: <span id="statDepth">—</span></div>
-      <div class="stat">Items: <span id="statItems">—</span></div>
+      <div class="stat">Keys: <span id="statKeys">-</span></div>
+      <div class="stat">Depth: <span id="statDepth">-</span></div>
+      <div class="stat">Items: <span id="statItems">-</span></div>
     </div>
   </div>
 </div>
@@ -215,9 +215,9 @@ function autoFormat(raw) {
     document.getElementById('errorBox').style.display = 'block';
     document.getElementById('errorBox').textContent = '⚠ ' + e.message;
     document.getElementById('jsonOutput').innerHTML = '';
-    document.getElementById('statKeys').textContent = '—';
-    document.getElementById('statDepth').textContent = '—';
-    document.getElementById('statItems').textContent = '—';
+    document.getElementById('statKeys').textContent = '-';
+    document.getElementById('statDepth').textContent = '-';
+    document.getElementById('statItems').textContent = '-';
   }
 }
 
@@ -323,7 +323,7 @@ function clearAll() {
   document.getElementById('inputEditor').value = '';
   clearOutput(); setStatus('idle', '● Waiting');
   parsedJson = null; formattedOutput = '';
-  ['statSize','statLines','statKeys','statDepth','statItems'].forEach(id => document.getElementById(id).textContent = '—');
+  ['statSize','statLines','statKeys','statDepth','statItems'].forEach(id => document.getElementById(id).textContent = '-');
 }
 
 function clearOutput() {

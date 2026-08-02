@@ -3,7 +3,7 @@
 <head>
   <meta charset="UTF-8"/>
   <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
-  <title>Ảnh → PDF — Querencia</title>
+  <title>Ảnh → PDF - Querencia</title>
   <link rel="preconnect" href="https://fonts.googleapis.com"/>
   <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700&display=swap" rel="stylesheet"/>
   <script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js"></script>
@@ -343,7 +343,7 @@ async function convertToPDF() {
       if (pageSize === 'a4') { pageW = 210; pageH = 297; }
       else if (pageSize === 'a3') { pageW = 297; pageH = 420; }
       else if (pageSize === 'letter') { pageW = 215.9; pageH = 279.4; }
-      else { // fit — tính theo tỷ lệ ảnh
+      else { // fit - tính theo tỷ lệ ảnh
         const dpi = 96;
         pageW = imgDims.width / dpi * 25.4;
         pageH = imgDims.height / dpi * 25.4;

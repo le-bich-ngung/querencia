@@ -3,7 +3,7 @@
 <head>
 <meta charset="UTF-8"/>
 <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
-<title>Unit Converter — Querencia Tools</title>
+<title>Unit Converter - Querencia Tools</title>
 <link href="https://fonts.googleapis.com/css2?family=DM+Mono:wght@400;500&family=Syne:wght@400;600;700;800&display=swap" rel="stylesheet"/>
 <style>
   :root{--sage:#4a7c59;--sage-light:#6fa882;--sage-pale:#ddeee3;--sage-dark:#2f5c3e;--bg:#f7faf8;--card:#fff;--border:#e0ece5;--text:#1a2e22;--muted:#6b8a74;--font-display:'Syne',sans-serif;--font-mono:'DM Mono',monospace}
@@ -298,7 +298,7 @@ function swapUnits() {
 }
 
 function formatNum(n) {
-  if (isNaN(n)) return '—';
+  if (isNaN(n)) return '-';
   if (Math.abs(n) >= 1e9) return n.toExponential(4);
   if (Math.abs(n) < 0.0001 && n !== 0) return n.toExponential(4);
   const decimals = Math.abs(n) >= 100 ? 2 : Math.abs(n) >= 1 ? 4 : 6;

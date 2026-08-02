@@ -1,5 +1,5 @@
 /**
- * E2EE Messaging — wrap gửi/nhận tin nhắn với Signal Protocol
+ * E2EE Messaging - wrap gửi/nhận tin nhắn với Signal Protocol
  * Tích hợp vào ChatScreen thay thế gọi api.sendMsg trực tiếp
  */
 import { encryptMessage, decryptMessage, hasSession, generateAndStoreKeys } from './e2ee';

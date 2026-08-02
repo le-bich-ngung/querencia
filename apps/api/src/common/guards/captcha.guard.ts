@@ -1,5 +1,5 @@
 /**
- * Captcha Guard — Cloudflare Turnstile
+ * Captcha Guard - Cloudflare Turnstile
  * Bật tự động trên: /auth/register, /auth/login (khi có nghi ngờ bot)
  * Verify server-side với Cloudflare API
  */

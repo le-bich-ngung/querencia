@@ -37,7 +37,7 @@ export function ToolFrame({ tool }: Props) {
         )}
       </div>
 
-      {/* Tool HTML trong iframe — full height */}
+      {/* Tool HTML trong iframe - full height */}
       <iframe
         src={src}
         title={tool.name}

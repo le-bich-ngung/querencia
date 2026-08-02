@@ -1,5 +1,5 @@
 # ============================================================
-# fly.toml — cấu hình deploy Fly.io cho querencia-tools
+# fly.toml - cấu hình deploy Fly.io cho querencia-tools
 # Deploy: flyctl deploy --no-cache
 #
 # Lần đầu deploy (nếu chưa có volume):

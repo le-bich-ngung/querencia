@@ -1,5 +1,5 @@
 /**
- * Apple Sign-In — bắt buộc cho App Store nếu app có Google Sign-In
+ * Apple Sign-In - bắt buộc cho App Store nếu app có Google Sign-In
  * Package: @invertase/react-native-apple-authentication
  *
  * Lưu ý:

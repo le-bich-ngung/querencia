@@ -50,7 +50,7 @@ function Bubble({ msg, isOut, onLongPress, myId }: {
     );
   }
 
-  // Receipt status — từ store (cập nhật real-time qua WebSocket)
+  // Receipt status - từ store (cập nhật real-time qua WebSocket)
   const receiptStatus = !isOut
     ? undefined  // chỉ show cho tin mình gửi
     : msg.pending
@@ -309,7 +309,7 @@ export function ChatScreen({ route, navigation }: Props) {
       const sent = isDirect ? await api.sendMsg(convId, body) : await api.sendGroupMsg(convId, body);
       store.updateMessage(convId, tempId, { ...sent, id: sent.id, pending: false, receiptStatus: 'sent' });
     } catch {
-      // Lưu vào offline queue — sẽ retry khi có mạng
+      // Lưu vào offline queue - sẽ retry khi có mạng
       enqueue({ tempId, convId, convType, body, queuedAt: new Date().toISOString(), retries: 0 });
       // Message vẫn hiện nhưng với icon pending (sẽ tự gửi lại)
     }
@@ -407,7 +407,7 @@ export function ChatScreen({ route, navigation }: Props) {
     }
   }
 
-  // Typing indicator — resolve username
+  // Typing indicator - resolve username
   const typingNames = Object.entries(store.typingUsers)
     .filter(([, v]) => v)
     .map(([uid]) => {

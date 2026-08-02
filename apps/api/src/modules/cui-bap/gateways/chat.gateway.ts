@@ -1,5 +1,5 @@
 /**
- * Cùi Bắp — WebSocket Gateway
+ * Cùi Bắp - WebSocket Gateway
  * Events đầy đủ gồm cả read receipts:
  *   → message_delivered  : khi recipient connect và có tin chưa nhận
  *   → message_read       : khi recipient gọi markRead
@@ -131,7 +131,7 @@ export class ChatGateway implements OnGatewayConnection, OnGatewayDisconnect {
       if (!allConvIds.length) return;
 
       // Tìm tin nhắn chưa có deliveredAt (gửi cho mình, chưa được nhận)
-      // — chỉ lấy tin nhắn KHÔNG do mình gửi
+      // - chỉ lấy tin nhắn KHÔNG do mình gửi
       for (const conv of [...convs, ...convs2]) {
         const otherUserId = conv.userAId === recipientId ? conv.userBId : conv.userAId;
 
@@ -167,7 +167,7 @@ export class ChatGateway implements OnGatewayConnection, OnGatewayDisconnect {
           message_ids:     ids,
         });
       }
-      // Group messages — notify undelivered
+      // Group messages - notify undelivered
       const memberships = await this.db.query.cbGroupMembers.findMany({
         where: eq(cbGroupMembers.userId, recipientId),
       });

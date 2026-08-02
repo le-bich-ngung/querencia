@@ -1,11 +1,11 @@
 <meta name="description" content="Rotate JPG, PNG, WebP images online for free. Rotate left/right, flip horizontal/vertical, set free angle. No upload needed."/>
 <meta name="keywords" content="rotate image online, flip image, rotate jpg, rotate png, free image rotation, image flipper online"/>
-<meta property="og:title" content="Rotate Image Online Free — Flip & Free Angle | Querencia"/>
+<meta property="og:title" content="Rotate Image Online Free - Flip & Free Angle | Querencia"/>
 <meta property="og:description" content="Rotate JPG, PNG, WebP images online for free. Rotate left/right, flip horizontal/vertical, set free angle. No upload needed."/>
 <meta property="og:type" content="website"/>
 <meta property="og:url" content="https://querencia.com.vn/#tools"/>
 <meta name="twitter:card" content="summary"/>
-<meta name="twitter:title" content="Rotate Image Online Free — Flip & Free Angle | Querencia"/>
+<meta name="twitter:title" content="Rotate Image Online Free - Flip & Free Angle | Querencia"/>
 <link rel="canonical" href="https://querencia.com.vn/#tools"/>
 <script type="application/ld+json">
 {
@@ -25,7 +25,7 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>Rotate Image Free — Querencia</title>
+<title>Rotate Image Free - Querencia</title>
 <meta name="description" content="Xoay ảnh trực tuyến <em data-i18n="t_subtitle">Free</em>. Rotate 90°, 180°, 270°, flip ngang/dọc, góc tự do. Không upload server, xử lý ngay trên trình duyệt.">
 
 
@@ -404,7 +404,7 @@
     100% trên trình duyệt · Không upload server
   </div>
   <h1 data-i18n="t_tool_title">Rotate Image <em>miễn phí</em></h1>
-  <p data-i18n="t_desc">Rotate, flip, free angle — tất cả ngay tại trình duyệt. Nhanh, an toàn, không giới hạn.</p>
+  <p data-i18n="t_desc">Rotate, flip, free angle - tất cả ngay tại trình duyệt. Nhanh, an toàn, không giới hạn.</p>
 </div>
 
 <!-- WORKSPACE -->
@@ -422,7 +422,7 @@
       </div>
       <h3 data-i18n="t_drop">Drop image here</h3>
       <p data-i18n="t_or">or <span class="browse" id="browseBtn" data-i18n="t_browse">choose from device</span></p>
-      <p data-i18n="t_drop_sub">PNG, JPG, WEBP, GIF — up to 30MB</p>
+      <p data-i18n="t_drop_sub">PNG, JPG, WEBP, GIF - up to 30MB</p>
     </div>
     <div id="canvas-wrap" style="display:none">
       <canvas id="preview-canvas"></canvas>
@@ -485,10 +485,10 @@
     <!-- Info -->
     <div class="card">
       <div class="card-title" data-i18n="t_info">Image Info</div>
-      <div class="info-row"><span data-i18n="t_orig_size">Original size</span><span id="infoSize">—</span></div>
+      <div class="info-row"><span data-i18n="t_orig_size">Original size</span><span id="infoSize">-</span></div>
       <div class="info-row"><span data-i18n="t_curr_angle">Current angle</span><span id="infoAngle">0°</span></div>
-      <div class="info-row"><span>Flip</span><span id="infoFlip">—</span></div>
-      <div class="info-row"><span>Định dạng</span><span id="infoFormat">—</span></div>
+      <div class="info-row"><span>Flip</span><span id="infoFlip">-</span></div>
+      <div class="info-row"><span>Định dạng</span><span id="infoFormat">-</span></div>
     </div>
 
     <!-- Format -->
@@ -607,7 +607,7 @@
     const parts = [];
     if (flipH) parts.push('ngang');
     if (flipV) parts.push('dọc');
-    document.getElementById('infoFlip').textContent = parts.length ? parts.join(' + ') : '—';
+    document.getElementById('infoFlip').textContent = parts.length ? parts.join(' + ') : '-';
   }
 
   // ── Free angle ──
@@ -695,7 +695,7 @@
     ctx.clearRect(0, 0, canvas.width, canvas.height);
     fileInput.value = '';
     ['infoSize','infoAngle','infoFlip','infoFormat'].forEach(id => {
-      document.getElementById(id).textContent = id === 'infoAngle' ? '0°' : '—';
+      document.getElementById(id).textContent = id === 'infoAngle' ? '0°' : '-';
     });
   }
 
@@ -726,7 +726,7 @@
 
 <script>
 (function(){
-  const _T = {en:{t_tool_title:'Rotate Image',t_subtitle:'<em>Free</em>',t_desc:'Rotate, flip, free angle — all right in your browser. Fast, safe, unlimited.',t_drop:'Drop image here',t_drop_sub:'PNG, JPG, WEBP, GIF — up to 30MB',t_or:'or',t_browse:'choose from device',t_quick_rotate:'Quick Rotate',t_flip:'Flip',t_free_angle:'Free Angle',t_angle_label:'Angle',t_info:'Image Info',t_orig_size:'Original size',t_curr_angle:'Current angle',t_format:'Save format',t_download:'Download',t_reset:'Reset',t_try_other:'Try another image',t_privacy:'🔒 Images never leave your browser'},vi:{t_tool_title:'Xoay ảnh',t_subtitle:'<em>miễn phí</em>',t_desc:'Xoay, lật, góc tự do — tất cả ngay tại trình duyệt. Nhanh, an toàn, không giới hạn.',t_drop:'Kéo thả ảnh vào đây',t_drop_sub:'PNG, JPG, WEBP, GIF — tối đa 30MB',t_or:'hoặc',t_browse:'chọn từ máy tính',t_quick_rotate:'Xoay nhanh',t_flip:'Lật ảnh',t_free_angle:'Góc tự do',t_angle_label:'Góc xoay',t_info:'Thông tin ảnh',t_orig_size:'Kích thước gốc',t_curr_angle:'Góc hiện tại',t_format:'Lưu định dạng',t_download:'Tải xuống',t_reset:'Đặt lại',t_try_other:'Chọn ảnh khác',t_privacy:'🔒 Ảnh không bao giờ rời trình duyệt'},ja:{t_tool_title:'画像回転',t_subtitle:'<em>無料</em>',t_desc:'回転、反転、自由角度 — すべてブラウザで。高速・安全・無制限。',t_drop:'画像をドロップ',t_drop_sub:'PNG, JPG, WEBP, GIF — 最大30MB',t_or:'または',t_browse:'デバイスから選択',t_quick_rotate:'クイック回転',t_flip:'反転',t_free_angle:'自由角度',t_angle_label:'角度',t_info:'画像情報',t_orig_size:'元のサイズ',t_curr_angle:'現在の角度',t_format:'保存形式',t_download:'ダウンロード',t_reset:'リセット',t_try_other:'別の画像を試す',t_privacy:'🔒 画像はブラウザ外に出ません'},es:{t_tool_title:'Rotar Imagen',t_subtitle:'<em>gratis</em>',t_desc:'Rotar, voltear, ángulo libre — todo en tu navegador. Rápido, seguro, sin límites.',t_drop:'Arrastra una imagen aquí',t_drop_sub:'PNG, JPG, WEBP, GIF — hasta 30MB',t_or:'o',t_browse:'elige desde el dispositivo',t_quick_rotate:'Rotación rápida',t_flip:'Voltear',t_free_angle:'Ángulo libre',t_angle_label:'Ángulo',t_info:'Info de imagen',t_orig_size:'Tamaño original',t_curr_angle:'Ángulo actual',t_format:'Formato de guardado',t_download:'Descargar',t_reset:'Restablecer',t_try_other:'Probar otra imagen',t_privacy:'🔒 Las imágenes nunca salen de tu navegador'}};
+  const _T = {en:{t_tool_title:'Rotate Image',t_subtitle:'<em>Free</em>',t_desc:'Rotate, flip, free angle - all right in your browser. Fast, safe, unlimited.',t_drop:'Drop image here',t_drop_sub:'PNG, JPG, WEBP, GIF - up to 30MB',t_or:'or',t_browse:'choose from device',t_quick_rotate:'Quick Rotate',t_flip:'Flip',t_free_angle:'Free Angle',t_angle_label:'Angle',t_info:'Image Info',t_orig_size:'Original size',t_curr_angle:'Current angle',t_format:'Save format',t_download:'Download',t_reset:'Reset',t_try_other:'Try another image',t_privacy:'🔒 Images never leave your browser'},vi:{t_tool_title:'Xoay ảnh',t_subtitle:'<em>miễn phí</em>',t_desc:'Xoay, lật, góc tự do - tất cả ngay tại trình duyệt. Nhanh, an toàn, không giới hạn.',t_drop:'Kéo thả ảnh vào đây',t_drop_sub:'PNG, JPG, WEBP, GIF - tối đa 30MB',t_or:'hoặc',t_browse:'chọn từ máy tính',t_quick_rotate:'Xoay nhanh',t_flip:'Lật ảnh',t_free_angle:'Góc tự do',t_angle_label:'Góc xoay',t_info:'Thông tin ảnh',t_orig_size:'Kích thước gốc',t_curr_angle:'Góc hiện tại',t_format:'Lưu định dạng',t_download:'Tải xuống',t_reset:'Đặt lại',t_try_other:'Chọn ảnh khác',t_privacy:'🔒 Ảnh không bao giờ rời trình duyệt'},ja:{t_tool_title:'画像回転',t_subtitle:'<em>無料</em>',t_desc:'回転、反転、自由角度 - すべてブラウザで。高速・安全・無制限。',t_drop:'画像をドロップ',t_drop_sub:'PNG, JPG, WEBP, GIF - 最大30MB',t_or:'または',t_browse:'デバイスから選択',t_quick_rotate:'クイック回転',t_flip:'反転',t_free_angle:'自由角度',t_angle_label:'角度',t_info:'画像情報',t_orig_size:'元のサイズ',t_curr_angle:'現在の角度',t_format:'保存形式',t_download:'ダウンロード',t_reset:'リセット',t_try_other:'別の画像を試す',t_privacy:'🔒 画像はブラウザ外に出ません'},es:{t_tool_title:'Rotar Imagen',t_subtitle:'<em>gratis</em>',t_desc:'Rotar, voltear, ángulo libre - todo en tu navegador. Rápido, seguro, sin límites.',t_drop:'Arrastra una imagen aquí',t_drop_sub:'PNG, JPG, WEBP, GIF - hasta 30MB',t_or:'o',t_browse:'elige desde el dispositivo',t_quick_rotate:'Rotación rápida',t_flip:'Voltear',t_free_angle:'Ángulo libre',t_angle_label:'Ángulo',t_info:'Info de imagen',t_orig_size:'Tamaño original',t_curr_angle:'Ángulo actual',t_format:'Formato de guardado',t_download:'Descargar',t_reset:'Restablecer',t_try_other:'Probar otra imagen',t_privacy:'🔒 Las imágenes nunca salen de tu navegador'}};
   function _apply(){
     const lang = localStorage.getItem('querencia_lang')||'en';
     const t = _T[lang]||_T.en;

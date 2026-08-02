@@ -1,9 +1,9 @@
 /**
- * Querencia — Design Tokens (TypeScript)
+ * Querencia - Design Tokens (TypeScript)
  * Dùng chung cho React Native (Cùi Bắp, Nope, LàNo)
  * và packages/ui (web components)
  *
- * Font: Plus Jakarta Sans — SIL Open Font License (free)
+ * Font: Plus Jakarta Sans - SIL Open Font License (free)
  * Colors: #4A7C59 | #FFFFFF | #111111
  */
 

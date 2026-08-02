@@ -16,7 +16,7 @@ export class FileShareController {
   constructor(private readonly service: FileShareService) {}
 
   // ── Upload ────────────────────────────────────────────────
-  // Public — no account needed
+  // Public - no account needed
   @Post('upload')
   @Public()
   @HttpCode(200)

@@ -1,5 +1,5 @@
 /**
- * Cùi Bắp Controller — REST endpoints
+ * Cùi Bắp Controller - REST endpoints
  * Migrated từ querencia-backend/api/app_logic.py (cuibap_router)
  * Prefix: /api/v1/cuibap
  */

@@ -75,7 +75,7 @@ export function useSocket() {
       store.updateMessage('', d.message_id, { isDeleted: true, content: null })
     );
 
-    // WebRTC signaling events — forwarded to useWebRTC hook
+    // WebRTC signaling events - forwarded to useWebRTC hook
     // call_offer, call_answer, call_ice, call_end, call_reject
 
     return () => { socket.disconnect(); };

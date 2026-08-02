@@ -35,13 +35,13 @@ class User(Base):
     # Gói đăng ký: "free" hoặc "pro"
     plan = Column(String, default="free")
 
-    # Xác minh email — False cho đến khi người dùng click link xác nhận
+    # Xác minh email - False cho đến khi người dùng click link xác nhận
     is_verified = Column(Boolean, default=False)
 
-    # Token dùng 1 lần để xác minh email — xóa sau khi dùng
+    # Token dùng 1 lần để xác minh email - xóa sau khi dùng
     verification_token = Column(String, nullable=True)
 
-    # Google OAuth — lưu Google ID nếu đăng nhập bằng Google
+    # Google OAuth - lưu Google ID nếu đăng nhập bằng Google
     google_id = Column(String, nullable=True, unique=True)
 
     # Thời điểm tạo tài khoản - tự động ghi khi tạo
@@ -74,7 +74,7 @@ class Message(Base):
 
 
 # ============================================================
-# CÙI BẮP — App nhắn tin
+# CÙI BẮP - App nhắn tin
 # ============================================================
 
 class CBConversation(Base):
@@ -85,7 +85,7 @@ class CBConversation(Base):
     __tablename__ = "cb_conversations"
 
     id = Column(Integer, primary_key=True, index=True)
-    # 2 người tham gia — user_a_id < user_b_id (để tránh tạo trùng)
+    # 2 người tham gia - user_a_id < user_b_id (để tránh tạo trùng)
     user_a_id = Column(Integer, ForeignKey("users.id"), nullable=False)
     user_b_id = Column(Integer, ForeignKey("users.id"), nullable=False)
     created_at = Column(DateTime(timezone=True), server_default=func.now())
@@ -97,7 +97,7 @@ class CBConversation(Base):
 
 class CBGroup(Base):
     """
-    Nhóm chat — tối đa 100 người, mỗi user tối đa 10 nhóm
+    Nhóm chat - tối đa 100 người, mỗi user tối đa 10 nhóm
     """
     __tablename__ = "cb_groups"
 
@@ -157,7 +157,7 @@ class CBMessage(Base):
     is_deleted = Column(Boolean, default=False)    # Xóa mềm
     is_pinned = Column(Boolean, default=False)
 
-    # Scheduled message — None = gửi ngay
+    # Scheduled message - None = gửi ngay
     scheduled_at = Column(DateTime(timezone=True), nullable=True)
     is_sent = Column(Boolean, default=True)
 
@@ -185,7 +185,7 @@ class CBGroupMessage(Base):
     file_size = Column(BigInteger, nullable=True)
     file_expires_at = Column(DateTime(timezone=True), nullable=True)
 
-    # Mention — lưu danh sách user_id được mention dưới dạng JSON string
+    # Mention - lưu danh sách user_id được mention dưới dạng JSON string
     mentions = Column(Text, nullable=True)  # vd: "[1,2,3]"
 
     reply_to_id = Column(Integer, ForeignKey("cb_group_messages.id"), nullable=True)
@@ -236,7 +236,7 @@ class CBGroupReaction(Base):
 
 class CBReadReceipt(Base):
     """
-    Đã đọc tin nhắn chưa (Read receipt) — cho chat 1-1
+    Đã đọc tin nhắn chưa (Read receipt) - cho chat 1-1
     """
     __tablename__ = "cb_read_receipts"
 
@@ -303,7 +303,7 @@ class CBUserSettings(Base):
 
 
 # ============================================================
-# NOPE — App chia sẻ kinh nghiệm
+# NOPE - App chia sẻ kinh nghiệm
 # ============================================================
 
 class NopePost(Base):

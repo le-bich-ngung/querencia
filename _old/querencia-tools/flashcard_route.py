@@ -3,13 +3,13 @@
 # NHIỆM VỤ: API cho Flashcards tool
 #
 # Endpoints:
-#   GET    /flashcards                           — lấy tất cả bộ thẻ
-#   POST   /flashcards                           — tạo bộ thẻ mới
-#   PUT    /flashcards/{deck_id}                 — đổi tên / emoji
-#   DELETE /flashcards/{deck_id}                 — xóa bộ thẻ
-#   POST   /flashcards/{deck_id}/cards           — thêm thẻ
-#   DELETE /flashcards/{deck_id}/cards/{card_id} — xóa thẻ
-#   POST   /flashcards/sync                      — sync local → server
+#   GET    /flashcards                           - lấy tất cả bộ thẻ
+#   POST   /flashcards                           - tạo bộ thẻ mới
+#   PUT    /flashcards/{deck_id}                 - đổi tên / emoji
+#   DELETE /flashcards/{deck_id}                 - xóa bộ thẻ
+#   POST   /flashcards/{deck_id}/cards           - thêm thẻ
+#   DELETE /flashcards/{deck_id}/cards/{card_id} - xóa thẻ
+#   POST   /flashcards/sync                      - sync local → server
 # ============================================================
 
 import secrets

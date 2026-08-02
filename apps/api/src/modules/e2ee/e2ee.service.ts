@@ -1,5 +1,5 @@
 /**
- * E2EE Key Server — chỉ lưu public keys, KHÔNG bao giờ thấy private keys
+ * E2EE Key Server - chỉ lưu public keys, KHÔNG bao giờ thấy private keys
  * 
  * Endpoints:
  *   POST /e2ee/keys           → upload public key bundle khi đăng ký
@@ -58,7 +58,7 @@ export class E2eeService {
     return { ok: true, preKeysUploaded: bundle.oneTimePreKeys.length };
   }
 
-  // Fetch public key bundle của người nhận — server consume 1 one-time prekey
+  // Fetch public key bundle của người nhận - server consume 1 one-time prekey
   async getKeyBundle(requesterId: string, targetUserId: string) {
     const identity = await this.db.query.e2eeKeys.findFirst({
       where: eq(e2eeKeys.userId, targetUserId),

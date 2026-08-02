@@ -1,5 +1,5 @@
 // ============================================================
-// FILE: js/login-mfa.js — Web Querencia
+// FILE: js/login-mfa.js - Web Querencia
 // Xử lý luồng đăng nhập có Push MFA
 // Thêm vào trang login sau khi user submit email+password đúng
 // ============================================================

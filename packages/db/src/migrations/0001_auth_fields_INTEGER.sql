@@ -1,5 +1,5 @@
 -- ============================================================
--- Migration 0001 — PHIÊN BẢN DÀNH CHO DATABASE CŨ
+-- Migration 0001 - PHIÊN BẢN DÀNH CHO DATABASE CŨ
 -- Database cũ dùng INTEGER primary key (không phải UUID)
 -- File này CHỈ thêm cột mới, KHÔNG tạo lại bảng đã có
 -- An toàn với data cũ: tất cả dùng IF NOT EXISTS / ADD COLUMN IF NOT EXISTS
@@ -15,7 +15,7 @@ ALTER TABLE users ADD COLUMN IF NOT EXISTS updated_at TIMESTAMPTZ DEFAULT NOW();
 -- Copy username → name (nếu name chưa có)
 UPDATE users SET name = username WHERE name IS NULL AND username IS NOT NULL;
 
--- ── 2. Bảng accounts (OAuth — tham chiếu INTEGER users.id) ──
+-- ── 2. Bảng accounts (OAuth - tham chiếu INTEGER users.id) ──
 CREATE TABLE IF NOT EXISTS accounts (
   id                   SERIAL PRIMARY KEY,
   user_id              INTEGER NOT NULL REFERENCES users(id) ON DELETE CASCADE,
@@ -132,10 +132,10 @@ CREATE TABLE IF NOT EXISTS e2ee_pre_keys (
   created_at TIMESTAMPTZ NOT NULL DEFAULT NOW()
 );
 
--- ── 9. Nope tables — thêm cột nếu chưa có ────────────────────
+-- ── 9. Nope tables - thêm cột nếu chưa có ────────────────────
 ALTER TABLE nope_posts ADD COLUMN IF NOT EXISTS updated_at TIMESTAMPTZ DEFAULT NOW();
 
--- Nope reports — đổi tên column nếu cần (tùy schema cũ)
+-- Nope reports - đổi tên column nếu cần (tùy schema cũ)
 -- Bỏ qua nếu đã có
 
 DO $$ BEGIN RAISE NOTICE 'Migration 0001 (INTEGER version) completed successfully!'; END $$;

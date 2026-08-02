@@ -1,6 +1,6 @@
 'use client';
 /**
- * Read — Bài viết / Blog nội bộ Querencia
+ * Read - Bài viết / Blog nội bộ Querencia
  * Content lấy từ /api/v1/read/posts (markdown rendered)
  * Smart History: track bài đã đọc + resume scroll
  */
@@ -22,7 +22,7 @@ interface Article {
 
 const CATEGORIES = ['Tất cả', 'Tâm lý', 'Sức khỏe', 'Công việc', 'Tài chính', 'Cuộc sống'];
 
-// Static articles — sẽ được replace bằng API call khi CMS ready
+// Static articles - sẽ được replace bằng API call khi CMS ready
 const ARTICLES: Article[] = [
   {
     slug: 'lam-the-nao-de-noi-chuyen-voi-chinh-minh',

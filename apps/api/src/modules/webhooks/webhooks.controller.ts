@@ -1,5 +1,5 @@
 /**
- * Webhooks Controller — xử lý Paddle payment webhooks
+ * Webhooks Controller - xử lý Paddle payment webhooks
  * Quan trọng: đây là điểm cấp Q cho user sau khi thanh toán thành công
  *
  * Security:
@@ -48,7 +48,7 @@ export class WebhooksController {
 
     if (event.type === 'payment_completed' && event.userId && event.days && event.orderId) {
       try {
-        // 1. Record order (idempotent — onConflictDoNothing)
+        // 1. Record order (idempotent - onConflictDoNothing)
         await this.paymentsSvc.recordOrder(
           event.userId,
           event.days,
@@ -62,7 +62,7 @@ export class WebhooksController {
         this.logger.log(`Granted Q for user ${event.userId}: ${event.days} days`);
       } catch (e) {
         this.logger.error('Failed to process payment:', e);
-        // Trả 200 để Paddle không retry — đã log lỗi để xử lý manual
+        // Trả 200 để Paddle không retry - đã log lỗi để xử lý manual
       }
     }
 

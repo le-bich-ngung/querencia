@@ -1,5 +1,5 @@
 /**
- * Redis Module — inject db0 (session) và db1 (quota) vào app
+ * Redis Module - inject db0 (session) và db1 (quota) vào app
  */
 import { Module, Global } from '@nestjs/common';
 import { ConfigService } from '@nestjs/config';

@@ -3,7 +3,7 @@
 <head>
 <meta charset="UTF-8"/>
 <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
-<title>Base64 Tool — Querencia</title>
+<title>Base64 Tool - Querencia</title>
 <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700&family=DM+Mono:wght@400;500&display=swap" rel="stylesheet"/>
 <style>
 *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
@@ -91,7 +91,7 @@ input.tz-input:focus, select.tz-select:focus { border-color: var(--accent); }
 
 <div class="page-header">
   <h1>Encode / <span>Decode</span> Tools</h1>
-  <p>Base64, URL, HTML encoding — and Timezone Converter</p>
+  <p>Base64, URL, HTML encoding - and Timezone Converter</p>
 </div>
 
 <div class="container">
@@ -123,7 +123,7 @@ input.tz-input:focus, select.tz-select:focus { border-color: var(--accent); }
       <div class="stats-row">
         <span class="stat">Input: <span id="b64InSize">0</span> chars</span>
         <span class="stat">Output: <span id="b64OutSize">0</span> chars</span>
-        <span class="stat">Ratio: <span id="b64Ratio">—</span></span>
+        <span class="stat">Ratio: <span id="b64Ratio">-</span></span>
       </div>
       <div class="btn-row">
         <button class="btn sm" onclick="copyB64()">⎘ Copy Output</button>
@@ -229,7 +229,7 @@ function runB64() {
   document.getElementById('b64Output').value = output;
   document.getElementById('b64InSize').textContent = input.length;
   document.getElementById('b64OutSize').textContent = output.length;
-  document.getElementById('b64Ratio').textContent = input.length ? (output.length / input.length).toFixed(2) + '×' : '—';
+  document.getElementById('b64Ratio').textContent = input.length ? (output.length / input.length).toFixed(2) + '×' : '-';
 }
 
 function swapB64() {
@@ -248,7 +248,7 @@ function clearB64() {
   document.getElementById('b64Preview').style.display = 'none';
   document.getElementById('b64Error').style.display = 'none';
   ['b64InSize','b64OutSize'].forEach(id => document.getElementById(id).textContent = '0');
-  document.getElementById('b64Ratio').textContent = '—';
+  document.getElementById('b64Ratio').textContent = '-';
 }
 
 function copyB64() { copyField('b64Output'); }

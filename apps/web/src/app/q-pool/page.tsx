@@ -1,6 +1,6 @@
 'use client';
 /**
- * Q Pool — tặng treo cho cộng đồng
+ * Q Pool - tặng treo cho cộng đồng
  * Ai có Q expiring sắp hết → tặng treo → người dùng toàn thế giới vào nhận
  */
 import { useState } from 'react';
@@ -18,7 +18,7 @@ const QSymbol = ({ size = 14, color = 'currentColor' }: { size?: number; color?:
   </svg>
 );
 
-// Mock data — sẽ thay bằng real API
+// Mock data - sẽ thay bằng real API
 const MOCK_POOL = [
   { id: '1', amount: 2, type: 'expiring',  expiresIn: '1h 42m', donor: null,     claimed: 0 },
   { id: '2', amount: 1, type: 'expiring',  expiresIn: '2h 15m', donor: 'An N.',  claimed: 3 },
@@ -68,7 +68,7 @@ export default function QPoolPage() {
           </h1>
         </div>
         <p style={{ fontSize: '0.9rem', color: 'var(--text-secondary)', lineHeight: 1.6, marginTop: 6 }}>
-          Q được tặng treo bởi cộng đồng — ai cần vào nhận. Mỗi lần nhận 1-2 Q.
+          Q được tặng treo bởi cộng đồng - ai cần vào nhận. Mỗi lần nhận 1-2 Q.
           Q expiring hết hạn sau 24h kể từ khi được cấp cho người tặng.
         </p>
       </div>

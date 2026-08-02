@@ -81,7 +81,7 @@
   <div class="result-section">
     <div class="amount-label">Kết quả</div>
     <div class="amount-row">
-      <div class="result-amount" id="resultAmount">—</div>
+      <div class="result-amount" id="resultAmount">-</div>
       <select id="toCur" class="currency-select" onchange="convert()"></select>
     </div>
     <div class="result-rate" id="resultRate"></div>
@@ -163,7 +163,7 @@ async function convert() {
 
   document.getElementById('resultAmount').textContent = formatNum(result, to);
   document.getElementById('resultRate').textContent = `1 ${from} = ${formatNum(rate, to)} ${to}`;
-  document.getElementById('resultUpdated').textContent = `Cập nhật: ${r._updated || '—'}`;
+  document.getElementById('resultUpdated').textContent = `Cập nhật: ${r._updated || '-'}`;
 
   // Multi
   const grid = document.getElementById('multiGrid');
@@ -202,7 +202,7 @@ function renderRateTable(base, amount) {
   const r = rates[base] || {};
   document.getElementById('rateTable').innerHTML = CURRENCIES.map(c => {
     const val = amount * (r[c.code] || 0);
-    return `<div class="rate-row"><span class="rate-cur">${c.flag} ${c.code} — ${c.name}</span><span class="rate-val">${formatNum(val, c.code)}</span></div>`;
+    return `<div class="rate-row"><span class="rate-cur">${c.flag} ${c.code} - ${c.name}</span><span class="rate-val">${formatNum(val, c.code)}</span></div>`;
   }).join('');
 }
 

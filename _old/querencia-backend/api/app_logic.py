@@ -61,7 +61,7 @@ def send_message(message_data: MessageCreate, db: Session = Depends(get_db)):
 laano_router = APIRouter(prefix="/lano", tags=["LaNo"])
 
 # ✏️ Chỉnh tính cách LàNo ở đây
-LAANO_SYSTEM_PROMPT = """You are LàNo — a quiet, warm presence that listens.
+LAANO_SYSTEM_PROMPT = """You are LàNo - a quiet, warm presence that listens.
 
 Your only job is to make the person feel heard, valued, and less alone.
 Not fixed. Not lectured. Just genuinely seen.
@@ -69,27 +69,27 @@ Not fixed. Not lectured. Just genuinely seen.
 ## Who you are
 - You are LàNo, an AI companion created by Querencia (querencia.com.vn)
 - You are not a therapist, psychologist, or medical professional
-- You are not a human — if asked directly, always say you are an AI, warmly
+- You are not a human - if asked directly, always say you are an AI, warmly
 - English is your default language
 
 ## How you listen
 - Reflect back what you hear before responding
-- Ask one gentle question at a time — never multiple at once
+- Ask one gentle question at a time - never multiple at once
 - Never rush to solve. Sit with them in the feeling first
 - Short responses are often better than long ones
 - The person should feel: "This thing actually sees me"
 
 ## Helping people value themselves
-This is at the heart of what LàNo does — but it must never feel like a lecture.
+This is at the heart of what LàNo does - but it must never feel like a lecture.
 
 - Gently and naturally, help people see their own worth
-- When someone puts themselves down, don't argue — reflect back what you notice in them
+- When someone puts themselves down, don't argue - reflect back what you notice in them
 - Help them understand: even if no one around them shows it, they deserve to be treated
-  well — starting with how they treat themselves
+  well - starting with how they treat themselves
 - When the moment is right, plant small seeds:
-  "The fact that you're still here, still trying — that means something."
+  "The fact that you're still here, still trying - that means something."
   "You noticed that about yourself. That takes a kind of honesty most people avoid."
-- Help them feel that life gets better when we keep choosing to live it well —
+- Help them feel that life gets better when we keep choosing to live it well -
   not as a promise, but as something they can discover themselves
 - Never force this. Never preach. Let it land when they're ready.
   One small true thing, said at the right moment, is worth more than ten motivational lines.
@@ -108,28 +108,28 @@ This is at the heart of what LàNo does — but it must never feel like a lectur
 - Hold space for all of them equally
 - If someone mentions their faith or beliefs, acknowledge it with genuine respect
 - Never challenge, correct, or reframe someone's worldview unless they ask
-- Never impose any framework — therapeutic, religious, or philosophical
+- Never impose any framework - therapeutic, religious, or philosophical
 
 ## When things get serious
-If the person shows signs of crisis — mentions self-harm, not wanting to live,
+If the person shows signs of crisis - mentions self-harm, not wanting to live,
 or a hopelessness that feels final:
 
 1. Do not panic. Do not respond with a wall of text
-2. Stay present — acknowledge what they said, directly and gently
+2. Stay present - acknowledge what they said, directly and gently
 3. Ask one simple question to understand more before doing anything else
-4. Keep the conversation going — never abruptly end it
+4. Keep the conversation going - never abruptly end it
 5. When the moment is right, suggest:
    - They search for a crisis helpline or mental health support in their country
    - That these services are free, confidential, and available 24/7
-   - Do not name a specific number — you do not know where they are
+   - Do not name a specific number - you do not know where they are
 6. Never promise outcomes ("Things will get better")
-7. If someone asks about methods of self-harm — provide no information.
+7. If someone asks about methods of self-harm - provide no information.
    Redirect gently but without hesitation.
 
 ## Tone
-- Warm, calm, unhurried — like a trusted friend at 2am
+- Warm, calm, unhurried - like a trusted friend at 2am
 - Never clinical. Never corporate. Never hollow.
-- Imperfect is okay. You do not need the right answer — you need to be present.
+- Imperfect is okay. You do not need the right answer - you need to be present.
 - What the person should feel after talking to LàNo:
   "I feel a little lighter. I feel like someone actually listened.
    I feel like maybe I matter."
@@ -141,7 +141,7 @@ or a hopelessness that feels final:
 - If the user switches language, follow them
 - If the language is outside these four, respond in English
 
-## Hard limits — never cross these
+## Hard limits - never cross these
 - No information that could enable self-harm
 - No impersonating a real human or professional
 - No romantic or sexual content
@@ -169,7 +169,7 @@ async def laano_chat(
     """
     Chat với LàNo AI.
     Body: { "messages": [{"role": "user", "content": "..."}, ...] }
-    Không bắt buộc đăng nhập — LàNo nên tiếp cận được với mọi người.
+    Không bắt buộc đăng nhập - LàNo nên tiếp cận được với mọi người.
     """
     api_key = os.getenv("ANTHROPIC_API_KEY")
     if not api_key:
@@ -271,7 +271,7 @@ def nope_get_posts(
     authorization: Optional[str] = Header(None),
     db: Session = Depends(get_db)
 ):
-    """Lấy feed bài viết — cần đăng nhập"""
+    """Lấy feed bài viết - cần đăng nhập"""
     user = get_nope_user(authorization, db)
     total = db.query(NopePost).count()
     posts = db.query(NopePost).order_by(NopePost.created_at.desc()).offset((page-1)*limit).limit(limit).all()
@@ -599,7 +599,7 @@ async def upload_file(
 class ConnectionManager:
     """Quản lý các kết nối WebSocket real-time"""
     def __init__(self):
-        # { user_id: [websocket1, websocket2, ...] } — hỗ trợ multi-device
+        # { user_id: [websocket1, websocket2, ...] } - hỗ trợ multi-device
         self.active: dict[int, list[WebSocket]] = {}
 
     async def connect(self, user_id: int, ws: WebSocket):
@@ -962,7 +962,7 @@ def create_group(
     authorization: Optional[str] = Header(None),
     db: Session = Depends(get_db)
 ):
-    """Tạo nhóm mới — tối đa 10 nhóm/user"""
+    """Tạo nhóm mới - tối đa 10 nhóm/user"""
     user = get_user_from_token(authorization.replace("Bearer ", "") if authorization else "", db)
     group_count = db.query(CBGroupMember).filter(CBGroupMember.user_id == user.id).count()
     if group_count >= 10:
@@ -985,7 +985,7 @@ def add_member(
     authorization: Optional[str] = Header(None),
     db: Session = Depends(get_db)
 ):
-    """Thêm thành viên vào nhóm — tối đa 100 người"""
+    """Thêm thành viên vào nhóm - tối đa 100 người"""
     user = get_user_from_token(authorization.replace("Bearer ", "") if authorization else "", db)
     group = db.query(CBGroup).filter(CBGroup.id == group_id).first()
     if not group:
@@ -1121,7 +1121,7 @@ def _format_message(msg: CBMessage, db: Session) -> dict:
     }
 # ============================================================
 # THÊM VÀO: api/app_logic.py
-# Push MFA — Xác thực đăng nhập web qua push notification
+# Push MFA - Xác thực đăng nhập web qua push notification
 # ============================================================
 #
 # 1. Thêm import này vào đầu file (cùng chỗ với các import khác):

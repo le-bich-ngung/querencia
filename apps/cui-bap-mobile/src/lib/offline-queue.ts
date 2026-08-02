@@ -51,7 +51,7 @@ export function getQueueSize(): number {
   return readQueue().length;
 }
 
-// ── Flush — gửi tất cả pending khi mạng có lại ───────────────
+// ── Flush - gửi tất cả pending khi mạng có lại ───────────────
 let isFlushing = false;
 
 export async function flushQueue(): Promise<void> {
@@ -74,7 +74,7 @@ export async function flushQueue(): Promise<void> {
       });
       dequeue(msg.tempId);
     } catch {
-      // Update retry count — bỏ qua nếu đã retry > 5 lần
+      // Update retry count - bỏ qua nếu đã retry > 5 lần
       const q = readQueue();
       const idx = q.findIndex(m => m.tempId === msg.tempId);
       if (idx >= 0) {
@@ -82,7 +82,7 @@ export async function flushQueue(): Promise<void> {
         if (q[idx].retries > 5) {
           // Đánh dấu failed
           store.updateMessage(msg.convId, msg.tempId, {
-            isDeleted: true, content: '[Gửi thất bại — không có mạng]', pending: false,
+            isDeleted: true, content: '[Gửi thất bại - không có mạng]', pending: false,
           });
           q.splice(idx, 1); // xóa khỏi queue
         }

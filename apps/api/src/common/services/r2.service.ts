@@ -1,5 +1,5 @@
 /**
- * R2 Service — Cloudflare R2 file upload
+ * R2 Service - Cloudflare R2 file upload
  * Migrated từ querencia-backend/api/app_logic.py (boto3 r2 client)
  * Dùng cho: Cùi Bắp file upload, Nope image upload
  */
@@ -9,7 +9,7 @@ import { S3Client, PutObjectCommand, DeleteObjectCommand } from '@aws-sdk/client
 import * as path from 'path';
 import { randomUUID } from 'crypto';
 
-const MAX_FILE_SIZE = 20 * 1024 * 1024; // 20MB — giữ y chang code cũ
+const MAX_FILE_SIZE = 20 * 1024 * 1024; // 20MB - giữ y chang code cũ
 
 // MIME type → extension safe list
 const ALLOWED_TYPES: Record<string, string> = {
@@ -48,7 +48,7 @@ export class R2Service {
     folder: string,    // 'cuibap' | 'nope'
     userId: string,
   ): Promise<{ url: string; key: string; size: number; name: string; expiresAt?: Date }> {
-    // 1. Validate size — giữ y chang code cũ (20MB)
+    // 1. Validate size - giữ y chang code cũ (20MB)
     if (file.size > MAX_FILE_SIZE) {
       throw new BadRequestException('File quá lớn, tối đa 20MB');
     }
@@ -57,7 +57,7 @@ export class R2Service {
     const ext = ALLOWED_TYPES[file.mimetype]
       ?? (path.extname(file.originalname).replace('.', '') || 'bin');
 
-    // 3. Unique key — giữ pattern từ code cũ: uploads/{userId}/{uuid}.{ext}
+    // 3. Unique key - giữ pattern từ code cũ: uploads/{userId}/{uuid}.{ext}
     const key = `${folder}/${userId}/${randomUUID()}.${ext}`;
 
     // 4. Upload lên R2
@@ -86,7 +86,7 @@ export class R2Service {
       await this.client.send(new DeleteObjectCommand({ Bucket: this.bucket, Key: key }));
       this.logger.log(`[R2] Deleted: ${key}`);
     } catch (e) {
-      this.logger.warn(`[R2] Delete failed: ${key} — ${e}`);
+      this.logger.warn(`[R2] Delete failed: ${key} - ${e}`);
     }
   }
 }

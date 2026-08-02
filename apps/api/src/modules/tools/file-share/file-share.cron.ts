@@ -8,7 +8,7 @@ export class FileShareCron {
 
   constructor(private readonly service: FileShareService) {}
 
-  // Run every hour — clean up expired files
+  // Run every hour - clean up expired files
   @Cron(CronExpression.EVERY_HOUR)
   async cleanupExpired() {
     const deleted = await this.service.deleteExpired();

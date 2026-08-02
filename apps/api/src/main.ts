@@ -16,7 +16,7 @@ async function bootstrap() {
   const app    = await NestFactory.create(AppModule, { logger: ['error','warn','log'] });
   const logger = new Logger('Bootstrap');
 
-  // CORS — cho phép frontend gọi thẳng API (bypass Vercel rewrite nếu cần)
+  // CORS - cho phép frontend gọi thẳng API (bypass Vercel rewrite nếu cần)
   app.enableCors({
     origin: (origin, callback) => {
       // Cho phép request không có Origin (curl, server-to-server, Postman...)
@@ -40,7 +40,7 @@ async function bootstrap() {
     forbidNonWhitelisted: false,
     transformOptions: { enableImplicitConversion: true },
   }));
-  // Swagger — chỉ dev
+  // Swagger - chỉ dev
   if (process.env.NODE_ENV !== 'production') {
     const config = new DocumentBuilder()
       .setTitle('Querencia API')
@@ -52,7 +52,7 @@ async function bootstrap() {
     logger.log('Swagger: http://localhost:3001/api/docs');
   }
   const port = process.env.PORT_API ?? 3001;
-  await app.listen(port);
+  await app.listen(port, '0.0.0.0');
   logger.log(`API running on port ${port}`);
 }
 bootstrap();

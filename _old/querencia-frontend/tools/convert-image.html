@@ -1,11 +1,11 @@
 <meta name="description" content="Convert images between JPG, PNG, WebP, GIF, BMP, ICO online for free. No upload to server, instant conversion in browser."/>
 <meta name="keywords" content="convert image format, jpg to png, png to webp, webp to jpg, image converter online, free format converter"/>
-<meta property="og:title" content="Convert Image Format Online Free — JPG PNG WebP | Querencia"/>
+<meta property="og:title" content="Convert Image Format Online Free - JPG PNG WebP | Querencia"/>
 <meta property="og:description" content="Convert images between JPG, PNG, WebP, GIF, BMP, ICO online for free. No upload to server, instant conversion in browser."/>
 <meta property="og:type" content="website"/>
 <meta property="og:url" content="https://querencia.com.vn/#tools"/>
 <meta name="twitter:card" content="summary"/>
-<meta name="twitter:title" content="Convert Image Format Online Free — JPG PNG WebP | Querencia"/>
+<meta name="twitter:title" content="Convert Image Format Online Free - JPG PNG WebP | Querencia"/>
 <link rel="canonical" href="https://querencia.com.vn/#tools"/>
 <script type="application/ld+json">
 {
@@ -25,7 +25,7 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>Convert Image — Querencia</title>
+<title>Convert Image - Querencia</title>
 <meta name="description" content="Chuyển đổi định dạng ảnh miễn phí: JPG, PNG, WEBP, GIF, BMP, ICO. Điều chỉnh chất lượng, xem trước kích thước file. Không upload server.">
 
 
@@ -436,7 +436,7 @@
 <div class="hero">
   <div class="hero-eyebrow"><span data-i18n="t_tool_title">Image Converter</span></div>
   <h1 data-i18n="t_subtitle">Convert format <span class="hi">tức thì</span></h1>
-  <p data-i18n="t_desc">JPG · PNG · WEBP · GIF · BMP · ICO — convert freely, không mất ảnh gốc, không upload server.</p>
+  <p data-i18n="t_desc">JPG · PNG · WEBP · GIF · BMP · ICO - convert freely, không mất ảnh gốc, không upload server.</p>
 </div>
 
 <!-- Format target bar -->
@@ -478,11 +478,11 @@
         </svg>
       </div>
       <h3 data-i18n="t_drop">Drop image here</h3>
-      <p data-i18n="t_or">or <span class="browse" id="browseBtn" data-i18n="t_browse">choose from device</span><br data-i18n="t_drop_sub">PNG, JPG, WEBP, GIF, BMP — up to 30MB</p>
+      <p data-i18n="t_or">or <span class="browse" id="browseBtn" data-i18n="t_browse">choose from device</span><br data-i18n="t_drop_sub">PNG, JPG, WEBP, GIF, BMP - up to 30MB</p>
     </div>
     <div id="canvas-wrap" style="display:none">
       <canvas id="preview-canvas"></canvas>
-      <div class="canvas-label" id="canvasLabel">—</div>
+      <div class="canvas-label" id="canvasLabel">-</div>
     </div>
   </div>
   <input type="file" id="fileInput" accept="image/*">
@@ -520,12 +520,12 @@
       <div class="size-compare">
         <div class="size-box">
           <div class="sz-label" data-i18n="t_orig">Original</div>
-          <div class="sz-val" id="origSize">—</div>
+          <div class="sz-val" id="origSize">-</div>
         </div>
         <div class="size-arrow">→</div>
         <div class="size-box">
           <div class="sz-label" data-i18n="t_after">After</div>
-          <div class="sz-val" id="outSize">—</div>
+          <div class="sz-val" id="outSize">-</div>
         </div>
       </div>
       <div class="sz-saving" id="szSaving"></div>
@@ -534,10 +534,10 @@
     <!-- Info -->
     <div class="card">
       <div class="card-title" data-i18n="t_size_info">Image info</div>
-      <div class="info-row"><span>Kích thước</span><span id="infoWH">—</span></div>
-      <div class="info-row"><span>Định dạng gốc</span><span id="infoSrcFmt">—</span></div>
+      <div class="info-row"><span>Kích thước</span><span id="infoWH">-</span></div>
+      <div class="info-row"><span>Định dạng gốc</span><span id="infoSrcFmt">-</span></div>
       <div class="info-row"><span>Chuyển sang</span><span id="infoDstFmt">PNG</span></div>
-      <div class="info-row"><span>Có transparency</span><span id="infoAlpha">—</span></div>
+      <div class="info-row"><span>Có transparency</span><span id="infoAlpha">-</span></div>
     </div>
 
     <div>
@@ -782,11 +782,11 @@
     ctx.clearRect(0, 0, canvas.width, canvas.height);
     fileInput.value = '';
     enableControls(false);
-    ['infoWH','infoSrcFmt','infoAlpha'].forEach(id => document.getElementById(id).textContent = '—');
-    document.getElementById('origSize').textContent = '—';
-    document.getElementById('outSize').textContent = '—';
+    ['infoWH','infoSrcFmt','infoAlpha'].forEach(id => document.getElementById(id).textContent = '-');
+    document.getElementById('origSize').textContent = '-';
+    document.getElementById('outSize').textContent = '-';
     document.getElementById('szSaving').textContent = '';
-    document.getElementById('canvasLabel').textContent = '—';
+    document.getElementById('canvasLabel').textContent = '-';
   }
 
   // ── Helpers ──
@@ -812,7 +812,7 @@
 
 <script>
 (function(){
-  const _T = {en:{t_tool_title:'Image Converter',t_subtitle:'Convert format',t_desc:'JPG · PNG · WEBP · GIF · BMP · ICO — convert freely, original preserved, no upload.',t_convert_to:'Convert to format',t_drop:'Drop image here',t_drop_sub:'PNG, JPG, WEBP, GIF, BMP — up to 30MB',t_or:'or',t_browse:'choose from device',t_size_info:'Image info',t_orig:'Original',t_after:'After',t_compare:'Size comparison',t_quality:'Quality',t_download:'Download',t_try_other:'Try another image',t_privacy:'🔒 Images never leave your browser',t_no_compress:'no compression'},vi:{t_tool_title:'Chuyển Định Dạng Ảnh',t_subtitle:'Chuyển định dạng',t_desc:'JPG · PNG · WEBP · GIF · BMP · ICO — chuyển đổi tự do, không mất ảnh gốc, không upload server.',t_convert_to:'Chuyển sang định dạng',t_drop:'Kéo thả ảnh vào đây',t_drop_sub:'PNG, JPG, WEBP, GIF, BMP — tối đa 30MB',t_or:'hoặc',t_browse:'chọn từ máy tính',t_size_info:'Thông tin ảnh',t_orig:'Gốc',t_after:'Sau',t_compare:'So sánh kích thước',t_quality:'Chất lượng',t_download:'Tải xuống',t_try_other:'Chọn ảnh khác',t_privacy:'🔒 Ảnh không bao giờ rời trình duyệt',t_no_compress:'không nén'},ja:{t_tool_title:'画像形式変換',t_subtitle:'形式変換',t_desc:'JPG · PNG · WEBP · GIF · BMP · ICO — 自由に変換、元画像を保持、アップロード不要。',t_convert_to:'変換先の形式',t_drop:'画像をドロップ',t_drop_sub:'PNG, JPG, WEBP, GIF, BMP — 最大30MB',t_or:'または',t_browse:'デバイスから選択',t_size_info:'画像情報',t_orig:'元',t_after:'変換後',t_compare:'サイズ比較',t_quality:'品質',t_download:'ダウンロード',t_try_other:'別の画像を試す',t_privacy:'🔒 画像はブラウザ外に出ません',t_no_compress:'圧縮なし'},es:{t_tool_title:'Convertidor de Imagen',t_subtitle:'Convertir formato',t_desc:'JPG · PNG · WEBP · GIF · BMP · ICO — convierte libremente, original preservado, sin subida.',t_convert_to:'Convertir a formato',t_drop:'Arrastra una imagen aquí',t_drop_sub:'PNG, JPG, WEBP, GIF, BMP — hasta 30MB',t_or:'o',t_browse:'elige desde el dispositivo',t_size_info:'Info de imagen',t_orig:'Original',t_after:'Después',t_compare:'Comparar tamaño',t_quality:'Calidad',t_download:'Descargar',t_try_other:'Probar otra imagen',t_privacy:'🔒 Las imágenes nunca salen de tu navegador',t_no_compress:'sin compresión'}};
+  const _T = {en:{t_tool_title:'Image Converter',t_subtitle:'Convert format',t_desc:'JPG · PNG · WEBP · GIF · BMP · ICO - convert freely, original preserved, no upload.',t_convert_to:'Convert to format',t_drop:'Drop image here',t_drop_sub:'PNG, JPG, WEBP, GIF, BMP - up to 30MB',t_or:'or',t_browse:'choose from device',t_size_info:'Image info',t_orig:'Original',t_after:'After',t_compare:'Size comparison',t_quality:'Quality',t_download:'Download',t_try_other:'Try another image',t_privacy:'🔒 Images never leave your browser',t_no_compress:'no compression'},vi:{t_tool_title:'Chuyển Định Dạng Ảnh',t_subtitle:'Chuyển định dạng',t_desc:'JPG · PNG · WEBP · GIF · BMP · ICO - chuyển đổi tự do, không mất ảnh gốc, không upload server.',t_convert_to:'Chuyển sang định dạng',t_drop:'Kéo thả ảnh vào đây',t_drop_sub:'PNG, JPG, WEBP, GIF, BMP - tối đa 30MB',t_or:'hoặc',t_browse:'chọn từ máy tính',t_size_info:'Thông tin ảnh',t_orig:'Gốc',t_after:'Sau',t_compare:'So sánh kích thước',t_quality:'Chất lượng',t_download:'Tải xuống',t_try_other:'Chọn ảnh khác',t_privacy:'🔒 Ảnh không bao giờ rời trình duyệt',t_no_compress:'không nén'},ja:{t_tool_title:'画像形式変換',t_subtitle:'形式変換',t_desc:'JPG · PNG · WEBP · GIF · BMP · ICO - 自由に変換、元画像を保持、アップロード不要。',t_convert_to:'変換先の形式',t_drop:'画像をドロップ',t_drop_sub:'PNG, JPG, WEBP, GIF, BMP - 最大30MB',t_or:'または',t_browse:'デバイスから選択',t_size_info:'画像情報',t_orig:'元',t_after:'変換後',t_compare:'サイズ比較',t_quality:'品質',t_download:'ダウンロード',t_try_other:'別の画像を試す',t_privacy:'🔒 画像はブラウザ外に出ません',t_no_compress:'圧縮なし'},es:{t_tool_title:'Convertidor de Imagen',t_subtitle:'Convertir formato',t_desc:'JPG · PNG · WEBP · GIF · BMP · ICO - convierte libremente, original preservado, sin subida.',t_convert_to:'Convertir a formato',t_drop:'Arrastra una imagen aquí',t_drop_sub:'PNG, JPG, WEBP, GIF, BMP - hasta 30MB',t_or:'o',t_browse:'elige desde el dispositivo',t_size_info:'Info de imagen',t_orig:'Original',t_after:'Después',t_compare:'Comparar tamaño',t_quality:'Calidad',t_download:'Descargar',t_try_other:'Probar otra imagen',t_privacy:'🔒 Las imágenes nunca salen de tu navegador',t_no_compress:'sin compresión'}};
   function _apply(){
     const lang = localStorage.getItem('querencia_lang')||'en';
     const t = _T[lang]||_T.en;

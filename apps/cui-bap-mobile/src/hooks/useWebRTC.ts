@@ -1,5 +1,5 @@
 /**
- * useWebRTC — gọi thoại & video qua WebRTC
+ * useWebRTC - gọi thoại & video qua WebRTC
  * Dùng react-native-webrtc
  * Flow: caller → call_offer → callee → call_answer → ICE exchange → connected
  */
@@ -12,7 +12,7 @@ import {
   MediaStream,
 } from 'react-native-webrtc';
 
-// STUN/TURN servers — dùng Google STUN miễn phí + Twilio TURN (nếu cần)
+// STUN/TURN servers - dùng Google STUN miễn phí + Twilio TURN (nếu cần)
 const ICE_SERVERS = {
   iceServers: [
     { urls: 'stun:stun.l.google.com:19302' },
@@ -108,7 +108,7 @@ export function useWebRTC({
     sendCallOffer(toId, convId, type, offer.sdp ?? '');
   }, [initPC, getLocalStream, sendCallOffer]);
 
-  // ── NGHE (callee) — khi nhận offer ───────────────────────────
+  // ── NGHE (callee) - khi nhận offer ───────────────────────────
   const receiveOffer = useCallback(async (data: {
     sdp: string; callType: CallType; fromId: string; fromName: string;
   }) => {

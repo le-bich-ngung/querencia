@@ -3,9 +3,9 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>Smart Table Extractor — Querencia</title>
+<title>Smart Table Extractor - Querencia</title>
 <meta name="description" content="Extract tables from images, PDFs, HTML and URLs using AI. Export to Excel, CSV, JSON, Markdown. Edit, sort, filter, merge, split tables."/>
-<meta property="og:title" content="Smart Table Extractor — Querencia Pro"/>
+<meta property="og:title" content="Smart Table Extractor - Querencia Pro"/>
 <meta property="og:description" content="AI-powered table extraction from images and PDFs. Export to Excel, CSV, JSON, Markdown."/>
 <script type="application/ld+json">{"@context":"https://schema.org","@type":"WebApplication","name":"Smart Table Extractor","applicationCategory":"UtilitiesApplication","offers":{"@type":"Offer","price":"0","priceCurrency":"USD"},"provider":{"@type":"Organization","name":"Querencia","url":"https://querencia.com.vn"}}</script>
 <script src="https://cdnjs.cloudflare.com/ajax/libs/xlsx/0.18.5/xlsx.full.min.js"></script>
@@ -226,7 +226,7 @@ body{background:var(--bg);color:var(--text);font-family:var(--sans);font-size:14
 .tview td:last-child{border-right:none}
 .tview tr:last-child td{border-bottom:none}
 .tview tr:hover td{background:rgba(74,124,89,.025)}
-.tview td:empty::after{content:'—';color:var(--muted)}
+.tview td:empty::after{content:'-';color:var(--muted)}
 .tview td[contenteditable]:focus{background:rgba(74,124,89,.07);box-shadow:inset 0 0 0 1.5px var(--sage);outline:none;position:relative;z-index:2}
 .tview td.filtered-hidden{display:none}
 .tview tr.filtered-hidden{display:none}
@@ -369,12 +369,12 @@ input[type=file]{display:none}
         <button class="ddi" onclick="doExport('json');closeDd()">JSON<span class="de">.json</span></button>
         <button class="ddi" onclick="doExport('markdown');closeDd()">Markdown<span class="de">.md</span></button>
         <div class="ddsep"></div>
-        <button class="ddi" onclick="doExport('all-csv');closeDd()">All tables — CSV<span class="de">all</span></button>
+        <button class="ddi" onclick="doExport('all-csv');closeDd()">All tables - CSV<span class="de">all</span></button>
       </div>
     </div>
     <div id="quotaDisplay">
       <svg width="11" height="11" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><circle cx="12" cy="12" r="10"/><polyline points="12 6 12 12 16 14"/></svg>
-      — left today
+      - left today
     </div>
   </div>
 </header>
@@ -461,7 +461,7 @@ input[type=file]{display:none}
               <div class="dz-inner" id="dzPdfInner">
                 <div class="dz-ico"><svg width="20" height="20" fill="none" stroke="var(--red)" stroke-width="1.8" viewBox="0 0 24 24"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"/><polyline points="14 2 14 8 20 8"/><line x1="16" y1="13" x2="8" y2="13"/><line x1="16" y1="17" x2="8" y2="17"/></svg></div>
                 <h3>Drop PDF here</h3>
-                <p>or <span class="br">click to choose</span> · up to 20MB<br>Multi-page supported — all pages extracted</p>
+                <p>or <span class="br">click to choose</span> · up to 20MB<br>Multi-page supported - all pages extracted</p>
               </div>
             </div>
             <div class="pdf-progress" id="pdfProgress">
@@ -595,7 +595,7 @@ input[type=file]{display:none}
   <div class="modal">
     <div class="mhead"><div class="mtitle">Merge Tables</div><button class="mclose" onclick="closeModal('mMerge')">×</button></div>
     <div class="mbody">
-      <p>Select tables to merge. Headers will be unified — missing columns will be left blank.</p>
+      <p>Select tables to merge. Headers will be unified - missing columns will be left blank.</p>
       <div class="cklist" id="mergeList"></div>
     </div>
     <div class="mfooter">
@@ -631,7 +631,7 @@ input[type=file]{display:none}
 
 <script>
 /* ─────────────────────────────────────────────
-   WORKER URL — replace with your Cloudflare Worker URL
+   WORKER URL - replace with your Cloudflare Worker URL
 ───────────────────────────────────────────── */
 const WORKER_URL = "https://querencia-table-extractor.YOUR_SUBDOMAIN.workers.dev";
 
@@ -675,7 +675,7 @@ let currentView='table';
 const SYS = `You are an expert AI for extracting data tables. Extract ALL tables from the input.
 
 Rules:
-1. Return ONLY pure JSON — no markdown, no backticks, no explanation.
+1. Return ONLY pure JSON - no markdown, no backticks, no explanation.
 2. Schema: {"tables":[{"title":"Short table name","headers":["Col A",...],"rows":[["val",...],...], "summary":"One sentence description"}]}
 3. If no tables found: {"tables":[]}
 4. Clean data: preserve numbers/units, make headers meaningful (not empty), trim whitespace.
@@ -686,7 +686,7 @@ function setSrc(s){
   src=s;
   document.querySelectorAll('.src-tab').forEach(t=>t.classList.toggle('active',t.dataset.src===s));
   document.querySelectorAll('.src-panel').forEach(p=>p.classList.toggle('active',p.id==='sp-'+s));
-  const titles={image:'Upload image to extract tables',pdf:'Upload PDF — all pages extracted',html:'Paste HTML, Markdown, CSV or structured text',url:'Enter web page URL with tables'};
+  const titles={image:'Upload image to extract tables',pdf:'Upload PDF - all pages extracted',html:'Paste HTML, Markdown, CSV or structured text',url:'Enter web page URL with tables'};
   document.getElementById('icardTitle').textContent=titles[s];
   document.getElementById('modePills').style.display=(s==='image'||s==='pdf')?'':'none';
   checkReady();
@@ -773,7 +773,7 @@ async function addPDFFile(file){
       pages.push({
         b64: dataUrl.split(',')[1],
         mime: 'image/jpeg',
-        name: `${file.name} — Page ${i}`,
+        name: `${file.name} - Page ${i}`,
         dataUrl,
         status: 'pending',
         pageNum: i
@@ -799,7 +799,7 @@ function renderPDFFiles(){
   dzPdf.classList.toggle('has', pdfFiles.length>0);
   if(!pdfFiles.length){
     bl.style.display='none';
-    di.innerHTML=`<div class="dz-ico"><svg width="20" height="20" fill="none" stroke="var(--red)" stroke-width="1.8" viewBox="0 0 24 24"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"/><polyline points="14 2 14 8 20 8"/><line x1="16" y1="13" x2="8" y2="13"/><line x1="16" y1="17" x2="8" y2="17"/></svg></div><h3>Drop PDF here</h3><p>or <span class="br">click to choose</span> · up to 20MB<br>Multi-page supported — all pages extracted</p>`;
+    di.innerHTML=`<div class="dz-ico"><svg width="20" height="20" fill="none" stroke="var(--red)" stroke-width="1.8" viewBox="0 0 24 24"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"/><polyline points="14 2 14 8 20 8"/><line x1="16" y1="13" x2="8" y2="13"/><line x1="16" y1="17" x2="8" y2="17"/></svg></div><h3>Drop PDF here</h3><p>or <span class="br">click to choose</span> · up to 20MB<br>Multi-page supported - all pages extracted</p>`;
     return;
   }
   di.innerHTML=`<div class="dz-ico" style="background:var(--green-s);border-color:rgba(13,159,110,.3)"><svg width="16" height="16" fill="none" stroke="var(--green)" stroke-width="2.5" viewBox="0 0 24 24"><polyline points="20 6 9 17 4 12"/></svg></div><h3 style="color:var(--green)">${pdfFiles.reduce((s,f)=>s+f.totalPages,0)} pages ready</h3><p><span class="br" onclick="pdfInput.click();event.stopPropagation()">Add more</span></p>`;
@@ -817,7 +817,7 @@ async function fetchURL(){
     const d=await r.json();
     document.getElementById('fetchedHtml').value=(d.contents||'').substring(0,60000);
     checkReady();
-    toast('HTML fetched — click Extract','success');
+    toast('HTML fetched - click Extract','success');
   }catch{ toast('Could not fetch this URL','error'); }
 }
 
@@ -898,7 +898,7 @@ async function doPDF(){
     const pf=pdfFiles[fi];
     for(let pi=0;pi<pf.pages.length;pi++){
       const page=pf.pages[pi];
-      setP(Math.round((fi*pf.pages.length+pi)/allPages.length*90), `${pf.name} — page ${pi+1}/${pf.pages.length}...`);
+      setP(Math.round((fi*pf.pages.length+pi)/allPages.length*90), `${pf.name} - page ${pi+1}/${pf.pages.length}...`);
       page.status='running'; renderPDFFiles();
       try{
         const msgs=[{role:'user',content:[{type:'image',source:{type:'base64',media_type:'image/jpeg',data:page.b64}},{type:'text',text:`Extract all data tables from page ${pi+1} of the PDF "${pf.name}".`}]}];
@@ -957,7 +957,7 @@ function showRateLimitBanner(type,retryAfter){
   const b=document.getElementById('rateBanner');
   const msg=type==='daily'
     ?`Daily limit reached. Come back tomorrow or upgrade to Pro.`
-    :`Too fast — wait ${retryAfter}s and try again.`;
+    :`Too fast - wait ${retryAfter}s and try again.`;
   b.innerHTML=`<svg width="14" height="14" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><circle cx="12" cy="12" r="10"/><line x1="12" y1="8" x2="12" y2="12"/><line x1="12" y1="16" x2="12.01" y2="16"/></svg>${msg}`;
   b.style.display='flex';
 }
@@ -1255,7 +1255,7 @@ function copyTable(){
   const t=tables[activeI]; if(!t) return;
   const rows=getLive(activeI);
   const text=toTSV(t,rows); // TSV pastes perfectly into Excel/Google Sheets
-  navigator.clipboard.writeText(text).then(()=>toast('Table copied — paste into Excel or Google Sheets','success')).catch(()=>toast('Copy failed','error'));
+  navigator.clipboard.writeText(text).then(()=>toast('Table copied - paste into Excel or Google Sheets','success')).catch(()=>toast('Copy failed','error'));
 }
 
 /* ─── VIEW ─── */

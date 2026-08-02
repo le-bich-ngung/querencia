@@ -1,5 +1,5 @@
 /**
- * NextAuth.js — SSO toàn hệ sinh thái Querencia
+ * NextAuth.js - SSO toàn hệ sinh thái Querencia
  * Providers: Google OAuth + Credentials (email/password)
  *
  * Lưu ý đặc biệt:

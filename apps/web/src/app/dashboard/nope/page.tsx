@@ -1,6 +1,6 @@
 'use client';
 /**
- * Nope — Feed bài viết chia sẻ kinh nghiệm sống
+ * Nope - Feed bài viết chia sẻ kinh nghiệm sống
  * Features: feed, create post, comments, thank ❤️, save, profile
  */
 import { useState, useEffect, useCallback } from 'react';

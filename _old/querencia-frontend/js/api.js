@@ -1,6 +1,6 @@
 const API = 'https://querencia.fly.dev';
 
-// Token đăng nhập — null nếu chưa đăng nhập
+// Token đăng nhập - null nếu chưa đăng nhập
 let authToken = localStorage.getItem('token') || null;
 let currentUser = null;  // Thông tin user hiện tại (chưa dùng)
 
@@ -63,7 +63,7 @@ function _getDeviceInfo() {
 }
 
 // ── KHÔI PHỤC TRẠNG THÁI ĐĂNG NHẬP ────────────────────────
-// Xử lý Google OAuth callback — URL có ?google_token=...
+// Xử lý Google OAuth callback - URL có ?google_token=...
 const urlParams = new URLSearchParams(window.location.search);
 const googleToken = urlParams.get('google_token');
 const googleName  = urlParams.get('name');

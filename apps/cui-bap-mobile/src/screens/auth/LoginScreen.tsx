@@ -41,7 +41,7 @@ export function LoginScreen({ navigation }: Props) {
         <Text style={s.title}>Cùi Bắp</Text>
         <Text style={s.sub}>Nhắn tin riêng tư · Không quảng cáo</Text>
 
-        {/* Social sign-in — Apple trên iOS, Google trên mọi nền tảng */}
+        {/* Social sign-in - Apple trên iOS, Google trên mọi nền tảng */}
         <View style={s.socialBtns}>
           {/* Apple hiện trước trên iOS (App Store requirement) */}
           <AppleSignInButton/>

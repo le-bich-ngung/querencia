@@ -1,7 +1,7 @@
 /**
- * Hidden Chat — ẩn conversation, yêu cầu biometrics để xem
+ * Hidden Chat - ẩn conversation, yêu cầu biometrics để xem
  * Dùng: expo-local-authentication (hoặc react-native-biometrics)
- * Store: MMKV — danh sách convId bị ẩn
+ * Store: MMKV - danh sách convId bị ẩn
  */
 import { MMKV } from 'react-native-mmkv';
 import ReactNativeBiometrics, { BiometryTypes } from 'react-native-biometrics';

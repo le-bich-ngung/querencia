@@ -8,8 +8,8 @@ import { CookieConsent } from '../components/ui/CookieConsent';
 
 export const metadata: Metadata = {
   charset: 'utf-8',
-  title:       { default: 'Querencia', template: '%s — Querencia' },
-  description: 'Nope · Cùi Bắp · LàNo · Tools — Một hệ sinh thái, một tài khoản.',
+  title:       { default: 'Querencia', template: '%s - Querencia' },
+  description: 'Nope · Cùi Bắp · LàNo · Tools - Một hệ sinh thái, một tài khoản.',
   themeColor:  '#4a7c59',
   icons: {
     icon:  [

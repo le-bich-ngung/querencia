@@ -1,7 +1,34 @@
+# Loại các thư mục nặng / không cần thiết khỏi Docker build context
+# Giúp build nhanh hơn và tránh lỗi tar do symlink lạ trong node_modules (pnpm)
+
 node_modules
 **/node_modules
-dist
-**/.turbo
-**/*.log
 .git
+.github
+
+# App di động — không liên quan tới API backend
+apps/cui-bap-mobile
+
+# Web frontend — build riêng qua Vercel, không cần trong image API
+apps/web/.next
+apps/web/node_modules
+apps/web/out
+
+# Thư mục cũ / backup
+_old
+
+# Build artifacts không cần copy vào context (Dockerfile tự build lại)
+**/dist
+**/build
+**/.turbo
+**/.cache
+
+# Editor / OS
+.vscode
+.DS_Store
+Thumbs.db
+
+# Env — không đưa secret vào image
 .env
+.env.*
+!*.env.example

@@ -1,5 +1,5 @@
 /**
- * Lumen Mode — hiệu ứng ánh sáng / glow cho toàn hệ sinh thái
+ * Lumen Mode - hiệu ứng ánh sáng / glow cho toàn hệ sinh thái
  *
  * Dùng cho:
  *   - Cursor glow theo chuột
@@ -223,7 +223,7 @@ export function PageGlow() {
   );
 }
 
-// ── Lumen Provider — wrap toàn app ────────────────────────────
+// ── Lumen Provider - wrap toàn app ────────────────────────────
 export function LumenProvider({ children }: { children: React.ReactNode }) {
   const [reduced, setReduced] = useState(false);
 

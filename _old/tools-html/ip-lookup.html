@@ -3,7 +3,7 @@
 <head>
 <meta charset="UTF-8"/>
 <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
-<title>IP & DNS Lookup — Querencia Tools</title>
+<title>IP & DNS Lookup - Querencia Tools</title>
 <link href="https://fonts.googleapis.com/css2?family=DM+Mono:wght@400;500&family=Syne:wght@400;600;700;800&display=swap" rel="stylesheet"/>
 <style>
   :root{--sage:#4a7c59;--sage-light:#6fa882;--sage-pale:#ddeee3;--sage-dark:#2f5c3e;--bg:#f7faf8;--card:#fff;--border:#e0ece5;--text:#1a2e22;--muted:#6b8a74;--font-display:'Syne',sans-serif;--font-mono:'DM Mono',monospace}
@@ -111,13 +111,13 @@ async function fetchIPInfo(query) {
         <div class="card-title">📍 Thông tin IP</div>
         ${row('Địa chỉ IP', d.ip)}
         ${row('Phiên bản', d.version || 'IPv4')}
-        ${row('Hostname', d.hostname || '—')}
+        ${row('Hostname', d.hostname || '-')}
         ${row('Quốc gia', `${d.country_name} ${d.country_code ? '('+d.country_code+')' : ''}`)}
-        ${row('Thành phố', [d.city, d.region].filter(Boolean).join(', ') || '—')}
-        ${row('Múi giờ', d.timezone || '—')}
-        ${row('ISP / Tổ chức', d.org || '—')}
-        ${row('ASN', d.asn || '—')}
-        ${row('Toạ độ', d.latitude && d.longitude ? `${d.latitude}, ${d.longitude}` : '—')}
+        ${row('Thành phố', [d.city, d.region].filter(Boolean).join(', ') || '-')}
+        ${row('Múi giờ', d.timezone || '-')}
+        ${row('ISP / Tổ chức', d.org || '-')}
+        ${row('ASN', d.asn || '-')}
+        ${row('Toạ độ', d.latitude && d.longitude ? `${d.latitude}, ${d.longitude}` : '-')}
       </div>
       ${d.latitude && d.longitude ? `
       <div class="card">
@@ -163,7 +163,7 @@ async function fetchDNS(domain) {
 
   document.getElementById('dnsContent').innerHTML = allRecords.length ? `
     <div class="card">
-      <div class="card-title">🔍 DNS Records — ${domain}</div>
+      <div class="card-title">🔍 DNS Records - ${domain}</div>
       <div style="padding:12px 16px">
         ${allRecords.map(r => `
           <div class="dns-record">
@@ -181,7 +181,7 @@ async function fetchDNS(domain) {
 }
 
 function row(k, v) {
-  return `<div class="row"><span class="row-key">${k}</span><span class="row-val">${v||'—'}</span></div>`;
+  return `<div class="row"><span class="row-key">${k}</span><span class="row-val">${v||'-'}</span></div>`;
 }
 
 function switchTab(tab, el) {

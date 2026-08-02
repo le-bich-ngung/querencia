@@ -1,6 +1,6 @@
 'use client';
 /**
- * Register page — /auth/register
+ * Register page - /auth/register
  * Migrated từ auth.js doRegister()
  * Flow: Họ + Tên + Email + Password → POST /api/v1/auth/register
  *       → Hiện thông báo → chuyển sang login
@@ -69,7 +69,7 @@ export default function RegisterPage() {
 
       if (res.ok) {
         setMsg({ text: 'Tạo tài khoản thành công! Vui lòng kiểm tra email để xác nhận.', type: 'success' });
-        // Chuyển sang login sau 2s, pre-fill email — giữ y chang code cũ
+        // Chuyển sang login sau 2s, pre-fill email - giữ y chang code cũ
         setTimeout(() => router.push(`/auth/login?email=${encodeURIComponent(email)}`), 2000);
       } else {
         setMsg({
@@ -117,7 +117,7 @@ export default function RegisterPage() {
       </div>
 
       <form onSubmit={handleRegister} style={{ display: 'flex', flexDirection: 'column', gap: 14 }}>
-        {/* Họ + Tên trên 1 hàng — giữ y chang form cũ */}
+        {/* Họ + Tên trên 1 hàng - giữ y chang form cũ */}
         <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: 12 }}>
           <AuthInput
             label="Họ"

@@ -3,7 +3,7 @@
 <head>
 <meta charset="UTF-8"/>
 <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
-<title>Image Editor — Querencia</title>
+<title>Image Editor - Querencia</title>
 <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@300;400;500;600;700&display=swap" rel="stylesheet"/>
 <style>
 *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
@@ -668,8 +668,8 @@ function updateInfo(file) {
   const info = document.getElementById('imgInfo');
   info.innerHTML = `
     <div>Size: <span>${workingCanvas.width} × ${workingCanvas.height}px</span></div>
-    <div>File: <span>${file ? file.name : '—'}</span></div>
-    <div>Format: <span>${(file?.type || '').replace('image/','').toUpperCase() || '—'}</span></div>
+    <div>File: <span>${file ? file.name : '-'}</span></div>
+    <div>Format: <span>${(file?.type || '').replace('image/','').toUpperCase() || '-'}</span></div>
   `;
   document.getElementById('zoomInfo').textContent =
     Math.round((displayCanvas.width / workingCanvas.width) * 100) + '%';

@@ -1,7 +1,7 @@
 'use client';
 /**
- * Pricing — $0.50/ngày flat
- * Gói: 1 ngày · 7 ngày · 30 ngày — cùng giá, chỉ khác số lần thanh toán
+ * Pricing - $0.50/ngày flat
+ * Gói: 1 ngày · 7 ngày · 30 ngày - cùng giá, chỉ khác số lần thanh toán
  * Q: 10Q expiring + 1Q permanent mỗi ngày
  */
 import { useState } from 'react';
@@ -77,7 +77,7 @@ export default function PricingPage() {
           fontSize: '1rem', color: 'var(--text-secondary)',
           maxWidth: 480, margin: '0 auto', lineHeight: 1.7,
         }}>
-          Không có gói nào tốt hơn gói nào. Cùng một giá — chỉ khác số lần bạn phải bấm thanh toán.
+          Không có gói nào tốt hơn gói nào. Cùng một giá - chỉ khác số lần bạn phải bấm thanh toán.
         </p>
       </div>
 
@@ -209,19 +209,19 @@ export default function PricingPage() {
           e.currentTarget.style.transform = '';
         }}
       >
-        Mua {selected} ngày Pro — ${total.toFixed(2)}
+        Mua {selected} ngày Pro - ${total.toFixed(2)}
       </Link>
       <p style={{ textAlign: 'center', fontSize: '0.75rem', color: 'var(--gray)' }}>
         Không tự gia hạn · Hoàn tiền ngày trọn vẹn chưa dùng · Phí giao dịch do bạn chịu
       </p>
 
-      {/* Refund policy — rõ ràng, đơn giản */}
+      {/* Refund policy - rõ ràng, đơn giản */}
       <div style={{
         marginTop: 40, border: '1.5px solid var(--border)',
         borderRadius: 14, padding: '24px', background: 'var(--bg)',
       }}>
         <h3 style={{ fontWeight: 800, fontSize: '1rem', marginBottom: 14, color: 'var(--text)' }}>
-          💸 Hoàn tiền — cách tính
+          💸 Hoàn tiền - cách tính
         </h3>
         <div style={{
           background: 'var(--bg-surface)', borderRadius: 10,
@@ -239,7 +239,7 @@ export default function PricingPage() {
         </div>
         <p style={{ fontSize: '0.75rem', color: 'var(--gray)', lineHeight: 1.5 }}>
           Hoàn được khi còn ít nhất 1 ngày trọn vẹn chưa được cấp Q.
-          Q đã cấp cho ngày đang dùng không hoàn — bạn dùng đến hết ngày đó.
+          Q đã cấp cho ngày đang dùng không hoàn - bạn dùng đến hết ngày đó.
         </p>
       </div>
 
@@ -288,7 +288,7 @@ export default function PricingPage() {
         background: 'var(--bg-surface)',
       }}>
         <p style={{ fontSize: '0.85rem', color: 'var(--text-secondary)', marginBottom: 10 }}>
-          LàNo, Nope, Cùi Bắp và 40+ tools — miễn phí, không cần trả gì.
+          LàNo, Nope, Cùi Bắp và 40+ tools - miễn phí, không cần trả gì.
         </p>
         <Link href="/auth/register" style={{
           fontSize: '0.82rem', color: '#4a7c59',

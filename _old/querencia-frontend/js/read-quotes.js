@@ -30,7 +30,7 @@ const QUOTES = [
   },
   {
     id: 'q3',
-    text: 'Không có con đường nào dẫn đến hạnh phúc — hạnh phúc chính là con đường.',
+    text: 'Không có con đường nào dẫn đến hạnh phúc - hạnh phúc chính là con đường.',
     author: 'Thích Nhất Hạnh',
     context: 'Peace Is Every Step',
     category: 'Thiền định',
@@ -75,7 +75,7 @@ const QUOTES = [
   },
   {
     id: 'q8',
-    text: 'Hai điều vô hạn: vũ trụ và sự ngu ngốc của con người — và tôi không chắc về vũ trụ.',
+    text: 'Hai điều vô hạn: vũ trụ và sự ngu ngốc của con người - và tôi không chắc về vũ trụ.',
     author: 'Albert Einstein',
     context: '',
     category: 'Hài hước',
@@ -156,7 +156,7 @@ const QUOTES = [
   },
   {
     id: 'q17',
-    text: 'Những người điên đủ để nghĩ họ có thể thay đổi thế giới — là những người làm được điều đó.',
+    text: 'Những người điên đủ để nghĩ họ có thể thay đổi thế giới - là những người làm được điều đó.',
     author: 'Steve Jobs',
     context: 'Apple "Think Different" campaign, 1997',
     category: 'Động lực',
@@ -283,7 +283,7 @@ function quoteCardHTML(q) {
         color:var(--black);margin-bottom:24px;max-width:520px;margin-left:auto;margin-right:auto">
         ${q.text}
       </p>
-      <div style="font-size:0.88rem;font-weight:600;color:var(--sage-dark);margin-bottom:4px">— ${q.author}</div>
+      <div style="font-size:0.88rem;font-weight:600;color:var(--sage-dark);margin-bottom:4px">- ${q.author}</div>
       ${q.context ? `<div style="font-size:0.78rem;color:var(--gray-light)">${q.context}</div>` : ''}
       ${q.source
         ? `<a href="${q.source}" target="_blank" rel="noopener"
@@ -292,7 +292,7 @@ function quoteCardHTML(q) {
             ↗ Xem nguồn gốc
           </a>`
         : `<div style="margin-top:20px;font-size:0.72rem;color:var(--gray-light);font-style:italic">
-            Câu nói này được lưu hành rộng rãi — nguồn gốc chính xác có thể khác nhau.
+            Câu nói này được lưu hành rộng rãi - nguồn gốc chính xác có thể khác nhau.
           </div>`
       }
     </div>

@@ -1,5 +1,5 @@
 /**
- * Database Module — inject Drizzle db vào toàn bộ NestJS app
+ * Database Module - inject Drizzle db vào toàn bộ NestJS app
  * Dùng: @Inject(DB_TOKEN) private db: DB
  */
 import { Module, Global } from '@nestjs/common';

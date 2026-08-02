@@ -1,5 +1,5 @@
 /**
- * Link Preview — hiện og:title, og:image, og:description
+ * Link Preview - hiện og:title, og:image, og:description
  * khi tin nhắn chứa URL
  * Fetch metadata server-side qua /api/v1/meta/preview?url=...
  * (tránh CORS + không expose user IP cho external sites)

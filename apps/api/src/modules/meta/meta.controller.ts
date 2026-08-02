@@ -1,5 +1,5 @@
 /**
- * Meta Controller — fetch OG metadata cho link preview
+ * Meta Controller - fetch OG metadata cho link preview
  * Server-side để tránh CORS và bảo vệ IP của user
  */
 import { Controller, Get, Query, Logger } from '@nestjs/common';

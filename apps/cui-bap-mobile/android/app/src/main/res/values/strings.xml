@@ -1,6 +1,3 @@
-<?xml version="1.0" encoding="utf-8"?>
 <resources>
-    <!-- Default (EN): không dấu để Google Play search được -->
-    <string name="app_name">Cui Bap</string>
-    <string name="querencia_name">Querencia</string>
+    <string name="app_name">CuiBapTemp</string>
 </resources>

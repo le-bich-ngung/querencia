@@ -1,6 +1,6 @@
 'use client';
 /**
- * Message — gửi feedback cho Querencia
+ * Message - gửi feedback cho Querencia
  * 1 chiều: gửi rồi thôi, không nhận hồi âm
  */
 import { useState } from 'react';
@@ -61,7 +61,7 @@ export default function MessagePage() {
         fontSize: '0.85rem', color: 'var(--text-secondary)',
         lineHeight: 1.6, marginBottom: 32,
       }}>
-        Mình đọc mọi tin nhắn. Nhưng sẽ không hồi âm — đây là hộp thư 1 chiều.
+        Mình đọc mọi tin nhắn. Nhưng sẽ không hồi âm - đây là hộp thư 1 chiều.
         Bạn không cần đăng nhập để gửi.
       </p>
 
@@ -100,7 +100,7 @@ export default function MessagePage() {
           <textarea
             value={content}
             onChange={e => setContent(e.target.value)}
-            placeholder="Viết gì cũng được — góp ý, báo lỗi, hay chỉ muốn nói gì đó…"
+            placeholder="Viết gì cũng được - góp ý, báo lỗi, hay chỉ muốn nói gì đó…"
             rows={6}
             style={{
               width: '100%', padding: '11px 14px',

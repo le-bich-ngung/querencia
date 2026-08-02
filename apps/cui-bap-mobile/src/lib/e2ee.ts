@@ -1,5 +1,5 @@
 /**
- * End-to-End Encryption — Signal Protocol
+ * End-to-End Encryption - Signal Protocol
  * 
  * Architecture:
  *   1. Mỗi user có Identity Key pair (long-term) + Signed PreKey + One-Time PreKeys
@@ -29,7 +29,7 @@ import { MMKV } from 'react-native-mmkv';
 
 const storage = new MMKV({ id: 'e2ee-keys' });
 
-// ── Signal Protocol Store — lưu keys vào MMKV (encrypted) ────
+// ── Signal Protocol Store - lưu keys vào MMKV (encrypted) ────
 export class SignalStore implements StorageType {
   // Identity key pair
   async getIdentityKeyPair() {
@@ -44,7 +44,7 @@ export class SignalStore implements StorageType {
   async isTrustedIdentity(identifier: string, identityKey: ArrayBuffer): Promise<boolean> {
     const trusted = storage.getString(`identity:${identifier}`);
     if (!trusted) {
-      // First time — trust and store (Trust On First Use)
+      // First time - trust and store (Trust On First Use)
       await this.saveIdentity(identifier, identityKey);
       return true;
     }
@@ -233,10 +233,10 @@ export async function decryptMessage(
   let decrypted: ArrayBuffer;
 
   if (encrypted.type === 3) {
-    // PreKeyWhisperMessage — lần đầu nhận từ sender này
+    // PreKeyWhisperMessage - lần đầu nhận từ sender này
     decrypted = await cipher.decryptPreKeyWhisperMessage(ciphertext, 'binary');
   } else {
-    // WhisperMessage — session đã có
+    // WhisperMessage - session đã có
     decrypted = await cipher.decryptWhisperMessage(ciphertext, 'binary');
   }
 

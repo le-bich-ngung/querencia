@@ -1,12 +1,12 @@
 <!-- pages/image-editor.html -->
-<meta name="description" content="Free online image editor — crop, resize, rotate, adjust brightness, contrast, saturation, apply filters, add text and shapes. 100% in your browser, no upload required."/>
+<meta name="description" content="Free online image editor - crop, resize, rotate, adjust brightness, contrast, saturation, apply filters, add text and shapes. 100% in your browser, no upload required."/>
 <meta name="keywords" content="image editor online, free photo editor, crop image, resize image, rotate image, brightness contrast, photo filters, remove background, no upload image editor"/>
-<meta property="og:title" content="Image Editor — Querencia"/>
-<meta property="og:description" content="Free online image editor. Crop, resize, adjust, filter, draw — 100% in your browser, no upload required."/>
+<meta property="og:title" content="Image Editor - Querencia"/>
+<meta property="og:description" content="Free online image editor. Crop, resize, adjust, filter, draw - 100% in your browser, no upload required."/>
 <meta property="og:type" content="website"/>
 <meta property="og:url" content="https://querencia.com.vn/#image-editor"/>
 <meta name="twitter:card" content="summary"/>
-<meta name="twitter:title" content="Image Editor — Querencia"/>
+<meta name="twitter:title" content="Image Editor - Querencia"/>
 <meta name="twitter:description" content="Free online image editor. No upload, no account needed."/>
 <link rel="canonical" href="https://querencia.com.vn/#image-editor"/>
 <script type="application/ld+json">
@@ -15,7 +15,7 @@
   "@type": "WebApplication",
   "name": "Image Editor",
   "url": "https://querencia.com.vn/#image-editor",
-  "description": "Free online image editor with crop, resize, rotate, brightness, contrast, saturation, filters, text, shapes, remove background — 100% client-side, no upload.",
+  "description": "Free online image editor with crop, resize, rotate, brightness, contrast, saturation, filters, text, shapes, remove background - 100% client-side, no upload.",
   "applicationCategory": "MultimediaApplication",
   "operatingSystem": "Any",
   "offers": { "@type": "Offer", "price": "0", "priceCurrency": "USD" },
@@ -24,7 +24,7 @@
 }
 </script>
 <section class="section active" id="image-editor-page">
-<meta name="description" content="Free online image editor — adjust, crop, resize, filters, shapes, text, remove background. 100% client-side."/>
+<meta name="description" content="Free online image editor - adjust, crop, resize, filters, shapes, text, remove background. 100% client-side."/>
 <style>
 /* ── TOKENS ── */
 .ie-wrap{
@@ -462,7 +462,7 @@
           <button class="ie-tbtn-tool" id="btn-wm" onclick="ieAddWatermark()" disabled data-i18n="ie_watermark">© Mark</button>
           <button class="ie-tbtn-tool" id="btn-rect"     onclick="ieActivateShape('rect')"   disabled>▭ Rect</button>
           <button class="ie-tbtn-tool" id="btn-circle"   onclick="ieActivateShape('circle')" disabled>○ Circle</button>
-          <button class="ie-tbtn-tool" id="btn-line"     onclick="ieActivateShape('line')"   disabled>— Line</button>
+          <button class="ie-tbtn-tool" id="btn-line"     onclick="ieActivateShape('line')"   disabled>- Line</button>
           <button class="ie-tbtn-tool" id="btn-arrow"    onclick="ieActivateShape('arrow')"  disabled>→ Arrow</button>
         </div>
         <!-- Shape color + stroke -->
@@ -533,7 +533,7 @@
         <div class="ie-u-grid" id="ie-u-grid">
           <div style="grid-column:span 3;text-align:center;padding:32px;color:var(--muted);font-size:13px">Click a category or search above</div>
         </div>
-        <div class="ie-u-footer" data-i18n="ie_free_to_use">Photos by Unsplash — free to use commercially</div>
+        <div class="ie-u-footer" data-i18n="ie_free_to_use">Photos by Unsplash - free to use commercially</div>
       </div>
 
       <!-- UPLOAD ZONE -->
@@ -594,9 +594,9 @@
       <div>
         <div class="ie-panel-lbl" data-i18n="ie_dimensions">Dimensions</div>
         <div class="ie-size-row">
-          <input class="ie-size-inp" id="ie-w" value="—" disabled/>
+          <input class="ie-size-inp" id="ie-w" value="-" disabled/>
           <span style="font-size:11px;color:var(--muted)">×</span>
-          <input class="ie-size-inp" id="ie-h" value="—" disabled/>
+          <input class="ie-size-inp" id="ie-h" value="-" disabled/>
         </div>
         <div style="font-size:10px;color:var(--muted);margin-top:4px" id="ie-dims-hint">px</div>
       </div>
@@ -625,16 +625,16 @@
       <!-- Auto-save -->
       <div>
         <div class="ie-panel-lbl" data-i18n="ie_autosave">Auto-Save Draft</div>
-        <div style="font-size:11px;color:var(--muted)" id="autosave-status">—</div>
+        <div style="font-size:11px;color:var(--muted)" id="autosave-status">-</div>
         <button class="ie-fmt-btn" onclick="ieLoadDraft()" id="btn-load-draft" style="margin-top:4px;display:none" data-i18n="ie_load_draft">↩ Load saved draft</button>
       </div>
       <!-- File info -->
       <div id="ie-file-stats" style="display:none">
         <div class="ie-panel-lbl">File info</div>
         <div class="ie-file-stat">
-          <div><b>Name</b> <span id="ie-fname">—</span></div>
-          <div><b>Size</b> <span id="ie-fsize">—</span></div>
-          <div><b>Dims</b> <span id="ie-fdims">—</span></div>
+          <div><b>Name</b> <span id="ie-fname">-</span></div>
+          <div><b>Size</b> <span id="ie-fsize">-</span></div>
+          <div><b>Dims</b> <span id="ie-fdims">-</span></div>
         </div>
       </div>
       <!-- Keyboard shortcuts -->
@@ -661,7 +661,7 @@
   <div class="ie-bottombar">
     <div class="ie-zoom-ctrl">
       <button class="ie-zoom-btn" onclick="ieZoom(-0.1)" title="-">−</button>
-      <span id="ie-zoom-lbl" style="min-width:36px;text-align:center">—</span>
+      <span id="ie-zoom-lbl" style="min-width:36px;text-align:center">-</span>
       <button class="ie-zoom-btn" onclick="ieZoom(0.1)" title="+">+</button>
       <button class="ie-zoom-btn" onclick="ieFitZoom()" style="width:auto;padding:0 6px;font-size:10px">Fit</button>
     </div>
@@ -857,7 +857,7 @@ self.onmessage = function(e) {
     g = lum2 + (g - lum2) * sf;
     b = lum2 + (b - lum2) * sf;
 
-    // Vibrance (smart saturation — boosts less-saturated colors more)
+    // Vibrance (smart saturation - boosts less-saturated colors more)
     if (vibrance !== 0) {
       const lum3 = 0.299*r + 0.587*g + 0.114*b;
       const maxC = Math.max(r, g, b);
@@ -997,7 +997,7 @@ window.ieAdjust = function(){
   }, 60);
 };
 
-// ── EFFECTS (Vignette + Grain — drawn on top, non-destructive preview) ──
+// ── EFFECTS (Vignette + Grain - drawn on top, non-destructive preview) ──
 window.ieDrawEffects = function(){
   S.vignette = +document.getElementById('sl-vignette').value;
   S.grain    = +document.getElementById('sl-grain').value;
@@ -1305,9 +1305,9 @@ window.ieRemoveBg = function(){
   statusEl.style.display = 'block';
   statusEl.textContent = '⏳ Processing... (may take 10–30s)';
 
-  // Use remove.bg API via a public CORS proxy — or fallback to basic chroma
+  // Use remove.bg API via a public CORS proxy - or fallback to basic chroma
   // Since we can't call paid APIs, we'll do a basic luminance-based BG removal
-  // as a demo — replace with actual ML model for production
+  // as a demo - replace with actual ML model for production
   setTimeout(() => {
     try {
       const imgData = ctx.getImageData(0, 0, canvas.width, canvas.height);
@@ -1331,10 +1331,10 @@ window.ieRemoveBg = function(){
       pushHistory(ieGetT('ie_h_removebg'));
       // Auto-switch to PNG for transparency
       ieSetFormat('png');
-      statusEl.textContent = '✓ Done — export as PNG to keep transparency';
+      statusEl.textContent = '✓ Done - export as PNG to keep transparency';
       toast(ieGetT('ie_t_bg_removed'), 'ok');
     } catch(e) {
-      statusEl.textContent = '✗ Failed — try with a simpler background';
+      statusEl.textContent = '✗ Failed - try with a simpler background';
       toast(ieGetT('ie_t_bg_failed'), 'err');
     }
   }, 500);
@@ -1535,7 +1535,7 @@ window.ieFilter = function(name){
   } else { _origIeFilter(name); }
 };
 
-// ── LIGHT LEAK + CHROMATIC ABERRATION — extend ieDrawEffects ──
+// ── LIGHT LEAK + CHROMATIC ABERRATION - extend ieDrawEffects ──
 const _origDrawEffects = window.ieDrawEffects;
 window.ieDrawEffects = function(){
   _origDrawEffects();
@@ -1719,7 +1719,7 @@ window.ieLoadDraft=function(){
   }catch(e){}
 })();
 
-// ── TOUCH — pinch zoom + pan ──
+// ── TOUCH - pinch zoom + pan ──
 (function initTouch(){
   const area=document.getElementById('ie-canvas-area');
   let t0=null;
@@ -1817,7 +1817,7 @@ document.addEventListener('paste', e=>{
           document.getElementById('ie-compare-btn').classList.add('on');
           document.getElementById('ie-file-stats').style.display='block';
           document.getElementById('ie-fname').textContent=ieGetT('ie_t_pasted');
-          document.getElementById('ie-fsize').textContent='—';
+          document.getElementById('ie-fsize').textContent='-';
           document.getElementById('ie-fdims').textContent=img.width+'×'+img.height;
           document.getElementById('ie-fileinfo').textContent='Clipboard · '+img.width+'×'+img.height;
           updateHistoryUI(); enableAll(); updateUndoRedo(); ieFitZoom();
@@ -1864,12 +1864,12 @@ document.addEventListener('paste', e=>{
       ie_text_ph:"Enter text...",ie_search_photos:"Search free photos...",
       ie_reset_confirm:"Reset all edits?",ie_resize_prompt:"New width (px):",
       ie_wm_prompt:"Watermark text:",ie_callout_prompt:"Callout text:",
-      ie_draw_hint:"Draw on the image — click & drag",
-      ie_t_loaded:"Image loaded — start editing!",ie_t_pasted:"Image pasted from clipboard",
+      ie_draw_hint:"Draw on the image - click & drag",
+      ie_t_loaded:"Image loaded - start editing!",ie_t_pasted:"Image pasted from clipboard",
       ie_t_unsplash:"Photo loaded from Unsplash",ie_t_text_added:"Text added",
       ie_t_wm_added:"Watermark added",ie_t_callout_added:"Callout added",
       ie_t_exported:"Exported as",ie_t_reset:"Reset to original",
-      ie_t_auto_enhanced:"Auto enhanced ✨",ie_t_bg_removed:"Background removed — export as PNG!",
+      ie_t_auto_enhanced:"Auto enhanced ✨",ie_t_bg_removed:"Background removed - export as PNG!",
       ie_t_bg_failed:"Remove BG failed",ie_t_draft:"Draft restored!",
       ie_t_copied:"Copied!",ie_t_color_set:"Color set to brush",ie_t_batch:"Exporting...",
       ie_t_social:"Resized to",ie_h_original:"Original",ie_h_rotate_l:"Rotate left",
@@ -1905,12 +1905,12 @@ document.addEventListener('paste', e=>{
       ie_no_file:"Chưa có ảnh · 100% trên trình duyệt",ie_text_ph:"Nhập chữ...",
       ie_search_photos:"Tìm ảnh miễn phí...",ie_reset_confirm:"Đặt lại tất cả chỉnh sửa?",
       ie_resize_prompt:"Chiều rộng mới (px):",ie_wm_prompt:"Nội dung nhãn:",
-      ie_callout_prompt:"Nội dung chú thích:",ie_draw_hint:"Vẽ lên ảnh — nhấn và kéo",
-      ie_t_loaded:"Đã tải ảnh — bắt đầu chỉnh sửa!",ie_t_pasted:"Đã dán ảnh từ clipboard",
+      ie_callout_prompt:"Nội dung chú thích:",ie_draw_hint:"Vẽ lên ảnh - nhấn và kéo",
+      ie_t_loaded:"Đã tải ảnh - bắt đầu chỉnh sửa!",ie_t_pasted:"Đã dán ảnh từ clipboard",
       ie_t_unsplash:"Đã tải ảnh từ Unsplash",ie_t_text_added:"Đã thêm chữ",
       ie_t_wm_added:"Đã thêm nhãn",ie_t_callout_added:"Đã thêm chú thích",
       ie_t_exported:"Đã xuất",ie_t_reset:"Đã đặt lại",ie_t_auto_enhanced:"Đã tự động chỉnh ✨",
-      ie_t_bg_removed:"Đã xóa nền — xuất PNG để giữ trong suốt!",
+      ie_t_bg_removed:"Đã xóa nền - xuất PNG để giữ trong suốt!",
       ie_t_bg_failed:"Xóa nền thất bại",ie_t_draft:"Đã khôi phục bản lưu!",
       ie_t_copied:"Đã sao chép!",ie_t_color_set:"Đã đặt màu cho cọ",ie_t_batch:"Đang xuất...",
       ie_t_social:"Đã resize thành",ie_h_original:"Ảnh gốc",ie_h_rotate_l:"Xoay trái",
@@ -1952,7 +1952,7 @@ document.addEventListener('paste', e=>{
       ie_t_wm_added:"透かしを追加しました",ie_t_callout_added:"吹き出しを追加しました",
       ie_t_exported:"書き出し完了",ie_t_reset:"リセットしました",
       ie_t_auto_enhanced:"自動補正しました ✨",
-      ie_t_bg_removed:"背景を削除しました — PNGで書き出してください",
+      ie_t_bg_removed:"背景を削除しました - PNGで書き出してください",
       ie_t_bg_failed:"背景削除に失敗しました",ie_t_draft:"下書きを復元しました！",
       ie_t_copied:"コピーしました！",ie_t_color_set:"ブラシカラーを設定しました",
       ie_t_batch:"書き出し中...",ie_t_social:"リサイズしました：",
@@ -1992,13 +1992,13 @@ document.addEventListener('paste', e=>{
       ie_no_file:"Sin archivo · 100% en el navegador",ie_text_ph:"Escribe texto...",
       ie_search_photos:"Buscar fotos gratis...",ie_reset_confirm:"¿Restablecer todas las ediciones?",
       ie_resize_prompt:"Nueva anchura (px):",ie_wm_prompt:"Texto de marca de agua:",
-      ie_callout_prompt:"Texto del globo:",ie_draw_hint:"Dibuja en la imagen — clic y arrastra",
-      ie_t_loaded:"Imagen cargada — ¡empieza a editar!",ie_t_pasted:"Imagen pegada del portapapeles",
+      ie_callout_prompt:"Texto del globo:",ie_draw_hint:"Dibuja en la imagen - clic y arrastra",
+      ie_t_loaded:"Imagen cargada - ¡empieza a editar!",ie_t_pasted:"Imagen pegada del portapapeles",
       ie_t_unsplash:"Foto cargada desde Unsplash",ie_t_text_added:"Texto añadido",
       ie_t_wm_added:"Marca de agua añadida",ie_t_callout_added:"Globo añadido",
       ie_t_exported:"Exportado como",ie_t_reset:"Restablecido al original",
       ie_t_auto_enhanced:"Mejora automática aplicada ✨",
-      ie_t_bg_removed:"Fondo eliminado — exporta como PNG",ie_t_bg_failed:"Error al eliminar fondo",
+      ie_t_bg_removed:"Fondo eliminado - exporta como PNG",ie_t_bg_failed:"Error al eliminar fondo",
       ie_t_draft:"¡Borrador restaurado!",ie_t_copied:"¡Copiado!",
       ie_t_color_set:"Color asignado al pincel",ie_t_batch:"Exportando...",
       ie_t_social:"Redimensionado a",ie_h_original:"Original",ie_h_rotate_l:"Girar izquierda",
@@ -2021,7 +2021,7 @@ document.addEventListener('paste', e=>{
     if (typeof applyTranslations === 'function') applyTranslations();
     else if (typeof setLang === 'function') setLang(cur);
   } else {
-    // Fallback: app.js not loaded yet — wait then apply
+    // Fallback: app.js not loaded yet - wait then apply
     window.addEventListener('DOMContentLoaded', function() {
       const cur = localStorage.getItem('querencia_lang') || 'en';
       const t = IE_T[cur] || IE_T.en;

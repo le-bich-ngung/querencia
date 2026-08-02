@@ -1,5 +1,5 @@
 /**
- * Read Receipt — tick đơn/đôi/xanh cho tin nhắn đã gửi
+ * Read Receipt - tick đơn/đôi/xanh cho tin nhắn đã gửi
  * ✓  = sent (delivered to server)
  * ✓✓ = delivered (arrived on recipient device)
  * ✓✓ (xanh) = read (recipient opened conversation)
@@ -30,7 +30,7 @@ export function ReadReceipt({ status, size = 14 }: Props) {
     );
   }
 
-  // read — double tick xanh
+  // read - double tick xanh
   return (
     <Icon name="checkmark-done" size={size} color={colors.online}/>
   );

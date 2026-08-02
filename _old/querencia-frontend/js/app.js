@@ -65,7 +65,7 @@ const T = {
     tools_more_coming:"More tools coming soon",
     tools_coming_desc:"We're building more tools. Check back soon.",
     tools_free_forever:"Free forever",
-    cb_tagline:"Private messaging, group chat, file sharing — using your Querencia account. No ads, no tracking.",
+    cb_tagline:"Private messaging, group chat, file sharing - using your Querencia account. No ads, no tracking.",
     cb_open:"Open Cùi Bắp →",
     cb_download_apk:"Download APK",
     cb_feat_chat:"Chat & groups",
@@ -154,7 +154,7 @@ const T = {
     tools_more_coming:"Nhiều tool khác sắp ra mắt",
     tools_coming_desc:"Chúng mình đang xây dựng thêm nhiều công cụ mới. Quay lại sớm nhé.",
     tools_free_forever:"Miễn phí mãi mãi",
-    cb_tagline:"Nhắn tin riêng tư, nhóm chat, chia sẻ file — dùng chung tài khoản Querencia. Không quảng cáo, không theo dõi.",
+    cb_tagline:"Nhắn tin riêng tư, nhóm chat, chia sẻ file - dùng chung tài khoản Querencia. Không quảng cáo, không theo dõi.",
     cb_open:"Mở Cùi Bắp →",
     cb_download_apk:"Tải APK Android",
     cb_feat_chat:"Chat & nhóm",
@@ -243,7 +243,7 @@ const T = {
     tools_more_coming:"もっと多くのツールが近日公開",
     tools_coming_desc:"新しいツールを作っています。またチェックしてください。",
     tools_free_forever:"永久無料",
-    cb_tagline:"プライベートメッセージ、グループチャット、ファイル共有 — Querenciaアカウントで。広告なし、追跡なし。",
+    cb_tagline:"プライベートメッセージ、グループチャット、ファイル共有 - Querenciaアカウントで。広告なし、追跡なし。",
     cb_open:"Cùi Bắpを開く →",
     cb_download_apk:"APKをダウンロード",
     cb_feat_chat:"チャット＆グループ",
@@ -332,7 +332,7 @@ const T = {
     tools_more_coming:"Más herramientas próximamente",
     tools_coming_desc:"Estamos construyendo más herramientas. Vuelve pronto.",
     tools_free_forever:"Gratis para siempre",
-    cb_tagline:"Mensajería privada, chat grupal, compartir archivos — con tu cuenta Querencia. Sin anuncios, sin rastreo.",
+    cb_tagline:"Mensajería privada, chat grupal, compartir archivos - con tu cuenta Querencia. Sin anuncios, sin rastreo.",
     cb_open:"Abrir Cùi Bắp →",
     cb_download_apk:"Descargar APK",
     cb_feat_chat:"Chat y grupos",
@@ -386,7 +386,7 @@ function setLang(lang) {
     const key = el.getAttribute('data-i18n-placeholder');
     if (t[key] !== undefined) el.placeholder = t[key];
   });
-  // Giữ icon người trên nav — không đổi text khi chưa đăng nhập
+  // Giữ icon người trên nav - không đổi text khi chưa đăng nhập
   // (icon được set bởi auth.js, không dùng data-i18n)
   const navBtn = document.getElementById('navAuthBtn');
   if (navBtn && !authToken) {

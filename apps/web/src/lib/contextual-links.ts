@@ -1,5 +1,5 @@
 /**
- * Contextual Links — tự nhận biết context và tạo deep link đúng
+ * Contextual Links - tự nhận biết context và tạo deep link đúng
  *
  * Dùng cho:
  *   - LàNo: khi AI đề cập tool → tạo link vào tool đó

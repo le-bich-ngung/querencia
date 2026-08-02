@@ -25,7 +25,7 @@ app = FastAPI(
 
 
 # ── CẤU HÌNH CORS ───────────────────────────────────────────
-# FIX: không dùng "*" khi có allow_credentials=True — browser sẽ chặn
+# FIX: không dùng "*" khi có allow_credentials=True - browser sẽ chặn
 app.add_middleware(
     CORSMiddleware,
     allow_origins=[

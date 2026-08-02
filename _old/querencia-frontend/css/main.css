@@ -55,7 +55,7 @@
     body.dark .ueren-text{color:#eee !important}
     body.dark .whats-new-label{color:#aaa}
     body.dark .page-title,.dark h1,.dark h2,.dark h3{color:#eee}
-    /* Màu xanh sáng hơn cho dark mode — dễ đọc trên nền đen */
+    /* Màu xanh sáng hơn cho dark mode - dễ đọc trên nền đen */
     body.dark .hero-quote{color:#7ecf9a}
     body.dark .nav-tagline{color:#7ecf9a}
     body.dark .page-label{color:#7ecf9a}

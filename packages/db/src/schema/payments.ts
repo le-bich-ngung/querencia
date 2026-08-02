@@ -23,7 +23,7 @@ export const subscriptions = pgTable('subscriptions', {
 
 export const qTypeEnum = pgEnum('q_type', ['expiring', 'permanent']);
 
-// Mỗi Q token riêng lẻ — tracking rõ nguồn gốc và hạn dùng
+// Mỗi Q token riêng lẻ - tracking rõ nguồn gốc và hạn dùng
 export const qTokens = pgTable('q_tokens', {
   id:          uuid('id').primaryKey().defaultRandom(),
   userId:      uuid('user_id').references(() => users.id, { onDelete: 'cascade' }).notNull(),
@@ -72,7 +72,7 @@ export const proOrders = pgTable('pro_orders', {
   createdAt:     timestamp('created_at').defaultNow().notNull(),
 });
 
-// Q pool công khai — Q được tặng treo cho cộng đồng
+// Q pool công khai - Q được tặng treo cho cộng đồng
 export const qPool = pgTable('q_pool', {
   id:          uuid('id').primaryKey().defaultRandom(),
   donorId:     uuid('donor_id').references(() => users.id),  // null = ẩn danh

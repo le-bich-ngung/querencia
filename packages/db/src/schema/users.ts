@@ -22,7 +22,7 @@ export const users = pgTable('users', {
   updatedAt:         timestamp('updated_at').defaultNow().notNull(),
 });
 
-// accounts — OAuth providers (Google, future: GitHub, Apple)
+// accounts - OAuth providers (Google, future: GitHub, Apple)
 export const accounts = pgTable('accounts', {
   id:                uuid('id').primaryKey().defaultRandom(),
   userId:            uuid('user_id').references(() => users.id, { onDelete: 'cascade' }).notNull(),
@@ -34,12 +34,12 @@ export const accounts = pgTable('accounts', {
   createdAt:         timestamp('created_at').defaultNow().notNull(),
 });
 
-// Kiểu helper — dùng trong service
+// Kiểu helper - dùng trong service
 export type User = typeof users.$inferSelect;
 export type NewUser = typeof users.$inferInsert;
 
 // ── E2EE public key storage ───────────────────────────────────
-// Server chỉ lưu PUBLIC keys — không bao giờ thấy private keys
+// Server chỉ lưu PUBLIC keys - không bao giờ thấy private keys
 
 import { pgTable as _pgTable, uuid as _uuid, text as _text, integer as _int, boolean as _bool, timestamp as _ts } from 'drizzle-orm/pg-core';
 

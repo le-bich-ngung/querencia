@@ -1,12 +1,12 @@
 <!-- pages/compress-image.html -->
 <meta name="description" content="Compress JPG, PNG, WebP images online for free. Reduce file size up to 80% without quality loss. 100% client-side, no upload to server."/>
 <meta name="keywords" content="compress image online, reduce image size, jpg compressor, png compressor, webp compress, no upload image compressor"/>
-<meta property="og:title" content="<span data-i18n="t_title">Compress Image Online</span> Free — No Upload | Querencia"/>
+<meta property="og:title" content="<span data-i18n="t_title">Compress Image Online</span> Free - No Upload | Querencia"/>
 <meta property="og:description" content="Compress JPG, PNG, WebP images online for free. Reduce file size up to 80% without quality loss. 100% client-side, no upload to server."/>
 <meta property="og:type" content="website"/>
 <meta property="og:url" content="https://querencia.com.vn/#tools"/>
 <meta name="twitter:card" content="summary"/>
-<meta name="twitter:title" content="Compress Image Online Free — No Upload | Querencia"/>
+<meta name="twitter:title" content="Compress Image Online Free - No Upload | Querencia"/>
 <link rel="canonical" href="https://querencia.com.vn/#tools"/>
 <script type="application/ld+json">
 {
@@ -23,7 +23,7 @@
 </script>
 
 <section class="section active" id="compress-image-page">
-<meta name="description" content="Compress images online free — reduce file size up to 80% without visible quality loss. JPG, PNG, WebP. 100% client-side."/>
+<meta name="description" content="Compress images online free - reduce file size up to 80% without visible quality loss. JPG, PNG, WebP. 100% client-side."/>
 <style>
 .ci-wrap{max-width:720px;margin:0 auto;padding:40px 20px;font-family:var(--font-body)}
 .ci-hero{text-align:center;margin-bottom:40px}
@@ -66,7 +66,7 @@
   <div class="ci-hero">
     <div class="ci-badge">100% Free · Client-side</div>
     <h1>Compress Image Online</h1>
-    <p data-i18n="t_desc">Reduce image file size up to 80% without visible quality loss. No upload to server — everything happens in your browser.</p>
+    <p data-i18n="t_desc">Reduce image file size up to 80% without visible quality loss. No upload to server - everything happens in your browser.</p>
   </div>
 
   <div class="ci-upload" id="ci-drop"
@@ -97,17 +97,17 @@
 
   <div class="ci-preview" id="ci-preview">
     <div class="ci-box">
-      <div class="ci-box-label" data-i18n="t_original">Original <span class="ci-box-size" id="ci-orig-size">—</span></div>
+      <div class="ci-box-label" data-i18n="t_original">Original <span class="ci-box-size" id="ci-orig-size">-</span></div>
       <div class="ci-img-wrap"><img id="ci-orig-img" src="" alt="Original"/></div>
     </div>
     <div class="ci-box">
-      <div class="ci-box-label" data-i18n="t_compressed">Compressed <span class="ci-box-size" id="ci-comp-size" style="color:#4a7c59">—</span></div>
+      <div class="ci-box-label" data-i18n="t_compressed">Compressed <span class="ci-box-size" id="ci-comp-size" style="color:#4a7c59">-</span></div>
       <div class="ci-img-wrap"><img id="ci-comp-img" src="" alt="Compressed"/></div>
     </div>
   </div>
 
   <div class="ci-saving" id="ci-saving" style="display:none">
-    Saved <b id="ci-pct">—</b> — <span id="ci-bytes-saved">—</span> smaller
+    Saved <b id="ci-pct">-</b> - <span id="ci-bytes-saved">-</span> smaller
   </div>
 
   <div class="ci-actions" id="ci-actions" style="display:none">
@@ -200,7 +200,7 @@ window.ciReset = function(){
 
 <script>
 (function(){
-  const _T = {en:{t_title:'Compress Image Online',t_desc:'Reduce image file size up to 80% without visible quality loss. No upload to server — everything happens in your browser.',t_drop:'Click or drop image here',t_drop_sub:'JPG · PNG · WebP · GIF · up to 50MB',t_quality:'Quality',t_format:'Format:',t_original:'Original',t_compressed:'Compressed',t_saved:'saved',t_try_other:'Try another image',t_tip:'Tip: For photos, JPG at 70–80% gives best size/quality ratio. For graphics with transparency, use WebP.',t_download:'Download',t_privacy:'🔒 Images never leave your browser'},vi:{t_title:'Nén ảnh Online',t_desc:'Giảm dung lượng ảnh tới 80% mà không mất chất lượng rõ rệt. Không upload — xử lý ngay trong trình duyệt.',t_drop:'Nhấn hoặc kéo thả ảnh vào đây',t_drop_sub:'JPG · PNG · WebP · GIF · tối đa 50MB',t_quality:'Chất lượng',t_format:'Định dạng:',t_original:'Gốc',t_compressed:'Sau nén',t_saved:'tiết kiệm',t_try_other:'Chọn ảnh khác',t_tip:'Mẹo: Với ảnh chụp, JPG 70–80% cho tỷ lệ kích thước/chất lượng tốt nhất. Với đồ họa có nền trong suốt, dùng WebP.',t_download:'Tải xuống',t_privacy:'🔒 Ảnh không bao giờ rời trình duyệt'},ja:{t_title:'画像圧縮オンライン',t_desc:'画質を落とさずにファイルサイズを最大80%削減。サーバーへのアップロード不要 — すべてブラウザで処理。',t_drop:'クリックまたはドロップ',t_drop_sub:'JPG · PNG · WebP · GIF · 最大50MB',t_quality:'品質',t_format:'形式：',t_original:'元のサイズ',t_compressed:'圧縮後',t_saved:'削減',t_try_other:'別の画像を試す',t_tip:'ヒント：写真にはJPG 70〜80%が最適。透過が必要な場合はWebPを使用。',t_download:'ダウンロード',t_privacy:'🔒 画像はブラウザ外に出ません'},es:{t_title:'Comprimir Imagen Online',t_desc:'Reduce el tamaño del archivo hasta un 80% sin pérdida visible de calidad. Sin subida al servidor — todo ocurre en tu navegador.',t_drop:'Haz clic o arrastra una imagen',t_drop_sub:'JPG · PNG · WebP · GIF · hasta 50MB',t_quality:'Calidad',t_format:'Formato:',t_original:'Original',t_compressed:'Comprimido',t_saved:'ahorrado',t_try_other:'Probar otra imagen',t_tip:'Consejo: Para fotos, JPG al 70–80% ofrece la mejor relación tamaño/calidad. Para gráficos con transparencia, usa WebP.',t_download:'Descargar',t_privacy:'🔒 Las imágenes nunca salen de tu navegador'}};
+  const _T = {en:{t_title:'Compress Image Online',t_desc:'Reduce image file size up to 80% without visible quality loss. No upload to server - everything happens in your browser.',t_drop:'Click or drop image here',t_drop_sub:'JPG · PNG · WebP · GIF · up to 50MB',t_quality:'Quality',t_format:'Format:',t_original:'Original',t_compressed:'Compressed',t_saved:'saved',t_try_other:'Try another image',t_tip:'Tip: For photos, JPG at 70–80% gives best size/quality ratio. For graphics with transparency, use WebP.',t_download:'Download',t_privacy:'🔒 Images never leave your browser'},vi:{t_title:'Nén ảnh Online',t_desc:'Giảm dung lượng ảnh tới 80% mà không mất chất lượng rõ rệt. Không upload - xử lý ngay trong trình duyệt.',t_drop:'Nhấn hoặc kéo thả ảnh vào đây',t_drop_sub:'JPG · PNG · WebP · GIF · tối đa 50MB',t_quality:'Chất lượng',t_format:'Định dạng:',t_original:'Gốc',t_compressed:'Sau nén',t_saved:'tiết kiệm',t_try_other:'Chọn ảnh khác',t_tip:'Mẹo: Với ảnh chụp, JPG 70–80% cho tỷ lệ kích thước/chất lượng tốt nhất. Với đồ họa có nền trong suốt, dùng WebP.',t_download:'Tải xuống',t_privacy:'🔒 Ảnh không bao giờ rời trình duyệt'},ja:{t_title:'画像圧縮オンライン',t_desc:'画質を落とさずにファイルサイズを最大80%削減。サーバーへのアップロード不要 - すべてブラウザで処理。',t_drop:'クリックまたはドロップ',t_drop_sub:'JPG · PNG · WebP · GIF · 最大50MB',t_quality:'品質',t_format:'形式：',t_original:'元のサイズ',t_compressed:'圧縮後',t_saved:'削減',t_try_other:'別の画像を試す',t_tip:'ヒント：写真にはJPG 70〜80%が最適。透過が必要な場合はWebPを使用。',t_download:'ダウンロード',t_privacy:'🔒 画像はブラウザ外に出ません'},es:{t_title:'Comprimir Imagen Online',t_desc:'Reduce el tamaño del archivo hasta un 80% sin pérdida visible de calidad. Sin subida al servidor - todo ocurre en tu navegador.',t_drop:'Haz clic o arrastra una imagen',t_drop_sub:'JPG · PNG · WebP · GIF · hasta 50MB',t_quality:'Calidad',t_format:'Formato:',t_original:'Original',t_compressed:'Comprimido',t_saved:'ahorrado',t_try_other:'Probar otra imagen',t_tip:'Consejo: Para fotos, JPG al 70–80% ofrece la mejor relación tamaño/calidad. Para gráficos con transparencia, usa WebP.',t_download:'Descargar',t_privacy:'🔒 Las imágenes nunca salen de tu navegador'}};
   function _apply(){
     const lang = localStorage.getItem('querencia_lang')||'en';
     const t = _T[lang]||_T.en;

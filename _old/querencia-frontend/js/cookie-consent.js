@@ -107,7 +107,7 @@
   banner.id = 'qr-cookie-banner';
   banner.innerHTML = `
     <div class="qr-cookie-text">
-      <strong>🍪 Querencia dùng cookie</strong> để cải thiện trải nghiệm của bạn — phân tích ẩn danh, không quảng cáo, không bán dữ liệu.
+      <strong>🍪 Querencia dùng cookie</strong> để cải thiện trải nghiệm của bạn - phân tích ẩn danh, không quảng cáo, không bán dữ liệu.
       Xem thêm tại <a href="/pages/privacy.html" target="_blank">Chính sách bảo mật</a>.
     </div>
     <div class="qr-cookie-actions">

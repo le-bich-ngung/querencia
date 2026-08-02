@@ -3,7 +3,7 @@
 <head>
   <meta charset="UTF-8"/>
   <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
-  <meta name="description" content="Querencia PDF Tool — Cắt & Ghép PDF miễn phí"/>
+  <meta name="description" content="Querencia PDF Tool - Cắt & Ghép PDF miễn phí"/>
   <title>PDF Tool · Querencia Tools</title>
 
   <link rel="shortcut icon" type="image/svg+xml" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 120 120'><circle cx='55' cy='55' r='38' fill='none' stroke='%234a7c59' stroke-width='7' stroke-linecap='round'/><line x1='81' y1='79' x2='98' y2='98' stroke='%234a7c59' stroke-width='7' stroke-linecap='round'/><polyline points='20,55 28,38 35,68 43,32 51,60 58,43 66,70 74,48 90,55' fill='none' stroke='%234a7c59' stroke-width='3' stroke-linecap='round' stroke-linejoin='round'/></svg>"/>
@@ -215,7 +215,7 @@
 <div class="page-header">
   <p class="page-label">Tools · PDF</p>
   <h1 class="page-title">Cắt &amp; Ghép <em>PDF</em> <span class="badge-free">Free</span></h1>
-  <p class="page-desc">Ghép nhiều file PDF thành một, hoặc cắt lấy những trang bạn cần — tất cả ngay trên trình duyệt, không upload lên server.</p>
+  <p class="page-desc">Ghép nhiều file PDF thành một, hoặc cắt lấy những trang bạn cần - tất cả ngay trên trình duyệt, không upload lên server.</p>
 </div>
 
 <!-- TABS -->
@@ -286,7 +286,7 @@
 
         <div class="result-download" id="mergeDownload">
           <h4>✓ Ghép thành công!</h4>
-          <p id="mergeDownloadInfo">—</p>
+          <p id="mergeDownloadInfo">-</p>
           <button class="btn-primary" id="btnDownloadMerge">⬇ Tải về PDF</button>
         </div>
       </div>
@@ -314,8 +314,8 @@
         <div class="file-item">
           <span class="file-item-icon">📄</span>
           <div class="file-item-info">
-            <div class="file-item-name" id="splitFileName">—</div>
-            <div class="file-item-size" id="splitFileSize">—</div>
+            <div class="file-item-name" id="splitFileName">-</div>
+            <div class="file-item-size" id="splitFileSize">-</div>
           </div>
           <button class="icon-btn del" onclick="clearSplit()" title="Xóa">✕</button>
         </div>
@@ -388,7 +388,7 @@
 
         <div class="result-download" id="splitDownload" style="display:none">
           <h4>✓ Cắt thành công!</h4>
-          <p id="splitDownloadInfo">—</p>
+          <p id="splitDownloadInfo">-</p>
           <button class="btn-primary" id="btnDownloadSplit">⬇ Tải về PDF</button>
         </div>
       </div>
@@ -724,7 +724,7 @@ async function doSplit() {
     const srcPdf = await PDFDocument.load(bytes);
 
     if (splitMode === 'every') {
-      // Tách từng trang — tải lần lượt
+      // Tách từng trang - tải lần lượt
       document.getElementById('splitProgressText').textContent = 'Đang tách từng trang...';
       for (let i = 0; i < splitTotalPages; i++) {
         const newPdf = await PDFDocument.create();

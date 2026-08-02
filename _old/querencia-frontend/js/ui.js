@@ -24,7 +24,7 @@ window.addEventListener('scroll', () => {
   document.getElementById('mainNav').classList.toggle('scrolled', window.scrollY > 10);
 });
 
-// Dữ liệu tìm kiếm — các mục có thể tìm được
+// Dữ liệu tìm kiếm - các mục có thể tìm được
 const SEARCH_INDEX = [
   { title: 'Tools', titleVI: 'Công cụ', titleJA: 'ツール', titleES: 'Herramientas', section: 'tools', desc: 'QR Generator, PDF, Image tools...' },
   { title: 'Learn', titleVI: 'Học', titleJA: '学ぶ', titleES: 'Aprender', section: 'learn', desc: 'Courses, guides, resources' },

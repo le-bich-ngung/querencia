@@ -39,7 +39,7 @@ export const flashcardCards = pgTable('flashcard_cards', {
   createdAt: timestamp('created_at').defaultNow().notNull(),
 });
 
-// ── Vault (link chia sẻ tự hủy — migrated từ querencia-tools) ─
+// ── Vault (link chia sẻ tự hủy - migrated từ querencia-tools) ─
 export const vaultFiles = pgTable('vault_files', {
   token:     text('token').primaryKey(),            // ngẫu nhiên, dùng làm URL
   filename:  text('filename').notNull(),

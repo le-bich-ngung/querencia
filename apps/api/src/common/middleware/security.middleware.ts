@@ -1,5 +1,5 @@
 /**
- * Security Middleware — CORS, headers bảo mật, captcha trigger
+ * Security Middleware - CORS, headers bảo mật, captcha trigger
  * Gắn vào app.module.ts qua NestMiddleware
  */
 import { Injectable, NestMiddleware, Logger } from '@nestjs/common';
@@ -7,7 +7,7 @@ import { Request, Response, NextFunction } from 'express';
 import { InjectRedis } from '@nestjs-modules/ioredis';
 import type { Redis } from 'ioredis';
 
-// Danh sách domain được phép — chặt, không wildcard
+// Danh sách domain được phép - chặt, không wildcard
 const ALLOWED_ORIGINS = [
   'https://querencia.com.vn',
   'https://www.querencia.com.vn',

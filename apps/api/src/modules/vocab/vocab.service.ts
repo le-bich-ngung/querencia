@@ -5,7 +5,7 @@ import { eq, and, desc } from 'drizzle-orm';
 import { CreateVocabSetDto } from './dto/create-vocab-set.dto';
 import { UpdateVocabSetDto } from './dto/update-vocab-set.dto';
 
-// Chỉ trả metadata (không kèm mảng words) cho danh sách — tránh tải nặng
+// Chỉ trả metadata (không kèm mảng words) cho danh sách - tránh tải nặng
 const listColumns = {
   id: vocabSets.id,
   name: vocabSets.name,

@@ -9,7 +9,7 @@
     .nav-logo span{color:var(--sage)}
     .nav-logo{display:flex;flex-direction:column;line-height:1.1;gap:2px;align-items:flex-start}
 
-    /* Dòng chữ nhỏ "Tech and more" dưới logo — căn giữa */
+    /* Dòng chữ nhỏ "Tech and more" dưới logo - căn giữa */
     .nav-tagline{font-family:var(--font-body);font-size:0.6rem;font-weight:400;letter-spacing:0.04em;color:var(--sage);font-style:normal;text-align:center;width:100%}
     .nav-logo-text{font-family:var(--font-display);font-size:1.3rem;font-weight:700;color:var(--black);vertical-align:middle;letter-spacing:-0.5px}
 
@@ -73,7 +73,7 @@
     .footer-logo span{color:var(--sage)}
     footer p{font-size:0.75rem;color:var(--gray-light)}
 /* ── AUTH DROPDOWN ────────────────────────────────────────
-       Dropdown đăng nhập/đăng ký — thiết kế giống lang-switcher
+       Dropdown đăng nhập/đăng ký - thiết kế giống lang-switcher
        Click vào nút → toggle class "open" → dropdown hiện    */
     .auth-switcher{position:relative;margin-left:4px}
     .auth-btn{display:flex;align-items:center;gap:4px;background:none;border:1.5px solid var(--sage);border-radius:20px;padding:5px 10px;cursor:pointer;font-family:var(--font-body);font-size:0.72rem;font-weight:600;color:var(--sage);transition:all 0.2s;white-space:nowrap}

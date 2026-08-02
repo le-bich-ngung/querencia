@@ -1,5 +1,5 @@
 /**
- * Dynamic tool page — /tools/[slug]
+ * Dynamic tool page - /tools/[slug]
  * Render mỗi tool HTML trong iframe để tránh CSS/JS conflict
  * Tool HTML được serve từ /public/tools/*.html
  */
@@ -16,7 +16,7 @@ export async function generateMetadata({ params }: { params: { slug: string } })
   const tool = getToolBySlug(params.slug);
   if (!tool) return {};
   return {
-    title: `${tool.name} — Querencia`,
+    title: `${tool.name} - Querencia`,
     description: tool.description,
   };
 }

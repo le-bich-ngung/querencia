@@ -7,10 +7,10 @@ const TourGuide = {
     steps: [
         {
             element: '.nav-logo',
-            vi: 'Chào mừng bạn đến với Querencia — Nơi thắp sáng tri thức.',
-            en: 'Welcome to Querencia — Where wisdom is ignited.',
-            ja: 'Querenciaへようこそ — 知識が灯る場所。',
-            es: 'Bienvenido a Querencia — Donde la sabiduría se enciende.'
+            vi: 'Chào mừng bạn đến với Querencia - Nơi thắp sáng tri thức.',
+            en: 'Welcome to Querencia - Where wisdom is ignited.',
+            ja: 'Querenciaへようこそ - 知識が灯る場所。',
+            es: 'Bienvenido a Querencia - Donde la sabiduría se enciende.'
         },
         {
             element: '#tools-grid',

@@ -1,5 +1,5 @@
 /**
- * API Client — gọi NestJS API từ Next.js
+ * API Client - gọi NestJS API từ Next.js
  * Giữ cùng pattern với js/api.js cũ nhưng dùng fetch thay XHR
  */
 const API_BASE = process.env.NEXT_PUBLIC_API_URL ?? '/api/v1';

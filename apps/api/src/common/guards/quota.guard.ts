@@ -1,5 +1,5 @@
 /**
- * Quota Guard — kiểm tra và trừ Q trước khi dùng tool có phí
+ * Quota Guard - kiểm tra và trừ Q trước khi dùng tool có phí
  * Dùng với @QuotaCost(n) decorator
  */
 import {

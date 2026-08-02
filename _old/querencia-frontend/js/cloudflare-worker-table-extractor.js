@@ -1,6 +1,6 @@
 /**
  * ╔══════════════════════════════════════════════════════════════╗
- * ║   Querencia — Smart Table Extractor · Cloudflare Worker     ║
+ * ║   Querencia - Smart Table Extractor · Cloudflare Worker     ║
  * ║   Proxy Claude API với Rate Limiting 2 lớp                  ║
  * ╚══════════════════════════════════════════════════════════════╝
  *
@@ -26,10 +26,10 @@
  */
 
 // ─────────────────────────────────────────────
-//  CONFIG — chỉnh ở đây, không cần đụng code
+//  CONFIG - chỉnh ở đây, không cần đụng code
 // ─────────────────────────────────────────────
 const CONFIG = {
-  // Allowed origins — thêm domain production khi go-live
+  // Allowed origins - thêm domain production khi go-live
   ALLOWED_ORIGINS: [
     "https://querencia.com.vn",
     "https://www.querencia.com.vn",
@@ -38,7 +38,7 @@ const CONFIG = {
     // thêm staging nếu có: "https://staging.querencia.com.vn"
   ],
 
-  // Rate limit — PER IP
+  // Rate limit - PER IP
   RATE_MINUTE: 3,         // tối đa 3 requests / phút
   RATE_DAILY:  10,        // tối đa 10 requests / ngày (free tier MVP)
 
@@ -214,7 +214,7 @@ export default {
 // ─────────────────────────────────────────────
 async function checkRateLimit(env, ip) {
   if (!env.RATE_LIMIT_KV) {
-    // KV not configured — allow but warn
+    // KV not configured - allow but warn
     console.warn("RATE_LIMIT_KV chưa được bind. Rate limiting bị tắt.");
     return { allowed: true };
   }

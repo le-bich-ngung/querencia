@@ -1,5 +1,5 @@
 /**
- * CallScreen — gọi thoại & video
+ * CallScreen - gọi thoại & video
  * Hiển thị: local video (PiP góc), remote video (full), hoặc avatar khi gọi thoại
  * Controls: mute, camera flip, speaker, end call
  */
@@ -124,7 +124,7 @@ export function CallScreen({
         </View>
       )}
 
-      {/* INCOMING CALL — answer/reject */}
+      {/* INCOMING CALL - answer/reject */}
       {callState === 'ringing' && (
         <View style={cs.incomingControls}>
           <View style={cs.incomingRow}>

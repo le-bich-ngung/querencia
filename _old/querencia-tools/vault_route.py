@@ -3,12 +3,12 @@
 # NHIỆM VỤ: API cho tool Link chia sẻ tài liệu tự hủy
 #
 # Endpoints:
-#   POST /vault/upload              — upload file, trả về link
-#   GET  /vault/{token}/info        — xem thông tin (còn hạn không)
-#   GET  /vault/{token}/download    — tải file, tự hủy nếu cần
+#   POST /vault/upload              - upload file, trả về link
+#   GET  /vault/{token}/info        - xem thông tin (còn hạn không)
+#   GET  /vault/{token}/download    - tải file, tự hủy nếu cần
 #
 # Giới hạn: 25MB mỗi file
-# Tự hủy: sau N lần đọc hoặc hết expire_at — tùy chọn của người upload
+# Tự hủy: sau N lần đọc hoặc hết expire_at - tùy chọn của người upload
 # Cleanup: gọi cleanup_expired() định kỳ từ main.py
 # ============================================================
 
@@ -227,7 +227,7 @@ async def download_file(token: str, password: str = "", db: Session = Depends(ge
 
 
 async def _delayed_delete(token: str, delay: int = 3):
-    """Xóa file sau delay giây — đợi FileResponse stream xong"""
+    """Xóa file sau delay giây - đợi FileResponse stream xong"""
     await asyncio.sleep(delay)
     from database import SessionLocal
     db = SessionLocal()

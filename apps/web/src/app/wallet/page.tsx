@@ -1,6 +1,6 @@
 'use client';
 /**
- * Q Wallet — xem số dư, lịch sử, tặng Q
+ * Q Wallet - xem số dư, lịch sử, tặng Q
  * /wallet
  */
 import { useState, useEffect } from 'react';
@@ -89,7 +89,7 @@ export default function WalletPage() {
         Q Wallet
       </h1>
       <p style={{ fontSize: '0.82rem', color: 'var(--text-secondary)', marginBottom: 28 }}>
-        Đơn vị Q — dùng cho tools Pro và tặng cho cộng đồng
+        Đơn vị Q - dùng cho tools Pro và tặng cho cộng đồng
       </p>
 
       {/* Balance cards */}

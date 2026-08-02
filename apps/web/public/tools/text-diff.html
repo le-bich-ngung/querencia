@@ -3,7 +3,7 @@
 <head>
 <meta charset="UTF-8"/>
 <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
-<title>Text Diff — Querencia</title>
+<title>Text Diff - Querencia</title>
 <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700&family=DM+Mono:wght@400;500&display=swap" rel="stylesheet"/>
 <style>
 *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
@@ -473,7 +473,7 @@ function runDiff() {
   if (added === 0 && removed === 0) {
     document.getElementById('diffOutput').innerHTML = `
       <div class="identical-banner">
-        ✓ Texts are identical — no differences found.
+        ✓ Texts are identical - no differences found.
       </div>`;
     return;
   }
@@ -502,7 +502,7 @@ function renderUnified() {
   let html = '<div class="unified-view">';
   let lineNumA = 1, lineNumB = 1;
 
-  // Group consecutive equal lines — collapse if > 3
+  // Group consecutive equal lines - collapse if > 3
   const groups = [];
   let cur = null;
   for (const d of lastDiff) {

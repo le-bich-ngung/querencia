@@ -1,5 +1,5 @@
 /**
- * Cùi Bắp Service — DB WIRED
+ * Cùi Bắp Service - DB WIRED
  * Migrated từ querencia-backend/api/app_logic.py (cuibap_router)
  * Tất cả TODO stubs đã được thay bằng Drizzle queries thật.
  *
@@ -104,7 +104,7 @@ export class CuiBapService {
       throw new BadRequestException('Không thể nhắn tin với chính mình');
     }
 
-    // user_a_id < user_b_id — giữ y chang logic cũ để tránh tạo trùng
+    // user_a_id < user_b_id - giữ y chang logic cũ để tránh tạo trùng
     const [a, b] = [userId, targetUserId].sort();
 
     const existing = await this.db.query.cbConversations.findFirst({
@@ -155,7 +155,7 @@ export class CuiBapService {
     const hasMore = msgs.length > limit;
     const items   = hasMore ? msgs.slice(0, limit) : msgs;
 
-    // Format + đính reactions — chronological order (reversed)
+    // Format + đính reactions - chronological order (reversed)
     const formatted = await Promise.all(
       items.reverse().map(m => this._formatMessage(m)),
     );
@@ -188,7 +188,7 @@ export class CuiBapService {
         replyToId:      data.replyToId,
         scheduledAt:    data.scheduledAt ? new Date(data.scheduledAt) : null,
         isSent:         !isScheduled,
-        // File tự xóa sau 7 ngày — giữ y chang code cũ
+        // File tự xóa sau 7 ngày - giữ y chang code cũ
         fileExpiresAt:  data.fileUrl
           ? new Date(Date.now() + 7 * 24 * 3600 * 1000)
           : null,
@@ -205,7 +205,7 @@ export class CuiBapService {
 
     const formatted = await this._formatMessage(msg);
 
-    // WebSocket: gửi đến người nhận — giữ y chang logic cũ
+    // WebSocket: gửi đến người nhận - giữ y chang logic cũ
     if (!isScheduled) {
       const targetId = conv.userAId === senderId ? conv.userBId : conv.userAId;
       this.chatGateway.sendToUser(targetId, 'new_message', {
@@ -246,7 +246,7 @@ export class CuiBapService {
     });
     if (!msg) throw new NotFoundException('Không tìm thấy tin nhắn');
 
-    // Soft delete: is_deleted=true, xóa content — giữ y chang code cũ
+    // Soft delete: is_deleted=true, xóa content - giữ y chang code cũ
     await this.db
       .update(cbMessages)
       .set({ isDeleted: true, content: null })
@@ -262,7 +262,7 @@ export class CuiBapService {
   }
 
   async addReaction(msgId: string, userId: string, emoji: string) {
-    // Toggle: có thì xóa, không thì thêm — giữ y chang logic cũ
+    // Toggle: có thì xóa, không thì thêm - giữ y chang logic cũ
     const existing = await this.db.query.cbReactions.findFirst({
       where: and(
         eq(cbReactions.messageId, msgId),
@@ -400,7 +400,7 @@ export class CuiBapService {
   async createGroup(ownerId: string, data: {
     name: string; description?: string; memberIds?: string[];
   }) {
-    // Max 10 nhóm/user — giữ y chang code cũ
+    // Max 10 nhóm/user - giữ y chang code cũ
     const groupCount = await this.db
       .select({ count: count() })
       .from(cbGroupMembers)
@@ -436,7 +436,7 @@ export class CuiBapService {
   }
 
   async addGroupMember(groupId: string, requesterId: string, newUserId: string) {
-    // Guard: requester phải là owner hoặc admin — giữ y chang code cũ
+    // Guard: requester phải là owner hoặc admin - giữ y chang code cũ
     const myRole = await this.db.query.cbGroupMembers.findFirst({
       where: and(
         eq(cbGroupMembers.groupId, groupId),
@@ -637,7 +637,7 @@ export class CuiBapService {
       throw new BadRequestException('Poll không tồn tại hoặc đã đóng');
     }
 
-    // Đổi phiếu nếu đã vote — giữ y chang code cũ
+    // Đổi phiếu nếu đã vote - giữ y chang code cũ
     const existing = await this.db.query.cbPollVotes.findFirst({
       where: and(
         eq(cbPollVotes.pollId, pollId),
@@ -666,7 +666,7 @@ export class CuiBapService {
       where: eq(cbUserSettings.userId, userId),
     });
 
-    // Tạo defaults nếu chưa có — giữ y chang code cũ
+    // Tạo defaults nếu chưa có - giữ y chang code cũ
     if (!settings) {
       const [created] = await this.db
         .insert(cbUserSettings)
@@ -733,7 +733,7 @@ export class CuiBapService {
   }
 
   async deleteConversation(convId: string, userId: string) {
-    // Soft delete — chỉ ẩn ở phía user này
+    // Soft delete - chỉ ẩn ở phía user này
     const key = `conv:deleted:${userId}`;
     await this.redis.sadd(key, convId);
     return;
@@ -776,7 +776,7 @@ export class CuiBapService {
     return member;
   }
 
-  // Format DM message — giữ y chang _format_message từ code cũ
+  // Format DM message - giữ y chang _format_message từ code cũ
   private async _formatMessage(msg: typeof cbMessages.$inferSelect) {
     const [sender, reactions] = await Promise.all([
       this.db.query.users.findFirst({
@@ -788,7 +788,7 @@ export class CuiBapService {
       }),
     ]);
 
-    // Group reactions by emoji — giữ y chang code cũ
+    // Group reactions by emoji - giữ y chang code cũ
     const reactionSummary: Record<string, number> = {};
     for (const r of reactions) {
       reactionSummary[r.emoji] = (reactionSummary[r.emoji] ?? 0) + 1;

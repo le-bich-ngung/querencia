@@ -28,10 +28,10 @@ function closeModal(id) {
 // ── THÔNG TIN TÀI KHOẢN ──────────────────────────────────
 function openProfile() {
   document.getElementById('authSwitcher').classList.remove('open');
-  const fullName  = localStorage.getItem('userFullName') || '—';
-  const email     = localStorage.getItem('userEmail') || '—';
+  const fullName  = localStorage.getItem('userFullName') || '-';
+  const email     = localStorage.getItem('userEmail') || '-';
   const plan      = localStorage.getItem('userPlan') || 'free';
-  const joined    = localStorage.getItem('userJoined') || '—';
+  const joined    = localStorage.getItem('userJoined') || '-';
   // Nếu chưa có lastLogin (đăng nhập trước khi có tính năng này), hiện thời gian hiện tại
   const lastLogin = localStorage.getItem('userLastLogin') || new Date().toLocaleString('vi-VN');
   const canEdit   = canEditName();

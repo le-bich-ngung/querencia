@@ -1,6 +1,6 @@
 /**
  * Tìm kiếm tin nhắn trong conversation
- * Local search — E2EE friendly (không gửi lên server)
+ * Local search - E2EE friendly (không gửi lên server)
  */
 import React, { useState, useCallback } from 'react';
 import {

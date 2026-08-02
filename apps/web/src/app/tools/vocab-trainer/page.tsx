@@ -130,7 +130,7 @@ export default function VocabTrainerPage() {
     setUploading(true); setUploadMsg('');
     try {
       const words = await parseFile(file);
-      if (words.length === 0) { setUploadMsg('Không đọc được từ nào — kiểm tra lại định dạng file (xem hướng dẫn cột phía trên).'); setUploading(false); return; }
+      if (words.length === 0) { setUploadMsg('Không đọc được từ nào - kiểm tra lại định dạng file (xem hướng dẫn cột phía trên).'); setUploading(false); return; }
       if (words.length > MAX_WORDS) { setUploadMsg(`File có ${words.length} từ, vượt quá giới hạn ${MAX_WORDS}.`); setUploading(false); return; }
       const setName_ = name.trim() || file.name.replace(/\.[^.]+$/, '');
       await vocabApi.create({ name: setName_, isPublic, words }, token);
@@ -259,7 +259,7 @@ export default function VocabTrainerPage() {
             />
             <label style={{ display: 'flex', alignItems: 'center', gap: 8, fontSize: 13, marginBottom: 14, cursor: 'pointer', color: MUTED }}>
               <input type="checkbox" checked={isPublic} onChange={e => setIsPublic(e.target.checked)} />
-              🌍 Công khai — mọi người xem và học được bộ từ này
+              🌍 Công khai - mọi người xem và học được bộ từ này
             </label>
             <label style={{
               display: 'block', border: `1.5px dashed ${LINE}`, borderRadius: 12, padding: '20px', textAlign: 'center',
@@ -286,7 +286,7 @@ export default function VocabTrainerPage() {
         {tab === 'mine' && (
           <div style={{ display: 'flex', flexDirection: 'column', gap: 10 }}>
             {!mine || filteredMine.length === 0 ? (
-              <EmptyState text={mine && mine.length > 0 ? 'Không tìm thấy bộ từ khớp.' : 'Chưa có bộ từ nào — bấm "+ Tải lên" để bắt đầu.'} />
+              <EmptyState text={mine && mine.length > 0 ? 'Không tìm thấy bộ từ khớp.' : 'Chưa có bộ từ nào - bấm "+ Tải lên" để bắt đầu.'} />
             ) : filteredMine.map(s => (
               <SetCard key={s.id} s={s} mine onStudy={() => openStudy(s, true)} onTogglePublic={() => togglePublic(s)} onDelete={() => deleteSet(s)} />
             ))}

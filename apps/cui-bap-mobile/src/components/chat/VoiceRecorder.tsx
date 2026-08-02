@@ -1,5 +1,5 @@
 /**
- * VoiceRecorder — nút giữ để ghi âm, thả để gửi
+ * VoiceRecorder - nút giữ để ghi âm, thả để gửi
  * Dùng: react-native-audio-recorder-player
  */
 import React, { useState, useRef } from 'react';

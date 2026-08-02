@@ -3,7 +3,7 @@
    File: css/design-system.css
    Import vào tất cả tools: <link rel="stylesheet" href="/css/design-system.css">
 
-   Tất cả tools PHẢI dùng các biến này — không tự define màu/font riêng
+   Tất cả tools PHẢI dùng các biến này - không tự define màu/font riêng
    Khi muốn thay đổi brand → chỉ sửa file này, tự động áp dụng khắp nơi
    ============================================================ */
 
@@ -69,7 +69,7 @@ body.dark {
   --q-sage-mid: rgba(126,207,154,.2);
 }
 
-/* ── RESET (chỉ cho tool pages — không ảnh hưởng index.html) ── */
+/* ── RESET (chỉ cho tool pages - không ảnh hưởng index.html) ── */
 .q-tool-page *,
 .q-tool-page *::before,
 .q-tool-page *::after {

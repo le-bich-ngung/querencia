@@ -1,5 +1,5 @@
 /*!
- * Smart Find — Querencia
+ * Smart Find - Querencia
  * Find-in-page cho mobile browser & WebView (Cùi Bắp / Nope / LàNo)
  *
  * Dùng:
@@ -38,7 +38,7 @@
     <style>
       #sf-root * { box-sizing: border-box; font-family: system-ui, sans-serif; }
 
-      /* FAB — chỉ hiện trên mobile khi bar đóng */
+      /* FAB - chỉ hiện trên mobile khi bar đóng */
       #sf-fab {
         position: fixed; bottom: 80px; left: 16px; z-index: 2147483640;
         width: 44px; height: 44px; border-radius: 50%;
@@ -307,7 +307,7 @@
     if (e.key === 'Escape') close();
   });
 
-  // Ctrl+F / Cmd+F — ghi đè trên desktop
+  // Ctrl+F / Cmd+F - ghi đè trên desktop
   document.addEventListener('keydown', e => {
     if ((e.ctrlKey || e.metaKey) && e.key === 'f') {
       e.preventDefault();

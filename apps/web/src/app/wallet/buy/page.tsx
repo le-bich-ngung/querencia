@@ -1,6 +1,6 @@
 'use client';
 /**
- * Wallet Buy — /wallet/buy
+ * Wallet Buy - /wallet/buy
  * Paddle Checkout cho mua ngày Pro
  * $0.50/ngày flat, không discount, gói 1/7/30 ngày
  */
@@ -17,7 +17,7 @@ declare global {
 
 const PRICE_PER_DAY = 0.50;
 const PLANS = [
-  { days: 1,  label: '1 ngày',  badge: null,         desc: 'Thử trước — chỉ $0.50' },
+  { days: 1,  label: '1 ngày',  badge: null,         desc: 'Thử trước - chỉ $0.50' },
   { days: 7,  label: '7 ngày',  badge: 'Phổ biến',   desc: '1 tuần không lo thanh toán lại' },
   { days: 30, label: '30 ngày', badge: null,          desc: 'Tiết kiệm thời gian nhất' },
 ];

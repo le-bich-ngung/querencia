@@ -20,9 +20,9 @@ COPY apps/api ./apps/api
 COPY packages ./packages
 
 # Build packages
-RUN cd packages/db    && pnpm exec tsc --outDir dist --module commonjs --target ES2021 --esModuleInterop true --skipLibCheck src/index.ts || true
-RUN cd packages/redis && pnpm exec tsc --outDir dist --module commonjs --target ES2021 --esModuleInterop true --skipLibCheck src/index.ts || true
-RUN cd packages/types && pnpm exec tsc --outDir dist --module commonjs --target ES2021 --esModuleInterop true --skipLibCheck src/index.ts || true
+RUN cd packages/db    && pnpm exec tsc --outDir dist --module commonjs --target ES2021 --esModuleInterop true --skipLibCheck src/index.ts
+RUN cd packages/redis && pnpm exec tsc --outDir dist --module commonjs --target ES2021 --esModuleInterop true --skipLibCheck src/index.ts
+RUN cd packages/types && pnpm exec tsc --outDir dist --module commonjs --target ES2021 --esModuleInterop true --skipLibCheck src/index.ts
 
 # Update package.json main fields
 RUN node -e "const p=require('./packages/db/package.json');p.main='./dist/index.js';require('fs').writeFileSync('./packages/db/package.json',JSON.stringify(p,null,2))"

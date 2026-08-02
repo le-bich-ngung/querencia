@@ -3,7 +3,7 @@
 <head>
 <meta charset="UTF-8"/>
 <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
-<title>Hash Generator — Querencia</title>
+<title>Hash Generator - Querencia</title>
 <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700&family=DM+Mono:wght@400;500&display=swap" rel="stylesheet"/>
 <style>
 *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
@@ -100,22 +100,22 @@ textarea#hashInput::placeholder { color: var(--gray-light); }
     <div class="card-header">Hash Results</div>
     <div class="hash-row">
       <div class="hash-algo">MD5</div>
-      <div class="hash-val empty" id="hash-md5">—</div>
+      <div class="hash-val empty" id="hash-md5">-</div>
       <button class="hash-copy" onclick="copyHash('md5')" id="copy-md5">⎘</button>
     </div>
     <div class="hash-row">
       <div class="hash-algo">SHA-1</div>
-      <div class="hash-val empty" id="hash-sha1">—</div>
+      <div class="hash-val empty" id="hash-sha1">-</div>
       <button class="hash-copy" onclick="copyHash('sha1')" id="copy-sha1">⎘</button>
     </div>
     <div class="hash-row">
       <div class="hash-algo">SHA-256</div>
-      <div class="hash-val empty" id="hash-sha256">—</div>
+      <div class="hash-val empty" id="hash-sha256">-</div>
       <button class="hash-copy" onclick="copyHash('sha256')" id="copy-sha256">⎘</button>
     </div>
     <div class="hash-row">
       <div class="hash-algo">SHA-512</div>
-      <div class="hash-val empty" id="hash-sha512">—</div>
+      <div class="hash-val empty" id="hash-sha512">-</div>
       <button class="hash-copy" onclick="copyHash('sha512')" id="copy-sha512">⎘</button>
     </div>
   </div>
@@ -140,7 +140,7 @@ async function hashAll() {
   if (!text) {
     ['md5','sha1','sha256','sha512'].forEach(a => {
       const el = document.getElementById('hash-' + a);
-      el.textContent = '—'; el.className = 'hash-val empty';
+      el.textContent = '-'; el.className = 'hash-val empty';
       hashes[a] = '';
     });
     compareHash(); return;
@@ -170,8 +170,8 @@ async function hashFile(input) {
   const enc = new Uint8Array(buf);
   const text = new TextDecoder().decode(enc);
 
-  document.getElementById('hashInput').value = `[File: ${file.name} — ${(file.size/1024).toFixed(1)} KB]`;
-  document.getElementById('charCount').textContent = '—';
+  document.getElementById('hashInput').value = `[File: ${file.name} - ${(file.size/1024).toFixed(1)} KB]`;
+  document.getElementById('charCount').textContent = '-';
   document.getElementById('byteCount').textContent = file.size;
 
   hashes.md5    = md5(text);

@@ -1,8 +1,8 @@
 'use client';
 /**
- * Forgot password page — /auth/forgot-password
+ * Forgot password page - /auth/forgot-password
  * Migrated từ auth.js doForgotPassword()
- * Luôn show success dù email có hay không (chống enumerate — giữ y chang code cũ)
+ * Luôn show success dù email có hay không (chống enumerate - giữ y chang code cũ)
  */
 import { useState }  from 'react';
 import Link          from 'next/link';
@@ -29,7 +29,7 @@ export default function ForgotPasswordPage() {
         headers: { 'Content-Type': 'application/json' },
         body:    JSON.stringify({ email }),
       });
-      // Luôn show success — giữ y chang code cũ (chống enumerate)
+      // Luôn show success - giữ y chang code cũ (chống enumerate)
       setSent(true);
     } catch {
       setMsg({ text: 'Không thể kết nối. Vui lòng thử lại.', type: 'error' });

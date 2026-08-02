@@ -1,5 +1,5 @@
 /**
- * Q Service — quản lý Q tokens, lịch sử, tặng Q
+ * Q Service - quản lý Q tokens, lịch sử, tặng Q
  */
 import { Injectable, ForbiddenException, NotFoundException, BadRequestException, Inject } from '@nestjs/common';
 import { eq, desc, and } from 'drizzle-orm';
@@ -68,7 +68,7 @@ export class QService {
     await this.redis.decrby(balanceKey, amount);
 
     if (toPool) {
-      // Tặng vào Q Pool — lưu vào DB để hiển thị
+      // Tặng vào Q Pool - lưu vào DB để hiển thị
       await this.db.insert(qUsageLogs).values({
         userId:    senderId,
         toolSlug:  'q_pool',

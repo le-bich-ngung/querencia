@@ -1,6 +1,6 @@
 'use client';
 /**
- * Tools listing page — /tools
+ * Tools listing page - /tools
  * Migrated từ querencia-frontend/pages/tools.html
  * Hiển thị tất cả 44 tools theo category, free/paid filter
  */

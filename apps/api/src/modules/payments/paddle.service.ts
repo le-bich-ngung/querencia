@@ -1,5 +1,5 @@
 /**
- * Paddle Service — tạo checkout session và verify webhook
+ * Paddle Service - tạo checkout session và verify webhook
  */
 import { Injectable, Logger } from '@nestjs/common';
 import { ConfigService } from '@nestjs/config';
@@ -41,7 +41,7 @@ export class PaddleService {
       },
       body: JSON.stringify({
         product_id:   this.config.get('PADDLE_PRODUCT_ID'),
-        description:  `Querencia Pro — ${days} ngày`,
+        description:  `Querencia Pro - ${days} ngày`,
         unit_price:   { amount: String(amount), currency_code: 'USD' },
         billing_cycle: null, // one-time
         custom_data:  { userId, days: String(days) },

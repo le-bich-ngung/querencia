@@ -60,7 +60,7 @@ function cbConnectWs() {
         if (document.hidden || data.conversation_id !== cbCurrentConvId) {
           // Browser notification
           if (Notification.permission === 'granted') {
-            new Notification('🌽 Cùi Bắp — ' + senderName, { body: preview, icon: '/favicon.ico' });
+            new Notification('🌽 Cùi Bắp - ' + senderName, { body: preview, icon: '/favicon.ico' });
           } else if (Notification.permission !== 'denied') {
             Notification.requestPermission();
           }
@@ -587,7 +587,7 @@ async function cbGetMyId() {
 }
 
 function cbToggleInfo() {
-  alert('Thông tin cuộc trò chuyện — Sắp có!');
+  alert('Thông tin cuộc trò chuyện - Sắp có!');
 }
 
 function cbPickEmoji() {

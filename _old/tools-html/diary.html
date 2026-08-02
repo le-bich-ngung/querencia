@@ -653,7 +653,7 @@ body::before {
   <p class="lock-sub">Chỉ mình bạn đọc được</p>
   <div class="lock-box">
     <div id="lockSetupNote" style="font-size:0.8rem;color:var(--gray);text-align:center;line-height:1.6;padding-bottom:4px;display:none">
-      Lần đầu sử dụng — tạo mật khẩu cho nhật ký của bạn
+      Lần đầu sử dụng - tạo mật khẩu cho nhật ký của bạn
     </div>
     <input class="lock-input" type="password" id="lockPassword" placeholder="Nhập mật khẩu…" onkeydown="if(event.key==='Enter')unlock()"/>
     <input class="lock-input" type="password" id="lockConfirm" placeholder="Xác nhận mật khẩu…" style="display:none" onkeydown="if(event.key==='Enter')unlock()"/>
@@ -731,7 +731,7 @@ body::before {
       <div class="editor-welcome" id="editorWelcome">
         <div class="welcome-candle">🕯</div>
         <h2 class="welcome-title">Không gian của riêng bạn</h2>
-        <p class="welcome-sub">Viết ra những gì bạn cảm nhận — không phán xét, không ép buộc, chỉ có bạn và những dòng chữ thật của mình.</p>
+        <p class="welcome-sub">Viết ra những gì bạn cảm nhận - không phán xét, không ép buộc, chỉ có bạn và những dòng chữ thật của mình.</p>
         <button class="welcome-btn" onclick="newEntry()">✦ Bắt đầu viết hôm nay</button>
       </div>
 
@@ -739,8 +739,8 @@ body::before {
       <div id="editorActive" style="display:none;flex-direction:column;flex:1;overflow:hidden">
         <div class="editor-header">
           <div class="editor-date-row">
-            <span class="editor-date-label" id="editorDateLabel">—</span>
-            <span class="editor-date-badge" id="editorDateBadge">—</span>
+            <span class="editor-date-label" id="editorDateLabel">-</span>
+            <span class="editor-date-badge" id="editorDateBadge">-</span>
           </div>
           <div class="mood-wrap">
             <span class="mood-label">Tâm trạng</span>
@@ -761,7 +761,7 @@ body::before {
           <button class="fmt-btn" onclick="insertText('• ')">• List</button>
           <button class="fmt-btn" onclick="insertText('→ ')">→</button>
           <button class="fmt-btn" onclick="insertDate()">📅 Ngày</button>
-          <button class="fmt-btn" onclick="insertText('\n---\n')">— —</button>
+          <button class="fmt-btn" onclick="insertText('\n---\n')">- -</button>
           <span class="word-count" id="wordCount">0 từ</span>
         </div>
 
@@ -785,7 +785,7 @@ body::before {
   <div class="modal">
     <div class="modal-title">Xuất nhật ký</div>
     <p style="font-size:0.82rem;color:var(--gray);line-height:1.7;margin-bottom:20px">
-      File xuất ra sẽ <strong style="color:var(--amber)">không mã hóa</strong> — hãy giữ cẩn thận. Bạn có thể chọn xuất toàn bộ hoặc chỉ bài đang xem.
+      File xuất ra sẽ <strong style="color:var(--amber)">không mã hóa</strong> - hãy giữ cẩn thận. Bạn có thể chọn xuất toàn bộ hoặc chỉ bài đang xem.
     </p>
     <div class="modal-actions">
       <button class="modal-btn" onclick="exportTXT()">📄 Xuất TXT</button>
@@ -1096,7 +1096,7 @@ function renderEntryList() {
         <span class="entry-mood-dot">${e.mood||''}</span>
       </div>
       <div class="entry-title">${e.title || '<em style="color:var(--gray-light)">Không có tiêu đề</em>'}</div>
-      <div class="entry-preview">${preview || '—'}</div>
+      <div class="entry-preview">${preview || '-'}</div>
       ${tagsHtml ? `<div class="entry-tags-row">${tagsHtml}</div>` : ''}
       <button class="entry-del" onclick="deleteEntry(${e.id},event)">✕</button>
     </div>`;
@@ -1333,7 +1333,7 @@ function doChangePass() {
 function showExport() { document.getElementById('exportModal').classList.add('show'); }
 
 function exportTXT() {
-  let out = `NHẬT KÝ BÍ MẬT — Querencia\nXuất lúc: ${new Date().toLocaleString('vi-VN')}\n${'='.repeat(50)}\n\n`;
+  let out = `NHẬT KÝ BÍ MẬT - Querencia\nXuất lúc: ${new Date().toLocaleString('vi-VN')}\n${'='.repeat(50)}\n\n`;
   entries.forEach(e => {
     const d = new Date(e.date).toLocaleDateString('vi-VN', { weekday:'long', day:'2-digit', month:'long', year:'numeric' });
     out += `📅 ${d}\n`;
@@ -1346,7 +1346,7 @@ function exportTXT() {
 }
 
 function exportMD() {
-  let out = `# Nhật Ký Bí Mật — Querencia\n\n> Xuất lúc: ${new Date().toLocaleString('vi-VN')}\n\n---\n\n`;
+  let out = `# Nhật Ký Bí Mật - Querencia\n\n> Xuất lúc: ${new Date().toLocaleString('vi-VN')}\n\n---\n\n`;
   entries.forEach(e => {
     const d = new Date(e.date).toLocaleDateString('vi-VN', { weekday:'long', day:'2-digit', month:'long', year:'numeric' });
     out += `## ${e.title || 'Không có tiêu đề'}\n\n`;
@@ -1383,7 +1383,7 @@ document.querySelectorAll('.modal-overlay').forEach(el => {
   el.addEventListener('click', e => { if(e.target===el) el.classList.remove('show'); });
 });
 
-// Lock on page hide (optional — comment out if unwanted)
+// Lock on page hide (optional - comment out if unwanted)
 document.addEventListener('visibilitychange', () => {
   if (document.hidden && masterKey) {
     // Uncomment to auto-lock when tab hidden:

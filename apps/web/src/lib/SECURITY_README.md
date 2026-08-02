@@ -1,7 +1,7 @@
 # Querencia Security & Feature Modules
 
 ## 1. Smart History (`smart-history.ts`)
-- **Lưu hoàn toàn trong browser** (localStorage) — không gửi server
+- **Lưu hoàn toàn trong browser** (localStorage) - không gửi server
 - **GDPR/PDPA safe**: dữ liệu không rời thiết bị, user xóa browser = xóa hết
 - Track: tools đã dùng, LàNo conversation context, bài đã đọc, Nope posts đã xem
 - Usage: `toolHistory.record(slug, name, emoji)` sau mỗi lần dùng tool
@@ -13,11 +13,11 @@
 - `getRelatedTools(slug)` → tools liên quan
 
 ## 3. Lumen Mode (`components/ui/LumenMode.tsx`)
-- `<CursorGlow>` — glow theo cursor (tắt nếu prefers-reduced-motion)
-- `<SpotlightCard>` — spotlight effect khi hover card
-- `<QPulse>` — pulse animation khi nhận Q
-- `<AmbientGlow>` — ambient light cho LàNo bubbles
-- `<LumenProvider>` — wrap toàn app (đã wire vào layout.tsx)
+- `<CursorGlow>` - glow theo cursor (tắt nếu prefers-reduced-motion)
+- `<SpotlightCard>` - spotlight effect khi hover card
+- `<QPulse>` - pulse animation khi nhận Q
+- `<AmbientGlow>` - ambient light cho LàNo bubbles
+- `<LumenProvider>` - wrap toàn app (đã wire vào layout.tsx)
 
 ## 4. Gamification (`gamification.ts`)
 - **Badges** (18 badges): tool_explorer, helpful, streak_30, pool_angel...
@@ -39,7 +39,7 @@
 - `TokenService.revokeAll(userId)` → force logout tất cả thiết bị
 
 ## 7. Rate Limiting (`throttle.guard.ts`)
-- Redis sliding window — chính xác hơn fixed window
+- Redis sliding window - chính xác hơn fixed window
 - **Auth endpoints**: 20 req/15 phút
 - **Free plan**: 200 req/giờ
 - **Pro plan**: 1000 req/giờ

@@ -1,5 +1,5 @@
 /**
- * Auth Service — NestJS — DB WIRED
+ * Auth Service - NestJS - DB WIRED
  * Migrated từ:
  *   querencia-backend/api/auth_route.py
  *   querencia-backend/core/security.py
@@ -70,7 +70,7 @@ export class AuthService {
 
   // ─────────────────────────────────────────────────────────────
   // JWT HELPERS
-  // sub = email (giữ tương thích — token cũ từ production vẫn valid)
+  // sub = email (giữ tương thích - token cũ từ production vẫn valid)
   // ─────────────────────────────────────────────────────────────
 
   createAccessToken(email: string): string {
@@ -135,7 +135,7 @@ export class AuthService {
       })
       .returning({ id: users.id, email: users.email, name: users.name });
 
-    // 4. Gửi email xác nhận (không block nếu lỗi — giữ y chang code cũ)
+    // 4. Gửi email xác nhận (không block nếu lỗi - giữ y chang code cũ)
     await this.sendVerificationEmail(email, data.name, verificationToken);
 
     this.logger.log(`[REGISTER] New user: ${email}`);
@@ -155,7 +155,7 @@ export class AuthService {
 
     if (!user) throw new BadRequestException('Link không hợp lệ hoặc đã hết hạn');
 
-    // Kích hoạt + xóa token (dùng 1 lần — giữ y chang code cũ)
+    // Kích hoạt + xóa token (dùng 1 lần - giữ y chang code cũ)
     await this.db
       .update(users)
       .set({ isVerified: true, verificationToken: null, updatedAt: new Date() })
@@ -193,7 +193,7 @@ export class AuthService {
       throw new ForbiddenException('Tài khoản này đã bị khóa');
     }
 
-    // Kiểm tra verify — giữ y chang message từ code cũ
+    // Kiểm tra verify - giữ y chang message từ code cũ
     if (!user.isVerified) {
       throw new ForbiddenException(
         'Vui lòng xác nhận email trước khi đăng nhập. Kiểm tra hòm thư của bạn.',
@@ -204,7 +204,7 @@ export class AuthService {
     const refreshToken = this.createRefreshToken(lowerEmail);
 
     // Lưu refresh token vào Redis db0 (session store)
-    // Key = refresh:{userId} — 1 user 1 token (single-session)
+    // Key = refresh:{userId} - 1 user 1 token (single-session)
     await this.sessionRedis.set(sessionKey(user.id), refreshToken, 'EX', REFRESH_TTL);
 
     return {
@@ -222,7 +222,7 @@ export class AuthService {
 
   // ─────────────────────────────────────────────────────────────
   // REFRESH TOKEN
-  // POST /auth/refresh  — rotation: cấp token mới, thu hồi cũ
+  // POST /auth/refresh  - rotation: cấp token mới, thu hồi cũ
   // ─────────────────────────────────────────────────────────────
 
   async refresh(refreshToken: string) {
@@ -258,7 +258,7 @@ export class AuthService {
   }
 
   // ─────────────────────────────────────────────────────────────
-  // LOGOUT — thu hồi refresh token
+  // LOGOUT - thu hồi refresh token
   // POST /auth/logout
   // ─────────────────────────────────────────────────────────────
 
@@ -270,7 +270,7 @@ export class AuthService {
   // ─────────────────────────────────────────────────────────────
   // FORGOT PASSWORD
   // POST /auth/forgot-password
-  // Luôn trả 200 dù email có hay không (chống enumerate — giữ y chang code cũ)
+  // Luôn trả 200 dù email có hay không (chống enumerate - giữ y chang code cũ)
   // ─────────────────────────────────────────────────────────────
 
   async forgotPassword(email: string): Promise<{ message: string }> {
@@ -365,7 +365,7 @@ export class AuthService {
     const { id: googleId, email, name, picture } = gUser;
     if (!email || !googleId) throw new UnauthorizedException('Google auth failed');
 
-    // 3. Upsert user — logic y chang code cũ
+    // 3. Upsert user - logic y chang code cũ
     //    Tìm bằng google_id → email → tạo mới
     let user = await this.db.query.users.findFirst({
       where: eq(users.googleId, googleId),
@@ -459,7 +459,7 @@ export class AuthService {
       }
       this.logger.log(`[EMAIL] Verification → ${email}`);
     } catch (e) {
-      // Không block đăng ký nếu email lỗi — giữ y chang code cũ
+      // Không block đăng ký nếu email lỗi - giữ y chang code cũ
       this.logger.error(`[EMAIL ERROR] ${e}`);
     }
   }
@@ -570,7 +570,7 @@ export class AuthService {
     }
 
     if (!user) {
-      // User mới — tạo account
+      // User mới - tạo account
       if (!email) throw new UnauthorizedException('Email required for first Apple Sign-In');
       const [newUser] = await this.db.insert(users).values({
         email,

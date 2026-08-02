@@ -1,5 +1,5 @@
 /**
- * ImageViewer — full screen image viewer
+ * ImageViewer - full screen image viewer
  * Tap để mở, pinch to zoom, swipe down để đóng
  */
 import React, { useState } from 'react';

@@ -1,5 +1,5 @@
 /**
- * Forward Message — chuyển tiếp tin nhắn sang conversation khác
+ * Forward Message - chuyển tiếp tin nhắn sang conversation khác
  */
 import React, { useState } from 'react';
 import {

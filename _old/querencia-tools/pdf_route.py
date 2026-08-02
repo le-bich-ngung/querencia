@@ -3,7 +3,7 @@
 # NHIỆM VỤ: API chuyển PDF → Word (.docx)
 #
 # Endpoints:
-#   POST /pdf/to-word  — upload PDF, trả về file .docx
+#   POST /pdf/to-word  - upload PDF, trả về file .docx
 #
 # Thư viện: pdf2docx (giữ nguyên layout, bảng, font)
 # Giới hạn: 20MB mỗi file

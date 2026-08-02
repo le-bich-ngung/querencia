@@ -3,7 +3,7 @@
   ============================================================
   FILE: Q1.html
   NHIỆM VỤ: Toàn bộ giao diện frontend của Querencia
-  Đây là file HTML duy nhất — chứa HTML + CSS + JavaScript
+  Đây là file HTML duy nhất - chứa HTML + CSS + JavaScript
   Deploy lên Netlify bằng cách kéo thả file này vào dashboard
   URL production: https://querencia.com.vn
   Backend API:    https://querencia.fly.dev
@@ -16,7 +16,7 @@
        share link lên mạng xã hội (og: = Open Graph)         -->
   <meta charset="UTF-8"/>
   <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
-  <meta name="description" content="Querencia — Tech and more. Thoughtful tools, apps, and ideas for curious minds."/>
+  <meta name="description" content="Querencia - Tech and more. Thoughtful tools, apps, and ideas for curious minds."/>
   <meta name="keywords" content="Querencia, tools, LàNo, Nope, Cùi Bắp, tech"/>
   <meta property="og:title" content="Querencia"/>
   <meta property="og:description" content="Tech and more. Thoughtful tools, apps, and ideas for curious minds."/>
@@ -30,7 +30,7 @@
        Đây là hình kính lúp với sóng ECG bên trong           -->
   <link rel="shortcut icon" type="image/svg+xml" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 120 120'><circle cx='55' cy='55' r='38' fill='none' stroke='%234a7c59' stroke-width='7' stroke-linecap='round'/><line x1='81' y1='79' x2='98' y2='98' stroke='%234a7c59' stroke-width='7' stroke-linecap='round'/><polyline points='20,55 28,38 35,68 43,32 51,60 58,43 66,70 74,48 90,55' fill='none' stroke='%234a7c59' stroke-width='3' stroke-linecap='round' stroke-linejoin='round'/></svg>"/>
   <!-- ── FONT CHỮ ────────────────────────────────────────────
-       Plus Jakarta Sans — font chính của toàn bộ website
+       Plus Jakarta Sans - font chính của toàn bộ website
        Load từ Google Fonts, cần internet để hiển thị đúng   -->
   <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:ital,wght@0,300;0,400;0,500;0,600;0,700;1,400&display=swap" rel="stylesheet"/>
   <link rel="stylesheet" href="css/main.css"/>
@@ -56,7 +56,7 @@
      Để thêm trang mới: copy 1 dòng <li><a onclick=...> và thêm
      section HTML tương ứng ở dưới                              -->
 <nav id="mainNav">
-  <!-- Logo bên trái — click để về trang Home -->
+  <!-- Logo bên trái - click để về trang Home -->
   <a class="nav-logo" onclick="location.reload()" style="cursor:pointer">
     <div style="display:flex;align-items:center;gap:0">
       <!-- SVG logo kính lúp ECG -->
@@ -85,7 +85,7 @@
       <li><a onclick="showSection('lano')" data-section="lano">LàNo</a></li>
       <li><a onclick="showSection('cuibap')" data-section="cuibap" data-i18n="nav_cuibap">Cùi Bắp</a></li>
       <li><a onclick="showSection('message')" data-section="message" data-i18n="nav_message">Message</a></li>
-      <!-- Dropdown đăng nhập/đăng ký — sổ xuống khi click -->
+      <!-- Dropdown đăng nhập/đăng ký - sổ xuống khi click -->
       <li>
         <div class="auth-switcher" id="authSwitcher">
           <button class="auth-btn" id="navAuthBtn" onclick="toggleAuthDropdown()" title="Tài khoản">
@@ -290,7 +290,7 @@
 
 <script>
 // ============================================================
-// PAGE LOADER — load từng page vào #pageContent qua fetch()
+// PAGE LOADER - load từng page vào #pageContent qua fetch()
 // Để thêm page mới: thêm file vào pages/ và thêm nav link
 // ============================================================
 

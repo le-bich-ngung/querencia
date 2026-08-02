@@ -1,7 +1,7 @@
 # ============================================================
 # FILE: models.py
 # NHIỆM VỤ: Định nghĩa các bảng dùng trong tools backend
-#   - User: chỉ đọc, để xác thực — không ghi gì vào bảng này
+#   - User: chỉ đọc, để xác thực - không ghi gì vào bảng này
 #   - FlashcardDeck, FlashcardCard: bảng riêng của flashcards
 #   - VaultFile: bảng cho tool link chia sẻ tự hủy
 # ============================================================
@@ -15,7 +15,7 @@ from database import Base
 
 class User(Base):
     """
-    Bảng users — CHỈ ĐỌC.
+    Bảng users - CHỈ ĐỌC.
     Dùng để verify token, không bao giờ ghi vào bảng này từ tools backend.
     """
     __tablename__ = "users"
@@ -30,7 +30,7 @@ class User(Base):
 
 class FlashcardDeck(Base):
     """
-    Bộ thẻ flashcard — mỗi user có thể tạo nhiều bộ
+    Bộ thẻ flashcard - mỗi user có thể tạo nhiều bộ
     """
     __tablename__ = "flashcard_decks"
 
@@ -50,7 +50,7 @@ class FlashcardDeck(Base):
 
 class FlashcardCard(Base):
     """
-    Thẻ trong bộ flashcard — mỗi thẻ có mặt trước và mặt sau
+    Thẻ trong bộ flashcard - mỗi thẻ có mặt trước và mặt sau
     """
     __tablename__ = "flashcard_cards"
 
@@ -86,7 +86,7 @@ class VaultFile(Base):
     max_reads    = Column(Integer, nullable=True)
     read_count   = Column(Integer, default=0)
 
-    # Mật khẩu tùy chọn (lưu plain — tool nội bộ, không cần hash)
+    # Mật khẩu tùy chọn (lưu plain - tool nội bộ, không cần hash)
     password     = Column(String, nullable=True)
 
     # Mode gốc để hiển thị UI: "1read" | "1h" | "24h" | "7d" | "custom"
