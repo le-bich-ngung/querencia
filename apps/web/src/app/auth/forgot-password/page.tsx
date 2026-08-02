@@ -1,8 +1,8 @@
 'use client';
 /**
  * Forgot password page - /auth/forgot-password
- * Migrated từ auth.js doForgotPassword()
- * Luôn show success dù email có hay không (chống enumerate - giữ y chang code cũ)
+ * Migrated from auth.js doForgotPassword()
+ * Always shows success whether the email exists or not (anti-enumeration - keeps old behavior)
  */
 import { useState }  from 'react';
 import Link          from 'next/link';
@@ -19,7 +19,7 @@ export default function ForgotPasswordPage() {
   async function handleSubmit(e: React.FormEvent) {
     e.preventDefault();
     if (!email.trim()) {
-      setMsg({ text: 'Vui lòng nhập email.', type: 'error' }); return;
+      setMsg({ text: 'Please enter your email.', type: 'error' }); return;
     }
     setLoading(true);
     setMsg(null);
@@ -29,10 +29,10 @@ export default function ForgotPasswordPage() {
         headers: { 'Content-Type': 'application/json' },
         body:    JSON.stringify({ email }),
       });
-      // Luôn show success - giữ y chang code cũ (chống enumerate)
+      // Always show success - keeps old behavior (anti-enumeration)
       setSent(true);
     } catch {
-      setMsg({ text: 'Không thể kết nối. Vui lòng thử lại.', type: 'error' });
+      setMsg({ text: 'Could not connect. Please try again.', type: 'error' });
     } finally {
       setLoading(false);
     }
@@ -40,11 +40,11 @@ export default function ForgotPasswordPage() {
 
   if (sent) {
     return (
-      <AuthCard title="Kiểm tra email" subtitle={`Nếu ${email} tồn tại trong hệ thống, bạn sẽ nhận được link đặt lại mật khẩu trong vài phút.`}>
+      <AuthCard title="Check your email" subtitle={`If ${email} exists in our system, you'll receive a password reset link within a few minutes.`}>
         <div style={{ textAlign: 'center', padding: '8px 0 16px' }}>
           <div style={{ fontSize: '3rem', marginBottom: 12 }}>📬</div>
           <p style={{ fontSize: '0.85rem', color: 'var(--text-secondary)', lineHeight: 1.6, marginBottom: 24 }}>
-            Kiểm tra hòm thư (kể cả folder Spam). Link có hiệu lực trong 1 giờ.
+            Check your inbox (including Spam). The link is valid for 1 hour.
           </p>
           <Link href="/auth/login" style={{
             display: 'inline-block', padding: '11px 28px',
@@ -52,7 +52,7 @@ export default function ForgotPasswordPage() {
             borderRadius: 10, textDecoration: 'none',
             fontWeight: 600, fontSize: '0.9rem',
           }}>
-            ← Quay lại đăng nhập
+            ← Back to sign in
           </Link>
         </div>
       </AuthCard>
@@ -61,8 +61,8 @@ export default function ForgotPasswordPage() {
 
   return (
     <AuthCard
-      title="Quên mật khẩu"
-      subtitle="Nhập email của bạn và chúng tôi sẽ gửi link đặt lại mật khẩu."
+      title="Forgot password"
+      subtitle="Enter your email and we'll send you a password reset link."
     >
       <form onSubmit={handleSubmit} style={{ display: 'flex', flexDirection: 'column', gap: 16 }}>
         <AuthInput
@@ -70,7 +70,7 @@ export default function ForgotPasswordPage() {
           type="email"
           value={email}
           onChange={e => setEmail(e.target.value)}
-          placeholder="ban@email.com"
+          placeholder="you@email.com"
           autoComplete="email"
           autoFocus
         />
@@ -86,7 +86,7 @@ export default function ForgotPasswordPage() {
             opacity: loading ? 0.7 : 1,
           }}
         >
-          {loading ? 'Đang gửi…' : 'Gửi link đặt lại'}
+          {loading ? 'Sending…' : 'Send reset link'}
         </button>
       </form>
       <p style={{
@@ -94,7 +94,7 @@ export default function ForgotPasswordPage() {
         color: 'var(--text-secondary)', marginTop: 20,
       }}>
         <Link href="/auth/login" style={{ color: 'var(--sage)', fontWeight: 600, textDecoration: 'none' }}>
-          ← Quay lại đăng nhập
+          ← Back to sign in
         </Link>
       </p>
     </AuthCard>

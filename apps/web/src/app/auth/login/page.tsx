@@ -1,9 +1,9 @@
 'use client';
 /**
  * Login page - /auth/login
- * Google-only auth: 1 nút duy nhất, không còn email/password/MFA polling.
- * Nếu tài khoản Google chưa tồn tại, backend (/api/v1/auth/google/token-exchange)
- * tự tạo mới - nghĩa là nút này vừa là "đăng nhập" vừa là "đăng ký".
+ * Google-only auth: a single button, no more email/password/MFA polling.
+ * If the Google account doesn't exist yet, the backend (/api/v1/auth/google/token-exchange)
+ * creates it automatically - meaning this one button acts as both "sign in" and "sign up".
  */
 import { Suspense } from 'react';
 import { signIn } from 'next-auth/react';
@@ -29,7 +29,7 @@ function LoginContent() {
   }
 
   return (
-    <AuthCard title="Đăng nhập" subtitle="Chào mừng bạn trở lại 🌿">
+    <AuthCard title="Sign in" subtitle="Welcome back 🌿">
       <button
         onClick={handleGoogle}
         style={{
@@ -45,21 +45,21 @@ function LoginContent() {
         onMouseLeave={e => (e.currentTarget.style.background = 'var(--bg)')}
       >
         <GoogleIcon />
-        Tiếp tục với Google
+        Continue with Google
       </button>
 
       <p style={{
         textAlign: 'center', fontSize: '0.78rem',
         color: 'var(--text-secondary)', marginTop: 18, lineHeight: 1.6,
       }}>
-        Chưa có tài khoản? Không sao - bấm nút trên, Querencia sẽ tự tạo tài khoản cho bạn.
+        Don't have an account? No worries - tap the button above, Querencia will create one for you.
       </p>
 
       <p style={{
         textAlign: 'center', fontSize: '0.72rem',
         color: 'var(--gray)', marginTop: 16,
       }}>
-        🌿 Querencia không quảng cáo và không bán dữ liệu của bạn.
+        🌿 Querencia is ad-free and never sells your data.
       </p>
     </AuthCard>
   );
