@@ -32,7 +32,7 @@ export function ToolFrame({ tool }: Props) {
             marginLeft: 'auto', background: 'var(--sage)', color: '#fff',
             padding: '2px 8px', borderRadius: 999, fontSize: '0.72rem', fontWeight: 600,
           }}>
-            {tool.qCost} Q / lần
+            {tool.qCost} Q / use
           </span>
         )}
       </div>

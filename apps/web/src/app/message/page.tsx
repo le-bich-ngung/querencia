@@ -1,7 +1,7 @@
 'use client';
 /**
- * Message - gửi feedback cho Querencia
- * 1 chiều: gửi rồi thôi, không nhận hồi âm
+ * Message - send feedback to Querencia
+ * One-way: send it and that's it, no reply
  */
 import { useState } from 'react';
 import { useSession } from 'next-auth/react';
@@ -17,7 +17,7 @@ export default function MessagePage() {
   async function handleSend(e: React.FormEvent) {
     e.preventDefault();
     if (!subject.trim() || !content.trim()) {
-      setError('Vui lòng điền đầy đủ thông tin.'); return;
+      setError('Please fill in all fields.'); return;
     }
     setLoading(true); setError('');
     try {
@@ -27,9 +27,9 @@ export default function MessagePage() {
         body: JSON.stringify({ subject, content }),
       });
       if (res.ok) setSent(true);
-      else setError('Gửi thất bại. Vui lòng thử lại.');
+      else setError('Failed to send. Please try again.');
     } catch {
-      setError('Không thể kết nối. Vui lòng thử lại.');
+      setError('Could not connect. Please try again.');
     } finally {
       setLoading(false);
     }
@@ -43,10 +43,10 @@ export default function MessagePage() {
       }}>
         <div style={{ fontSize: '3rem', marginBottom: 16 }}>📬</div>
         <h2 style={{ fontWeight: 800, fontSize: '1.4rem', color: 'var(--text)', marginBottom: 10 }}>
-          Đã gửi rồi
+          Sent
         </h2>
         <p style={{ fontSize: '0.9rem', color: 'var(--text-secondary)', lineHeight: 1.7 }}>
-          Mình đọc mọi tin nhắn, nhưng không hồi âm. Cảm ơn bạn đã dành thời gian nhắn. 🌿
+          We read every message, but don't reply. Thanks for taking the time to write. 🌿
         </p>
       </div>
     );
@@ -55,14 +55,14 @@ export default function MessagePage() {
   return (
     <div style={{ maxWidth: 520, margin: '0 auto', padding: '40px 24px 96px' }}>
       <h1 style={{ fontSize: '1.5rem', fontWeight: 800, marginBottom: 6, color: 'var(--text)' }}>
-        Nhắn tin cho Querencia
+        Message Querencia
       </h1>
       <p style={{
         fontSize: '0.85rem', color: 'var(--text-secondary)',
         lineHeight: 1.6, marginBottom: 32,
       }}>
-        Mình đọc mọi tin nhắn. Nhưng sẽ không hồi âm - đây là hộp thư 1 chiều.
-        Bạn không cần đăng nhập để gửi.
+        We read every message. But we won't reply - this is a one-way inbox.
+        You don't need to sign in to send one.
       </p>
 
       <form onSubmit={handleSend} style={{ display: 'flex', flexDirection: 'column', gap: 16 }}>
@@ -71,13 +71,13 @@ export default function MessagePage() {
             display: 'block', fontSize: '0.82rem', fontWeight: 600,
             color: 'var(--text-secondary)', marginBottom: 6,
           }}>
-            Chủ đề
+            Subject
           </label>
           <input
             type="text"
             value={subject}
             onChange={e => setSubject(e.target.value)}
-            placeholder="Ví dụ: Góp ý về LàNo"
+            placeholder="Example: Feedback about LàNo"
             style={{
               width: '100%', padding: '11px 14px',
               border: '1.5px solid var(--border)', borderRadius: 10,
@@ -95,12 +95,12 @@ export default function MessagePage() {
             display: 'block', fontSize: '0.82rem', fontWeight: 600,
             color: 'var(--text-secondary)', marginBottom: 6,
           }}>
-            Nội dung
+            Message
           </label>
           <textarea
             value={content}
             onChange={e => setContent(e.target.value)}
-            placeholder="Viết gì cũng được - góp ý, báo lỗi, hay chỉ muốn nói gì đó…"
+            placeholder="Write anything - feedback, a bug report, or just something on your mind…"
             rows={6}
             style={{
               width: '100%', padding: '11px 14px',
@@ -135,14 +135,14 @@ export default function MessagePage() {
             opacity: loading ? 0.7 : 1,
           }}
         >
-          {loading ? 'Đang gửi…' : 'Gửi'}
+          {loading ? 'Sending…' : 'Send'}
         </button>
 
         <p style={{
           fontSize: '0.72rem', color: 'var(--gray)',
           textAlign: 'center', lineHeight: 1.5,
         }}>
-          Dữ liệu bạn gửi không được chia sẻ hay bán cho bất kỳ ai.
+          What you send is never shared or sold to anyone.
         </p>
       </form>
     </div>

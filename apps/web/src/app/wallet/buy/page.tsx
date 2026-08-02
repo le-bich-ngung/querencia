@@ -1,8 +1,8 @@
 'use client';
 /**
  * Wallet Buy - /wallet/buy
- * Paddle Checkout cho mua ngày Pro
- * $0.50/ngày flat, không discount, gói 1/7/30 ngày
+ * Paddle Checkout for buying Pro days
+ * $0.50/day flat, no discount, 1/7/30-day plans
  */
 'use client';
 import { useEffect, useState, Suspense } from 'react';
@@ -17,9 +17,9 @@ declare global {
 
 const PRICE_PER_DAY = 0.50;
 const PLANS = [
-  { days: 1,  label: '1 ngày',  badge: null,         desc: 'Thử trước - chỉ $0.50' },
-  { days: 7,  label: '7 ngày',  badge: 'Phổ biến',   desc: '1 tuần không lo thanh toán lại' },
-  { days: 30, label: '30 ngày', badge: null,          desc: 'Tiết kiệm thời gian nhất' },
+  { days: 1,  label: '1 day',   badge: null,      desc: 'Try it first - just $0.50' },
+  { days: 7,  label: '7 days',  badge: 'Popular', desc: '1 week without worrying about paying again' },
+  { days: 30, label: '30 days', badge: null,      desc: 'Saves you the most time' },
 ];
 
 const QIcon = ({ size = 16, color = '#4a7c59' }: { size?: number; color?: string }) => (
@@ -69,7 +69,7 @@ function BuyContent() {
     setProcessing(true);
 
     try {
-      // Tạo checkout session từ server (server tạo price custom theo số ngày)
+      // Create checkout session from server (server creates a custom price based on days)
       const res = await fetch('/api/v1/payments/create-checkout', {
         method:  'POST',
         headers: { 'Content-Type': 'application/json', Authorization: `Bearer ${token}` },
@@ -84,7 +84,7 @@ function BuyContent() {
         successUrl:  `${window.location.origin}/wallet/buy/success?days=${selected}`,
         settings: {
           theme:        'dark',
-          locale:       'vi',
+          locale:       'en',
           allowLogout:  false,
         },
         eventCallback: (data: any) => {
@@ -108,12 +108,12 @@ function BuyContent() {
     return (
       <div style={{ textAlign: 'center', padding: '60px 24px' }}>
         <p style={{ color: 'var(--text-secondary)', marginBottom: 16 }}>
-          Đăng nhập để mua Q Pro
+          Sign in to buy Q Pro
         </p>
         <Link href={`/auth/login?next=/wallet/buy?days=${selected}`} style={{
           padding: '10px 24px', background: '#4a7c59', color: '#fff',
           borderRadius: 10, textDecoration: 'none', fontWeight: 700,
-        }}>Đăng nhập</Link>
+        }}>Sign in</Link>
       </div>
     );
   }
@@ -121,14 +121,14 @@ function BuyContent() {
   return (
     <div style={{ maxWidth: 520, margin: '0 auto', padding: '40px 20px 96px' }}>
       <Link href="/pricing" style={{ fontSize: '0.82rem', color: 'var(--text-secondary)', textDecoration: 'none', display: 'block', marginBottom: 20 }}>
-        ← Xem chi tiết pricing
+        ← View pricing details
       </Link>
 
       <h1 style={{ fontSize: '1.4rem', fontWeight: 800, marginBottom: 6, color: 'var(--text)' }}>
-        Mua Q Pro
+        Buy Q Pro
       </h1>
       <p style={{ fontSize: '0.85rem', color: 'var(--text-secondary)', marginBottom: 28 }}>
-        $0.50/ngày · 10Q expiring + 1Q permanent mỗi ngày
+        $0.50/day · 10Q expiring + 1Q permanent per day
       </p>
 
       {/* Plan selector */}
@@ -198,11 +198,11 @@ function BuyContent() {
         onMouseEnter={e => { if (paddleLoaded) e.currentTarget.style.background = '#2d5a3d'; }}
         onMouseLeave={e => { e.currentTarget.style.background = '#4a7c59'; }}
       >
-        {!paddleLoaded ? 'Đang tải...' : processing ? 'Đang xử lý...' : `Thanh toán $${total.toFixed(2)}`}
+        {!paddleLoaded ? 'Loading...' : processing ? 'Processing...' : `Pay $${total.toFixed(2)}`}
       </button>
 
       <p style={{ fontSize: '0.72rem', color: 'var(--gray)', textAlign: 'center', marginTop: 12, lineHeight: 1.5 }}>
-        Không tự gia hạn · Hoàn tiền ngày trọn vẹn chưa dùng · Phí giao dịch do bạn chịu
+        No auto-renewal · Full refund for unused days · Transaction fees are your responsibility
       </p>
     </div>
   );
@@ -210,7 +210,7 @@ function BuyContent() {
 
 export default function BuyPage() {
   return (
-    <Suspense fallback={<div style={{ padding: 40, textAlign: 'center', color: 'var(--text-secondary)' }}>Đang tải...</div>}>
+    <Suspense fallback={<div style={{ padding: 40, textAlign: 'center', color: 'var(--text-secondary)' }}>Loading...</div>}>
       <BuyContent/>
     </Suspense>
   );

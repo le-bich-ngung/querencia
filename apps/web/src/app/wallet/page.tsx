@@ -1,6 +1,6 @@
 'use client';
 /**
- * Q Wallet - xem số dư, lịch sử, tặng Q
+ * Q Wallet - view balance, history, gift Q
  * /wallet
  */
 import { useState, useEffect } from 'react';
@@ -56,13 +56,13 @@ export default function WalletPage() {
         }),
       });
       if (res.ok) {
-        setGiftMsg(toPool ? '✅ Đã tặng Q vào Pool!' : '✅ Đã tặng Q thành công!');
+        setGiftMsg(toPool ? '✅ Gifted Q to the Pool!' : '✅ Q gifted successfully!');
         setGift('');
       } else {
         const d = await res.json();
-        setGiftMsg(d.message ?? 'Tặng Q thất bại.');
+        setGiftMsg(d.message ?? 'Failed to gift Q.');
       }
-    } catch { setGiftMsg('Lỗi kết nối.'); }
+    } catch { setGiftMsg('Connection error.'); }
     setGifting(false);
   }
 
@@ -70,11 +70,11 @@ export default function WalletPage() {
     return (
       <div style={{ maxWidth: 480, margin: '60px auto', padding: '0 24px', textAlign: 'center' }}>
         <QIcon size={48}/><br/><br/>
-        <p style={{ color: 'var(--text-secondary)', marginBottom: 20 }}>Đăng nhập để xem Q Wallet</p>
+        <p style={{ color: 'var(--text-secondary)', marginBottom: 20 }}>Sign in to view Q Wallet</p>
         <Link href="/auth/login" style={{
           padding: '10px 24px', background: SAGE, color: '#fff',
           borderRadius: 10, textDecoration: 'none', fontWeight: 700,
-        }}>Đăng nhập</Link>
+        }}>Sign in</Link>
       </div>
     );
   }
@@ -89,7 +89,7 @@ export default function WalletPage() {
         Q Wallet
       </h1>
       <p style={{ fontSize: '0.82rem', color: 'var(--text-secondary)', marginBottom: 28 }}>
-        Đơn vị Q - dùng cho tools Pro và tặng cho cộng đồng
+        Q is the unit used for Pro tools and gifting to the community
       </p>
 
       {/* Balance cards */}
@@ -101,7 +101,7 @@ export default function WalletPage() {
           <div style={{ display: 'flex', alignItems: 'center', gap: 6, marginBottom: 8 }}>
             <QIcon size={14} color="#b45309"/>
             <span style={{ fontSize: '0.72rem', fontWeight: 700, color: '#b45309', textTransform: 'uppercase', letterSpacing: '0.06em' }}>
-              Hết hạn 24h
+              Expires in 24h
             </span>
           </div>
           <div style={{ fontSize: '2.2rem', fontWeight: 800, color: '#b45309', lineHeight: 1 }}>
@@ -119,7 +119,7 @@ export default function WalletPage() {
           <div style={{ display: 'flex', alignItems: 'center', gap: 6, marginBottom: 8 }}>
             <QIcon size={14} color={SAGE}/>
             <span style={{ fontSize: '0.72rem', fontWeight: 700, color: SAGE, textTransform: 'uppercase', letterSpacing: '0.06em' }}>
-              Không hết hạn
+              No expiry
             </span>
           </div>
           <div style={{ fontSize: '2.2rem', fontWeight: 800, color: SAGE, lineHeight: 1 }}>
@@ -140,9 +140,9 @@ export default function WalletPage() {
           textDecoration: 'none', marginBottom: 24,
         }}>
           <div>
-            <div style={{ fontWeight: 700, fontSize: '0.95rem' }}>Nạp thêm Q</div>
+            <div style={{ fontWeight: 700, fontSize: '0.95rem' }}>Top up Q</div>
             <div style={{ fontSize: '0.78rem', opacity: 0.8, marginTop: 2 }}>
-              $0.50/ngày · 10Q + 1Q permanent mỗi ngày
+              $0.50/day · 10Q + 1Q permanent per day
             </div>
           </div>
           <span style={{ fontSize: '1.2rem' }}>→</span>
@@ -155,12 +155,12 @@ export default function WalletPage() {
         padding: '20px 22px', marginBottom: 20, background: 'var(--bg)',
       }}>
         <h3 style={{ fontWeight: 700, fontSize: '0.95rem', marginBottom: 14, color: 'var(--text)' }}>
-          🎁 Tặng Q
+          🎁 Gift Q
         </h3>
         <div style={{ display: 'flex', flexDirection: 'column', gap: 10 }}>
           <input
             value={giftTarget} onChange={e => setGift(e.target.value)}
-            placeholder="Email người nhận (để trống = tặng Q Pool)"
+            placeholder="Recipient's email (leave blank = gift to Q Pool)"
             style={{
               padding: '10px 14px', borderRadius: 10,
               border: '1.5px solid var(--border)',
@@ -190,8 +190,8 @@ export default function WalletPage() {
                 fontFamily: 'inherit', fontSize: '0.85rem',
                 background: 'var(--bg)', color: 'var(--text)', cursor: 'pointer',
               }}>
-              <option value="expiring">Q hết hạn ({qExpiring} có sẵn)</option>
-              <option value="permanent">Q permanent ({qPermanent} có sẵn)</option>
+              <option value="expiring">Expiring Q ({qExpiring} available)</option>
+              <option value="permanent">Q permanent ({qPermanent} available)</option>
             </select>
           </div>
           <div style={{ display: 'flex', gap: 8 }}>
@@ -203,7 +203,7 @@ export default function WalletPage() {
                 fontFamily: 'inherit', fontWeight: 700, fontSize: '0.85rem',
                 opacity: !giftTarget.trim() || gifting ? 0.5 : 1,
               }}>
-              {gifting ? '…' : 'Tặng người quen'}
+              {gifting ? '…' : 'Gift to someone'}
             </button>
             <button onClick={() => handleGift(true)} disabled={gifting}
               style={{
@@ -213,7 +213,7 @@ export default function WalletPage() {
                 cursor: 'pointer', fontFamily: 'inherit',
                 fontWeight: 700, fontSize: '0.85rem',
               }}>
-              🌊 Tặng Q Pool
+              🌊 Gift to Q Pool
             </button>
           </div>
           {giftMsg && (
@@ -231,15 +231,15 @@ export default function WalletPage() {
       {/* History */}
       <div style={{ border: '1.5px solid var(--border)', borderRadius: 14, overflow: 'hidden', background: 'var(--bg)' }}>
         <div style={{ padding: '14px 20px', borderBottom: '1px solid var(--border)', fontWeight: 700, fontSize: '0.9rem', color: 'var(--text)' }}>
-          Lịch sử sử dụng Q
+          Q usage history
         </div>
         {loading ? (
           <div style={{ padding: '24px', textAlign: 'center', color: 'var(--text-secondary)', fontSize: '0.85rem' }}>
-            Đang tải...
+            Loading...
           </div>
         ) : history.length === 0 ? (
           <div style={{ padding: '24px', textAlign: 'center', color: 'var(--text-secondary)', fontSize: '0.85rem' }}>
-            Chưa có lịch sử sử dụng Q
+            No usage history yet
           </div>
         ) : (
           history.map((log, i) => (
@@ -250,10 +250,10 @@ export default function WalletPage() {
             }}>
               <div>
                 <div style={{ fontSize: '0.85rem', fontWeight: 600, color: 'var(--text)' }}>
-                  {log.toolSlug ?? log.action ?? 'Sử dụng Q'}
+                  {log.toolSlug ?? log.action ?? 'Q used'}
                 </div>
                 <div style={{ fontSize: '0.72rem', color: 'var(--gray)', marginTop: 2 }}>
-                  {new Date(log.createdAt).toLocaleDateString('vi-VN')}
+                  {new Date(log.createdAt).toLocaleDateString('en-US')}
                 </div>
               </div>
               <span style={{
