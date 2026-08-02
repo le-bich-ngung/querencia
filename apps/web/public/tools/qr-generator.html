@@ -92,7 +92,7 @@
 
 <div class="container">
   <h1 class="page-title">QR Generator</h1>
-  <p class="page-sub">Tạo mã QR miễn phí - không cần đăng nhập</p>
+  <p class="page-sub">Create QR codes for free - no sign-in needed</p>
 
   <!-- TABS -->
   <div class="tabs">
@@ -107,39 +107,39 @@
       <label>URL / Link</label>
       <input type="url" id="inputUrl" placeholder="https://querencia.com.vn" oninput="onInput()"/>
     </div>
-    <button class="btn-generate" onclick="generate()">Tạo QR Code</button>
+    <button class="btn-generate" onclick="generate()">Generate QR Code</button>
   </div>
 
   <!-- FORM TEXT -->
   <div id="formText" style="display:none">
     <div class="form-group">
-      <label>Nội dung</label>
-      <input type="text" id="inputText" placeholder="Nhập bất kỳ đoạn chữ nào..." oninput="onInput()"/>
+      <label>Content</label>
+      <input type="text" id="inputText" placeholder="Enter any text..." oninput="onInput()"/>
     </div>
-    <button class="btn-generate" onclick="generate()">Tạo QR Code</button>
+    <button class="btn-generate" onclick="generate()">Generate QR Code</button>
   </div>
 
   <!-- FORM WIFI -->
   <div id="formWifi" style="display:none">
     <div class="form-group">
-      <label>Tên mạng WiFi (SSID)</label>
-      <input type="text" id="inputWifiSSID" placeholder="Tên mạng WiFi" oninput="onInput()"/>
+      <label>WiFi network name (SSID)</label>
+      <input type="text" id="inputWifiSSID" placeholder="WiFi network name" oninput="onInput()"/>
     </div>
     <div class="form-row">
       <div class="form-group" style="margin-bottom:0">
-        <label>Mật khẩu</label>
-        <input type="text" id="inputWifiPass" placeholder="Mật khẩu WiFi" oninput="onInput()"/>
+        <label>Password</label>
+        <input type="text" id="inputWifiPass" placeholder="WiFi password" oninput="onInput()"/>
       </div>
       <div class="form-group" style="margin-bottom:0">
-        <label>Bảo mật</label>
+        <label>Security</label>
         <select id="inputWifiSec">
           <option value="WPA">WPA/WPA2</option>
           <option value="WEP">WEP</option>
-          <option value="">Không có</option>
+          <option value="">None</option>
         </select>
       </div>
     </div>
-    <button class="btn-generate" onclick="generate()" style="margin-top:16px">Tạo QR Code</button>
+    <button class="btn-generate" onclick="generate()" style="margin-top:16px">Generate QR Code</button>
   </div>
 
   <!-- QR OUTPUT -->
@@ -149,8 +149,8 @@
       <p class="qr-label" id="qrLabel"></p>
     </div>
     <div class="qr-actions">
-      <button class="btn-download" onclick="downloadQR()">⬇ Tải về PNG</button>
-      <button class="btn-copy" id="copyBtn" onclick="copyQR()">⎘ Sao chép ảnh</button>
+      <button class="btn-download" onclick="downloadQR()">⬇ Download PNG</button>
+      <button class="btn-copy" id="copyBtn" onclick="copyQR()">⎘ Copy image</button>
     </div>
   </div>
 </div>
@@ -168,11 +168,11 @@ function switchTab(tab) {
   document.querySelectorAll('.tab').forEach((el, i) => {
     el.classList.toggle('active', ['url','text','wifi'][i] === tab);
   });
-  // Ẩn QR cũ khi đổi tab
+  // Hide old QR when switching tabs
   document.getElementById('qrSection').classList.remove('visible');
 }
 
-// ── LẤY GIÁ TRỊ INPUT ──
+// ── GET INPUT VALUE ──
 function getQRContent() {
   if (currentTab === 'url') {
     const val = document.getElementById('inputUrl').value.trim();
@@ -186,7 +186,7 @@ function getQRContent() {
     const pass = document.getElementById('inputWifiPass').value.trim();
     const sec  = document.getElementById('inputWifiSec').value;
     if (!ssid) return '';
-    // WiFi QR format chuẩn
+    // Standard WiFi QR format
     return `WIFI:T:${sec};S:${ssid};P:${pass};;`;
   }
   return '';
@@ -200,7 +200,7 @@ function getLabel() {
 }
 
 function onInput() {
-  // Ẩn QR cũ khi user gõ lại
+  // Hide old QR when the user types again
   document.getElementById('qrSection').classList.remove('visible');
 }
 
@@ -239,7 +239,7 @@ function downloadQR() {
   const canvas = getCanvas();
   if (!canvas) return;
 
-  // Tạo canvas mới với padding và background trắng
+  // Create a new canvas with padding and a white background
   const size = canvas.width;
   const pad  = 24;
   const out  = document.createElement('canvas');
@@ -264,18 +264,18 @@ async function copyQR() {
     canvas.toBlob(async blob => {
       await navigator.clipboard.write([new ClipboardItem({ 'image/png': blob })]);
       const btn = document.getElementById('copyBtn');
-      btn.textContent = '✓ Đã sao chép!';
-      setTimeout(() => btn.textContent = '⎘ Sao chép ảnh', 2000);
+      btn.textContent = '✓ Copied!';
+      setTimeout(() => btn.textContent = '⎘ Copy image', 2000);
     });
   } catch {
-    // Fallback nếu browser không hỗ trợ
+    // Fallback if the browser doesn't support this
     const btn = document.getElementById('copyBtn');
-    btn.textContent = '✗ Không hỗ trợ';
-    setTimeout(() => btn.textContent = '⎘ Sao chép ảnh', 2000);
+    btn.textContent = '✗ Not supported';
+    setTimeout(() => btn.textContent = '⎘ Copy image', 2000);
   }
 }
 
-// Enter để generate
+// Enter to generate
 document.addEventListener('keydown', e => {
   if (e.key === 'Enter') generate();
 });

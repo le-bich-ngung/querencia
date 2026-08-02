@@ -61,31 +61,31 @@
 <div class="container">
   <div class="header">
     <h1>📬 Temp Email</h1>
-    <p>Email tạm thời, tự hủy sau 10 phút. Không cần đăng ký, không lộ email thật.</p>
+    <p>Temporary email, self-destructs after 10 minutes. No sign-up needed, keeps your real email private.</p>
   </div>
 
   <div class="email-card">
-    <div class="label"><span class="dot"></span>Email của bạn</div>
+    <div class="label"><span class="dot"></span>Your email</div>
     <div class="email-display">
-      <span class="email-text" id="emailAddr">Đang tạo...</span>
-      <button class="btn-copy" id="copyBtn" onclick="copyEmail()">Sao chép</button>
+      <span class="email-text" id="emailAddr">Generating...</span>
+      <button class="btn-copy" id="copyBtn" onclick="copyEmail()">Copy</button>
     </div>
     <div class="actions">
-      <button class="btn-refresh" onclick="newEmail()">↺ Tạo email mới</button>
-      <button class="btn-refresh" onclick="checkInbox()" id="refreshBtn">⟳ Làm mới hộp thư</button>
+      <button class="btn-refresh" onclick="newEmail()">↺ New email</button>
+      <button class="btn-refresh" onclick="checkInbox()" id="refreshBtn">⟳ Refresh inbox</button>
     </div>
-    <div class="timer">Tự hủy sau: <span id="countdown">10:00</span></div>
+    <div class="timer">Self-destructs in: <span id="countdown">10:00</span></div>
   </div>
 
   <div class="inbox">
     <div class="inbox-header">
-      <span class="inbox-title">Hộp thư đến</span>
-      <span class="badge" id="mailCount">0 tin</span>
+      <span class="inbox-title">Inbox</span>
+      <span class="badge" id="mailCount">0 messages</span>
     </div>
     <div id="inboxContent">
       <div class="inbox-empty">
         <div class="icon">📭</div>
-        <div>Chưa có email nào<br/>Thư sẽ xuất hiện ở đây sau vài giây</div>
+        <div>No emails yet<br/>Messages will appear here shortly</div>
       </div>
     </div>
   </div>
@@ -102,30 +102,30 @@
 </div>
 
 <script>
-// Dùng mail.tm API (miễn phí, không cần key)
+// Uses the mail.tm API (free, no key needed)
 const API = 'https://api.mail.tm';
 let token = '', emailAddr = '', accountId = '';
 let mails = [], countdown = 600;
 
 async function init() {
-  // Tạo domain list
+  // Fetch domain list
   const res = await fetch(`${API}/domains`);
   const data = await res.json();
   const domain = data['hydra:member'][0].domain;
 
-  // Tạo địa chỉ random
+  // Generate a random address
   const rand = Math.random().toString(36).substring(2, 10);
   const pass = Math.random().toString(36).substring(2, 18);
   emailAddr = `${rand}@${domain}`;
 
-  // Đăng ký account
+  // Register the account
   await fetch(`${API}/accounts`, {
     method: 'POST',
     headers: {'Content-Type':'application/json'},
     body: JSON.stringify({address: emailAddr, password: pass})
   });
 
-  // Lấy token
+  // Get the token
   const tkRes = await fetch(`${API}/token`, {
     method: 'POST',
     headers: {'Content-Type':'application/json'},
@@ -143,7 +143,7 @@ async function init() {
 async function checkInbox() {
   if (!token) return;
   const btn = document.getElementById('refreshBtn');
-  btn.textContent = '⟳ Đang kiểm tra...';
+  btn.textContent = '⟳ Checking...';
   try {
     const res = await fetch(`${API}/messages`, {
       headers: {'Authorization': `Bearer ${token}`}
@@ -152,21 +152,21 @@ async function checkInbox() {
     mails = data['hydra:member'] || [];
     renderInbox();
   } catch(e) {}
-  btn.textContent = '⟳ Làm mới hộp thư';
+  btn.textContent = '⟳ Refresh inbox';
 }
 
 function renderInbox() {
   const box = document.getElementById('inboxContent');
-  document.getElementById('mailCount').textContent = `${mails.length} tin`;
+  document.getElementById('mailCount').textContent = `${mails.length} messages`;
   if (!mails.length) {
-    box.innerHTML = `<div class="inbox-empty"><div class="icon">📭</div><div>Chưa có email nào<br/>Thư sẽ xuất hiện ở đây sau vài giây</div></div>`;
+    box.innerHTML = `<div class="inbox-empty"><div class="icon">📭</div><div>No emails yet<br/>Messages will appear here shortly</div></div>`;
     return;
   }
   box.innerHTML = mails.map((m, i) => `
     <div class="mail-item" onclick="openMail(${i})">
-      <span class="mail-time">${new Date(m.createdAt).toLocaleTimeString('vi-VN',{hour:'2-digit',minute:'2-digit'})}</span>
+      <span class="mail-time">${new Date(m.createdAt).toLocaleTimeString('en-US',{hour:'2-digit',minute:'2-digit'})}</span>
       <div class="mail-from">${m.from.address}</div>
-      <div class="mail-subject">${m.subject || '(Không có tiêu đề)'}</div>
+      <div class="mail-subject">${m.subject || '(No subject)'}</div>
       <div class="mail-preview">${m.intro || ''}</div>
     </div>
   `).join('');
@@ -179,16 +179,16 @@ async function openMail(idx) {
     headers: {'Authorization': `Bearer ${token}`}
   });
   const full = await res.json();
-  document.getElementById('modalFrom').textContent = `Từ: ${m.from.address} • ${new Date(m.createdAt).toLocaleString('vi-VN')}`;
-  document.getElementById('modalSubject').textContent = m.subject || '(Không có tiêu đề)';
-  document.getElementById('modalBody').textContent = full.text || full.html?.replace(/<[^>]+>/g,'') || '(Nội dung trống)';
+  document.getElementById('modalFrom').textContent = `From: ${m.from.address} • ${new Date(m.createdAt).toLocaleString('en-US')}`;
+  document.getElementById('modalSubject').textContent = m.subject || '(No subject)';
+  document.getElementById('modalBody').textContent = full.text || full.html?.replace(/<[^>]+>/g,'') || '(Empty content)';
   document.getElementById('mailModal').classList.add('open');
 }
 
 function closeModal() { document.getElementById('mailModal').classList.remove('open'); }
 
 async function newEmail() {
-  document.getElementById('emailAddr').textContent = 'Đang tạo...';
+  document.getElementById('emailAddr').textContent = 'Generating...';
   mails = [];
   renderInbox();
   countdown = 600;
@@ -199,9 +199,9 @@ async function newEmail() {
 function copyEmail() {
   navigator.clipboard.writeText(emailAddr);
   const btn = document.getElementById('copyBtn');
-  btn.textContent = '✓ Đã chép!';
+  btn.textContent = '✓ Copied!';
   btn.classList.add('copied');
-  setTimeout(() => { btn.textContent = 'Sao chép'; btn.classList.remove('copied'); }, 2000);
+  setTimeout(() => { btn.textContent = 'Copy'; btn.classList.remove('copied'); }, 2000);
 }
 
 function startCountdown() {
@@ -214,7 +214,7 @@ function startCountdown() {
   }, 1000);
 }
 
-// Click ngoài modal để đóng
+// Click outside the modal to close
 document.getElementById('mailModal').addEventListener('click', e => {
   if (e.target === e.currentTarget) closeModal();
 });

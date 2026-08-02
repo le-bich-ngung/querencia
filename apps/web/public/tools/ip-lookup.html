@@ -45,15 +45,15 @@
 <div class="container">
   <div class="header">
     <h1>🌐 IP & DNS Lookup</h1>
-    <p>Xem thông tin IP, vị trí, ISP, và DNS records của bất kỳ domain hoặc IP nào.</p>
+    <p>View IP info, location, ISP, and DNS records for any domain or IP.</p>
   </div>
 
   <div class="search-bar">
-    <input type="text" id="queryInput" placeholder="Nhập IP hoặc domain... (vd: 8.8.8.8 hoặc google.com)" onkeydown="if(event.key==='Enter')lookup()"/>
-    <button onclick="lookup()">Tra cứu</button>
+    <input type="text" id="queryInput" placeholder="Enter an IP or domain... (e.g. 8.8.8.8 or google.com)" onkeydown="if(event.key==='Enter')lookup()"/>
+    <button onclick="lookup()">Look up</button>
   </div>
 
-  <button class="my-ip-btn" onclick="lookupMyIP()">📍 Xem thông tin IP của tôi</button>
+  <button class="my-ip-btn" onclick="lookupMyIP()">📍 View my IP info</button>
 
   <div id="results">
     <div class="tabs">
@@ -62,12 +62,12 @@
     </div>
 
     <div id="ipPanel">
-      <div class="loading" id="ipLoading"><div class="spinner"></div><br/>Đang tra cứu...</div>
+      <div class="loading" id="ipLoading"><div class="spinner"></div><br/>Looking up...</div>
       <div id="ipContent" style="display:none"></div>
     </div>
 
     <div id="dnsPanel" style="display:none">
-      <div class="loading" id="dnsLoading"><div class="spinner"></div><br/>Đang tra cứu DNS...</div>
+      <div class="loading" id="dnsLoading"><div class="spinner"></div><br/>Looking up DNS...</div>
       <div id="dnsContent" style="display:none"></div>
     </div>
   </div>
@@ -104,34 +104,34 @@ async function fetchIPInfo(query) {
     const url = query ? `https://ipapi.co/${query}/json/` : `https://ipapi.co/json/`;
     const res = await fetch(url);
     const d = await res.json();
-    if (d.error) { renderIPError(d.reason || 'Không tìm thấy'); return; }
+    if (d.error) { renderIPError(d.reason || 'Not found'); return; }
 
     document.getElementById('ipContent').innerHTML = `
       <div class="card">
-        <div class="card-title">📍 Thông tin IP</div>
-        ${row('Địa chỉ IP', d.ip)}
-        ${row('Phiên bản', d.version || 'IPv4')}
+        <div class="card-title">📍 IP Information</div>
+        ${row('IP address', d.ip)}
+        ${row('Version', d.version || 'IPv4')}
         ${row('Hostname', d.hostname || '-')}
-        ${row('Quốc gia', `${d.country_name} ${d.country_code ? '('+d.country_code+')' : ''}`)}
-        ${row('Thành phố', [d.city, d.region].filter(Boolean).join(', ') || '-')}
-        ${row('Múi giờ', d.timezone || '-')}
-        ${row('ISP / Tổ chức', d.org || '-')}
+        ${row('Country', `${d.country_name} ${d.country_code ? '('+d.country_code+')' : ''}`)}
+        ${row('City', [d.city, d.region].filter(Boolean).join(', ') || '-')}
+        ${row('Timezone', d.timezone || '-')}
+        ${row('ISP / Organization', d.org || '-')}
         ${row('ASN', d.asn || '-')}
-        ${row('Toạ độ', d.latitude && d.longitude ? `${d.latitude}, ${d.longitude}` : '-')}
+        ${row('Coordinates', d.latitude && d.longitude ? `${d.latitude}, ${d.longitude}` : '-')}
       </div>
       ${d.latitude && d.longitude ? `
       <div class="card">
-        <div class="card-title">🗺 Bản đồ (xấp xỉ)</div>
+        <div class="card-title">🗺 Map (approximate)</div>
         <div class="map-placeholder">
           <a href="https://maps.google.com?q=${d.latitude},${d.longitude}" target="_blank" style="color:var(--sage-dark);text-decoration:none">
-            📌 Xem trên Google Maps → ${d.city || ''} ${d.country_name || ''}
+            📌 View on Google Maps → ${d.city || ''} ${d.country_name || ''}
           </a>
         </div>
       </div>` : ''}
     `;
     document.getElementById('ipLoading').style.display = 'none';
     document.getElementById('ipContent').style.display = 'block';
-  } catch(e) { renderIPError('Lỗi kết nối'); }
+  } catch(e) { renderIPError('Connection error'); }
 }
 
 function renderIPError(msg) {
@@ -141,11 +141,11 @@ function renderIPError(msg) {
 }
 
 async function fetchDNS(domain) {
-  // Chỉ lookup DNS nếu là domain, không phải IP
+  // Only lookup DNS if this is a domain, not an IP
   const isIP = /^[\d.]+$|^[0-9a-f:]+$/i.test(domain);
   if (isIP || !domain) {
     document.getElementById('dnsLoading').style.display = 'none';
-    document.getElementById('dnsContent').innerHTML = '<div class="loading" style="color:var(--muted);font-size:0.82rem">DNS lookup chỉ khả dụng với domain name</div>';
+    document.getElementById('dnsContent').innerHTML = '<div class="loading" style="color:var(--muted);font-size:0.82rem">DNS lookup is only available for domain names</div>';
     document.getElementById('dnsContent').style.display = 'block';
     return;
   }
@@ -174,7 +174,7 @@ async function fetchDNS(domain) {
         `).join('')}
       </div>
     </div>
-  ` : `<div class="loading" style="color:var(--muted)">Không tìm thấy DNS record nào</div>`;
+  ` : `<div class="loading" style="color:var(--muted)">No DNS records found</div>`;
 
   document.getElementById('dnsLoading').style.display = 'none';
   document.getElementById('dnsContent').style.display = 'block';

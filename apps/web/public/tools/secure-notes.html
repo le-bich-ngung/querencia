@@ -59,22 +59,22 @@
 <div class="container">
   <div class="header">
     <h1>🔐 Secure Notes</h1>
-    <p>Ghi chú mã hóa AES-256. Không lưu server - chỉ trong browser của bạn. Khoá bằng mật khẩu tuỳ chọn.</p>
+    <p>AES-256 encrypted notes. Never saved to a server - only in your browser. Optionally lock with a password.</p>
   </div>
 
   <div class="layout">
     <div class="sidebar">
       <div class="sidebar-header">
-        <span class="sidebar-title">Ghi chú của tôi</span>
-        <button class="btn-new" onclick="newNote()">+ Mới</button>
+        <span class="sidebar-title">My notes</span>
+        <button class="btn-new" onclick="newNote()">+ New</button>
       </div>
-      <div id="noteList"><div class="sidebar-empty">Chưa có ghi chú</div></div>
+      <div id="noteList"><div class="sidebar-empty">No notes yet</div></div>
     </div>
 
     <div class="editor" id="editor">
       <div class="empty-state">
         <div class="big">📝</div>
-        <div>Chọn hoặc tạo ghi chú mới</div>
+        <div>Select or create a new note</div>
       </div>
     </div>
   </div>
@@ -121,7 +121,7 @@ function save() { localStorage.setItem('qr_secure_notes', JSON.stringify(notes))
 
 function newNote() {
   const id = Date.now().toString();
-  notes.unshift({id, title:'Ghi chú mới', content:'', locked:false, cipher:null, updated: Date.now()});
+  notes.unshift({id, title:'New note', content:'', locked:false, cipher:null, updated: Date.now()});
   save();
   renderList();
   openNote(id);
@@ -129,12 +129,12 @@ function newNote() {
 
 function renderList() {
   const list = document.getElementById('noteList');
-  if (!notes.length) { list.innerHTML = '<div class="sidebar-empty">Chưa có ghi chú</div>'; return; }
+  if (!notes.length) { list.innerHTML = '<div class="sidebar-empty">No notes yet</div>'; return; }
   list.innerHTML = notes.map(n => `
     <div class="note-item${n.id===currentId?' active':''}" onclick="openNote('${n.id}')">
       <span class="note-locked">${n.locked ? '🔒' : ''}</span>
-      <div class="note-title-preview">${n.title||'Không có tiêu đề'}</div>
-      <div class="note-date">${new Date(n.updated).toLocaleDateString('vi-VN')}</div>
+      <div class="note-title-preview">${n.title||'Untitled'}</div>
+      <div class="note-date">${new Date(n.updated).toLocaleDateString('en-US')}</div>
     </div>
   `).join('');
 }
@@ -155,16 +155,16 @@ function openNote(id) {
 function showEditor(note) {
   document.getElementById('editor').innerHTML = `
     <div class="editor-toolbar">
-      <input class="title-input" id="noteTitle" value="${note.title||''}" placeholder="Tiêu đề..." oninput="updateTitle(this.value)"/>
-      <button class="btn-lock" onclick="toggleLock('${note.id}')">${note.locked?'🔓 Mở khoá':'🔒 Khoá'}</button>
-      <button class="btn-delete" onclick="deleteNote('${note.id}')" title="Xóa">🗑</button>
+      <input class="title-input" id="noteTitle" value="${note.title||''}" placeholder="Title..." oninput="updateTitle(this.value)"/>
+      <button class="btn-lock" onclick="toggleLock('${note.id}')">${note.locked?'🔓 Unlock':'🔒 Lock'}</button>
+      <button class="btn-delete" onclick="deleteNote('${note.id}')" title="Delete">🗑</button>
     </div>
     <div class="content-area">
-      <textarea id="noteBody" placeholder="Bắt đầu viết..." oninput="updateContent(this.value)">${note.content||''}</textarea>
+      <textarea id="noteBody" placeholder="Start writing..." oninput="updateContent(this.value)">${note.content||''}</textarea>
     </div>
     <div class="status-bar">
-      <span id="charCount">${(note.content||'').length} ký tự</span>
-      <span class="status-saved" id="saveStatus">✓ Đã lưu</span>
+      <span id="charCount">${(note.content||'').length} characters</span>
+      <span class="status-saved" id="saveStatus">✓ Saved</span>
     </div>
   `;
 }
@@ -174,9 +174,9 @@ function showLockScreen(note) {
     <div class="lock-screen">
       <div class="lock-icon">🔒</div>
       <div class="lock-title">${note.title}</div>
-      <div class="lock-desc">Ghi chú này đã được mã hóa.<br/>Nhập mật khẩu để mở.</div>
-      <input class="pass-input" type="password" id="unlockPass" placeholder="Mật khẩu..." onkeydown="if(event.key==='Enter')unlockNote('${note.id}')"/>
-      <button class="btn-unlock" onclick="unlockNote('${note.id}')">Mở khoá</button>
+      <div class="lock-desc">This note is encrypted.<br/>Enter the password to unlock.</div>
+      <input class="pass-input" type="password" id="unlockPass" placeholder="Password..." onkeydown="if(event.key==='Enter')unlockNote('${note.id}')"/>
+      <button class="btn-unlock" onclick="unlockNote('${note.id}')">Unlock</button>
       <div class="pass-error" id="unlockError"></div>
     </div>
   `;
@@ -187,7 +187,7 @@ async function toggleLock(id) {
   if (!note) return;
   if (!note.locked) {
     // Lock - ask for password
-    const pass = prompt('Đặt mật khẩu cho ghi chú này:');
+    const pass = prompt('Set a password for this note:');
     if (!pass) return;
     note.cipher = await encrypt(note.content, pass);
     note.content = '';
@@ -206,7 +206,7 @@ async function unlockNote(id) {
   if (!pass) return;
   const plain = await decrypt(note.cipher, pass);
   if (plain === null) {
-    document.getElementById('unlockError').textContent = '❌ Sai mật khẩu';
+    document.getElementById('unlockError').textContent = '❌ Wrong password';
     return;
   }
   note.content = plain;
@@ -230,7 +230,7 @@ function updateContent(val) {
   if (!note) return;
   note.content = val;
   note.updated = Date.now();
-  document.getElementById('charCount').textContent = val.length + ' ký tự';
+  document.getElementById('charCount').textContent = val.length + ' characters';
   document.getElementById('saveStatus').textContent = '...';
   scheduleSave();
 }
@@ -241,18 +241,18 @@ function scheduleSave() {
     save();
     renderList();
     const s = document.getElementById('saveStatus');
-    if (s) { s.textContent = '✓ Đã lưu'; }
+    if (s) { s.textContent = '✓ Saved'; }
   }, 600);
 }
 
 function deleteNote(id) {
-  if (!confirm('Xóa ghi chú này?')) return;
+  if (!confirm('Delete this note?')) return;
   notes = notes.filter(n => n.id !== id);
   currentId = null;
   save();
   renderList();
   document.getElementById('editor').innerHTML = `
-    <div class="empty-state"><div class="big">📝</div><div>Chọn hoặc tạo ghi chú mới</div></div>
+    <div class="empty-state"><div class="big">📝</div><div>Select or create a new note</div></div>
   `;
 }
 

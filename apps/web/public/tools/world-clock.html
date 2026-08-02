@@ -67,43 +67,43 @@
 
 <div class="header">
   <h1>World <span>Clock</span></h1>
-  <p>Xem giờ nhiều múi giờ cùng lúc - realtime</p>
+  <p>View time across multiple timezones at once - realtime</p>
 </div>
 
 <div class="add-zone">
   <select id="tzSelect" class="tz-select">
-    <option value="">-- Chọn thành phố / múi giờ --</option>
+    <option value="">-- Choose a city / timezone --</option>
   </select>
-  <button class="add-btn" onclick="addClock()">+ Thêm</button>
+  <button class="add-btn" onclick="addClock()">+ Add</button>
 </div>
 
 <div class="clocks-grid" id="clocksGrid"></div>
 
 <script>
 const TIMEZONES = [
-  {city:'Hồ Chí Minh',country:'Việt Nam',tz:'Asia/Ho_Chi_Minh'},
-  {city:'Hà Nội',country:'Việt Nam',tz:'Asia/Bangkok'},
-  {city:'Tokyo',country:'Nhật Bản',tz:'Asia/Tokyo'},
-  {city:'Seoul',country:'Hàn Quốc',tz:'Asia/Seoul'},
-  {city:'Beijing',country:'Trung Quốc',tz:'Asia/Shanghai'},
+  {city:'Ho Chi Minh City',country:'Vietnam',tz:'Asia/Ho_Chi_Minh'},
+  {city:'Hanoi',country:'Vietnam',tz:'Asia/Bangkok'},
+  {city:'Tokyo',country:'Japan',tz:'Asia/Tokyo'},
+  {city:'Seoul',country:'South Korea',tz:'Asia/Seoul'},
+  {city:'Beijing',country:'China',tz:'Asia/Shanghai'},
   {city:'Singapore',country:'Singapore',tz:'Asia/Singapore'},
-  {city:'Bangkok',country:'Thái Lan',tz:'Asia/Bangkok'},
-  {city:'Mumbai',country:'Ấn Độ',tz:'Asia/Kolkata'},
+  {city:'Bangkok',country:'Thailand',tz:'Asia/Bangkok'},
+  {city:'Mumbai',country:'India',tz:'Asia/Kolkata'},
   {city:'Dubai',country:'UAE',tz:'Asia/Dubai'},
-  {city:'Moscow',country:'Nga',tz:'Europe/Moscow'},
-  {city:'Istanbul',country:'Thổ Nhĩ Kỳ',tz:'Europe/Istanbul'},
-  {city:'Paris',country:'Pháp',tz:'Europe/Paris'},
-  {city:'Berlin',country:'Đức',tz:'Europe/Berlin'},
-  {city:'London',country:'Anh',tz:'Europe/London'},
-  {city:'New York',country:'Mỹ',tz:'America/New_York'},
-  {city:'Los Angeles',country:'Mỹ',tz:'America/Los_Angeles'},
-  {city:'Chicago',country:'Mỹ',tz:'America/Chicago'},
+  {city:'Moscow',country:'Russia',tz:'Europe/Moscow'},
+  {city:'Istanbul',country:'Turkey',tz:'Europe/Istanbul'},
+  {city:'Paris',country:'France',tz:'Europe/Paris'},
+  {city:'Berlin',country:'Germany',tz:'Europe/Berlin'},
+  {city:'London',country:'UK',tz:'Europe/London'},
+  {city:'New York',country:'USA',tz:'America/New_York'},
+  {city:'Los Angeles',country:'USA',tz:'America/Los_Angeles'},
+  {city:'Chicago',country:'USA',tz:'America/Chicago'},
   {city:'São Paulo',country:'Brazil',tz:'America/Sao_Paulo'},
-  {city:'Sydney',country:'Úc',tz:'Australia/Sydney'},
+  {city:'Sydney',country:'Australia',tz:'Australia/Sydney'},
   {city:'Auckland',country:'New Zealand',tz:'Pacific/Auckland'},
-  {city:'Johannesburg',country:'Nam Phi',tz:'Africa/Johannesburg'},
-  {city:'Cairo',country:'Ai Cập',tz:'Africa/Cairo'},
-  {city:'Taipei',country:'Đài Loan',tz:'Asia/Taipei'},
+  {city:'Johannesburg',country:'South Africa',tz:'Africa/Johannesburg'},
+  {city:'Cairo',country:'Egypt',tz:'Africa/Cairo'},
+  {city:'Taipei',country:'Taiwan',tz:'Asia/Taipei'},
   {city:'Jakarta',country:'Indonesia',tz:'Asia/Jakarta'},
   {city:'Manila',country:'Philippines',tz:'Asia/Manila'},
   {city:'Karachi',country:'Pakistan',tz:'Asia/Karachi'},
@@ -126,10 +126,10 @@ TIMEZONES.forEach(t => {
 // Default clocks
 if (!clocks.length) {
   clocks = [
-    {tz:'Asia/Ho_Chi_Minh',city:'Hồ Chí Minh',country:'Việt Nam'},
-    {tz:'Asia/Tokyo',city:'Tokyo',country:'Nhật Bản'},
-    {tz:'Europe/London',city:'London',country:'Anh'},
-    {tz:'America/New_York',city:'New York',country:'Mỹ'},
+    {tz:'Asia/Ho_Chi_Minh',city:'Ho Chi Minh City',country:'Vietnam'},
+    {tz:'Asia/Tokyo',city:'Tokyo',country:'Japan'},
+    {tz:'Europe/London',city:'London',country:'UK'},
+    {tz:'America/New_York',city:'New York',country:'USA'},
   ];
 }
 

@@ -47,18 +47,18 @@
 <div class="container">
   <div class="header">
     <h1>📐 Unit Converter</h1>
-    <p>Đổi đơn vị đo lường, nhiệt độ, tiền tệ, timezone và nhiều hơn nữa.</p>
+    <p>Convert length, weight, temperature, currency, timezone, and more.</p>
   </div>
 
   <div class="category-tabs">
-    <div class="cat-tab active" onclick="setCategory('length',this)">📏 Chiều dài</div>
-    <div class="cat-tab" onclick="setCategory('weight',this)">⚖️ Khối lượng</div>
-    <div class="cat-tab" onclick="setCategory('temp',this)">🌡️ Nhiệt độ</div>
-    <div class="cat-tab" onclick="setCategory('area',this)">🟦 Diện tích</div>
-    <div class="cat-tab" onclick="setCategory('volume',this)">🧪 Thể tích</div>
-    <div class="cat-tab" onclick="setCategory('speed',this)">💨 Tốc độ</div>
-    <div class="cat-tab" onclick="setCategory('data',this)">💾 Dữ liệu</div>
-    <div class="cat-tab" onclick="setCategory('currency',this)">💱 Tiền tệ</div>
+    <div class="cat-tab active" onclick="setCategory('length',this)">📏 Length</div>
+    <div class="cat-tab" onclick="setCategory('weight',this)">⚖️ Weight</div>
+    <div class="cat-tab" onclick="setCategory('temp',this)">🌡️ Temperature</div>
+    <div class="cat-tab" onclick="setCategory('area',this)">🟦 Area</div>
+    <div class="cat-tab" onclick="setCategory('volume',this)">🧪 Volume</div>
+    <div class="cat-tab" onclick="setCategory('speed',this)">💨 Speed</div>
+    <div class="cat-tab" onclick="setCategory('data',this)">💾 Data</div>
+    <div class="cat-tab" onclick="setCategory('currency',this)">💱 Currency</div>
     <div class="cat-tab" onclick="setCategory('timezone',this)">🕐 Timezone</div>
   </div>
 
@@ -68,27 +68,27 @@
 <script>
 const UNITS = {
   length: {
-    name:'Chiều dài',
+    name:'Length',
     units:{m:1,km:1000,cm:0.01,mm:0.001,mi:1609.344,ft:0.3048,'in':0.0254,yd:0.9144,nm:1852,'μm':1e-6}
   },
   weight: {
-    name:'Khối lượng',
+    name:'Weight',
     units:{kg:1,g:0.001,mg:1e-6,lb:0.453592,oz:0.0283495,t:1000,'μg':1e-9,stone:6.35029}
   },
   area: {
-    name:'Diện tích',
+    name:'Area',
     units:{'m²':1,'km²':1e6,'cm²':1e-4,'mm²':1e-6,'ha':10000,'acre':4046.86,'ft²':0.0929,'in²':0.000645,'yd²':0.836127}
   },
   volume: {
-    name:'Thể tích',
+    name:'Volume',
     units:{'l':1,'ml':0.001,'m³':1000,'cm³':0.001,'fl oz':0.0295735,'cup':0.236588,'pt':0.473176,'qt':0.946353,'gal':3.78541,'tbsp':0.0147868,'tsp':0.00492892}
   },
   speed: {
-    name:'Tốc độ',
+    name:'Speed',
     units:{'m/s':1,'km/h':1/3.6,'mph':0.44704,'knot':0.514444,'ft/s':0.3048}
   },
   data: {
-    name:'Dữ liệu',
+    name:'Data',
     units:{B:1,KB:1024,MB:1048576,GB:1073741824,TB:1099511627776,bit:0.125,Kbit:128,Mbit:131072,Gbit:134217728}
   },
 };
@@ -113,8 +113,8 @@ const TEMP_UNITS = ['°C','°F','K','°R'];
 const CURRENCIES = {USD:'🇺🇸',EUR:'🇪🇺',VND:'🇻🇳',GBP:'🇬🇧',JPY:'🇯🇵',CNY:'🇨🇳',KRW:'🇰🇷',SGD:'🇸🇬',AUD:'🇦🇺',THB:'🇹🇭',CAD:'🇨🇦',CHF:'🇨🇭',HKD:'🇭🇰'};
 
 const TIMEZONES = [
-  {label:'Hà Nội / TP.HCM (UTC+7)',tz:'Asia/Ho_Chi_Minh'},
-  {label:'Hà Nội (UTC+7)',tz:'Asia/Hanoi'},
+  {label:'Hanoi / Ho Chi Minh City (UTC+7)',tz:'Asia/Ho_Chi_Minh'},
+  {label:'Hanoi (UTC+7)',tz:'Asia/Hanoi'},
   {label:'Tokyo (UTC+9)',tz:'Asia/Tokyo'},
   {label:'Seoul (UTC+9)',tz:'Asia/Seoul'},
   {label:'Singapore (UTC+8)',tz:'Asia/Singapore'},
@@ -157,13 +157,13 @@ function renderStandard(box) {
   box.innerHTML = `
     <div class="conv-row">
       <div class="field">
-        <label>Từ</label>
+        <label>From</label>
         <select id="fromSel" onchange="fromUnit=this.value;doConvert()">${keys.map(k=>`<option value="${k}"${k===fromUnit?' selected':''}>${k}</option>`).join('')}</select>
         <div class="input-wrap"><input type="number" id="fromInput" value="${fromVal}" oninput="fromVal=+this.value;doConvert()"/></div>
       </div>
       <button class="swap-btn" onclick="swapUnits()">⇄</button>
       <div class="field">
-        <label>Sang</label>
+        <label>To</label>
         <select id="toSel" onchange="toUnit=this.value;doConvert()">${keys.map(k=>`<option value="${k}"${k===toUnit?' selected':''}>${k}</option>`).join('')}</select>
         <div class="input-wrap"><input class="result" id="toInput" readonly/></div>
       </div>
@@ -192,13 +192,13 @@ function renderTemp(box) {
   box.innerHTML = `
     <div class="conv-row">
       <div class="field">
-        <label>Từ</label>
+        <label>From</label>
         <select id="fromSel" onchange="fromUnit=this.value;doTempConvert()">${TEMP_UNITS.map(k=>`<option value="${k}"${k===fromUnit?' selected':''}>${k}</option>`).join('')}</select>
         <div class="input-wrap"><input type="number" id="fromInput" value="${fromVal}" oninput="fromVal=+this.value;doTempConvert()"/></div>
       </div>
       <button class="swap-btn" onclick="swapUnits()">⇄</button>
       <div class="field">
-        <label>Sang</label>
+        <label>To</label>
         <select id="toSel" onchange="toUnit=this.value;doTempConvert()">${TEMP_UNITS.map(k=>`<option value="${k}"${k===toUnit?' selected':''}>${k}</option>`).join('')}</select>
         <div class="input-wrap"><input class="result" id="toInput" readonly/></div>
       </div>
@@ -224,19 +224,19 @@ function renderCurrency(box) {
   box.innerHTML = `
     <div class="conv-row">
       <div class="field">
-        <label>Từ</label>
+        <label>From</label>
         <select id="fromSel" onchange="fromUnit=this.value;doCurrencyConvert()">${ckeys.map(k=>`<option value="${k}"${k===fromUnit?' selected':''}>${CURRENCIES[k]} ${k}</option>`).join('')}</select>
         <div class="input-wrap"><input type="number" id="fromInput" value="${fromVal}" oninput="fromVal=+this.value;doCurrencyConvert()"/></div>
       </div>
       <button class="swap-btn" onclick="swapUnits()">⇄</button>
       <div class="field">
-        <label>Sang</label>
+        <label>To</label>
         <select id="toSel" onchange="toUnit=this.value;doCurrencyConvert()">${ckeys.map(k=>`<option value="${k}"${k===toUnit?' selected':''}>${CURRENCIES[k]} ${k}</option>`).join('')}</select>
         <div class="input-wrap"><input class="result" id="toInput" readonly/></div>
       </div>
     </div>
     <div id="currencyResults"></div>
-    <div class="disclaimer">Tỷ giá từ exchangerate-api.com • Cập nhật hàng ngày</div>
+    <div class="disclaimer">Exchange rates from exchangerate-api.com • Updated daily</div>
   `;
   doCurrencyConvert();
 }
@@ -266,7 +266,7 @@ async function doCurrencyConvert() {
 function renderTimezone(box) {
   box.innerHTML = `
     <div style="margin-bottom:16px">
-      <label style="font-size:0.72rem;color:var(--muted);text-transform:uppercase;letter-spacing:0.07em;display:block;margin-bottom:8px">Chọn thời gian</label>
+      <label style="font-size:0.72rem;color:var(--muted);text-transform:uppercase;letter-spacing:0.07em;display:block;margin-bottom:8px">Choose a time</label>
       <input type="datetime-local" id="tzInput" style="width:100%;padding:12px 16px;border:1.5px solid var(--border);border-radius:8px;font-family:var(--font-mono);font-size:0.9rem;outline:none;color:var(--text)" oninput="doTZConvert()"/>
     </div>
     <div id="tzResults"></div>
