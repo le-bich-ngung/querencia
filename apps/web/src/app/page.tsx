@@ -2,17 +2,12 @@
 import { useEffect, useState, useRef } from 'react';
 import Link from 'next/link';
 import { useSession, signIn } from 'next-auth/react';
-import { useI18n, LOCALES } from '../lib/i18n';
+import { useI18n } from '../lib/i18n';
 import { QUOTES } from '../lib/quotes';
 
 var SAGE = '#4a7c59';
 
-var COMPANY_QUOTES = {
-  en: "It's not that the world is too dark but that we've grown used to not lighting ourselves up.",
-  vi: "Không phải thế giới quá tối, mà là chúng ta đã quen không tự thắp sáng chính mình.",
-  ja: "世界が暗すぎるのではなく、私たちが自分自身を照らすことに慑れていないだけだ。",
-  es: "No es que el mundo sea demasiado oscuro, sino que nos hemos acostumbrado a no iluminarnos a nosotros mismos.",
-};
+var COMPANY_QUOTE_EN = "It's not that the world is too dark but that we've grown used to not lighting ourselves up.";
 
 var FREE_TOOLS = [
   { name: 'Password Generator', href: '/tools/password-generator' },
@@ -62,14 +57,6 @@ var PAID_TOOLS = [
   { name: 'Flashcards', desc: 'Smart vocabulary learning', icon: '🃏', href: '/tools/flashcards' },
 ];
 
-var INTERNATIONAL_CONVENTIONS = [
-  { name: 'Công ước Liên Hợp Quốc về Luật Biển (UNCLOS)', year: 1982, summary: 'Quy định quyền và nghĩa vụ của các quốc gia đối với việc sử dụng biển, bảo vệ môi trường biển và quản lý tài nguyên thiên nhiên.' },
-  { name: 'Công ước về Quyền Trẻ em (CRC)', year: 1989, summary: 'Bảo vệ quyền dân sự, chính trị, kinh tế, xã hội và văn hóa của trẻ em trên toàn thế giới.' },
-  { name: 'Công ước Chống Tra tấn (CAT)', year: 1984, summary: 'Ngăn chặn tra tấn va các hình thức đối xử tàn bạo, vô nhân đạo hoặc hạ thấp phẩm giá con người.' },
-  { name: 'Công ước Xóa bỏ Phân biệt Đối xử với Phụ nữ (CEDAW)', year: 1979, summary: 'Xóa bỏ mọi hình thức phân biệt đối xử với phụ nữ va đảm bảo quyền bình đẳng trong mọi lĩnh vực.' },
-  { name: 'Hiệp ước Paris về Biến đổi Khí hậu', year: 2015, summary: 'Giảm phát thải khí nhà kính va hạn chế mức tăng nhiệt độ toàn cầu xuống dưới 2°C so với thời kỳ tiền công nghiệp.' },
-];
-
 var MENTAL_MODELS = [
   { title: 'First Principles Thinking', sub: 'Think from first principles', desc: 'Break problems down to fundamental truths and rebuild from scratch. How Elon Musk designed rockets 10x cheaper.', icon: '⚗️' },
   { title: 'Second-Order Thinking', sub: 'Think about consequences of consequences', desc: 'Not just asking what this causes, but what that causes next. See beyond immediate effects.', icon: '♟️' },
@@ -84,14 +71,6 @@ var CONVENTIONS_EN = [
   { name: 'Convention Against Torture (CAT)', year: 1984, summary: 'Prevents torture and other cruel, inhuman or degrading treatment or punishment.' },
   { name: 'Convention on the Elimination of Discrimination Against Women (CEDAW)', year: 1979, summary: 'Eliminates all forms of discrimination against women and ensures equal rights in all areas.' },
   { name: 'Paris Agreement on Climate Change', year: 2015, summary: 'Reduces greenhouse gas emissions and limits global temperature rise to below 2°C above pre-industrial levels.' },
-];
-
-var CONVENTIONS_VI = [
-  { name: 'Công ước Liên Hợp Quốc về Luật Biển (UNCLOS)', year: 1982, summary: 'Quy định quyền và nghĩa vụ của các quốc gia đối với việc sử dụng biển, bảo vệ môi trường biển và quản lý tài nguyên thiên nhiên.' },
-  { name: 'Công ước về Quyền Trẻ em (CRC)', year: 1989, summary: 'Bảo vệ quyền dân sự, chính trị, kinh tế, xã hội và văn hóa của trẻ em trên toàn thế giới.' },
-  { name: 'Công ước Chống Tra tấn (CAT)', year: 1984, summary: 'Ngăn chặn tra tấn và các hình thức đối xử tàn bạo, vô nhân đạo hoặc hạ thấp phẩm giá con người.' },
-  { name: 'Công ước Xóa bỏ Phân biệt Đối xử với Phụ nữ (CEDAW)', year: 1979, summary: 'Xóa bỏ mọi hình thức phân biệt đối xử với phụ nữ và đảm bảo quyền bình đẳng trong mọi lĩnh vực.' },
-  { name: 'Hiệp ước Paris về Biến đổi Khí hậu', year: 2015, summary: 'Giảm phát thải khí nhà kính và hạn chế mức tăng nhiệt độ toàn cầu xuống dưới 2°C so với thời kỳ tiền công nghiệp.' },
 ];
 
 var MOCK_Q_POOL = [
@@ -241,13 +220,7 @@ function BookNotifyForm() {
 export default function HomePage() {
   var session = useSession().data;
   var i18n = useI18n();
-  var locale = i18n.locale;
-  var setLocale = i18n.setLocale;
   var t = i18n.t;
-
-  var langState = useState(false);
-  var langOpen = langState[0]; var setLangOpen = langState[1];
-  var langRef = useRef(null);
 
   var quoteIdxState = useState(function() { return Math.floor(Math.random() * QUOTES.length); });
   var quoteIdx = quoteIdxState[0]; var setQuoteIdx = quoteIdxState[1];
@@ -284,19 +257,11 @@ export default function HomePage() {
     var timer = setInterval(function() {
       setConvVisible(false);
       setTimeout(function() {
-        setConvIdx(function(i) { return (i + 1) % INTERNATIONAL_CONVENTIONS.length; });
+        setConvIdx(function(i) { return (i + 1) % CONVENTIONS_EN.length; });
         setConvVisible(true);
       }, 500);
     }, 8000);
     return function() { clearInterval(timer); };
-  }, []);
-
-  useEffect(function() {
-    var h = function(e) {
-      if (langRef.current && !langRef.current.contains(e.target)) setLangOpen(false);
-    };
-    document.addEventListener('mousedown', h);
-    return function() { document.removeEventListener('mousedown', h); };
   }, []);
 
   async function handleClaim(id) {
@@ -314,9 +279,8 @@ export default function HomePage() {
   }
 
   var currentQuote = QUOTES[quoteIdx];
-  var companyQuote = COMPANY_QUOTES[locale] || COMPANY_QUOTES.en;
-  var INTERNATIONAL_CONVENTIONS = locale === 'vi' ? CONVENTIONS_VI : CONVENTIONS_EN;
-  var currentConv = INTERNATIONAL_CONVENTIONS[convIdx];
+  var companyQuote = COMPANY_QUOTE_EN;
+  var currentConv = CONVENTIONS_EN[convIdx];
   var availableQ = MOCK_Q_POOL.filter(function(p) { return !claimedQ.includes(p.id); });
 
   var LogoSVG = function(props) {
@@ -348,23 +312,6 @@ export default function HomePage() {
             <span style={{ color: '#4a7c59' }}>a</span>
           </span>
         </Link>
-        <div style={{ width: 1, height: 16, background: 'rgba(255,255,255,0.1)' }} />
-        <div ref={langRef} style={{ position: 'relative' }}>
-          <button onClick={function() { setLangOpen(function(o) { return !o; }); }} style={{ background: 'none', border: 'none', cursor: 'pointer', fontSize: '0.85rem', color: 'rgba(240,239,235,0.55)', display: 'flex', alignItems: 'center', gap: 3, padding: '2px 4px' }}>
-            {(LOCALES.find(function(l) { return l.code === locale; }) || {}).flag}
-          </button>
-          {langOpen && (
-            <div style={{ position: 'absolute', top: 'calc(100% + 8px)', left: '50%', transform: 'translateX(-50%)', background: '#1a1d1a', border: '1px solid rgba(255,255,255,0.08)', borderRadius: 10, padding: 4, zIndex: 300, minWidth: 150, boxShadow: '0 8px 32px rgba(0,0,0,0.5)' }}>
-              {LOCALES.map(function(l) {
-                return (
-                  <button key={l.code} onClick={function() { setLocale(l.code); setLangOpen(false); }} style={{ display: 'flex', alignItems: 'center', gap: 8, width: '100%', padding: '7px 12px', borderRadius: 7, border: 'none', cursor: 'pointer', background: locale === l.code ? 'rgba(74,124,89,0.15)' : 'transparent', color: locale === l.code ? SAGE : 'rgba(240,239,235,0.7)', fontSize: '0.82rem', textAlign: 'left' }}>
-                    <span>{l.flag}</span><span>{l.label}</span>
-                  </button>
-                );
-              })}
-            </div>
-          )}
-        </div>
         <div style={{ width: 1, height: 16, background: 'rgba(255,255,255,0.1)' }} />
         {session ? (
           <Link href="/dashboard/nope" style={{ fontSize: '0.78rem', fontWeight: 600, color: '#fff', background: SAGE, borderRadius: 100, padding: '5px 13px', textDecoration: 'none' }}>Dashboard</Link>
@@ -532,7 +479,7 @@ export default function HomePage() {
             <div style={{ background: '#fff', border: '1.5px solid rgba(0,0,0,0.06)', borderRadius: 20, padding: '32px 28px', display: 'flex', flexDirection: 'column', gap: 14 }}>
               <div style={{ fontSize: '2.5rem' }}>🌿</div>
               <h3 style={{ fontFamily: "'Be Vietnam Pro', sans-serif", fontSize: '2rem', fontWeight: 400, color: '#4a7c59', margin: 0, letterSpacing: -0.5 }}>Nope</h3>
-              <p style={{ fontSize: '0.85rem', color: '#888', lineHeight: 1.5, margin: 0 }}>Câu chuyện thật từ người thật. Không quảng cáo, khong thuat toan.</p>
+              <p style={{ fontSize: '0.85rem', color: '#888', lineHeight: 1.5, margin: 0 }}>{t('home.nope.desc')}</p>
               <Link href="/dashboard/nope" style={{ display: 'inline-block', padding: '9px 20px', background: '#4a7c59', color: '#fff', borderRadius: 100, textDecoration: 'none', fontSize: '0.82rem', fontWeight: 600, alignSelf: 'flex-start' }}>Use now →</Link>
             </div>
             <div style={{ background: '#fff', border: '1.5px solid rgba(0,0,0,0.06)', borderRadius: 20, padding: '32px 28px', display: 'flex', flexDirection: 'column', gap: 14 }}>
@@ -585,7 +532,7 @@ export default function HomePage() {
             </div>
           </div>
           <div style={{ display: 'flex', gap: 6, marginTop: 28 }}>
-            {INTERNATIONAL_CONVENTIONS.map(function(_, i) {
+            {CONVENTIONS_EN.map(function(_, i) {
               return <div key={i} style={{ width: convIdx === i ? 18 : 5, height: 4, borderRadius: 2, background: convIdx === i ? SAGE : '#ddd', transition: 'all 0.4s ease' }} />;
             })}
           </div>
@@ -620,7 +567,7 @@ export default function HomePage() {
         <div style={{ maxWidth: 640, margin: '0 auto', textAlign: 'center' }}>
           <p style={{ fontSize: '0.65rem', fontWeight: 700, color: '#bbb', marginBottom: 16 }}>{t('home.book.label')}</p>
           <h2 style={{ fontFamily: "'Be Vietnam Pro', sans-serif", fontSize: 'clamp(2rem, 5vw, 3.5rem)', fontWeight: 400, letterSpacing: -1.5, color: '#111', margin: '0 0 18px', lineHeight: 1.1 }}>
-            Sách
+            Book
           </h2>
           
           <BookNotifyForm />
@@ -640,7 +587,7 @@ export default function HomePage() {
             </div>
           ) : session ? (
             <div style={{ display: 'flex', flexDirection: 'column', gap: 12 }}>
-              <textarea value={feedback} onChange={function(e) { setFeedback(e.target.value); }} placeholder="Chia sẻ ý kiến của bạn về Querencia......" style={{ width: '100%', minHeight: 120, padding: '14px 16px', background: 'rgba(255,255,255,0.04)', border: '1px solid rgba(255,255,255,0.08)', borderRadius: 12, color: '#f0efeb', fontSize: '0.88rem', fontFamily: 'inherit', resize: 'vertical', outline: 'none', boxSizing: 'border-box' }} />
+              <textarea value={feedback} onChange={function(e) { setFeedback(e.target.value); }} placeholder={t('home.feedback.placeholder')} style={{ width: '100%', minHeight: 120, padding: '14px 16px', background: 'rgba(255,255,255,0.04)', border: '1px solid rgba(255,255,255,0.08)', borderRadius: 12, color: '#f0efeb', fontSize: '0.88rem', fontFamily: 'inherit', resize: 'vertical', outline: 'none', boxSizing: 'border-box' }} />
               <button onClick={handleFeedback} disabled={!feedback.trim()} style={{ padding: '12px 28px', background: feedback.trim() ? SAGE : 'rgba(74,124,89,0.2)', color: '#fff', border: 'none', borderRadius: 100, cursor: feedback.trim() ? 'pointer' : 'not-allowed', fontFamily: 'inherit', fontSize: '0.88rem', fontWeight: 600, transition: 'all 0.15s', alignSelf: 'center' }}>
                 {t('home.feedback.btn')}
               </button>
