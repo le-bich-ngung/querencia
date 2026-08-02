@@ -1,8 +1,8 @@
 'use client';
 /**
  * Tools listing page - /tools
- * Migrated từ querencia-frontend/pages/tools.html
- * Hiển thị tất cả 44 tools theo category, free/paid filter
+ * Migrated from querencia-frontend/pages/tools.html
+ * Displays all 44 tools by category, free/paid filter
  */
 import { useState } from 'react';
 import Link from 'next/link';
@@ -20,8 +20,7 @@ export default function ToolsPage() {
     const q = search.toLowerCase();
     const matchSearch = !q
       || t.name.toLowerCase().includes(q)
-      || t.nameVi.toLowerCase().includes(q)
-      || t.descVi.toLowerCase().includes(q);
+      || t.description.toLowerCase().includes(q);
     return matchCat && matchSearch;
   });
 
@@ -33,14 +32,14 @@ export default function ToolsPage() {
           Tools
         </h1>
         <p style={{ fontSize: '0.9rem', color: 'var(--text-secondary)' }}>
-          Không quảng cáo, không bán dữ liệu. Nguồn thu duy nhất là tools có phí.
+          No ads, no data selling. Paid tools are our only revenue source.
         </p>
       </div>
 
       {/* Search */}
       <input
         type="text"
-        placeholder="Tìm tool..."
+        placeholder="Search tools..."
         value={search}
         onChange={e => setSearch(e.target.value)}
         style={{
@@ -56,7 +55,7 @@ export default function ToolsPage() {
       {/* Category filter */}
       <div style={{ display: 'flex', gap: 8, flexWrap: 'wrap', marginBottom: 28 }}>
         <FilterBtn active={activeCategory === 'all'} onClick={() => setActiveCategory('all')}>
-          Tất cả ({TOOLS.length})
+          All ({TOOLS.length})
         </FilterBtn>
         {CATEGORIES.map(c => {
           const count = TOOLS.filter(t => t.category === c.id).length;
@@ -66,7 +65,7 @@ export default function ToolsPage() {
               active={activeCategory === c.id}
               onClick={() => setActiveCategory(c.id)}
             >
-              {c.emoji} {c.labelVi} ({count})
+              {c.emoji} {c.label} ({count})
             </FilterBtn>
           );
         })}
@@ -83,7 +82,7 @@ export default function ToolsPage() {
         ))}
         {filtered.length === 0 && (
           <div style={{ gridColumn: '1/-1', padding: 48, textAlign: 'center', color: 'var(--gray)' }}>
-            Không tìm thấy tool nào
+            No tools found
           </div>
         )}
       </div>
@@ -93,7 +92,7 @@ export default function ToolsPage() {
         marginTop: 48, textAlign: 'center',
         fontSize: '0.8rem', color: 'var(--gray)',
       }}>
-        Querencia không gắn quảng cáo và không bán dữ liệu người dùng. 🌿
+        Querencia is ad-free and never sells user data. 🌿
       </p>
     </div>
   );
@@ -158,7 +157,7 @@ function ToolCard({ tool, hasSession }: { tool: Tool; hasSession: boolean }) {
                 fontSize: '0.65rem', fontWeight: 700,
                 background: 'var(--sage)', color: '#fff',
                 padding: '2px 7px', borderRadius: 999,
-              }}>MỚI</span>
+              }}>NEW</span>
             )}
             {needsQ ? (
               <span style={{
@@ -171,17 +170,17 @@ function ToolCard({ tool, hasSession }: { tool: Tool; hasSession: boolean }) {
                 fontSize: '0.65rem', fontWeight: 600,
                 background: 'var(--bg-surface)', color: 'var(--gray)',
                 padding: '2px 7px', borderRadius: 999,
-              }}>Miễn phí</span>
+              }}>Free</span>
             )}
           </div>
         </div>
 
         {/* Name + description */}
         <div style={{ fontWeight: 600, fontSize: '0.92rem', marginBottom: 4, color: 'var(--text)' }}>
-          {tool.nameVi}
+          {tool.name}
         </div>
         <div style={{ fontSize: '0.8rem', color: 'var(--text-secondary)', lineHeight: 1.45 }}>
-          {tool.descVi}
+          {tool.description}
         </div>
       </div>
     </Link>
