@@ -1,51 +1,110 @@
-/* Querencia Design System */
-@import url('https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:ital,wght@0,300;0,400;0,500;0,600;0,700;0,800;1,400;1,700&display=swap');
+/* ============================================================
+   QUERENCIA — Design System Tokens
+   Font: Plus Jakarta Sans (SIL Open Font License — free)
+   Colors: 3 colors only
+   ============================================================ */
+
+@import url('https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:ital,wght@0,300;0,400;0,500;0,600;0,700;0,800;1,400&display=swap');
 
 :root {
-  /* Brand */
-  --sage:           #4a7c59;
-  --sage-dark:      #2f5c3e;
-  --sage-light:     #6fa882;
-  --sage-pale:      #ddeee3;
+  /* ── COLORS ─────────────────────────────────────────────── */
+  --q-green:        #4A7C59;   /* Xanh riêu — primary brand   */
+  --q-green-dark:   #3D6B4A;   /* Hover / active state        */
+  --q-green-light:  #EAF2EC;   /* Soft background / badge     */
+  --q-green-mid:    rgba(74, 124, 89, 0.15); /* Overlay tint  */
 
-  /* Backgrounds */
-  --bg:             #ffffff;
-  --bg-warm:        #f7f9f7;
-  --bg-surface:     #f4f4f2;
+  --q-white:        #FFFFFF;   /* Background light            */
+  --q-black:        #111111;   /* Text / background dark      */
 
-  /* Text */
-  --text:           #1a1a18;
-  --text-secondary: #5a5a56;
-  --gray:           #888882;
+  /* ── DERIVED NEUTRALS (from black, not extra colors) ────── */
+  --q-gray-100:     #F7F7F5;   /* Surface light               */
+  --q-gray-200:     #EFEFED;   /* Border light                */
+  --q-gray-400:     #AAAAAA;   /* Placeholder / disabled      */
+  --q-gray-600:     #666666;   /* Secondary text light mode   */
+  --q-gray-800:     #333333;   /* Secondary text dark mode    */
 
-  /* Border */
-  --border:         #e4e4e0;
+  /* ── TYPOGRAPHY ─────────────────────────────────────────── */
+  --q-font:         'Plus Jakarta Sans', system-ui, sans-serif;
 
-  /* Font */
-  --font:           'Plus Jakarta Sans', sans-serif;
+  /* Font sizes */
+  --q-text-xs:      0.75rem;   /* 12px — caption, label       */
+  --q-text-sm:      0.875rem;  /* 14px — small body           */
+  --q-text-base:    1rem;      /* 16px — body                 */
+  --q-text-lg:      1.125rem;  /* 18px — large body           */
+  --q-text-xl:      1.25rem;   /* 20px — h4                   */
+  --q-text-2xl:     1.5rem;    /* 24px — h3                   */
+  --q-text-3xl:     1.875rem;  /* 30px — h2                   */
+  --q-text-4xl:     2.25rem;   /* 36px — h1                   */
+  --q-text-5xl:     3rem;      /* 48px — hero                 */
 
-  /* Radius */
-  --radius:         12px;
+  /* Font weights */
+  --q-weight-light:    300;
+  --q-weight-regular:  400;
+  --q-weight-medium:   500;
+  --q-weight-semibold: 600;
+  --q-weight-bold:     700;
+  --q-weight-extrabold: 800;
 
-  /* Shadow */
-  --shadow-sm:      0 1px 4px rgba(0,0,0,0.06);
-  --shadow-md:      0 4px 16px rgba(0,0,0,0.08);
-  --shadow-lg:      0 8px 32px rgba(0,0,0,0.12);
+  /* Line heights */
+  --q-leading-tight:  1.25;
+  --q-leading-snug:   1.375;
+  --q-leading-normal: 1.5;
+  --q-leading-relaxed: 1.625;
+
+  /* ── SPACING ─────────────────────────────────────────────── */
+  --q-space-1:   0.25rem;   /* 4px  */
+  --q-space-2:   0.5rem;    /* 8px  */
+  --q-space-3:   0.75rem;   /* 12px */
+  --q-space-4:   1rem;      /* 16px */
+  --q-space-5:   1.25rem;   /* 20px */
+  --q-space-6:   1.5rem;    /* 24px */
+  --q-space-8:   2rem;      /* 32px */
+  --q-space-10:  2.5rem;    /* 40px */
+  --q-space-12:  3rem;      /* 48px */
+  --q-space-16:  4rem;      /* 64px */
+
+  /* ── BORDER RADIUS ───────────────────────────────────────── */
+  --q-radius-sm:   6px;
+  --q-radius-md:   10px;
+  --q-radius-lg:   14px;
+  --q-radius-xl:   20px;
+  --q-radius-2xl:  28px;
+  --q-radius-full: 9999px;
+
+  /* ── SHADOWS ─────────────────────────────────────────────── */
+  --q-shadow-sm:  0 1px 3px rgba(0, 0, 0, 0.08);
+  --q-shadow-md:  0 4px 12px rgba(0, 0, 0, 0.10);
+  --q-shadow-lg:  0 8px 24px rgba(0, 0, 0, 0.12);
+
+  /* ── TRANSITIONS ─────────────────────────────────────────── */
+  --q-transition: 150ms ease;
+
+  /* ── SEMANTIC TOKENS (light mode default) ────────────────── */
+  --q-bg:          var(--q-white);
+  --q-bg-surface:  var(--q-gray-100);
+  --q-bg-border:   var(--q-gray-200);
+  --q-text:        var(--q-black);
+  --q-text-sub:    var(--q-gray-600);
+  --q-text-muted:  var(--q-gray-400);
+  --q-accent:      var(--q-green);
+  --q-accent-hover: var(--q-green-dark);
+  --q-accent-soft: var(--q-green-light);
 }
 
-/* Dark mode */
-@media (prefers-color-scheme: dark) {
-  :root {
-    --bg:             #111110;
-    --bg-warm:        #141412;
-    --bg-surface:     #1c1b19;
-    --text:           #f0efeb;
-    --text-secondary: #9a9992;
-    --gray:           #6a6a64;
-    --border:         #2a2926;
-  }
+/* ── DARK MODE ───────────────────────────────────────────── */
+[data-theme="dark"] {
+  --q-bg:          var(--q-black);
+  --q-bg-surface:  #1A1A18;
+  --q-bg-border:   #2A2A28;
+  --q-text:        var(--q-white);
+  --q-text-sub:    var(--q-gray-800);
+  --q-text-muted:  #555553;
+  --q-accent:      var(--q-green);
+  --q-accent-hover: #5A9A6A;
+  --q-accent-soft: rgba(74, 124, 89, 0.15);
 }
 
+/* ── BASE RESET ──────────────────────────────────────────── */
 *, *::before, *::after {
   box-sizing: border-box;
   margin: 0;
@@ -53,104 +112,149 @@
 }
 
 html {
-  scroll-behavior: smooth;
-  -webkit-text-size-adjust: 100%;
+  font-size: 16px;
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
+  text-rendering: optimizeLegibility;
 }
 
 body {
-  font-family: var(--font);
-  color: var(--text);
-  background: var(--bg);
-  line-height: 1.5;
-  -webkit-font-smoothing: antialiased;
-  -moz-osx-font-smoothing: grayscale;
+  font-family: var(--q-font);
+  font-size: var(--q-text-base);
+  font-weight: var(--q-weight-regular);
+  line-height: var(--q-leading-normal);
+  color: var(--q-text);
+  background-color: var(--q-bg);
+  transition: background-color var(--q-transition), color var(--q-transition);
 }
 
-/* Scrollbar */
-::-webkit-scrollbar       { width: 6px; height: 6px; }
-::-webkit-scrollbar-track { background: transparent; }
-::-webkit-scrollbar-thumb { background: var(--border); border-radius: 3px; }
-::-webkit-scrollbar-thumb:hover { background: var(--gray); }
-
-/* Selection */
-::selection {
-  background: var(--sage-pale);
-  color: var(--sage-dark);
+/* ── TYPOGRAPHY BASE ─────────────────────────────────────── */
+h1, h2, h3, h4, h5, h6 {
+  font-family: var(--q-font);
+  font-weight: var(--q-weight-bold);
+  line-height: var(--q-leading-tight);
+  color: var(--q-text);
 }
 
-/* Focus visible — keyboard nav */
-:focus-visible {
-  outline: 2px solid var(--sage);
-  outline-offset: 2px;
+h1 { font-size: var(--q-text-4xl); }
+h2 { font-size: var(--q-text-3xl); }
+h3 { font-size: var(--q-text-2xl); }
+h4 { font-size: var(--q-text-xl);  }
+h5 { font-size: var(--q-text-lg);  }
+h6 { font-size: var(--q-text-base); }
+
+p {
+  line-height: var(--q-leading-relaxed);
+  color: var(--q-text);
 }
 
-/* Remove default focus for mouse users */
-:focus:not(:focus-visible) { outline: none; }
-
-/* Lumen Mode — cursor glow lives behind everything */
-body > [aria-hidden="true"] { pointer-events: none; }
-
-/* Reduce motion */
-@media (prefers-reduced-motion: reduce) {
-  *, *::before, *::after {
-    animation-duration: 0.01ms !important;
-    animation-iteration-count: 1 !important;
-    transition-duration: 0.01ms !important;
-    scroll-behavior: auto !important;
-  }
+a {
+  color: var(--q-accent);
+  text-decoration: none;
+  transition: color var(--q-transition);
 }
 
-/* Homepage animations */
-@keyframes blink { 0%,100%{opacity:1} 50%{opacity:0} }
-@keyframes scrollLeft {
-  0% { transform: translateX(0); }
-  100% { transform: translateX(-50%); }
-}
-@keyframes float { 0%,100%{transform:translateY(0)} 50%{transform:translateY(-6px)} }
-@keyframes orb { 0%,100%{transform:translate(0,0)} 50%{transform:translate(20px,-15px)} }
-@keyframes fadeIn { from{opacity:0;transform:translateY(12px)} to{opacity:1;transform:translateY(0)} }
-.ticker-inner { display:flex; gap:32px; animation:scrollLeft 30s linear infinite; white-space:nowrap; }
-.ticker-inner:hover { animation-play-state:paused; }
-.qw  { stroke-dasharray: 203 9999; animation: waveRun 3s linear infinite; }
-.qwn { stroke-dasharray: 203 9999; animation: waveRun 3s linear infinite; }
-
-
-
-
-
-@keyframes letterFall {
-  from { opacity: 0; transform: translateY(-40px); }
-  to   { opacity: 1; transform: translateY(0); }
-}
-@keyframes shimmer {
-  0%   { filter: brightness(1); }
-  40%  { filter: brightness(2.5) drop-shadow(0 0 12px rgba(255,255,255,0.8)); }
-  100% { filter: brightness(1); }
+a:hover {
+  color: var(--q-accent-hover);
 }
 
-@keyframes shimmerStrong {
-  0%   { filter: brightness(1) drop-shadow(0 0 0px transparent); }
-  30%  { filter: brightness(3.5) drop-shadow(0 0 20px rgba(255,255,255,0.95)); }
-  60%  { filter: brightness(2) drop-shadow(0 0 10px rgba(255,255,255,0.5)); }
-  100% { filter: brightness(1) drop-shadow(0 0 0px transparent); }
+/* ── UTILITY CLASSES ─────────────────────────────────────── */
+
+/* Colors */
+.text-green   { color: var(--q-green); }
+.text-white   { color: var(--q-white); }
+.text-black   { color: var(--q-black); }
+.text-sub     { color: var(--q-text-sub); }
+.text-muted   { color: var(--q-text-muted); }
+
+.bg-green     { background-color: var(--q-green); }
+.bg-white     { background-color: var(--q-white); }
+.bg-black     { background-color: var(--q-black); }
+.bg-surface   { background-color: var(--q-bg-surface); }
+.bg-green-soft { background-color: var(--q-accent-soft); }
+
+/* Buttons */
+.btn {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: var(--q-space-2);
+  font-family: var(--q-font);
+  font-weight: var(--q-weight-semibold);
+  font-size: var(--q-text-sm);
+  line-height: 1;
+  border: none;
+  cursor: pointer;
+  transition: all var(--q-transition);
+  white-space: nowrap;
+  border-radius: var(--q-radius-md);
+  padding: var(--q-space-3) var(--q-space-5);
 }
 
-@keyframes letterFall {
-  from { opacity: 0; transform: translateY(-28px); }
-  to   { opacity: 1; transform: translateY(0); }
+.btn-primary {
+  background-color: var(--q-accent);
+  color: var(--q-white);
+}
+.btn-primary:hover {
+  background-color: var(--q-accent-hover);
 }
 
-@keyframes letterSlide {
-  from { opacity: 0; transform: translateX(60px); }
-  to   { opacity: 1; transform: translateX(0); }
+.btn-outline {
+  background-color: transparent;
+  color: var(--q-text);
+  border: 1.5px solid var(--q-bg-border);
 }
-@keyframes waveRun { from { stroke-dashoffset: 203; } to { stroke-dashoffset: -203; } }
+.btn-outline:hover {
+  border-color: var(--q-accent);
+  color: var(--q-accent);
+}
 
+.btn-ghost {
+  background-color: var(--q-accent-soft);
+  color: var(--q-accent);
+}
+.btn-ghost:hover {
+  background-color: var(--q-green-light);
+}
 
+.btn-pill {
+  border-radius: var(--q-radius-full);
+}
 
-@keyframes shimmerLogo {
-  0%   { filter: brightness(1); }
-  20%  { filter: brightness(3) drop-shadow(0 0 16px rgba(74,124,89,0.9)); }
-  40%  { filter: brightness(1); }
-  100% { filter: brightness(1); }
+.btn-sm {
+  padding: var(--q-space-2) var(--q-space-3);
+  font-size: var(--q-text-xs);
+}
+
+.btn-lg {
+  padding: var(--q-space-4) var(--q-space-8);
+  font-size: var(--q-text-base);
+}
+
+/* Cards */
+.card {
+  background-color: var(--q-bg);
+  border: 1px solid var(--q-bg-border);
+  border-radius: var(--q-radius-lg);
+  padding: var(--q-space-6);
+}
+
+/* Badges / Tags */
+.badge {
+  display: inline-flex;
+  align-items: center;
+  font-family: var(--q-font);
+  font-size: var(--q-text-xs);
+  font-weight: var(--q-weight-semibold);
+  padding: var(--q-space-1) var(--q-space-3);
+  border-radius: var(--q-radius-full);
+  background-color: var(--q-accent-soft);
+  color: var(--q-accent);
+}
+
+/* Divider */
+.divider {
+  border: none;
+  border-top: 1px solid var(--q-bg-border);
+  margin: var(--q-space-4) 0;
 }
