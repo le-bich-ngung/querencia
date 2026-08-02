@@ -54,7 +54,7 @@ async function parseFile(file: File): Promise<VocabWord[]> {
       if (cells.length >= 3 && /^\d+$/.test(cells[0])) cells = cells.slice(1);
       if (cells.length < 2) continue;
       const [w, p, m] = cells.length >= 3 ? [cells[0], cells[1], cells[2]] : [cells[0], '', cells[1]];
-      if (!w || !m || /^từ vựng$/i.test(w) || /^stt$/i.test(w)) continue;
+      if (!w || !m || /^(từ vựng|word)$/i.test(w) || /^(stt|no\.?|#)$/i.test(w)) continue;
       words.push({ w, p: p || undefined, m });
     }
     return words;
@@ -69,13 +69,13 @@ async function parseFile(file: File): Promise<VocabWord[]> {
     if (line.startsWith('|')) {
       cells = line.split('|').map(c => c.trim()).filter((c, i, arr) => !(c === '' && (i === 0 || i === arr.length - 1)));
       if (cells.length >= 3 && /^\d+$/.test(cells[0])) cells = cells.slice(1);
-      if (/^stt$/i.test(cells[0] || '')) continue;
+      if (/^(stt|no\.?|#)$/i.test(cells[0] || '')) continue;
     } else {
       cells = line.split('|').map(c => c.trim());
     }
     if (cells.length < 2) continue;
     const [w, p, m] = cells.length >= 3 ? [cells[0], cells[1], cells[2]] : [cells[0], '', cells[1]];
-    if (!w || !m || /^từ vựng$/i.test(w)) continue;
+    if (!w || !m || /^(từ vựng|word)$/i.test(w)) continue;
     words.push({ w, p: p || undefined, m });
   }
   return words;
@@ -85,15 +85,15 @@ async function parseFile(file: File): Promise<VocabWord[]> {
 function downloadTemplate() {
   const wb = XLSX.utils.book_new();
   const data = [
-    ['STT', 'Từ vựng', 'Loại từ', 'Nghĩa'],
-    [1, 'example', 'n', 'ví dụ'],
-    [2, 'consider', 'v', 'xem xét, cân nhắc'],
-    [3, 'beautiful', 'adj', 'đẹp'],
+    ['No.', 'Word', 'Part of speech', 'Meaning'],
+    [1, 'example', 'n', 'a sample or instance of something'],
+    [2, 'consider', 'v', 'to think carefully about'],
+    [3, 'beautiful', 'adj', 'pleasing to look at'],
   ];
   const ws = XLSX.utils.aoa_to_sheet(data);
   ws['!cols'] = [{ wch: 6 }, { wch: 20 }, { wch: 12 }, { wch: 30 }];
-  XLSX.utils.book_append_sheet(wb, ws, 'Từ vựng mẫu');
-  XLSX.writeFile(wb, 'mau-tu-vung-querencia.xlsx');
+  XLSX.utils.book_append_sheet(wb, ws, 'Sample vocabulary');
+  XLSX.writeFile(wb, 'querencia-vocab-sample.xlsx');
 }
 
 // ── Q logo ────────────────────────────────────────────────────
@@ -130,17 +130,17 @@ export default function VocabTrainerPage() {
     setUploading(true); setUploadMsg('');
     try {
       const words = await parseFile(file);
-      if (words.length === 0) { setUploadMsg('Không đọc được từ nào - kiểm tra lại định dạng file (xem hướng dẫn cột phía trên).'); setUploading(false); return; }
-      if (words.length > MAX_WORDS) { setUploadMsg(`File có ${words.length} từ, vượt quá giới hạn ${MAX_WORDS}.`); setUploading(false); return; }
+      if (words.length === 0) { setUploadMsg("Couldn't read any words - please check the file format (see the column guide above)."); setUploading(false); return; }
+      if (words.length > MAX_WORDS) { setUploadMsg(`File has ${words.length} words, exceeding the ${MAX_WORDS} limit.`); setUploading(false); return; }
       const setName_ = name.trim() || file.name.replace(/\.[^.]+$/, '');
       await vocabApi.create({ name: setName_, isPublic, words }, token);
-      setUploadMsg(`✓ Đã tải lên ${words.length} từ vào "${setName_}"`);
+      setUploadMsg(`✓ Uploaded ${words.length} words to "${setName_}"`);
       setName(''); setIsPublic(false);
       if (fileRef.current) fileRef.current.value = '';
       mutateMine();
       setTimeout(() => setShowUpload(false), 1200);
     } catch (e: any) {
-      setUploadMsg('Lỗi: ' + (e.message ?? 'không rõ nguyên nhân'));
+      setUploadMsg('Error: ' + (e.message ?? 'unknown reason'));
     } finally { setUploading(false); }
   }
 
@@ -151,7 +151,7 @@ export default function VocabTrainerPage() {
   }
   async function deleteSet(s: VocabSetMeta) {
     if (!token) return;
-    if (!confirm(`Xoá bộ từ "${s.name}"? Không thể hoàn tác.`)) return;
+    if (!confirm(`Delete set "${s.name}"? This cannot be undone.`)) return;
     await vocabApi.remove(s.id, token);
     mutateMine(); mutatePub();
   }
@@ -185,14 +185,14 @@ export default function VocabTrainerPage() {
         <div style={{ textAlign: 'center', maxWidth: 360, background: CARD, border: `1px solid ${LINE}`, borderRadius: 22, padding: '40px 30px', boxShadow: '0 10px 40px rgba(27,36,32,.08)' }}>
           <div style={{ marginBottom: 16 }}><QMark size={44} /></div>
           <div style={{ fontSize: 11, letterSpacing: '.14em', textTransform: 'uppercase', color: GOLD, fontWeight: 700, marginBottom: 8 }}>Querencia · Vocab</div>
-          <h1 style={{ fontFamily: serifFont, fontSize: 22, marginBottom: 10, fontWeight: 500 }}>Học từ vựng, theo cách của bạn</h1>
+          <h1 style={{ fontFamily: serifFont, fontSize: 22, marginBottom: 10, fontWeight: 500 }}>Learn vocabulary, your way</h1>
           <p style={{ fontSize: 13, color: MUTED, marginBottom: 24, lineHeight: 1.6 }}>
-            Tải bộ từ vựng riêng lên (Excel, CSV, Markdown), học bằng thuật toán lặp lại ngắt quãng SM-2, và chia sẻ với người khác nếu muốn.
+            Upload your own vocabulary set (Excel, CSV, Markdown), study with the SM-2 spaced repetition algorithm, and share it with others if you'd like.
           </p>
           <button onClick={() => signIn('google')} style={{
             padding: '13px 24px', borderRadius: 12, border: 'none', background: SAGE,
             color: '#fff', fontWeight: 700, fontSize: 14, cursor: 'pointer', width: '100%',
-          }}>Tiếp tục với Google</button>
+          }}>Continue with Google</button>
         </div>
       </div>
     );
@@ -211,55 +211,55 @@ export default function VocabTrainerPage() {
             <QMark size={24} />
             <div style={{ fontSize: 11, letterSpacing: '.14em', textTransform: 'uppercase', color: GOLD, fontWeight: 700 }}>Querencia · Vocab</div>
           </div>
-          <h1 style={{ fontFamily: serifFont, fontSize: 24, fontWeight: 500, margin: 0 }}>Học từ vựng</h1>
+          <h1 style={{ fontFamily: serifFont, fontSize: 24, fontWeight: 500, margin: 0 }}>Vocabulary</h1>
         </div>
 
         {/* Search + upload trigger */}
         <div style={{ display: 'flex', gap: 8, marginBottom: 18 }}>
           <input
-            type="text" placeholder="🔍 Tìm bộ từ..." value={query} onChange={e => setQuery(e.target.value)}
+            type="text" placeholder="🔍 Search sets..." value={query} onChange={e => setQuery(e.target.value)}
             style={{ flex: 1, padding: '11px 14px', borderRadius: 12, border: `1px solid ${LINE}`, background: CARD, fontSize: 13.5, fontFamily: 'inherit' }}
           />
           <button onClick={() => setShowUpload(s => !s)} style={{
             padding: '11px 18px', borderRadius: 12, border: 'none', background: showUpload ? SAGE_DARK : SAGE,
             color: '#fff', fontWeight: 700, fontSize: 13, cursor: 'pointer', whiteSpace: 'nowrap',
-          }}>{showUpload ? 'Đóng' : '+ Tải lên'}</button>
+          }}>{showUpload ? 'Close' : '+ Upload'}</button>
         </div>
 
         {/* Upload panel */}
         {showUpload && (
           <div style={{ background: CARD, border: `1px solid ${LINE}`, borderRadius: 16, padding: 20, marginBottom: 20, animation: 'slideDown .2s ease' }}>
-            <h3 style={{ fontSize: 14, marginBottom: 12, fontWeight: 600 }}>Tải bộ từ mới</h3>
+            <h3 style={{ fontSize: 14, marginBottom: 12, fontWeight: 600 }}>Upload a new set</h3>
 
             {/* Column format guide */}
             <div style={{ background: '#f3efe6', border: `1px solid ${LINE}`, borderRadius: 10, padding: '12px 14px', marginBottom: 14 }}>
-              <div style={{ fontSize: 11.5, fontWeight: 700, color: SAGE_DARK, marginBottom: 8 }}>📋 File cần có đúng các cột sau (theo thứ tự):</div>
+              <div style={{ fontSize: 11.5, fontWeight: 700, color: SAGE_DARK, marginBottom: 8 }}>📋 Your file must have these columns (in this order):</div>
               <div style={{ display: 'grid', gridTemplateColumns: '40px 1fr 1fr 1.4fr', gap: 4, fontSize: 11, marginBottom: 8 }}>
-                <div style={{ fontWeight: 700, color: MUTED }}>STT</div>
-                <div style={{ fontWeight: 700, color: MUTED }}>Từ vựng</div>
-                <div style={{ fontWeight: 700, color: MUTED }}>Loại từ</div>
-                <div style={{ fontWeight: 700, color: MUTED }}>Nghĩa</div>
+                <div style={{ fontWeight: 700, color: MUTED }}>No.</div>
+                <div style={{ fontWeight: 700, color: MUTED }}>Word</div>
+                <div style={{ fontWeight: 700, color: MUTED }}>Part of speech</div>
+                <div style={{ fontWeight: 700, color: MUTED }}>Meaning</div>
                 <div style={{ color: INK }}>1</div>
                 <div style={{ color: INK }}>example</div>
                 <div style={{ color: INK }}>n</div>
-                <div style={{ color: INK }}>ví dụ</div>
+                <div style={{ color: INK }}>a sample or instance</div>
               </div>
               <p style={{ fontSize: 10.5, color: MUTED, margin: '0 0 8px', lineHeight: 1.5 }}>
-                Cột <strong>STT</strong> có thể bỏ qua (không bắt buộc). Dòng tiêu đề đầu tiên sẽ tự động bị bỏ qua khi đọc file.
+                The <strong>No.</strong> column can be omitted (optional). The first header row is automatically skipped when reading the file.
               </p>
               <button onClick={downloadTemplate} style={{
                 fontSize: 11.5, fontWeight: 700, color: SAGE_DARK, background: 'transparent',
                 border: `1px solid ${SAGE}`, borderRadius: 8, padding: '6px 12px', cursor: 'pointer',
-              }}>⬇ Tải file mẫu (.xlsx)</button>
+              }}>⬇ Download sample file (.xlsx)</button>
             </div>
 
             <input
-              type="text" placeholder="Tên bộ từ (vd: Passage 1 - 416 từ)" value={name} onChange={e => setName(e.target.value)}
+              type="text" placeholder="Set name (e.g. Passage 1 - 416 words)" value={name} onChange={e => setName(e.target.value)}
               style={{ width: '100%', padding: 11, borderRadius: 10, border: `1px solid ${LINE}`, marginBottom: 10, fontFamily: 'inherit', fontSize: 13.5 }}
             />
             <label style={{ display: 'flex', alignItems: 'center', gap: 8, fontSize: 13, marginBottom: 14, cursor: 'pointer', color: MUTED }}>
               <input type="checkbox" checked={isPublic} onChange={e => setIsPublic(e.target.checked)} />
-              🌍 Công khai - mọi người xem và học được bộ từ này
+              🌍 Public - anyone can view and study this set
             </label>
             <label style={{
               display: 'block', border: `1.5px dashed ${LINE}`, borderRadius: 12, padding: '20px', textAlign: 'center',
@@ -270,23 +270,23 @@ export default function VocabTrainerPage() {
                 onChange={e => { const f = e.target.files?.[0]; if (f) handleUpload(f); }}
                 style={{ display: 'none' }}
               />
-              📄 {uploading ? 'Đang xử lý...' : 'Bấm để chọn file (.xlsx, .csv, .md, .txt)'}
+              📄 {uploading ? 'Processing...' : 'Tap to choose a file (.xlsx, .csv, .md, .txt)'}
             </label>
-            {uploadMsg && <p style={{ fontSize: 12.5, color: uploadMsg.startsWith('Lỗi') ? '#a4453a' : SAGE, marginTop: 10, fontWeight: 600 }}>{uploadMsg}</p>}
-            <p style={{ fontSize: 10.5, color: '#999', marginTop: 8 }}>Giới hạn {MAX_WORDS.toLocaleString('vi-VN')} từ / bộ.</p>
+            {uploadMsg && <p style={{ fontSize: 12.5, color: uploadMsg.startsWith('Error') ? '#a4453a' : SAGE, marginTop: 10, fontWeight: 600 }}>{uploadMsg}</p>}
+            <p style={{ fontSize: 10.5, color: '#999', marginTop: 8 }}>Limit: {MAX_WORDS.toLocaleString('en-US')} words per set.</p>
           </div>
         )}
 
         {/* Tabs */}
         <div style={{ display: 'flex', gap: 6, marginBottom: 16 }}>
-          <button onClick={() => setTab('mine')} style={tabStyle(tab === 'mine')}>Bộ từ của tôi {mine ? `(${mine.length})` : ''}</button>
-          <button onClick={() => setTab('explore')} style={tabStyle(tab === 'explore')}>Khám phá {pub ? `(${pub.length})` : ''}</button>
+          <button onClick={() => setTab('mine')} style={tabStyle(tab === 'mine')}>My sets {mine ? `(${mine.length})` : ''}</button>
+          <button onClick={() => setTab('explore')} style={tabStyle(tab === 'explore')}>Explore {pub ? `(${pub.length})` : ''}</button>
         </div>
 
         {tab === 'mine' && (
           <div style={{ display: 'flex', flexDirection: 'column', gap: 10 }}>
             {!mine || filteredMine.length === 0 ? (
-              <EmptyState text={mine && mine.length > 0 ? 'Không tìm thấy bộ từ khớp.' : 'Chưa có bộ từ nào - bấm "+ Tải lên" để bắt đầu.'} />
+              <EmptyState text={mine && mine.length > 0 ? 'No matching sets found.' : 'No sets yet - tap "+ Upload" to get started.'} />
             ) : filteredMine.map(s => (
               <SetCard key={s.id} s={s} mine onStudy={() => openStudy(s, true)} onTogglePublic={() => togglePublic(s)} onDelete={() => deleteSet(s)} />
             ))}
@@ -296,7 +296,7 @@ export default function VocabTrainerPage() {
         {tab === 'explore' && (
           <div style={{ display: 'flex', flexDirection: 'column', gap: 10 }}>
             {!pub || filteredPub.length === 0 ? (
-              <EmptyState text="Chưa có bộ từ công khai nào phù hợp." />
+              <EmptyState text="No matching public sets found." />
             ) : filteredPub.map(s => (
               <SetCard key={s.id} s={s} mine={false} onStudy={() => openStudy(s, false)} />
             ))}
@@ -339,19 +339,19 @@ function SetCard({ s, mine, onStudy, onTogglePublic, onDelete }: {
       <div style={{ minWidth: 0, flex: 1 }}>
         <div style={{ fontWeight: 700, fontSize: 14.5, marginBottom: 3, overflow: 'hidden', textOverflow: 'ellipsis', whiteSpace: 'nowrap' }}>{s.name}</div>
         <div style={{ fontSize: 11.5, color: MUTED, display: 'flex', gap: 6, alignItems: 'center' }}>
-          <span>{s.wordCount.toLocaleString('vi-VN')} từ</span>
+          <span>{s.wordCount.toLocaleString('en-US')} words</span>
           {mine && <><span>·</span><span>{s.isPublic ? '🌍 Public' : '🔒 Private'}</span></>}
         </div>
       </div>
       <div style={{ display: 'flex', gap: 6, flexShrink: 0 }}>
-        <button onClick={onStudy} style={{ padding: '8px 14px', borderRadius: 10, border: 'none', background: SAGE, color: '#fff', fontSize: 12, fontWeight: 700, cursor: 'pointer' }}>Học</button>
+        <button onClick={onStudy} style={{ padding: '8px 14px', borderRadius: 10, border: 'none', background: SAGE, color: '#fff', fontSize: 12, fontWeight: 700, cursor: 'pointer' }}>Study</button>
         {mine && onTogglePublic && (
-          <button onClick={onTogglePublic} title={s.isPublic ? 'Đặt Private' : 'Đặt Public'} style={{
+          <button onClick={onTogglePublic} title={s.isPublic ? 'Set to Private' : 'Set to Public'} style={{
             width: 34, height: 34, borderRadius: 10, border: `1px solid ${LINE}`, background: 'transparent', cursor: 'pointer', fontSize: 14,
           }}>{s.isPublic ? '🌍' : '🔒'}</button>
         )}
         {mine && onDelete && (
-          <button onClick={onDelete} title="Xoá" style={{ width: 34, height: 34, borderRadius: 10, border: `1px solid ${LINE}`, background: 'transparent', color: '#a4453a', cursor: 'pointer', fontSize: 14 }}>✕</button>
+          <button onClick={onDelete} title="Delete" style={{ width: 34, height: 34, borderRadius: 10, border: `1px solid ${LINE}`, background: 'transparent', color: '#a4453a', cursor: 'pointer', fontSize: 14 }}>✕</button>
         )}
       </div>
     </div>
@@ -376,7 +376,7 @@ function StudyView({ set, mode, setMode, onBack, onSave }: {
   const [words, setWords] = useState(set.words);
 
 
-  // Load SRS data từ localStorage sau khi mount (tránh hydration mismatch)
+  // Load SRS data from localStorage after mount (avoid hydration mismatch)
   useEffect(() => {
     try {
       const raw = localStorage.getItem(storeKey);
@@ -461,26 +461,26 @@ function StudyView({ set, mode, setMode, onBack, onSave }: {
       <div style={{ maxWidth: 480, width: '100%', margin: '0 auto', padding: '20px 18px 40px', flex: 1, display: 'flex', flexDirection: 'column' }}>
 
         <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: 6 }}>
-          <button onClick={onBack} style={{ border: 'none', background: 'none', fontSize: 13, color: SAGE, cursor: 'pointer', fontWeight: 700 }}>← Quay lại</button>
-          <button onClick={() => setEditOpen(true)} style={{ border: 'none', background: 'none', fontSize: 13, color: MUTED, cursor: 'pointer' }}>✏️ Sửa từ</button>
+          <button onClick={onBack} style={{ border: 'none', background: 'none', fontSize: 13, color: SAGE, cursor: 'pointer', fontWeight: 700 }}>← Back</button>
+          <button onClick={() => setEditOpen(true)} style={{ border: 'none', background: 'none', fontSize: 13, color: MUTED, cursor: 'pointer' }}>✏️ Edit words</button>
         </div>
         <div style={{ fontFamily: serifFont, fontSize: 17, fontWeight: 500, marginBottom: 14, textAlign: 'center' }}>{set.name}</div>
 
         <div style={{ display: 'flex', gap: 8, marginBottom: 16 }}>
-          <StatChip label="Cần ôn" value={dueCount} />
-          <StatChip label="Đã thuộc" value={learnedCount} />
-          <StatChip label="Tổng số" value={total} />
+          <StatChip label="Due" value={dueCount} />
+          <StatChip label="Learned" value={learnedCount} />
+          <StatChip label="Total" value={total} />
         </div>
 
         <div style={{ display: 'flex', gap: 6, marginBottom: 18 }}>
-          <button onClick={() => setMode('flip')} style={tabStyle(mode === 'flip')}>Lật thẻ</button>
-          <button onClick={() => setMode('quiz')} style={tabStyle(mode === 'quiz')}>Trắc nghiệm</button>
+          <button onClick={() => setMode('flip')} style={tabStyle(mode === 'flip')}>Flip cards</button>
+          <button onClick={() => setMode('quiz')} style={tabStyle(mode === 'quiz')}>Quiz</button>
         </div>
 
         {!word ? (
           <div style={{ flex: 1, display: 'flex', flexDirection: 'column', alignItems: 'center', justifyContent: 'center', textAlign: 'center', color: MUTED }}>
             <div style={{ fontSize: 44, marginBottom: 8 }}>🎉</div>
-            <p style={{ fontFamily: serifFont, fontSize: 17 }}>Hết từ cần ôn trong bộ này!</p>
+            <p style={{ fontFamily: serifFont, fontSize: 17 }}>No words left to review in this set!</p>
           </div>
         ) : mode === 'flip' ? (
           <>
@@ -502,13 +502,13 @@ function StudyView({ set, mode, setMode, onBack, onSave }: {
                 fontSize: 12, fontWeight: 800, letterSpacing: '.06em', textTransform: 'uppercase',
                 color: '#a4453a', border: '2px solid #a4453a', transform: 'rotate(-8deg)',
                 opacity: dragX < 0 ? Math.min(Math.abs(dragX) / 90, 1) : 0, transition: dragging ? 'none' : 'opacity .2s', zIndex: 2,
-              }}>Quên</div>
+              }}>Forgot</div>
               <div style={{
                 position: 'absolute', right: 20, top: 20, padding: '6px 14px', borderRadius: 8,
                 fontSize: 12, fontWeight: 800, letterSpacing: '.06em', textTransform: 'uppercase',
                 color: SAGE_DARK, border: `2px solid ${SAGE_DARK}`, transform: 'rotate(8deg)',
                 opacity: dragX > 0 ? Math.min(Math.abs(dragX) / 90, 1) : 0, transition: dragging ? 'none' : 'opacity .2s', zIndex: 2,
-              }}>Nhớ</div>
+              }}>Remember</div>
 
               <div style={{
                 position: 'absolute', inset: 0, borderRadius: 22, border: `1px solid ${LINE}`, background: CARD,
@@ -521,32 +521,32 @@ function StudyView({ set, mode, setMode, onBack, onSave }: {
                   position: 'absolute', inset: 0, borderRadius: 22, backfaceVisibility: 'hidden',
                   display: 'flex', flexDirection: 'column', alignItems: 'center', justifyContent: 'center', padding: 28, textAlign: 'center',
                 }}>
-                  <div style={{ fontSize: 10.5, letterSpacing: '.14em', textTransform: 'uppercase', color: GOLD, fontWeight: 700, marginBottom: 16 }}>Từ vựng</div>
+                  <div style={{ fontSize: 10.5, letterSpacing: '.14em', textTransform: 'uppercase', color: GOLD, fontWeight: 700, marginBottom: 16 }}>Word</div>
                   <div style={{ fontFamily: serifFont, fontSize: 32, fontWeight: 600 }}>{word.w}</div>
                   {word.p && <div style={{ fontSize: 12, color: MUTED, fontStyle: 'italic', marginTop: 10 }}>{word.p}</div>}
-                  <div style={{ position: 'absolute', bottom: 16, fontSize: 10.5, color: MUTED }}>Chạm để xem nghĩa · vuốt để ôn nhanh</div>
+                  <div style={{ position: 'absolute', bottom: 16, fontSize: 10.5, color: MUTED }}>Tap to see meaning · swipe to review quickly</div>
                 </div>
                 <div style={{
                   position: 'absolute', inset: 0, borderRadius: 22, backfaceVisibility: 'hidden', transform: 'rotateY(180deg)',
                   background: SAGE, color: '#fff', display: 'flex', flexDirection: 'column', alignItems: 'center', justifyContent: 'center', padding: 28, textAlign: 'center',
                 }}>
-                  <div style={{ fontSize: 10.5, letterSpacing: '.14em', textTransform: 'uppercase', color: '#e7d6b3', fontWeight: 700, marginBottom: 16 }}>Nghĩa</div>
+                  <div style={{ fontSize: 10.5, letterSpacing: '.14em', textTransform: 'uppercase', color: '#e7d6b3', fontWeight: 700, marginBottom: 16 }}>Meaning</div>
                   <div style={{ fontFamily: serifFont, fontSize: 22, fontWeight: 500 }}>{word.m}</div>
-                  <div style={{ position: 'absolute', bottom: 16, fontSize: 10.5, color: 'rgba(255,255,255,.7)' }}>Chạm để lật lại</div>
+                  <div style={{ position: 'absolute', bottom: 16, fontSize: 10.5, color: 'rgba(255,255,255,.7)' }}>Tap to flip back</div>
                 </div>
               </div>
             </div>
             <div style={{ display: 'flex', gap: 8 }}>
-              <button onClick={() => grade(1)} style={gradeBtn('#a4453a')}>Quên<small> &lt;1 ph</small></button>
-              <button onClick={() => grade(3)} style={gradeBtn('#c07a3e')}>Khó<small> ôn sớm</small></button>
-              <button onClick={() => grade(4)} style={gradeBtn(SAGE)}>Nhớ<small> vài ngày</small></button>
-              <button onClick={() => grade(5)} style={gradeBtn(SAGE_DARK)}>Dễ<small> lâu hơn</small></button>
+              <button onClick={() => grade(1)} style={gradeBtn('#a4453a')}>Forgot<small> &lt;1 min</small></button>
+              <button onClick={() => grade(3)} style={gradeBtn('#c07a3e')}>Hard<small> review soon</small></button>
+              <button onClick={() => grade(4)} style={gradeBtn(SAGE)}>Good<small> a few days</small></button>
+              <button onClick={() => grade(5)} style={gradeBtn(SAGE_DARK)}>Easy<small> longer</small></button>
             </div>
           </>
         ) : (
           <>
             <div style={{ background: CARD, border: `1px solid ${LINE}`, borderRadius: 18, padding: 26, textAlign: 'center', marginBottom: 14 }}>
-              <div style={{ fontSize: 10.5, letterSpacing: '.14em', textTransform: 'uppercase', color: GOLD, fontWeight: 700, marginBottom: 12 }}>Chọn nghĩa đúng</div>
+              <div style={{ fontSize: 10.5, letterSpacing: '.14em', textTransform: 'uppercase', color: GOLD, fontWeight: 700, marginBottom: 12 }}>Choose the correct meaning</div>
               <div style={{ fontFamily: serifFont, fontSize: 28, fontWeight: 600 }}>{word.w}</div>
               {word.p && <div style={{ fontSize: 12, color: MUTED, marginTop: 6, fontStyle: 'italic' }}>{word.p}</div>}
             </div>
@@ -609,11 +609,11 @@ function EditWordsModal({ words, onCancel, onSave }: {
       <div style={{ background: PAPER, borderRadius: '20px 20px 0 0', width: '100%', maxWidth: 480, maxHeight: '85vh', display: 'flex', flexDirection: 'column' }}>
         <div style={{ padding: '18px 20px 10px', flexShrink: 0 }}>
           <div style={{ width: 36, height: 4, background: LINE, borderRadius: 99, margin: '0 auto 14px' }} />
-          <h3 style={{ fontFamily: serifFont, fontSize: 17, margin: '0 0 10px' }}>Sửa từ vựng ({rows.length})</h3>
+          <h3 style={{ fontFamily: serifFont, fontSize: 17, margin: '0 0 10px' }}>Edit words ({rows.length})</h3>
           <div style={{ display: 'flex', gap: 8, marginBottom: 8 }}>
-            <input placeholder="🔍 Lọc từ..." value={filter} onChange={e => setFilter(e.target.value)}
+            <input placeholder="🔍 Filter words..." value={filter} onChange={e => setFilter(e.target.value)}
               style={{ flex: 1, padding: 9, borderRadius: 9, border: `1px solid ${LINE}`, fontSize: 12.5, fontFamily: 'inherit' }} />
-            <button onClick={addRow} style={{ padding: '9px 14px', borderRadius: 9, border: 'none', background: SAGE, color: '#fff', fontSize: 12.5, fontWeight: 700, cursor: 'pointer' }}>+ Thêm</button>
+            <button onClick={addRow} style={{ padding: '9px 14px', borderRadius: 9, border: 'none', background: SAGE, color: '#fff', fontSize: 12.5, fontWeight: 700, cursor: 'pointer' }}>+ Add</button>
           </div>
         </div>
         <div style={{ flex: 1, overflowY: 'auto', padding: '0 20px' }}>
@@ -621,11 +621,11 @@ function EditWordsModal({ words, onCancel, onSave }: {
             const realIdx = rows.indexOf(r);
             return (
               <div key={realIdx} style={{ display: 'flex', gap: 6, marginBottom: 8, alignItems: 'center' }}>
-                <input value={r.w} onChange={e => updateRow(realIdx, 'w', e.target.value)} placeholder="Từ"
+                <input value={r.w} onChange={e => updateRow(realIdx, 'w', e.target.value)} placeholder="Word"
                   style={{ flex: 2, padding: 8, borderRadius: 8, border: `1px solid ${LINE}`, fontSize: 12.5, fontFamily: 'inherit' }} />
-                <input value={r.p ?? ''} onChange={e => updateRow(realIdx, 'p', e.target.value)} placeholder="Loại"
+                <input value={r.p ?? ''} onChange={e => updateRow(realIdx, 'p', e.target.value)} placeholder="Type"
                   style={{ flex: 1, padding: 8, borderRadius: 8, border: `1px solid ${LINE}`, fontSize: 12.5, fontFamily: 'inherit' }} />
-                <input value={r.m} onChange={e => updateRow(realIdx, 'm', e.target.value)} placeholder="Nghĩa"
+                <input value={r.m} onChange={e => updateRow(realIdx, 'm', e.target.value)} placeholder="Meaning"
                   style={{ flex: 3, padding: 8, borderRadius: 8, border: `1px solid ${LINE}`, fontSize: 12.5, fontFamily: 'inherit' }} />
                 <button onClick={() => removeRow(realIdx)} style={{ border: 'none', background: 'none', color: '#a4453a', fontSize: 16, cursor: 'pointer', flexShrink: 0 }}>✕</button>
               </div>
@@ -633,8 +633,8 @@ function EditWordsModal({ words, onCancel, onSave }: {
           })}
         </div>
         <div style={{ padding: 16, display: 'flex', gap: 10, flexShrink: 0, borderTop: `1px solid ${LINE}` }}>
-          <button onClick={onCancel} style={{ flex: 1, padding: 12, borderRadius: 10, border: `1px solid ${LINE}`, background: 'transparent', fontSize: 13, fontWeight: 600, cursor: 'pointer' }}>Huỷ</button>
-          <button onClick={() => onSave(rows.filter(r => r.w.trim() && r.m.trim()))} style={{ flex: 2, padding: 12, borderRadius: 10, border: 'none', background: SAGE, color: '#fff', fontSize: 13, fontWeight: 700, cursor: 'pointer' }}>Lưu thay đổi</button>
+          <button onClick={onCancel} style={{ flex: 1, padding: 12, borderRadius: 10, border: `1px solid ${LINE}`, background: 'transparent', fontSize: 13, fontWeight: 600, cursor: 'pointer' }}>Cancel</button>
+          <button onClick={() => onSave(rows.filter(r => r.w.trim() && r.m.trim()))} style={{ flex: 2, padding: 12, borderRadius: 10, border: 'none', background: SAGE, color: '#fff', fontSize: 13, fontWeight: 700, cursor: 'pointer' }}>Save changes</button>
         </div>
       </div>
     </div>
