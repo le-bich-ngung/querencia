@@ -1,0 +1,17 @@
+{
+  "name": "@querencia/i18n",
+  "version": "0.1.0",
+  "private": true,
+  "main": "./dist/index.js",
+  "types": "./dist/index.d.ts",
+  "scripts": {
+    "build": "tsc",
+    "validate": "tsx scripts/validate.ts",
+    "build:python": "tsx scripts/build-python.ts"
+  },
+  "devDependencies": {
+    "typescript": "^5.3.0",
+    "tsx": "^4.7.0",
+    "@types/node": "^20.0.0"
+  }
+}
