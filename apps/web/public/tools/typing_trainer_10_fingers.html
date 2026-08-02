@@ -47,15 +47,15 @@ body { font-family: var(--font-sans); }
 <div id="app">
   <div id="stats">
     <div class="stat"><div class="stat-val" id="wpm">0</div><div class="stat-lbl">WPM</div></div>
-    <div class="stat"><div class="stat-val" id="acc">100%</div><div class="stat-lbl">Chính xác</div></div>
-    <div class="stat"><div class="stat-val" id="timer">0s</div><div class="stat-lbl">Thời gian</div></div>
-    <div class="stat"><div class="stat-val" id="errors">0</div><div class="stat-lbl">Lỗi</div></div>
+    <div class="stat"><div class="stat-val" id="acc">100%</div><div class="stat-lbl">Accuracy</div></div>
+    <div class="stat"><div class="stat-val" id="timer">0s</div><div class="stat-lbl">Time</div></div>
+    <div class="stat"><div class="stat-val" id="errors">0</div><div class="stat-lbl">Errors</div></div>
   </div>
 
   <div id="lesson-select"></div>
   <div id="progress-bar"><div id="progress-fill"></div></div>
   <div id="text-display"></div>
-  <input id="input-area" type="text" placeholder="Nhấp vào đây và bắt đầu gõ..." autocomplete="off" autocorrect="off" spellcheck="false" />
+  <input id="input-area" type="text" placeholder="Click here and start typing..." autocomplete="off" autocorrect="off" spellcheck="false" />
 
   <div id="keyboard"></div>
   <div id="hint"></div>
@@ -63,18 +63,18 @@ body { font-family: var(--font-sans); }
   <div id="result">
     <div class="result-big" id="result-wpm"></div>
     <div class="result-sub" id="result-detail"></div>
-    <button id="restart-btn" onclick="restartLesson()">Luyện lại</button>
+    <button id="restart-btn" onclick="restartLesson()">Restart</button>
   </div>
 </div>
 
 <script>
 const LESSONS = [
-  { name: "Hàng giữa", text: "asdf jkl; asdf jkl; asd fgh jkl asd fjk las dfjk las dfj kla sdf jkl asdf jkl;" },
-  { name: "Hàng trên", text: "qwer tyui qwer tyui qwe rty uio qwe rty uio wert yui ower tyui qwer tyui" },
-  { name: "Hàng dưới", text: "zxcv bnm, zxcv bnm, zxc vbn m,. zxc vbn m,. xcvb nm, zxcv bnm, zxcv bnm," },
-  { name: "Từ cơ bản", text: "the and for are but not you all can had her was one our out day get has him how" },
-  { name: "Câu đơn", text: "the quick brown fox jumps over the lazy dog pack my box with five dozen liquor jugs" },
-  { name: "Số & ký tự", text: "1234 5678 90 1a2b 3c4d 5e6f 7g8h 9i0j abc123 def456 ghi789 jkl012" },
+  { name: "Home row", text: "asdf jkl; asdf jkl; asd fgh jkl asd fjk las dfjk las dfj kla sdf jkl asdf jkl;" },
+  { name: "Top row", text: "qwer tyui qwer tyui qwe rty uio qwe rty uio wert yui ower tyui qwer tyui" },
+  { name: "Bottom row", text: "zxcv bnm, zxcv bnm, zxc vbn m,. zxc vbn m,. xcvb nm, zxcv bnm, zxcv bnm," },
+  { name: "Basic words", text: "the and for are but not you all can had her was one our out day get has him how" },
+  { name: "Simple sentences", text: "the quick brown fox jumps over the lazy dog pack my box with five dozen liquor jugs" },
+  { name: "Numbers & symbols", text: "1234 5678 90 1a2b 3c4d 5e6f 7g8h 9i0j abc123 def456 ghi789 jkl012" },
 ];
 
 const FINGER_MAP = {
@@ -86,9 +86,9 @@ const FINGER_MAP = {
 };
 
 const FINGER_NAMES = {
-  'L4': 'Ngón út trái', 'L3': 'Ngón áp út trái', 'L2': 'Ngón giữa trái', 'L1': 'Ngón trỏ trái',
-  'R1': 'Ngón trỏ phải', 'R2': 'Ngón giữa phải', 'R3': 'Ngón áp út phải', 'R4': 'Ngón út phải',
-  'thumb': 'Ngón cái'
+  'L4': 'Left pinky', 'L3': 'Left ring', 'L2': 'Left middle', 'L1': 'Left index',
+  'R1': 'Right index', 'R2': 'Right middle', 'R3': 'Right ring', 'R4': 'Right pinky',
+  'thumb': 'Thumb'
 };
 
 const KB_ROWS = [
@@ -186,7 +186,7 @@ function highlightKey(ch) {
   });
   const finger = FINGER_MAP[kl];
   if (finger) {
-    document.getElementById('hint').textContent = FINGER_NAMES[finger] ? 'Dùng: ' + FINGER_NAMES[finger] : '';
+    document.getElementById('hint').textContent = FINGER_NAMES[finger] ? 'Use: ' + FINGER_NAMES[finger] : '';
   }
 }
 
@@ -214,7 +214,7 @@ function showResult() {
   document.getElementById('hint').style.display = 'none';
   document.getElementById('result').style.display = 'block';
   document.getElementById('result-wpm').textContent = wpm + ' WPM';
-  document.getElementById('result-detail').textContent = `Chính xác: ${acc}% · Thời gian: ${Math.round(elapsed)}s · Lỗi: ${errors}`;
+  document.getElementById('result-detail').textContent = `Accuracy: ${acc}% · Time: ${Math.round(elapsed)}s · Errors: ${errors}`;
 }
 
 function restartLesson() {

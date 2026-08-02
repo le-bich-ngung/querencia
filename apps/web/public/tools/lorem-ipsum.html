@@ -1,5 +1,5 @@
 <!DOCTYPE html>
-<html lang="vi">
+<html lang="en">
 <head>
 <meta charset="UTF-8"/>
 <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
@@ -69,7 +69,7 @@
 <div class="header">
   <div>
     <h1>Lorem Ipsum</h1>
-    <p>Generator - văn bản giả cho design & development</p>
+    <p>Generator - placeholder text for design & development</p>
   </div>
 </div>
 
@@ -77,38 +77,35 @@
   <!-- TYPE + AMOUNT -->
   <div class="ctrl-row">
     <div class="ctrl-group">
-      <div class="ctrl-label">Loại</div>
+      <div class="ctrl-label">Type</div>
       <div class="seg-btns">
-        <button class="seg-btn active" onclick="setUnit('paragraphs',this)">Đoạn văn</button>
-        <button class="seg-btn" onclick="setUnit('sentences',this)">Câu</button>
-        <button class="seg-btn" onclick="setUnit('words',this)">Từ</button>
+        <button class="seg-btn active" onclick="setUnit('paragraphs',this)">Paragraphs</button>
+        <button class="seg-btn" onclick="setUnit('sentences',this)">Sentences</button>
+        <button class="seg-btn" onclick="setUnit('words',this)">Words</button>
       </div>
     </div>
     <div class="ctrl-group">
-      <div class="ctrl-label">Số lượng</div>
+      <div class="ctrl-label">Amount</div>
       <input id="amountInput" class="num-input" type="number" min="1" max="100" value="3"/>
     </div>
-    <button class="gen-btn" onclick="generate()">✦ Tạo ngay</button>
+    <button class="gen-btn" onclick="generate()">✦ Generate</button>
   </div>
 
   <!-- LANGUAGE -->
   <div class="ctrl-group">
-    <div class="ctrl-label">Ngôn ngữ / Nội dung</div>
+    <div class="ctrl-label">Language / Content</div>
     <div class="lang-tabs">
       <button class="lang-btn active" onclick="setLang('classic',this)">Classic Latin</button>
-      <button class="lang-btn" onclick="setLang('vi',this)">Tiếng Việt</button>
       <button class="lang-btn" onclick="setLang('business',this)">Business</button>
       <button class="lang-btn" onclick="setLang('tech',this)">Tech/Dev</button>
-      <button class="lang-btn" onclick="setLang('food',this)">Food</button>
-      <button class="lang-btn" onclick="setLang('nature',this)">Thiên nhiên</button>
     </div>
   </div>
 
   <!-- OPTIONS -->
   <div class="ctrl-group">
-    <div class="ctrl-label">Tùy chọn</div>
+    <div class="ctrl-label">Options</div>
     <div class="options-row">
-      <label class="checkbox-item"><input type="checkbox" id="optStart" checked/> Bắt đầu bằng "Lorem ipsum"</label>
+      <label class="checkbox-item"><input type="checkbox" id="optStart" checked/> Start with "Lorem ipsum"</label>
       <label class="checkbox-item"><input type="checkbox" id="optHtml"/> Wrap HTML &lt;p&gt;</label>
       <label class="checkbox-item"><input type="checkbox" id="optMarkdown"/> Markdown format</label>
     </div>
@@ -116,7 +113,7 @@
 
   <!-- FORMAT -->
   <div class="ctrl-group">
-    <div class="ctrl-label">Hiển thị</div>
+    <div class="ctrl-label">Display</div>
     <div class="format-tabs">
       <button class="fmt-btn active" onclick="setFmt('plain',this)">Plain text</button>
       <button class="fmt-btn" onclick="setFmt('html',this)">HTML source</button>
@@ -127,20 +124,17 @@
 
 <div class="output-wrap">
   <div class="output-toolbar">
-    <span class="word-count" id="wordCount">0 từ · 0 ký tự</span>
+    <span class="word-count" id="wordCount">0 words · 0 characters</span>
     <button class="copy-btn" id="copyBtn" onclick="copyOutput()">📋 Copy</button>
   </div>
-  <div class="output-text" id="outputText">Nhấn "Tạo ngay" để tạo Lorem Ipsum...</div>
+  <div class="output-text" id="outputText">Click "Generate" to create Lorem Ipsum...</div>
 </div>
 
 <script>
 const WORDS = {
   classic: 'lorem ipsum dolor sit amet consectetur adipiscing elit sed do eiusmod tempor incididunt ut labore et dolore magna aliqua ut enim ad minim veniam quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat duis aute irure dolor in reprehenderit in voluptate velit esse cillum dolore eu fugiat nulla pariatur excepteur sint occaecat cupidatat non proident sunt in culpa qui officia deserunt mollit anim id est laborum cras ultricies ligula sed magna dictum porta donec vel ante in nunc molestie malesuada proin ullamcorper est sit amet est congue pharetra gravida consequat'.split(' '),
-  vi: 'cuộc sống con người hạnh phúc tình yêu gia đình bạn bè học tập làm việc kinh nghiệm tri thức sáng tạo đổi mới phát triển thành công thất bại hy vọng ước mơ cố gắng nỗ lực bền bỉ kiên trì trưởng thành cảm xúc suy nghĩ hành động kết quả mục tiêu giá trị ý nghĩa cuộc đời niềm vui nỗi buồn khó khăn thử thách vượt qua chiến thắng tương lai hiện tại quá khứ ký ức cảm nhận trải nghiệm bài học'.split(' '),
   business: 'strategy revenue growth market share stakeholder value proposition customer journey conversion rate optimization roadmap agile sprint milestone deliverable KPI ROI quarterly annual report dashboard pipeline funnel acquisition retention engagement synergy leverage scalable infrastructure monetization partnership ecosystem platform product market fit bootstrap venture capital startup disruption innovation'.split(' '),
   tech: 'API endpoint request response JSON payload authentication authorization token OAuth React component state props hook useEffect useState TypeScript interface async await promise callback closure prototype inheritance polymorphism algorithm complexity recursion binary tree hash map queue stack linked list database query index migration deployment CI CD Docker container microservice serverless cloud infrastructure'.split(' '),
-  food: 'thơm ngon ngọt chua mặn cay béo giòn mềm mịn đậm đà hương vị tươi ngon gia vị nêm nếm chế biến nấu ăn nguyên liệu tươi sống lành mạnh dinh dưỡng protein carbohydrate vitamin khoáng chất năng lượng ẩm thực truyền thống hiện đại sáng tạo thực đơn món ăn công thức bí quyết'.split(' '),
-  nature: 'thiên nhiên rừng núi biển đảo sông suối đồng bằng bầu trời mây gió mưa nắng hoa cỏ cây xanh côn trùng chim muông sinh thái môi trường trong lành yên bình tĩnh lặng hùng vĩ bao la mênh mông xanh tươi mát mẻ thanh bình thư thái phong cảnh cảnh quan địa hình khí hậu'.split(' '),
 };
 
 let state = { unit:'paragraphs', amount:3, lang:'classic', fmt:'plain' };
@@ -230,7 +224,7 @@ function renderOutput(pieces) {
   el.className = 'output-text' + (state.fmt==='monospace'?' monospace':'');
 
   const wordCount = text.trim().split(/\s+/).length;
-  document.getElementById('wordCount').textContent = `${wordCount} từ · ${text.length} ký tự`;
+  document.getElementById('wordCount').textContent = `${wordCount} words · ${text.length} characters`;
 }
 
 function copyOutput() {

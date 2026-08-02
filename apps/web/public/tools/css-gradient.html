@@ -74,7 +74,7 @@
 
 <!-- PREVIEW -->
 <div id="gradPreview">
-  <div class="preview-label">Click & drag để xem</div>
+  <div class="preview-label">Click & drag to preview</div>
 </div>
 
 <!-- CONTROLS -->
@@ -83,7 +83,7 @@
   <div class="ctrl-panel">
     <!-- TYPE -->
     <div class="ctrl-group">
-      <div class="ctrl-label">Loại gradient</div>
+      <div class="ctrl-label">Gradient type</div>
       <div class="type-btns">
         <button class="type-btn active" onclick="setType('linear',this)">Linear</button>
         <button class="type-btn" onclick="setType('radial',this)">Radial</button>
@@ -93,7 +93,7 @@
 
     <!-- ANGLE -->
     <div class="ctrl-group" id="angleGroup">
-      <div class="ctrl-label">Góc</div>
+      <div class="ctrl-label">Angle</div>
       <div class="angle-wrap">
         <div class="angle-dial" id="angleDial" onmousedown="startDialDrag(event)">
           <div class="angle-needle" id="angleNeedle"></div>
@@ -107,7 +107,7 @@
     <div class="ctrl-group">
       <div class="ctrl-label">Color stops</div>
       <div class="stop-list" id="stopList"></div>
-      <button class="add-stop-btn" onclick="addStop()">+ Thêm màu</button>
+      <button class="add-stop-btn" onclick="addStop()">+ Add color</button>
     </div>
   </div>
 

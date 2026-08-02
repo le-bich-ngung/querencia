@@ -127,13 +127,13 @@
       <div id="tab-params">
         <table class="kv-table"><thead><tr><th>Key</th><th>Value</th><th></th></tr></thead>
         <tbody id="paramsBody"></tbody></table>
-        <button class="add-row-btn" onclick="addRow('paramsBody')">+ Thêm param</button>
+        <button class="add-row-btn" onclick="addRow('paramsBody')">+ Add param</button>
       </div>
       <!-- HEADERS -->
       <div id="tab-headers" style="display:none">
         <table class="kv-table"><thead><tr><th>Key</th><th>Value</th><th></th></tr></thead>
         <tbody id="headersBody"></tbody></table>
-        <button class="add-row-btn" onclick="addRow('headersBody')">+ Thêm header</button>
+        <button class="add-row-btn" onclick="addRow('headersBody')">+ Add header</button>
       </div>
       <!-- BODY -->
       <div id="tab-body" style="display:none;flex-direction:column;height:100%">
@@ -161,10 +161,10 @@
     </div>
     <div class="panel-content" style="display:flex;flex-direction:column">
       <div id="res-body">
-        <div class="empty-response"><div class="icon">📡</div><div>Gửi request để xem response</div></div>
+        <div class="empty-response"><div class="icon">📡</div><div>Send a request to see the response</div></div>
       </div>
       <div id="res-headers" style="display:none">
-        <div class="empty-response"><div class="icon">📋</div><div>Gửi request để xem headers</div></div>
+        <div class="empty-response"><div class="icon">📋</div><div>Send a request to see the headers</div></div>
       </div>
     </div>
   </div>
@@ -291,7 +291,7 @@ function formatJson() {
 
 function renderHistory() {}
 function renderHistoryInto(el) {
-  if (!history.length) { el.innerHTML = '<div class="empty-response"><div class="icon" style="font-size:1.5rem;opacity:0.4">📭</div><div>Chưa có request nào</div></div>'; return; }
+  if (!history.length) { el.innerHTML = '<div class="empty-response"><div class="icon" style="font-size:1.5rem;opacity:0.4">📭</div><div>No requests yet</div></div>'; return; }
   el.innerHTML = history.map((h,i) => {
     const mc = h.method==='GET'?'color:var(--blue)':h.method==='POST'?'color:var(--sage)':h.method==='DELETE'?'color:var(--red)':'color:var(--amber)';
     const sc = h.status < 300 ? 'color:var(--sage)' : h.status < 500 ? 'color:var(--amber)' : 'color:var(--red)';

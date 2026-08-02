@@ -62,13 +62,13 @@
 
 <div class="header">
   <h1>💱 Currency Converter</h1>
-  <p>Tỷ giá realtime từ ExchangeRate-API</p>
+  <p>Real-time exchange rates from ExchangeRate-API</p>
 </div>
 
 <div class="converter-wrap">
   <!-- FROM -->
   <div class="amount-section">
-    <div class="amount-label">Số tiền</div>
+    <div class="amount-label">Amount</div>
     <div class="amount-row">
       <input id="amountInput" class="amount-input" type="number" placeholder="0" value="1" oninput="convert()"/>
       <select id="fromCur" class="currency-select" onchange="convert()"></select>
@@ -79,7 +79,7 @@
 
   <!-- RESULT -->
   <div class="result-section">
-    <div class="amount-label">Kết quả</div>
+    <div class="amount-label">Result</div>
     <div class="amount-row">
       <div class="result-amount" id="resultAmount">-</div>
       <select id="toCur" class="currency-select" onchange="convert()"></select>
@@ -89,10 +89,10 @@
   </div>
 
   <!-- MULTI -->
-  <div class="multi-title">Quy đổi sang nhiều tiền tệ</div>
+  <div class="multi-title">Convert to multiple currencies</div>
   <div class="multi-grid" id="multiGrid"></div>
 
-  <button class="rate-btn" onclick="toggleRates()">📊 Xem bảng tỷ giá đầy đủ</button>
+  <button class="rate-btn" onclick="toggleRates()">📊 View full exchange rate table</button>
   <div class="rate-table" id="rateTable"></div>
 </div>
 
@@ -100,7 +100,7 @@
 const CURRENCIES = [
   {code:'USD',name:'US Dollar',flag:'🇺🇸'},
   {code:'EUR',name:'Euro',flag:'🇪🇺'},
-  {code:'VND',name:'Việt Nam Đồng',flag:'🇻🇳'},
+  {code:'VND',name:'Vietnamese Dong',flag:'🇻🇳'},
   {code:'JPY',name:'Japanese Yen',flag:'🇯🇵'},
   {code:'GBP',name:'British Pound',flag:'🇬🇧'},
   {code:'KRW',name:'Korean Won',flag:'🇰🇷'},
@@ -145,7 +145,7 @@ async function fetchRates(base) {
   } catch {
     // Fallback rates (approximate)
     rates[base] = {USD:1,VND:25000,EUR:0.92,JPY:149,GBP:0.79,KRW:1320,CNY:7.2,AUD:1.52,CAD:1.35,SGD:1.34,THB:35,HKD:7.82,INR:83,MYR:4.7,CHF:0.89,IDR:15500,PHP:56,TWD:31};
-    rates[base]._updated = 'Offline (dữ liệu xấp xỉ)';
+    rates[base]._updated = 'Offline (approximate data)';
   }
 }
 
@@ -163,7 +163,7 @@ async function convert() {
 
   document.getElementById('resultAmount').textContent = formatNum(result, to);
   document.getElementById('resultRate').textContent = `1 ${from} = ${formatNum(rate, to)} ${to}`;
-  document.getElementById('resultUpdated').textContent = `Cập nhật: ${r._updated || '-'}`;
+  document.getElementById('resultUpdated').textContent = `Updated: ${r._updated || '-'}`;
 
   // Multi
   const grid = document.getElementById('multiGrid');

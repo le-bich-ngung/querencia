@@ -50,38 +50,38 @@
 <div class="container">
   <div class="header">
     <h1>🕵️ Metadata Remover</h1>
-    <p>Xem và xóa metadata ẩn trong ảnh (EXIF) - vị trí GPS, thiết bị, ngày chụp, camera settings. Mọi thứ xử lý 100% trên máy bạn.</p>
+    <p>View and remove hidden metadata in images (EXIF) - GPS location, device, capture date, camera settings. Everything is processed 100% on your device.</p>
   </div>
 
   <div class="drop-zone" id="dropZone" onclick="document.getElementById('fileInput').click()" ondragover="drag(event,true)" ondragleave="drag(event,false)" ondrop="drop(event)">
     <span class="drop-icon">📷</span>
-    <div class="drop-text">Kéo thả ảnh vào đây hoặc click để chọn</div>
-    <div class="drop-sub">Hỗ trợ JPG, PNG, WEBP • Xử lý hoàn toàn offline</div>
+    <div class="drop-text">Drag & drop an image here or click to choose</div>
+    <div class="drop-sub">Supports JPG, PNG, WEBP • Fully offline processing</div>
     <input type="file" id="fileInput" accept="image/*" onchange="handleFile(this.files[0])"/>
   </div>
 
   <div class="success-banner" id="successBanner">
-    ✅ Đã xóa metadata thành công! File ảnh sạch đã được tải xuống.
+    ✅ Metadata removed successfully! The clean image file has been downloaded.
   </div>
 
   <div id="output" style="display:none">
     <div class="result-grid">
       <div>
         <div class="card">
-          <div class="card-header safe">🖼 Ảnh gốc</div>
+          <div class="card-header safe">🖼 Original image</div>
           <img id="previewImg" class="preview-img" alt="preview"/>
         </div>
       </div>
       <div>
         <div class="card">
-          <div class="card-header danger">⚠️ Metadata phát hiện</div>
+          <div class="card-header danger">⚠️ Metadata detected</div>
           <div id="metaList"></div>
         </div>
       </div>
     </div>
     <div class="action-bar">
-      <button class="btn-remove" onclick="removeMetadata()">🧹 Xóa metadata & tải xuống</button>
-      <button class="btn-reset" onclick="reset()">✕ Xóa</button>
+      <button class="btn-remove" onclick="removeMetadata()">🧹 Remove metadata & download</button>
+      <button class="btn-reset" onclick="reset()">✕ Clear</button>
     </div>
   </div>
 </div>
@@ -118,12 +118,12 @@ function extractMeta(file) {
     const list = document.getElementById('metaList');
     
     if (!all || Object.keys(all).length === 0) {
-      list.innerHTML = '<div class="empty">✅ Không phát hiện metadata đáng lo ngại</div>';
+      list.innerHTML = '<div class="empty">✅ No concerning metadata detected</div>';
       return;
     }
 
     const items = Object.entries(all).filter(([k,v]) => v !== undefined && v !== '');
-    if (!items.length) { list.innerHTML = '<div class="empty">✅ Metadata sạch</div>'; return; }
+    if (!items.length) { list.innerHTML = '<div class="empty">✅ Metadata is clean</div>'; return; }
 
     list.innerHTML = items.slice(0,20).map(([k,v]) => {
       const isSensitive = sensitiveKeys.includes(k);
@@ -133,7 +133,7 @@ function extractMeta(file) {
         <span class="meta-key">${k}</span>
         <span class="meta-val ${isSensitive?'sensitive':''}">${display} ${isSensitive?'<span class="risk-badge risk-high">⚠</span>':'<span class="risk-badge risk-low">ok</span>'}</span>
       </div>`;
-    }).join('') + (items.length > 20 ? `<div class="empty">+${items.length-20} trường khác...</div>` : '');
+    }).join('') + (items.length > 20 ? `<div class="empty">+${items.length-20} more fields...</div>` : '');
   });
 }
 
