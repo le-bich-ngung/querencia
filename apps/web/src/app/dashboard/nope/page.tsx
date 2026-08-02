@@ -1,6 +1,6 @@
 'use client';
 /**
- * Nope - Feed bài viết chia sẻ kinh nghiệm sống
+ * Nope - Feed of posts sharing life experience
  * Features: feed, create post, comments, thank ❤️, save, profile
  */
 import { useState, useEffect, useCallback } from 'react';
@@ -36,11 +36,11 @@ const API  = '/api/v1/nope';
 function timeAgo(iso: string) {
   const diff = Date.now() - new Date(iso).getTime();
   const m = Math.floor(diff / 60000);
-  if (m < 1)  return 'vừa xong';
-  if (m < 60) return `${m} phút trước`;
+  if (m < 1)  return 'just now';
+  if (m < 60) return `${m}m ago`;
   const h = Math.floor(m / 60);
-  if (h < 24) return `${h} giờ trước`;
-  return `${Math.floor(h / 24)} ngày trước`;
+  if (h < 24) return `${h}h ago`;
+  return `${Math.floor(h / 24)}d ago`;
 }
 
 // ── Post Card ─────────────────────────────────────────────────
@@ -168,7 +168,7 @@ function PostCard({
             color: SAGE, fontSize: '0.8rem', fontWeight: 600,
             padding: '2px 0', marginBottom: 4,
           }}>
-            {showAll ? 'Thu gọn' : 'Đọc thêm'}
+            {showAll ? 'Show less' : 'Read more'}
           </button>
         )}
 
@@ -188,18 +188,18 @@ function PostCard({
       }}>
         {[
           {
-            label: `❤️ ${post.thanksCount > 0 ? post.thanksCount : ''} Cảm ơn`,
+            label: `❤️ ${post.thanksCount > 0 ? post.thanksCount : ''} Thanks`,
             active: post.isThanked,
             onClick: handleThank,
             disabled: !token,
           },
           {
-            label: `💬 ${post.commentCount > 0 ? post.commentCount : ''} Bình luận`,
+            label: `💬 ${post.commentCount > 0 ? post.commentCount : ''} Comments`,
             active: expanded,
             onClick: loadComments,
           },
           {
-            label: post.isSaved ? '🔖 Đã lưu' : '🔖 Lưu',
+            label: post.isSaved ? '🔖 Saved' : '🔖 Save',
             active: post.isSaved,
             onClick: handleSave,
             disabled: !token,
@@ -233,7 +233,7 @@ function PostCard({
               <textarea
                 value={commentText}
                 onChange={e => setCommentText(e.target.value)}
-                placeholder="Viết bình luận..."
+                placeholder="Write a comment..."
                 rows={2}
                 style={{
                   flex: 1, padding: '8px 12px',
@@ -254,7 +254,7 @@ function PostCard({
                   fontFamily: 'inherit', fontSize: '0.82rem', fontWeight: 600,
                   alignSelf: 'flex-end',
                 }}>
-                {loadingCmt ? '…' : 'Gửi'}
+                {loadingCmt ? '…' : 'Send'}
               </button>
             </div>
           )}
@@ -263,7 +263,7 @@ function PostCard({
           <div style={{ display: 'flex', flexDirection: 'column', gap: 10 }}>
             {comments.length === 0 ? (
               <p style={{ fontSize: '0.82rem', color: 'var(--gray)', textAlign: 'center', padding: '8px 0' }}>
-                Chưa có bình luận nào. Hãy là người đầu tiên!
+                No comments yet. Be the first!
               </p>
             ) : comments.map(c => (
               <div key={c.id} style={{
@@ -300,7 +300,7 @@ function CreatePostModal({ token, onCreated, onClose }: {
 
   async function handleSubmit(e: React.FormEvent) {
     e.preventDefault();
-    if (!title.trim() || !body.trim()) { setError('Vui lòng điền tiêu đề và nội dung.'); return; }
+    if (!title.trim() || !body.trim()) { setError('Please fill in the title and content.'); return; }
     setLoading(true); setError('');
     const res = await fetch(`${API}/posts`, {
       method: 'POST',
@@ -316,7 +316,7 @@ function CreatePostModal({ token, onCreated, onClose }: {
       onCreated({ ...post, tags: JSON.parse(post.tags ?? '[]'), thanksCount: 0, commentCount: 0, isThanked: false, isSaved: false });
       onClose();
     } else {
-      setError('Đăng bài thất bại. Thử lại nhé.');
+      setError('Failed to post. Please try again.');
     }
     setLoading(false);
   }
@@ -335,7 +335,7 @@ function CreatePostModal({ token, onCreated, onClose }: {
       }}>
         <div style={{ display: 'flex', justifyContent: 'space-between', marginBottom: 20 }}>
           <h2 style={{ fontWeight: 800, fontSize: '1.1rem', color: 'var(--text)' }}>
-            🌿 Chia sẻ kinh nghiệm
+            🌿 Share your experience
           </h2>
           <button onClick={onClose} style={{ background: 'none', border: 'none', cursor: 'pointer', fontSize: '1.1rem', color: 'var(--gray)' }}>✕</button>
         </div>
@@ -343,7 +343,7 @@ function CreatePostModal({ token, onCreated, onClose }: {
         <form onSubmit={handleSubmit} style={{ display: 'flex', flexDirection: 'column', gap: 14 }}>
           <input
             value={title} onChange={e => setTitle(e.target.value)}
-            placeholder="Tiêu đề bài viết *"
+            placeholder="Post title *"
             autoFocus
             style={{
               padding: '11px 14px', borderRadius: 10,
@@ -356,7 +356,7 @@ function CreatePostModal({ token, onCreated, onClose }: {
           />
           <textarea
             value={body} onChange={e => setBody(e.target.value)}
-            placeholder="Chia sẻ câu chuyện, bài học, kinh nghiệm của bạn... *"
+            placeholder="Share your story, lesson, or experience... *"
             rows={6}
             style={{
               padding: '11px 14px', borderRadius: 10,
@@ -370,7 +370,7 @@ function CreatePostModal({ token, onCreated, onClose }: {
           />
           <input
             value={tags} onChange={e => setTags(e.target.value)}
-            placeholder="Tags: việc làm, sức khỏe, tài chính... (cách nhau bằng dấu phẩy)"
+            placeholder="Tags: work, health, finance... (comma separated)"
             style={{
               padding: '10px 14px', borderRadius: 10,
               border: '1.5px solid var(--border)',
@@ -387,7 +387,7 @@ function CreatePostModal({ token, onCreated, onClose }: {
               border: '1.5px solid var(--border)', background: 'none',
               color: 'var(--text)', cursor: 'pointer', fontFamily: 'inherit',
             }}>
-              Hủy
+              Cancel
             </button>
             <button type="submit" disabled={loading} style={{
               padding: '10px 24px', borderRadius: 10,
@@ -395,7 +395,7 @@ function CreatePostModal({ token, onCreated, onClose }: {
               cursor: loading ? 'not-allowed' : 'pointer',
               fontFamily: 'inherit', fontWeight: 700, opacity: loading ? 0.7 : 1,
             }}>
-              {loading ? 'Đang đăng…' : 'Đăng bài'}
+              {loading ? 'Posting…' : 'Post'}
             </button>
           </div>
         </form>
@@ -464,7 +464,7 @@ export default function NopePage() {
             🌿 Nope
           </h1>
           <p style={{ fontSize: '0.8rem', color: 'var(--text-secondary)', marginTop: 2 }}>
-            Kinh nghiệm sống từ người thật
+            Real experiences from real people
           </p>
         </div>
         {session && (
@@ -474,7 +474,7 @@ export default function NopePage() {
             cursor: 'pointer', fontFamily: 'inherit',
             fontWeight: 700, fontSize: '0.85rem',
           }}>
-            ✏️ Chia sẻ
+            ✏️ Share
           </button>
         )}
       </div>
@@ -483,7 +483,7 @@ export default function NopePage() {
       <form onSubmit={handleSearch} style={{ display: 'flex', gap: 8, marginBottom: 24 }}>
         <input
           value={search} onChange={e => setSearch(e.target.value)}
-          placeholder="Tìm kinh nghiệm, chủ đề..."
+          placeholder="Search experiences, topics..."
           style={{
             flex: 1, padding: '10px 14px', borderRadius: 10,
             border: '1.5px solid var(--border)',
@@ -517,14 +517,14 @@ export default function NopePage() {
       ) : posts.length === 0 ? (
         <div style={{ textAlign: 'center', padding: '60px 24px', color: 'var(--text-secondary)' }}>
           <div style={{ fontSize: '3rem', marginBottom: 12 }}>🌱</div>
-          <p style={{ fontSize: '0.95rem' }}>Chưa có bài nào. Hãy là người đầu tiên chia sẻ!</p>
+          <p style={{ fontSize: '0.95rem' }}>No posts yet. Be the first to share!</p>
           {session && (
             <button onClick={() => setShowCreate(true)} style={{
               marginTop: 16, padding: '10px 24px', borderRadius: 10,
               background: SAGE, color: '#fff', border: 'none',
               cursor: 'pointer', fontFamily: 'inherit', fontWeight: 700,
             }}>
-              Chia sẻ ngay
+              Share now
             </button>
           )}
         </div>
@@ -545,7 +545,7 @@ export default function NopePage() {
                 fontFamily: 'inherit', fontSize: '0.88rem', color: 'var(--text-secondary)',
               }}
             >
-              Xem thêm
+              Load more
             </button>
           )}
         </>
@@ -559,14 +559,14 @@ export default function NopePage() {
           textAlign: 'center',
         }}>
           <p style={{ fontSize: '0.88rem', color: 'var(--text-secondary)', marginBottom: 12 }}>
-            Đăng nhập để chia sẻ kinh nghiệm và cảm ơn bài viết 🌿
+            Sign in to share experiences and thank posts 🌿
           </p>
           <Link href="/auth/login" style={{
             padding: '9px 22px', borderRadius: 10,
             background: SAGE, color: '#fff',
             textDecoration: 'none', fontWeight: 700, fontSize: '0.85rem',
           }}>
-            Đăng nhập
+            Sign in
           </Link>
         </div>
       )}
