@@ -3,7 +3,7 @@
 <head>
   <meta charset="UTF-8"/>
   <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
-  <meta name="description" content="Querencia PDF Tool - Cắt & Ghép PDF miễn phí"/>
+  <meta name="description" content="Querencia PDF Tool - Free PDF split & merge"/>
   <title>PDF Tool · Querencia Tools</title>
 
   <link rel="shortcut icon" type="image/svg+xml" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 120 120'><circle cx='55' cy='55' r='38' fill='none' stroke='%234a7c59' stroke-width='7' stroke-linecap='round'/><line x1='81' y1='79' x2='98' y2='98' stroke='%234a7c59' stroke-width='7' stroke-linecap='round'/><polyline points='20,55 28,38 35,68 43,32 51,60 58,43 66,70 74,48 90,55' fill='none' stroke='%234a7c59' stroke-width='3' stroke-linecap='round' stroke-linejoin='round'/></svg>"/>
@@ -207,24 +207,24 @@
   </a>
   <div style="display:flex;align-items:center;gap:12px">
     <button onclick="toggleDark()" title="Dark mode" style="background:none;border:none;cursor:pointer;font-size:1.1rem;color:var(--gray-light);padding:4px 8px">◐</button>
-    <a class="nav-back" href="https://querencia.com.vn">← Về trang chủ</a>
+    <a class="nav-back" href="https://querencia.com.vn">← Back to home</a>
   </div>
 </nav>
 
 <!-- HEADER -->
 <div class="page-header">
   <p class="page-label">Tools · PDF</p>
-  <h1 class="page-title">Cắt &amp; Ghép <em>PDF</em> <span class="badge-free">Free</span></h1>
-  <p class="page-desc">Ghép nhiều file PDF thành một, hoặc cắt lấy những trang bạn cần - tất cả ngay trên trình duyệt, không upload lên server.</p>
+  <h1 class="page-title">Split &amp; Merge <em>PDF</em> <span class="badge-free">Free</span></h1>
+  <p class="page-desc">Merge multiple PDF files into one, or extract the pages you need - all in your browser, no upload to any server.</p>
 </div>
 
 <!-- TABS -->
 <div class="tab-bar">
   <button class="tab-btn active" onclick="switchTab('merge')">
-    🔗 Ghép PDF
+    🔗 Merge PDF
     <span class="file-count" id="mergeCount" style="display:none">0</span>
   </button>
-  <button class="tab-btn" onclick="switchTab('split')">✂️ Cắt PDF</button>
+  <button class="tab-btn" onclick="switchTab('split')">✂️ Split PDF</button>
 </div>
 
 <!-- ══ TAB GHÉP ══ -->
@@ -233,61 +233,61 @@
 
     <!-- LEFT -->
     <div class="panel-left">
-      <p class="panel-title">Chọn file PDF cần ghép</p>
+      <p class="panel-title">Choose PDF files to merge</p>
 
       <div class="drop-zone" id="mergeDropZone">
         <input type="file" id="mergeFileInput" accept="application/pdf" multiple onchange="addMergeFiles(this.files)"/>
         <div class="drop-icon">📄</div>
-        <h3>Kéo thả file PDF vào đây</h3>
-        <p>hoặc <span class="browse-link">click để chọn</span><br/>Có thể chọn nhiều file cùng lúc</p>
+        <h3>Drag & drop your PDFs here</h3>
+        <p>or <span class="browse-link">click to choose</span><br/>You can select multiple files at once</p>
       </div>
 
       <div class="file-list" id="mergeFileList"></div>
 
       <div class="action-row">
-        <button class="btn-primary" id="btnMerge" onclick="doMerge()" disabled>🔗 Ghép lại</button>
-        <button class="btn-outline" onclick="clearMerge()" id="btnClearMerge" style="display:none">Xóa tất cả</button>
+        <button class="btn-primary" id="btnMerge" onclick="doMerge()" disabled>🔗 Merge</button>
+        <button class="btn-outline" onclick="clearMerge()" id="btnClearMerge" style="display:none">Clear all</button>
       </div>
     </div>
 
     <!-- RIGHT -->
     <div class="panel-right">
-      <p class="panel-title">Kết quả</p>
+      <p class="panel-title">Result</p>
 
       <div class="preview-empty" id="mergeEmpty">
         <div class="preview-empty-icon">📋</div>
-        <p>Thêm ít nhất 2 file PDF rồi nhấn "Ghép lại" để bắt đầu.</p>
+        <p>Add at least 2 PDF files then click "Merge" to get started.</p>
       </div>
 
       <div class="progress-wrap" id="mergeProgress">
         <div class="progress-spinner"></div>
-        <p class="progress-text">Đang ghép file...</p>
+        <p class="progress-text">Merging files...</p>
         <div class="progress-bar-wrap"><div class="progress-bar" id="mergeProgressBar"></div></div>
       </div>
 
       <div class="merge-summary" id="mergeSummary">
         <div style="display:flex;gap:12px">
           <div class="summary-card" style="flex:1">
-            <div class="summary-label">Số file ghép</div>
+            <div class="summary-label">Files merged</div>
             <div class="summary-value" id="summaryFiles">0</div>
             <div class="summary-sub">file PDF</div>
           </div>
           <div class="summary-card" style="flex:1">
-            <div class="summary-label">Tổng trang</div>
+            <div class="summary-label">Total pages</div>
             <div class="summary-value" id="summaryPages">0</div>
             <div class="summary-sub">trang</div>
           </div>
         </div>
 
         <div>
-          <p class="panel-title" style="margin-bottom:12px">Thứ tự các file</p>
+          <p class="panel-title" style="margin-bottom:12px">File order</p>
           <div class="order-list" id="summaryOrder"></div>
         </div>
 
         <div class="result-download" id="mergeDownload">
-          <h4>✓ Ghép thành công!</h4>
+          <h4>✓ Merged successfully!</h4>
           <p id="mergeDownloadInfo">-</p>
-          <button class="btn-primary" id="btnDownloadMerge">⬇ Tải về PDF</button>
+          <button class="btn-primary" id="btnDownloadMerge">⬇ Download PDF</button>
         </div>
       </div>
     </div>
@@ -300,13 +300,13 @@
 
     <!-- LEFT -->
     <div class="panel-left">
-      <p class="panel-title">Chọn file PDF cần cắt</p>
+      <p class="panel-title">Choose a PDF to split</p>
 
       <div class="drop-zone" id="splitDropZone">
         <input type="file" id="splitFileInput" accept="application/pdf" onchange="loadSplitFile(this.files[0])"/>
         <div class="drop-icon">✂️</div>
-        <h3>Kéo thả file PDF vào đây</h3>
-        <p>hoặc <span class="browse-link">click để chọn</span></p>
+        <h3>Drag & drop your PDFs here</h3>
+        <p>or <span class="browse-link">click to choose</span></p>
       </div>
 
       <!-- Loaded file info -->
@@ -317,79 +317,79 @@
             <div class="file-item-name" id="splitFileName">-</div>
             <div class="file-item-size" id="splitFileSize">-</div>
           </div>
-          <button class="icon-btn del" onclick="clearSplit()" title="Xóa">✕</button>
+          <button class="icon-btn del" onclick="clearSplit()" title="Delete">✕</button>
         </div>
       </div>
 
       <!-- Range options -->
       <div class="range-section" id="rangeSection" style="display:none">
-        <div class="range-title">Chọn kiểu cắt</div>
+        <div class="range-title">Choose split type</div>
         <div class="range-modes">
-          <button class="range-mode-btn active" onclick="setRangeMode('range')" id="mode-range">Khoảng trang</button>
-          <button class="range-mode-btn" onclick="setRangeMode('pick')" id="mode-pick">Chọn từng trang</button>
-          <button class="range-mode-btn" onclick="setRangeMode('every')" id="mode-every">Tách từng trang</button>
+          <button class="range-mode-btn active" onclick="setRangeMode('range')" id="mode-range">Page range</button>
+          <button class="range-mode-btn" onclick="setRangeMode('pick')" id="mode-pick">Pick pages</button>
+          <button class="range-mode-btn" onclick="setRangeMode('every')" id="mode-every">Split every page</button>
         </div>
 
-        <!-- Khoảng trang -->
+        <!-- Page range -->
         <div id="input-range" class="range-inputs">
           <div class="range-row">
-            <label>Trang bắt đầu</label>
+            <label>Start page</label>
             <input type="number" class="range-input" id="pageFrom" min="1" placeholder="1" oninput="updateSplitPreview()"/>
           </div>
           <div class="range-row">
-            <label>Trang kết thúc</label>
+            <label>End page</label>
             <input type="number" class="range-input" id="pageTo" min="1" placeholder="5" oninput="updateSplitPreview()"/>
           </div>
-          <p class="range-hint" id="rangeHint">Nhập khoảng trang muốn lấy. Ví dụ: trang 2 đến 8.</p>
+          <p class="range-hint" id="rangeHint">Enter the page range you want. Example: page 2 to 8.</p>
         </div>
 
-        <!-- Chọn từng trang -->
+        <!-- Pick pages -->
         <div id="input-pick" style="display:none">
-          <p class="range-hint" style="margin-bottom:10px">Click để chọn/bỏ chọn các trang muốn giữ lại:</p>
+          <p class="range-hint" style="margin-bottom:10px">Click to select/deselect the pages you want to keep:</p>
           <div class="page-chips" id="pageChips"></div>
         </div>
 
-        <!-- Tách từng trang -->
+        <!-- Split every page -->
         <div id="input-every" style="display:none">
-          <p class="range-hint">Mỗi trang trong file sẽ được tách thành một file PDF riêng. Bạn sẽ tải về file .zip.</p>
+          <p class="range-hint">Each page in the file will be split into its own PDF. You'll download a .zip file.</p>
         </div>
       </div>
 
       <div class="action-row">
-        <button class="btn-primary" id="btnSplit" onclick="doSplit()" disabled>✂️ Cắt PDF</button>
+        <button class="btn-primary" id="btnSplit" onclick="doSplit()" disabled>✂️ Split PDF</button>
       </div>
     </div>
 
     <!-- RIGHT -->
     <div class="panel-right">
-      <p class="panel-title">Xem trước</p>
+      <p class="panel-title">Preview</p>
 
       <div class="preview-empty" id="splitEmpty">
         <div class="preview-empty-icon">✂️</div>
-        <p>Tải file PDF lên và chọn trang muốn cắt.</p>
+        <p>Upload a PDF and choose the pages to split.</p>
       </div>
 
       <div class="progress-wrap" id="splitProgress">
         <div class="progress-spinner"></div>
-        <p class="progress-text" id="splitProgressText">Đang xử lý...</p>
+        <p class="progress-text" id="splitProgressText">Processing...</p>
       </div>
 
       <div id="splitSummary" style="display:none;flex-direction:column;gap:16px;flex:1">
         <div style="display:flex;gap:12px">
           <div class="summary-card" style="flex:1">
-            <div class="summary-label">Tổng trang</div>
+            <div class="summary-label">Total pages</div>
             <div class="summary-value" id="splitTotalPages">0</div>
           </div>
           <div class="summary-card" style="flex:1">
-            <div class="summary-label">Trang được chọn</div>
+            <div class="summary-label">Pages selected</div>
             <div class="summary-value" id="splitSelectedPages" style="color:var(--sage)">0</div>
           </div>
         </div>
 
         <div class="result-download" id="splitDownload" style="display:none">
-          <h4>✓ Cắt thành công!</h4>
+          <h4>✓ Split successfully!</h4>
           <p id="splitDownloadInfo">-</p>
-          <button class="btn-primary" id="btnDownloadSplit">⬇ Tải về PDF</button>
+          <button class="btn-primary" id="btnDownloadSplit">⬇ Download PDF</button>
         </div>
       </div>
     </div>
@@ -400,18 +400,18 @@
 <div class="tips-section">
   <div class="tip-card">
     <div class="tip-icon">🔒</div>
-    <h4>File không rời khỏi máy</h4>
-    <p>Toàn bộ xử lý diễn ra ngay trên trình duyệt. File PDF của bạn không được gửi lên bất kỳ server nào.</p>
+    <h4>Files never leave your device</h4>
+    <p>Everything is processed right in your browser. Your PDF is never sent to any server.</p>
   </div>
   <div class="tip-card">
     <div class="tip-icon">📦</div>
-    <h4>Không giới hạn số trang</h4>
-    <p>Ghép file có hàng trăm trang, hoặc cắt lấy bất kỳ trang nào bạn muốn mà không bị giới hạn.</p>
+    <h4>No page limit</h4>
+    <p>Merge files with hundreds of pages, or extract any pages you want with no limit.</p>
   </div>
   <div class="tip-card">
     <div class="tip-icon">↕️</div>
-    <h4>Sắp xếp thứ tự khi ghép</h4>
-    <p>Kéo thả để sắp xếp thứ tự các file trước khi ghép. File nào ở trên sẽ xuất hiện trước trong PDF kết quả.</p>
+    <h4>Reorder while merging</h4>
+    <p>Drag & drop to reorder files before merging. Files at the top appear first in the resulting PDF.</p>
   </div>
 </div>
 
@@ -498,16 +498,16 @@ function renderMergeList() {
     el.draggable = true;
     el.dataset.idx = i;
     el.innerHTML = `
-      <span class="drag-handle" title="Kéo để sắp xếp">⠿</span>
+      <span class="drag-handle" title="Drag to reorder">⠿</span>
       <span class="file-item-icon">📄</span>
       <div class="file-item-info">
         <div class="file-item-name">${f.name}</div>
         <div class="file-item-size">${(f.size/1024).toFixed(0)} KB</div>
       </div>
       <div class="file-item-actions">
-        <button class="icon-btn" onclick="moveMergeFile(${i},-1)" title="Lên" ${i===0?'disabled':''}>↑</button>
-        <button class="icon-btn" onclick="moveMergeFile(${i},1)" title="Xuống" ${i===mergeFiles.length-1?'disabled':''}>↓</button>
-        <button class="icon-btn del" onclick="removeMergeFile(${i})" title="Xóa">✕</button>
+        <button class="icon-btn" onclick="moveMergeFile(${i},-1)" title="Up" ${i===0?'disabled':''}>↑</button>
+        <button class="icon-btn" onclick="moveMergeFile(${i},1)" title="Down" ${i===mergeFiles.length-1?'disabled':''}>↓</button>
+        <button class="icon-btn del" onclick="removeMergeFile(${i})" title="Delete">✕</button>
       </div>
     `;
     list.appendChild(el);
@@ -589,7 +589,7 @@ async function doMerge() {
   } catch(err) {
     document.getElementById('mergeProgress').style.display = 'none';
     document.getElementById('mergeEmpty').style.display = 'flex';
-    document.getElementById('mergeEmpty').innerHTML = `<div class="preview-empty-icon">⚠️</div><p>Lỗi: ${err.message}. Vui lòng thử lại.</p>`;
+    document.getElementById('mergeEmpty').innerHTML = `<div class="preview-empty-icon">⚠️</div><p>Error: ${err.message}. Please try again.</p>`;
   }
 
   document.getElementById('btnMerge').disabled = false;
@@ -602,7 +602,7 @@ function downloadMerged() {
   const a = document.createElement('a');
   a.href = url; a.download = 'querencia-merged.pdf';
   a.click(); URL.revokeObjectURL(url);
-  showToast('✓ Đã tải về!');
+  showToast('✓ Downloaded!');
 }
 
 // ════════════════════════════════
@@ -645,7 +645,7 @@ async function loadSplitFile(file) {
     document.getElementById('splitTotalPages').textContent = splitTotalPages;
     document.getElementById('splitSelectedPages').textContent = 0;
     document.getElementById('pageTo').placeholder = splitTotalPages;
-    document.getElementById('rangeHint').textContent = `File có ${splitTotalPages} trang. Nhập khoảng trang muốn giữ lại.`;
+    document.getElementById('rangeHint').textContent = `This file has ${splitTotalPages} pages. Enter the page range you want to keep.`;
 
     // Build page chips
     buildPageChips();
@@ -653,7 +653,7 @@ async function loadSplitFile(file) {
     updateSplitPreview();
 
   } catch(e) {
-    showToast('Không thể đọc file PDF này');
+    showToast('Could not read this PDF');
     clearSplit();
   }
 }
@@ -724,8 +724,8 @@ async function doSplit() {
     const srcPdf = await PDFDocument.load(bytes);
 
     if (splitMode === 'every') {
-      // Tách từng trang - tải lần lượt
-      document.getElementById('splitProgressText').textContent = 'Đang tách từng trang...';
+      // Split every page - download one by one
+      document.getElementById('splitProgressText').textContent = 'Splitting each page...';
       for (let i = 0; i < splitTotalPages; i++) {
         const newPdf = await PDFDocument.create();
         const [page] = await newPdf.copyPages(srcPdf, [i]);
@@ -740,12 +740,12 @@ async function doSplit() {
       }
       document.getElementById('splitProgress').style.display = 'none';
       document.getElementById('splitSummary').style.display = 'flex';
-      showToast(`✓ Đã tải về ${splitTotalPages} file PDF!`);
+      showToast(`✓ Downloaded ${splitTotalPages} file PDF!`);
       document.getElementById('btnSplit').disabled = false;
       return;
     }
 
-    // Range hoặc pick
+    // Range or pick mode
     let pageIndices = [];
     if (splitMode === 'range') {
       const from = Math.max(1, parseInt(document.getElementById('pageFrom').value) || 1) - 1;
@@ -756,7 +756,7 @@ async function doSplit() {
     }
 
     if (pageIndices.length === 0) {
-      showToast('Chưa chọn trang nào!');
+      showToast('No pages selected!');
       document.getElementById('splitProgress').style.display = 'none';
       document.getElementById('splitSummary').style.display = 'flex';
       document.getElementById('btnSplit').disabled = false;
@@ -780,7 +780,7 @@ async function doSplit() {
   } catch(err) {
     document.getElementById('splitProgress').style.display = 'none';
     document.getElementById('splitEmpty').style.display = 'flex';
-    document.getElementById('splitEmpty').innerHTML = `<div class="preview-empty-icon">⚠️</div><p>Lỗi: ${err.message}</p>`;
+    document.getElementById('splitEmpty').innerHTML = `<div class="preview-empty-icon">⚠️</div><p>Error: ${err.message}</p>`;
   }
 
   document.getElementById('btnSplit').disabled = false;
@@ -793,7 +793,7 @@ function downloadSplit() {
   const a = document.createElement('a');
   a.href = url; a.download = 'querencia-split.pdf';
   a.click(); URL.revokeObjectURL(url);
-  showToast('✓ Đã tải về!');
+  showToast('✓ Downloaded!');
 }
 </script>
 </body>

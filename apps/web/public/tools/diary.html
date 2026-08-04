@@ -3,7 +3,7 @@
 <head>
 <meta charset="UTF-8"/>
 <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
-<title>Nhật Ký Bí Mật · Querencia</title>
+<title>Secret Diary · Querencia</title>
 <link rel="shortcut icon" type="image/svg+xml" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 120 120'><circle cx='55' cy='55' r='38' fill='none' stroke='%234a7c59' stroke-width='7'/><line x1='81' y1='79' x2='98' y2='98' stroke='%234a7c59' stroke-width='7'/></svg>"/>
 <link href="https://fonts.googleapis.com/css2?family=Lora:ital,wght@0,400;0,500;0,600;1,400;1,500&family=DM+Sans:wght@300;400;500&display=swap" rel="stylesheet"/>
 <!-- CryptoJS for AES encryption -->
@@ -649,21 +649,21 @@ body::before {
 <!-- ═══ LOCK SCREEN ═══ -->
 <div id="lockScreen">
   <div class="lock-candle">🕯</div>
-  <h1 class="lock-title">Nhật Ký Bí Mật</h1>
-  <p class="lock-sub">Chỉ mình bạn đọc được</p>
+  <h1 class="lock-title">Secret Diary</h1>
+  <p class="lock-sub">Only you can read it</p>
   <div class="lock-box">
     <div id="lockSetupNote" style="font-size:0.8rem;color:var(--gray);text-align:center;line-height:1.6;padding-bottom:4px;display:none">
-      Lần đầu sử dụng - tạo mật khẩu cho nhật ký của bạn
+      First time here - create a password for your diary
     </div>
-    <input class="lock-input" type="password" id="lockPassword" placeholder="Nhập mật khẩu…" onkeydown="if(event.key==='Enter')unlock()"/>
-    <input class="lock-input" type="password" id="lockConfirm" placeholder="Xác nhận mật khẩu…" style="display:none" onkeydown="if(event.key==='Enter')unlock()"/>
-    <button class="lock-btn" onclick="unlock()" id="lockBtnLabel">Mở nhật ký</button>
+    <input class="lock-input" type="password" id="lockPassword" placeholder="Enter a password…" onkeydown="if(event.key==='Enter')unlock()"/>
+    <input class="lock-input" type="password" id="lockConfirm" placeholder="Confirm password…" style="display:none" onkeydown="if(event.key==='Enter')unlock()"/>
+    <button class="lock-btn" onclick="unlock()" id="lockBtnLabel">Open diary</button>
     <div class="lock-error" id="lockError"></div>
     <div class="lock-note">
-      Mật khẩu dùng để mã hóa AES-256 ngay trên trình duyệt.<br/>
-      Querencia không lưu hay đọc nội dung của bạn.
+      This password is used to encrypt with AES-256 right in your browser.<br/>
+      Querencia never stores or reads your content.
     </div>
-    <button class="lock-mode-toggle" id="lockModeToggle" onclick="toggleLockMode()" style="display:none">Đổi mật khẩu</button>
+    <button class="lock-mode-toggle" id="lockModeToggle" onclick="toggleLockMode()" style="display:none">Change password</button>
   </div>
 </div>
 
@@ -679,20 +679,20 @@ body::before {
         <line x1="81" y1="79" x2="98" y2="98" stroke="#d4943a" stroke-width="7" stroke-linecap="round"/>
         <polyline points="20,55 28,38 35,68 43,32 51,60 58,43 66,70 74,48 90,55" fill="none" stroke="#d4943a" stroke-width="3" stroke-linecap="round" stroke-linejoin="round" clip-path="url(#qc)"/>
       </svg>
-      <span class="top-title">Nhật Ký Bí Mật</span>
+      <span class="top-title">Secret Diary</span>
     </a>
     <div class="top-sep"></div>
     <div class="top-streak">
       <span class="streak-fire">🔥</span>
       <span class="streak-num" id="streakNum">0</span>
-      <span style="font-size:0.72rem;color:var(--gray)">ngày</span>
+      <span style="font-size:0.72rem;color:var(--gray)">days</span>
     </div>
     <div class="top-spacer"></div>
-    <button class="top-btn" onclick="showExport()">⬇ Xuất</button>
-    <button class="top-btn" onclick="showChangePass()">🔑 Đổi mật khẩu</button>
+    <button class="top-btn" onclick="showExport()">⬇ Export</button>
+    <button class="top-btn" onclick="showChangePass()">🔑 Change password</button>
     <div class="top-sep"></div>
-    <button class="top-btn" onclick="lockDiary()">🔒 Khóa</button>
-    <button class="top-btn primary" onclick="newEntry()">✦ Viết mới</button>
+    <button class="top-btn" onclick="lockDiary()">🔒 Lock</button>
+    <button class="top-btn primary" onclick="newEntry()">✦ New entry</button>
   </div>
 
   <!-- App body -->
@@ -703,23 +703,23 @@ body::before {
       <div class="sidebar-head">
         <div class="search-wrap">
           <span class="search-icon">🔍</span>
-          <input class="search-input" id="searchInput" placeholder="Tìm kiếm…" oninput="filterEntries()"/>
+          <input class="search-input" id="searchInput" placeholder="Search…" oninput="filterEntries()"/>
         </div>
       </div>
 
       <div class="mood-filter-wrap" id="moodFilterWrap">
-        <span style="font-size:0.65rem;color:var(--gray);align-self:center;margin-right:2px">Lọc:</span>
+        <span style="font-size:0.65rem;color:var(--gray);align-self:center;margin-right:2px">Filter:</span>
       </div>
 
       <div class="tag-filter-wrap" id="tagFilterWrap">
-        <button class="tag-chip active" data-tag="all" onclick="filterByTag('all',this)">Tất cả</button>
+        <button class="tag-chip active" data-tag="all" onclick="filterByTag('all',this)">All</button>
       </div>
 
       <div class="entry-list" id="entryList"></div>
 
       <div class="sidebar-stats">
-        <div class="stat-item"><span class="stat-num" id="statTotal">0</span><span class="stat-label">Bài</span></div>
-        <div class="stat-item"><span class="stat-num" id="statWords">0</span><span class="stat-label">Từ</span></div>
+        <div class="stat-item"><span class="stat-num" id="statTotal">0</span><span class="stat-label">Entries</span></div>
+        <div class="stat-item"><span class="stat-num" id="statWords">0</span><span class="stat-label">Words</span></div>
         <div class="stat-item"><span class="stat-num" id="statStreak">0</span><span class="stat-label">Streak</span></div>
       </div>
     </div>
@@ -730,9 +730,9 @@ body::before {
       <!-- Welcome -->
       <div class="editor-welcome" id="editorWelcome">
         <div class="welcome-candle">🕯</div>
-        <h2 class="welcome-title">Không gian của riêng bạn</h2>
-        <p class="welcome-sub">Viết ra những gì bạn cảm nhận - không phán xét, không ép buộc, chỉ có bạn và những dòng chữ thật của mình.</p>
-        <button class="welcome-btn" onclick="newEntry()">✦ Bắt đầu viết hôm nay</button>
+        <h2 class="welcome-title">A space of your own</h2>
+        <p class="welcome-sub">Write down what you feel - no judgment, no pressure, just you and your own honest words.</p>
+        <button class="welcome-btn" onclick="newEntry()">✦ Start writing today</button>
       </div>
 
       <!-- Editor -->
@@ -743,13 +743,13 @@ body::before {
             <span class="editor-date-badge" id="editorDateBadge">-</span>
           </div>
           <div class="mood-wrap">
-            <span class="mood-label">Tâm trạng</span>
+            <span class="mood-label">Mood</span>
           </div>
-          <input class="editor-title-input" id="editorTitle" placeholder="Tiêu đề hôm nay…" oninput="onEditorChange()"/>
+          <input class="editor-title-input" id="editorTitle" placeholder="Today's title…" oninput="onEditorChange()"/>
           <div class="tag-input-row" id="tagInputRow">
             <span class="tag-input-icon">🏷</span>
             <div id="activeTags"></div>
-            <input class="tag-new-input" id="tagNewInput" placeholder="+ thêm tag" onkeydown="handleTagInput(event)"/>
+            <input class="tag-new-input" id="tagNewInput" placeholder="+ add tag" onkeydown="handleTagInput(event)"/>
           </div>
         </div>
 
@@ -760,20 +760,20 @@ body::before {
           <div class="fmt-sep"></div>
           <button class="fmt-btn" onclick="insertText('• ')">• List</button>
           <button class="fmt-btn" onclick="insertText('→ ')">→</button>
-          <button class="fmt-btn" onclick="insertDate()">📅 Ngày</button>
+          <button class="fmt-btn" onclick="insertDate()">📅 Date</button>
           <button class="fmt-btn" onclick="insertText('\n---\n')">- -</button>
-          <span class="word-count" id="wordCount">0 từ</span>
+          <span class="word-count" id="wordCount" id="wordCount">0 words</span>
         </div>
 
         <div class="editor-body">
           <textarea class="editor-textarea" id="editorContent"
-            placeholder="Hôm nay bạn cảm thấy thế nào…&#10;&#10;Không cần viết hay, chỉ cần thật."
+            placeholder="How are you feeling today…&#10;&#10;No need to write well, just write true."
             oninput="onEditorChange()"></textarea>
         </div>
 
         <div class="save-indicator">
           <div class="save-dot saved" id="saveDot"></div>
-          <span id="saveLabel">Đã lưu</span>
+          <span id="saveLabel">Saved</span>
         </div>
       </div>
     </div>
@@ -783,16 +783,16 @@ body::before {
 <!-- EXPORT MODAL -->
 <div class="modal-overlay" id="exportModal">
   <div class="modal">
-    <div class="modal-title">Xuất nhật ký</div>
+    <div class="modal-title">Export diary</div>
     <p style="font-size:0.82rem;color:var(--gray);line-height:1.7;margin-bottom:20px">
-      File xuất ra sẽ <strong style="color:var(--amber)">không mã hóa</strong> - hãy giữ cẩn thận. Bạn có thể chọn xuất toàn bộ hoặc chỉ bài đang xem.
+      The exported file will be <strong style="color:var(--amber)">unencrypted</strong> - keep it safe. You can export everything or just the entry you're viewing.
     </p>
     <div class="modal-actions">
-      <button class="modal-btn" onclick="exportTXT()">📄 Xuất TXT</button>
-      <button class="modal-btn primary" onclick="exportMD()">📝 Xuất Markdown</button>
+      <button class="modal-btn" onclick="exportTXT()">📄 Export TXT</button>
+      <button class="modal-btn primary" onclick="exportMD()">📝 Export Markdown</button>
     </div>
     <div class="modal-actions" style="margin-top:8px">
-      <button class="modal-btn" onclick="closeModal('exportModal')">Đóng</button>
+      <button class="modal-btn" onclick="closeModal('exportModal')">Close</button>
     </div>
   </div>
 </div>
@@ -800,23 +800,23 @@ body::before {
 <!-- CHANGE PASSWORD MODAL -->
 <div class="modal-overlay" id="changePassModal">
   <div class="modal">
-    <div class="modal-title">Đổi mật khẩu</div>
+    <div class="modal-title">Change password</div>
     <div class="modal-row">
-      <span class="modal-label">Mật khẩu hiện tại</span>
-      <input class="modal-input" type="password" id="cpOld" placeholder="Nhập mật khẩu cũ…"/>
+      <span class="modal-label">Current password</span>
+      <input class="modal-input" type="password" id="cpOld" placeholder="Enter your old password…"/>
     </div>
     <div class="modal-row">
-      <span class="modal-label">Mật khẩu mới</span>
-      <input class="modal-input" type="password" id="cpNew" placeholder="Ít nhất 4 ký tự…"/>
+      <span class="modal-label">New password</span>
+      <input class="modal-input" type="password" id="cpNew" placeholder="At least 4 characters…"/>
     </div>
     <div class="modal-row">
-      <span class="modal-label">Xác nhận mật khẩu mới</span>
-      <input class="modal-input" type="password" id="cpConfirm" placeholder="Nhập lại…"/>
+      <span class="modal-label">Confirm new password</span>
+      <input class="modal-input" type="password" id="cpConfirm" placeholder="Re-enter…"/>
     </div>
     <div class="lock-error" id="cpError" style="margin-top:4px"></div>
     <div class="modal-actions">
-      <button class="modal-btn" onclick="closeModal('changePassModal')">Hủy</button>
-      <button class="modal-btn primary" onclick="doChangePass()">Lưu mật khẩu mới</button>
+      <button class="modal-btn" onclick="closeModal('changePassModal')">Cancel</button>
+      <button class="modal-btn primary" onclick="doChangePass()">Save new password</button>
     </div>
   </div>
 </div>
@@ -832,16 +832,16 @@ const HASH_KEY      = 'qdiary_v2_hash';
 const STREAK_KEY    = 'qdiary_v2_streak';
 
 const MOODS = [
-  { emoji:'😊', label:'Vui vẻ' },
-  { emoji:'🥰', label:'Hạnh phúc' },
-  { emoji:'😌', label:'Bình yên' },
-  { emoji:'😔', label:'Buồn' },
-  { emoji:'😤', label:'Bực bội' },
-  { emoji:'😰', label:'Lo lắng' },
-  { emoji:'🤔', label:'Suy nghĩ' },
-  { emoji:'😴', label:'Mệt mỏi' },
-  { emoji:'🥳', label:'Phấn khích' },
-  { emoji:'💪', label:'Mạnh mẽ' },
+  { emoji:'😊', label:'Happy' },
+  { emoji:'🥰', label:'Joyful' },
+  { emoji:'😌', label:'Peaceful' },
+  { emoji:'😔', label:'Sad' },
+  { emoji:'😤', label:'Annoyed' },
+  { emoji:'😰', label:'Anxious' },
+  { emoji:'🤔', label:'Thoughtful' },
+  { emoji:'😴', label:'Tired' },
+  { emoji:'🥳', label:'Excited' },
+  { emoji:'💪', label:'Strong' },
 ];
 
 let masterKey = '';
@@ -860,7 +860,7 @@ const isFirstTime = !localStorage.getItem(HASH_KEY);
 if (isFirstTime) {
   document.getElementById('lockSetupNote').style.display = 'block';
   document.getElementById('lockConfirm').style.display   = 'block';
-  document.getElementById('lockBtnLabel').textContent    = 'Tạo nhật ký';
+  document.getElementById('lockBtnLabel').textContent    = 'Create diary';
 } else {
   document.getElementById('lockModeToggle').style.display = 'block';
 }
@@ -875,18 +875,18 @@ function unlock() {
   const errEl   = document.getElementById('lockError');
 
   if (!pass || pass.length < 4) {
-    showLockError('Mật khẩu phải có ít nhất 4 ký tự'); return;
+    showLockError('Password must be at least 4 characters'); return;
   }
 
   if (isFirstTime) {
-    if (pass !== confirm) { showLockError('Mật khẩu xác nhận không khớp'); return; }
+    if (pass !== confirm) { showLockError('Passwords do not match'); return; }
     localStorage.setItem(HASH_KEY, hashPass(pass));
     masterKey = pass;
     entries   = [];
     saveEncrypted();
   } else {
     const stored = localStorage.getItem(HASH_KEY);
-    if (hashPass(pass) !== stored) { showLockError('Mật khẩu không đúng 🔒'); return; }
+    if (hashPass(pass) !== stored) { showLockError('Incorrect password 🔒'); return; }
     masterKey = pass;
     loadDecrypted();
   }
@@ -963,7 +963,7 @@ function buildMoodFilterBar() {
   const allBtn = document.createElement('button');
   allBtn.className = 'mood-filter-btn active';
   allBtn.textContent = '✦';
-  allBtn.title = 'Tất cả';
+  allBtn.title = 'All';
   allBtn.dataset.mood = '';
   allBtn.onclick = () => filterByMood('', allBtn);
   wrap.appendChild(allBtn);
@@ -1049,7 +1049,7 @@ function selectEntry(id) {
 
 function deleteEntry(id, event) {
   event.stopPropagation();
-  if (!confirm('Xóa bài này vĩnh viễn?')) return;
+  if (!confirm('Permanently delete this entry?')) return;
   entries = entries.filter(e => e.id !== id);
   saveEncrypted();
   if (currentId === id) {
@@ -1080,7 +1080,7 @@ function renderEntryList() {
   if (!filtered.length) {
     list.innerHTML = `<div class="empty-entries">
       <span class="empty-icon">📖</span>
-      ${entries.length ? 'Không tìm thấy bài nào.' : 'Chưa có bài viết nào.<br/>Nhấn "Viết mới" để bắt đầu.'}
+      ${entries.length ? 'No matching entries found.' : 'No entries yet.<br/>Click "New entry" to get started.'}
     </div>`;
     return;
   }
@@ -1095,7 +1095,7 @@ function renderEntryList() {
         <span class="entry-date">${dateStr}</span>
         <span class="entry-mood-dot">${e.mood||''}</span>
       </div>
-      <div class="entry-title">${e.title || '<em style="color:var(--gray-light)">Không có tiêu đề</em>'}</div>
+      <div class="entry-title">${e.title || '<em style="color:var(--gray-light)">Untitled</em>'}</div>
       <div class="entry-preview">${preview || '-'}</div>
       ${tagsHtml ? `<div class="entry-tags-row">${tagsHtml}</div>` : ''}
       <button class="entry-del" onclick="deleteEntry(${e.id},event)">✕</button>
@@ -1108,7 +1108,7 @@ function renderEntryList() {
 function updateTagFilterBar() {
   const allTags = [...new Set(entries.flatMap(e => e.tags))];
   const wrap    = document.getElementById('tagFilterWrap');
-  wrap.innerHTML = `<button class="tag-chip${activeTagFilter==='all'?' active':''}" data-tag="all" onclick="filterByTag('all',this)">Tất cả</button>`;
+  wrap.innerHTML = `<button class="tag-chip${activeTagFilter==='all'?' active':''}" data-tag="all" onclick="filterByTag('all',this)">All</button>`;
   allTags.forEach(t => {
     const btn = document.createElement('button');
     btn.className = `tag-chip${activeTagFilter===t?' active':''}`;
@@ -1148,7 +1148,7 @@ function setSaveDot(state) {
   const dot   = document.getElementById('saveDot');
   const label = document.getElementById('saveLabel');
   dot.className = 'save-dot ' + state;
-  label.textContent = state==='saved' ? 'Đã lưu' : state==='saving' ? 'Đang lưu…' : 'Chưa lưu';
+  label.textContent = state==='saved' ? 'Saved' : state==='saving' ? 'Saving…' : 'Not saved';
 }
 
 function countWords(text) {
@@ -1157,7 +1157,7 @@ function countWords(text) {
 
 function updateWordCount(text) {
   const wc = countWords(text);
-  document.getElementById('wordCount').textContent = wc + ' từ';
+  document.getElementById('wordCount').textContent = wc + ' words';
 }
 
 // Mood
@@ -1310,13 +1310,13 @@ function doChangePass() {
   const err = document.getElementById('cpError');
 
   if (hashPass(old) !== localStorage.getItem(HASH_KEY)) {
-    err.textContent = 'Mật khẩu cũ không đúng'; err.style.display='block'; return;
+    err.textContent = 'Old password is incorrect'; err.style.display='block'; return;
   }
   if (nw.length < 4) {
-    err.textContent = 'Mật khẩu mới phải có ít nhất 4 ký tự'; err.style.display='block'; return;
+    err.textContent = 'New password must be at least 4 characters'; err.style.display='block'; return;
   }
   if (nw !== cf) {
-    err.textContent = 'Mật khẩu xác nhận không khớp'; err.style.display='block'; return;
+    err.textContent = 'Passwords do not match'; err.style.display='block'; return;
   }
 
   // Re-encrypt with new password
@@ -1324,7 +1324,7 @@ function doChangePass() {
   localStorage.setItem(HASH_KEY, hashPass(nw));
   saveEncrypted();
   closeModal('changePassModal');
-  toast('✓ Đã đổi mật khẩu thành công!');
+  toast('✓ Password changed successfully!');
 }
 
 // ═══════════════════════════════════════════
@@ -1333,29 +1333,29 @@ function doChangePass() {
 function showExport() { document.getElementById('exportModal').classList.add('show'); }
 
 function exportTXT() {
-  let out = `NHẬT KÝ BÍ MẬT - Querencia\nXuất lúc: ${new Date().toLocaleString('vi-VN')}\n${'='.repeat(50)}\n\n`;
+  let out = `SECRET DIARY - Querencia\nExported: ${new Date().toLocaleString('en-US')}\n${'='.repeat(50)}\n\n`;
   entries.forEach(e => {
-    const d = new Date(e.date).toLocaleDateString('vi-VN', { weekday:'long', day:'2-digit', month:'long', year:'numeric' });
+    const d = new Date(e.date).toLocaleDateString('en-US', { weekday:'long', day:'2-digit', month:'long', year:'numeric' });
     out += `📅 ${d}\n`;
-    if (e.mood) out += `Tâm trạng: ${e.mood}\n`;
+    if (e.mood) out += `Mood: ${e.mood}\n`;
     if (e.tags.length) out += `Tags: ${e.tags.join(', ')}\n`;
     out += `\n${e.title ? e.title+'\n'+'-'.repeat(30)+'\n' : ''}${e.content}\n\n${'─'.repeat(50)}\n\n`;
   });
-  downloadText(out, 'nhat-ky-querencia.txt', 'text/plain');
+  downloadText(out, 'querencia-diary.txt', 'text/plain');
   closeModal('exportModal');
 }
 
 function exportMD() {
-  let out = `# Nhật Ký Bí Mật - Querencia\n\n> Xuất lúc: ${new Date().toLocaleString('vi-VN')}\n\n---\n\n`;
+  let out = `# Secret Diary - Querencia\n\n> Exported: ${new Date().toLocaleString('en-US')}\n\n---\n\n`;
   entries.forEach(e => {
-    const d = new Date(e.date).toLocaleDateString('vi-VN', { weekday:'long', day:'2-digit', month:'long', year:'numeric' });
-    out += `## ${e.title || 'Không có tiêu đề'}\n\n`;
+    const d = new Date(e.date).toLocaleDateString('en-US', { weekday:'long', day:'2-digit', month:'long', year:'numeric' });
+    out += `## ${e.title || 'Untitled'}\n\n`;
     out += `**📅 ${d}**`;
     if (e.mood) out += ` · ${e.mood}`;
     if (e.tags.length) out += ` · \`${e.tags.join('` `')}\``;
     out += `\n\n${e.content}\n\n---\n\n`;
   });
-  downloadText(out, 'nhat-ky-querencia.md', 'text/markdown');
+  downloadText(out, 'querencia-diary.md', 'text/markdown');
   closeModal('exportModal');
 }
 

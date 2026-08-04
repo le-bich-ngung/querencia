@@ -176,14 +176,14 @@
 <div class="view active" id="viewHome">
   <div class="container">
     <div class="home-header">
-      <h1>Bộ thẻ của bạn</h1>
-      <button class="btn-primary" onclick="openCreateDeck()">＋ Tạo bộ thẻ</button>
+      <h1>Your decks</h1>
+      <button class="btn-primary" onclick="openCreateDeck()">＋ Create deck</button>
     </div>
     <div class="deck-grid" id="deckGrid"></div>
     <div class="empty-state" id="emptyState" style="display:none">
       <div class="empty-icon">🃏</div>
-      <p>Chưa có bộ thẻ nào.<br/>Tạo bộ thẻ đầu tiên để bắt đầu học!</p>
-      <button class="btn-primary" onclick="openCreateDeck()">＋ Tạo bộ thẻ</button>
+      <p>No decks yet.<br/>Create your first deck to start studying!</p>
+      <button class="btn-primary" onclick="openCreateDeck()">＋ Create deck</button>
     </div>
   </div>
 </div>
@@ -194,23 +194,23 @@
 <div class="view" id="viewEditor">
   <div class="container">
     <div class="editor-header">
-      <button class="btn-outline" onclick="goHome()" style="padding:8px 14px;font-size:0.82rem">← Quay lại</button>
+      <button class="btn-outline" onclick="goHome()" style="padding:8px 14px;font-size:0.82rem">← Back</button>
       <div class="editor-deck-name" id="editorDeckName"></div>
-      <button class="btn-primary" id="studyBtn" onclick="startStudy()">▶ Học ngay</button>
+      <button class="btn-primary" id="studyBtn" onclick="startStudy()">▶ Study now</button>
     </div>
     <div class="cards-list" id="cardsList"></div>
     <div class="add-card-form" id="addCardForm">
       <div>
-        <div style="font-size:0.7rem;font-weight:600;text-transform:uppercase;letter-spacing:0.3px;color:var(--gray-light);margin-bottom:5px">Mặt trước</div>
-        <input type="text" id="inputFront" placeholder="Từ, câu hỏi..." onkeydown="if(event.key==='Tab'){event.preventDefault();document.getElementById('inputBack').focus()}"/>
+        <div style="font-size:0.7rem;font-weight:600;text-transform:uppercase;letter-spacing:0.3px;color:var(--gray-light);margin-bottom:5px">Front
+        <input type="text" id="inputFront" placeholder="Word, question..." onkeydown="if(event.key==='Tab'){event.preventDefault();document.getElementById('inputBack').focus()}"/>
       </div>
       <div>
-        <div style="font-size:0.7rem;font-weight:600;text-transform:uppercase;letter-spacing:0.3px;color:var(--gray-light);margin-bottom:5px">Mặt sau</div>
-        <input type="text" id="inputBack" placeholder="Nghĩa, câu trả lời..." onkeydown="if(event.key==='Enter')addCard()"/>
+        <div style="font-size:0.7rem;font-weight:600;text-transform:uppercase;letter-spacing:0.3px;color:var(--gray-light);margin-bottom:5px">Back
+        <input type="text" id="inputBack" placeholder="Meaning, answer..." onkeydown="if(event.key==='Enter')addCard()"/>
       </div>
-      <button class="add-btn" onclick="addCard()">＋ Thêm</button>
+      <button class="add-btn" onclick="addCard()">＋ Add</button>
     </div>
-    <p style="font-size:0.78rem;color:var(--gray-light);margin-top:10px">Tab để chuyển ô · Enter để thêm thẻ</p>
+    <p style="font-size:0.78rem;color:var(--gray-light);margin-top:10px">Tab to switch fields · Enter to add a card</p>
   </div>
 </div>
 
@@ -224,26 +224,26 @@
         <div class="study-title" id="studyDeckName"></div>
         <div class="study-progress" id="studyProgress"></div>
       </div>
-      <button class="btn-outline" onclick="goEditor()" style="padding:7px 14px;font-size:0.82rem">✕ Dừng</button>
+      <button class="btn-outline" onclick="goEditor()" style="padding:7px 14px;font-size:0.82rem">✕ Stop</button>
     </div>
     <div class="progress-bar"><div class="progress-fill" id="progressFill"></div></div>
     <div class="card-scene">
       <div class="card-3d" id="card3d" onclick="flipCard()">
         <div class="card-face card-face-front">
-          <div class="card-face-label">Mặt trước</div>
+          <div class="card-face-label">Front</div>
           <div class="card-face-text" id="cardFront"></div>
         </div>
         <div class="card-face card-face-back">
-          <div class="card-face-label">Mặt sau</div>
+          <div class="card-face-label">Back</div>
           <div class="card-face-text" id="cardBack"></div>
         </div>
       </div>
     </div>
-    <p class="card-hint">Nhấn vào thẻ để lật</p>
+    <p class="card-hint">Tap the card to flip it</p>
     <div class="study-controls">
-      <button class="btn-wrong" onclick="markCard(false)">✗ Chưa nhớ</button>
-      <button class="btn-flip" onclick="flipCard()">↺ Lật thẻ</button>
-      <button class="btn-correct" onclick="markCard(true)">✓ Đã nhớ</button>
+      <button class="btn-wrong" onclick="markCard(false)">✗ Didn't know</button>
+      <button class="btn-flip" onclick="flipCard()">↺ Flip card</button>
+      <button class="btn-correct" onclick="markCard(true)">✓ Knew it</button>
     </div>
   </div>
 </div>
@@ -258,45 +258,45 @@
       <div class="result-title" id="resultTitle"></div>
       <div class="result-sub" id="resultSub"></div>
       <div class="result-stats">
-        <div class="stat-box"><div class="stat-num" id="statCorrect"></div><div class="stat-label">Đã nhớ</div></div>
-        <div class="stat-box"><div class="stat-num" id="statWrong" style="color:#e74c3c"></div><div class="stat-label">Chưa nhớ</div></div>
-        <div class="stat-box"><div class="stat-num" id="statTotal"></div><div class="stat-label">Tổng thẻ</div></div>
+        <div class="stat-box"><div class="stat-num" id="statCorrect"></div><div class="stat-label">Knew it</div></div>
+        <div class="stat-box"><div class="stat-num" id="statWrong" style="color:#e74c3c"></div><div class="stat-label">Didn't know</div></div>
+        <div class="stat-box"><div class="stat-num" id="statTotal"></div><div class="stat-label">Total cards</div></div>
       </div>
       <div class="result-actions">
-        <button class="btn-outline" onclick="goHome()">← Về trang chủ</button>
-        <button class="btn-primary" onclick="startStudy()">↺ Học lại</button>
+        <button class="btn-outline" onclick="goHome()">← Back to home</button>
+        <button class="btn-primary" onclick="startStudy()">↺ Study again</button>
       </div>
     </div>
   </div>
 </div>
 
-<!-- MODAL tạo bộ thẻ -->
+<!-- CREATE DECK MODAL -->
 <div class="modal-overlay" id="modalCreateDeck">
   <div class="modal">
     <button class="modal-close" onclick="closeModal('modalCreateDeck')">✕</button>
-    <h2>Tạo bộ thẻ mới</h2>
+    <h2>Create a new deck</h2>
     <div class="form-group">
-      <label>Tên bộ thẻ</label>
-      <input type="text" id="inputDeckName" placeholder="VD: Tiếng Anh B1, Lịch sử..." onkeydown="if(event.key==='Enter')createDeck()"/>
+      <label>Deck name</label>
+      <input type="text" id="inputDeckName" placeholder="e.g. English B1, History..." onkeydown="if(event.key==='Enter')createDeck()"/>
     </div>
     <div class="form-group">
-      <label>Biểu tượng (emoji)</label>
+      <label>Icon (emoji)</label>
       <input type="text" id="inputDeckEmoji" placeholder="📚" maxlength="2" style="width:80px"/>
     </div>
     <div class="modal-actions">
-      <button class="btn-outline" onclick="closeModal('modalCreateDeck')">Hủy</button>
-      <button class="btn-primary" onclick="createDeck()">Tạo bộ thẻ</button>
+      <button class="btn-outline" onclick="closeModal('modalCreateDeck')">Cancel</button>
+      <button class="btn-primary" onclick="createDeck()">Create deck</button>
     </div>
   </div>
 </div>
 
-<!-- SAVE BANNER (hiện khi dùng không đăng nhập) -->
+<!-- SAVE BANNER (shown when not signed in) -->
 <div class="save-banner" id="saveBanner" style="display:none">
   <div class="save-banner-text">
-    <strong>Đăng nhập để lưu vĩnh viễn</strong>
-    Bộ thẻ này chỉ lưu trên máy bạn. Đăng nhập để không bao giờ mất dữ liệu.
+    <strong>Sign in to save permanently</strong>
+    This deck is only saved on your device. Sign in so you never lose your data.
   </div>
-  <button class="btn-login-banner" onclick="window.location.href='/?login=1'">Đăng nhập</button>
+  <button class="btn-login-banner" onclick="window.location.href='/?login=1'">Sign in</button>
   <button class="btn-dismiss" onclick="dismissBanner()">✕</button>
 </div>
 
@@ -460,12 +460,12 @@ function renderHome() {
   grid.innerHTML = decks.map(d => `
     <div class="deck-card" onclick="openDeck('${d.id}')">
       <div class="deck-card-actions">
-        <button class="deck-action-btn" title="Đổi tên" onclick="event.stopPropagation();renameDeck('${d.id}')">✏️</button>
-        <button class="deck-action-btn" title="Xóa" onclick="event.stopPropagation();deleteDeck('${d.id}')">🗑️</button>
+        <button class="deck-action-btn" title="Rename" onclick="event.stopPropagation();renameDeck('${d.id}')">✏️</button>
+        <button class="deck-action-btn" title="Delete" onclick="event.stopPropagation();deleteDeck('${d.id}')">🗑️</button>
       </div>
       <div class="deck-card-icon">${d.emoji || '📚'}</div>
       <div class="deck-card-name">${esc(d.name)}</div>
-      <div class="deck-card-count">${d.cards.length} thẻ</div>
+      <div class="deck-card-count">${d.cards.length} cards</div>
     </div>
   `).join('');
 }
@@ -498,7 +498,7 @@ async function createDeck() {
 }
 
 async function deleteDeck(id) {
-  if (!confirm('Xóa bộ thẻ này? Không thể hoàn tác.')) return;
+  if (!confirm('Delete this deck? This cannot be undone.')) return;
   if (isLoggedIn) await apiDeleteDeck(id);
   decks = decks.filter(d => d.id !== id);
   saveData();
@@ -507,7 +507,7 @@ async function deleteDeck(id) {
 
 async function renameDeck(id) {
   const deck = getDeck(id);
-  const name = prompt('Tên mới:', deck.name);
+  const name = prompt('New name:', deck.name);
   if (!name || !name.trim()) return;
   deck.name = name.trim();
   if (isLoggedIn) await apiUpdateDeck(id, deck.name, deck.emoji);
@@ -532,20 +532,20 @@ function renderEditor(deckId) {
 
   const list = document.getElementById('cardsList');
   if (deck.cards.length === 0) {
-    list.innerHTML = '<p style="color:var(--gray-light);font-size:0.88rem;padding:8px 0">Chưa có thẻ nào. Thêm thẻ đầu tiên bên dưới!</p>';
+    list.innerHTML = '<p style="color:var(--gray-light);font-size:0.88rem;padding:8px 0">No cards yet. Add your first one below!</p>';
     return;
   }
   list.innerHTML = deck.cards.map((c,i) => `
     <div class="card-item">
       <div class="card-item-field">
-        <div class="card-item-label">Mặt trước</div>
+        <div class="card-item-label">Front</div>
         <div class="card-item-value">${esc(c.front)}</div>
       </div>
       <div class="card-item-field">
-        <div class="card-item-label">Mặt sau</div>
+        <div class="card-item-label">Back</div>
         <div class="card-item-value">${esc(c.back)}</div>
       </div>
-      <button class="card-delete-btn" onclick="deleteCard('${deckId}','${c.id}')" title="Xóa thẻ">✕</button>
+      <button class="card-delete-btn" onclick="deleteCard('${deckId}','${c.id}')" title="Delete card">✕</button>
     </div>
   `).join('');
 }
@@ -610,7 +610,7 @@ function showCard() {
 function updateProgress() {
   const total = studyQueue.length;
   const done  = studyIndex;
-  document.getElementById('studyProgress').textContent = `${done} / ${total} thẻ`;
+  document.getElementById('studyProgress').textContent = `${done} / ${total} cards`;
   document.getElementById('progressFill').style.width = (done / total * 100) + '%';
 }
 
@@ -640,10 +640,10 @@ function showResult() {
   document.getElementById('statTotal').textContent   = total;
 
   let icon, title, sub;
-  if (pct === 100) { icon='🎉'; title='Hoàn hảo!'; sub='Bạn nhớ tất cả các thẻ. Xuất sắc!'; }
-  else if (pct >= 70) { icon='😊'; title='Tốt lắm!'; sub=`Bạn nhớ ${pct}% số thẻ. Tiếp tục cố gắng!`; }
-  else if (pct >= 40) { icon='💪'; title='Cần luyện thêm'; sub=`Bạn nhớ ${pct}% số thẻ. Thử học lại nhé!`; }
-  else { icon='📖'; title='Hãy ôn tập thêm'; sub=`Bạn nhớ ${pct}% số thẻ. Đừng nản, học tiếp nào!`; }
+  if (pct === 100) { icon='🎉'; title='Perfect!'; sub='You knew every card. Excellent!'; }
+  else if (pct >= 70) { icon='😊'; title='Great job!'; sub=`You knew ${pct}% of the cards. Keep it up!`; }
+  else if (pct >= 40) { icon='💪'; title='Needs a bit more practice'; sub=`You knew ${pct}% of the cards. Try studying again!`; }
+  else { icon='📖'; title='Time for more review'; sub=`You knew ${pct}% of the cards. Don't give up, keep going!`; }
 
   document.getElementById('resultIcon').textContent  = icon;
   document.getElementById('resultTitle').textContent = title;

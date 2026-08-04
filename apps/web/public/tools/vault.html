@@ -195,15 +195,15 @@
   </a>
   <div style="display:flex;align-items:center;gap:12px">
     <button onclick="toggleDark()" style="background:none;border:none;cursor:pointer;font-size:1.1rem;color:var(--gray-light);padding:4px 8px">◐</button>
-    <a class="nav-back" href="https://querencia.com.vn">← Về trang chủ</a>
+    <a class="nav-back" href="https://querencia.com.vn">← Back to home</a>
   </div>
 </nav>
 
 <!-- HEADER -->
 <div class="page-header">
   <p class="page-label">Tools · Vault</p>
-  <h1 class="page-title">Link chia sẻ <em>tự hủy</em> <span class="badge-free">Free</span></h1>
-  <p class="page-desc">Tạo link chia sẻ file có thời hạn. Sau khi người nhận tải về - hoặc hết giờ - file tự động bị xóa vĩnh viễn khỏi server.</p>
+  <h1 class="page-title">Self-destructing <em>share link</em> <span class="badge-free">Free</span></h1>
+  <p class="page-desc">Create a time-limited file share link. Once the recipient downloads it - or time runs out - the file is permanently deleted from the server.</p>
 </div>
 
 <!-- MAIN -->
@@ -211,13 +211,13 @@
 
   <!-- LEFT: UPLOAD -->
   <div class="panel-left">
-    <p class="panel-title">Tải file lên</p>
+    <p class="panel-title">Upload a file</p>
 
     <div class="drop-zone" id="dropZone">
       <input type="file" id="fileInput" onchange="handleFile(this.files[0])"/>
       <div class="drop-icon">🔒</div>
-      <h3>Kéo thả file vào đây</h3>
-      <p>hoặc <span class="browse">click để chọn</span><br/>Tối đa 25MB · Mọi định dạng</p>
+      <h3>Drag & drop a file here</h3>
+      <p>or <span class="browse">click to choose</span><br/>Max 25MB · Any format</p>
     </div>
 
     <div class="file-preview" id="filePreview">
@@ -232,29 +232,29 @@
     <!-- OPTIONS -->
     <div class="options" id="options" style="display:none">
 
-      <!-- Thời hạn -->
+      <!-- Expiration -->
       <div>
-        <span class="opt-label">Tự hủy sau</span>
+        <span class="opt-label">Self-destructs after</span>
         <div class="opt-grid">
           <div class="opt-card" onclick="setExpire('1read',this)">
-            <div class="opt-card-title">1 lần đọc</div>
-            <div class="opt-card-sub">Xóa ngay sau khi tải</div>
+            <div class="opt-card-title">1 view</div>
+            <div class="opt-card-sub">Deleted right after download</div>
           </div>
           <div class="opt-card active" onclick="setExpire('24h',this)">
-            <div class="opt-card-title">24 giờ</div>
-            <div class="opt-card-sub">Hết hạn sau 1 ngày</div>
+            <div class="opt-card-title">24 hours</div>
+            <div class="opt-card-sub">Expires after 1 day</div>
           </div>
           <div class="opt-card" onclick="setExpire('1h',this)">
-            <div class="opt-card-title">1 giờ</div>
-            <div class="opt-card-sub">Hết hạn sau 60 phút</div>
+            <div class="opt-card-title">1 hour</div>
+            <div class="opt-card-sub">Expires after 60 minutes</div>
           </div>
           <div class="opt-card" onclick="setExpire('7d',this)">
-            <div class="opt-card-title">7 ngày</div>
-            <div class="opt-card-sub">Hết hạn sau 1 tuần</div>
+            <div class="opt-card-title">7 days</div>
+            <div class="opt-card-sub">Expires after 1 week</div>
           </div>
           <div class="opt-card" onclick="setExpire('custom',this)" style="grid-column:span 2">
-            <div class="opt-card-title">⚙ Tự nhập thời gian</div>
-            <div class="opt-card-sub">Tùy chỉnh số phút / giờ</div>
+            <div class="opt-card-title">⚙ Custom time</div>
+            <div class="opt-card-sub">Set a custom number of minutes / hours</div>
           </div>
         </div>
 
@@ -263,32 +263,32 @@
           <div class="custom-row">
             <input class="custom-input" type="number" id="customVal" min="1" value="30" placeholder="30"/>
             <select class="custom-input" id="customUnit" style="width:auto;padding:8px 10px">
-              <option value="1">phút</option>
-              <option value="60">giờ</option>
-              <option value="1440">ngày</option>
+              <option value="1">minutes</option>
+              <option value="60">hours</option>
+              <option value="1440">days</option>
             </select>
           </div>
         </div>
       </div>
 
-      <!-- Mật khẩu -->
+      <!-- Password -->
       <div>
-        <span class="opt-label">Bảo vệ bằng mật khẩu</span>
+        <span class="opt-label">Protect with a password</span>
         <label class="pass-toggle">
           <input type="checkbox" id="passToggle" onchange="togglePass(this)"/>
-          Đặt mật khẩu cho link
+          Set a password for the link
         </label>
-        <input class="pass-input" type="password" id="passInput" placeholder="Nhập mật khẩu..."/>
+        <input class="pass-input" type="password" id="passInput" placeholder="Enter a password..."/>
       </div>
 
     </div>
 
     <div class="upload-progress" id="uploadProgress">
       <div class="progress-bar-wrap"><div class="progress-bar" id="uploadBar"></div></div>
-      <div class="progress-label" id="uploadLabel">Đang tải lên...</div>
+      <div class="progress-label" id="uploadLabel">Uploading...</div>
     </div>
 
-    <button class="btn-primary" id="btnUpload" onclick="doUpload()" disabled>🔒 Tạo link tự hủy</button>
+    <button class="btn-primary" id="btnUpload" onclick="doUpload()" disabled>🔒 Create self-destruct link</button>
   </div>
 
   <!-- RIGHT: RESULT / RECEIVE -->
@@ -297,57 +297,57 @@
     <!-- Empty -->
     <div class="state-empty" id="stateEmpty">
       <div class="state-empty-icon">🔗</div>
-      <p>Tải file lên để tạo link chia sẻ tự hủy. Người nhận chỉ cần link - không cần tài khoản.</p>
+      <p>Upload a file to create a self-destructing share link. The recipient only needs the link - no account required.</p>
     </div>
 
     <!-- Result after upload -->
     <div class="result-card" id="resultCard">
       <div class="result-success">
         <span class="result-success-icon">✓</span>
-        <div class="result-success-text">Link đã được tạo! Chia sẻ cho người nhận.<br/>File sẽ tự động bị xóa sau khi hết hạn.</div>
+        <div class="result-success-text">Link created! Share it with the recipient.<br/>The file will be automatically deleted once it expires.</div>
       </div>
 
       <div class="expire-badge" id="expireBadge">⏱ -</div>
 
       <div class="link-box">
-        <div class="link-label">Link chia sẻ</div>
+        <div class="link-label">Share link</div>
         <div class="link-url" id="shareUrl">-</div>
         <div class="link-actions">
-          <button class="btn-outline" style="font-size:0.78rem;padding:6px 14px" onclick="copyLink()">📋 Sao chép</button>
-          <button class="btn-outline" style="font-size:0.78rem;padding:6px 14px" onclick="shareLink()">↗ Chia sẻ</button>
-          <button class="btn-outline" style="font-size:0.78rem;padding:6px 14px" onclick="resetAll()">+ Tạo link mới</button>
+          <button class="btn-outline" style="font-size:0.78rem;padding:6px 14px" onclick="copyLink()">📋 Copy</button>
+          <button class="btn-outline" style="font-size:0.78rem;padding:6px 14px" onclick="shareLink()">↗ Share</button>
+          <button class="btn-outline" style="font-size:0.78rem;padding:6px 14px" onclick="resetAll()">+ Create a new link</button>
         </div>
       </div>
 
       <div class="qr-section" id="qrSection">
         <canvas id="qrCanvas"></canvas>
-        <div class="qr-label">Quét QR để mở link</div>
+        <div class="qr-label">Scan the QR to open the link</div>
       </div>
     </div>
 
-    <!-- Receive mode (khi có ?token=... trên URL) -->
+    <!-- Receive mode (when ?token=... is on the URL) -->
     <div class="receive-card" id="receiveCard">
       <div class="receive-lock" id="receiveIcon">🔒</div>
-      <div class="receive-title" id="receiveTitle">Bạn nhận được một file</div>
-      <div class="receive-meta" id="receiveMeta">Đang tải thông tin...</div>
+      <div class="receive-title" id="receiveTitle">You received a file</div>
+      <div class="receive-meta" id="receiveMeta">Loading info...</div>
 
       <div class="receive-warn" id="receiveWarn" style="display:none"></div>
 
       <div class="receive-pass-wrap" id="receivePassWrap">
-        <input type="password" id="receivePass" placeholder="Nhập mật khẩu để tải file..."
+        <input type="password" id="receivePass" placeholder="Enter the password to download the file..."
           style="width:100%;padding:11px 14px;border:1.5px solid var(--border);border-radius:8px;font-family:var(--font);font-size:0.88rem;outline:none;margin-bottom:10px"
           onfocus="this.style.borderColor='var(--sage)'" onblur="this.style.borderColor='var(--border)'"/>
       </div>
 
-      <button class="btn-primary" id="btnDownload" onclick="doDownload()" style="width:auto;padding:13px 36px">⬇ Tải về ngay</button>
+      <button class="btn-primary" id="btnDownload" onclick="doDownload()" style="width:auto;padding:13px 36px">⬇ Download now</button>
     </div>
 
     <!-- Expired -->
     <div class="expired-card" id="expiredCard">
       <div class="expired-icon">💨</div>
-      <div class="expired-title">Link đã tự hủy</div>
-      <div class="expired-sub" id="expiredMsg">File này đã bị xóa vĩnh viễn khỏi server.</div>
-      <button class="btn-outline" style="margin-top:20px" onclick="location.href=location.pathname">Tạo link mới</button>
+      <div class="expired-title">Link has self-destructed</div>
+      <div class="expired-sub" id="expiredMsg">This file has been permanently deleted from server.</div>
+      <button class="btn-outline" style="margin-top:20px" onclick="location.href=location.pathname">Create a new link</button>
     </div>
 
   </div>
@@ -357,18 +357,18 @@
 <div class="tips-section">
   <div class="tip-card">
     <div class="tip-icon">💨</div>
-    <h4>Tự hủy thật sự</h4>
-    <p>File bị xóa vĩnh viễn khỏi server sau khi tải về hoặc hết giờ. Không ai - kể cả admin - có thể khôi phục lại.</p>
+    <h4>Truly self-destructing</h4>
+    <p>The file is permanently deleted from the server after download or once time runs out. No one - not even an admin - can recover it.</p>
   </div>
   <div class="tip-card">
     <div class="tip-icon">🔑</div>
-    <h4>Mã hóa tùy chọn</h4>
-    <p>Đặt mật khẩu để chỉ người biết mật khẩu mới tải được. Link không có mật khẩu thì ai có link cũng tải được.</p>
+    <h4>Optional encryption</h4>
+    <p>Set a password so only people who know it can download the file. Without a password, anyone with the link can download it.</p>
   </div>
   <div class="tip-card">
     <div class="tip-icon">📱</div>
-    <h4>Không cần tài khoản</h4>
-    <p>Người nhận không cần tài khoản Querencia. Chỉ cần mở link là tải được ngay - đơn giản như gửi link bình thường.</p>
+    <h4>No account needed</h4>
+    <p>The recipient doesn't need a Querencia account. Just open the link to download - as simple as sharing any link.</p>
   </div>
 </div>
 
@@ -432,7 +432,7 @@ const FILE_ICONS = {
 };
 
 function handleFile(file) {
-  if (file.size > 25 * 1024 * 1024) { toast('File quá lớn! Tối đa 25MB.'); return; }
+  if (file.size > 25 * 1024 * 1024) { toast('File too large! Max 25MB.'); return; }
   selectedFile = file;
   const ext = file.name.split('.').pop().toLowerCase();
   document.getElementById('fileIcon').textContent = FILE_ICONS[ext] || '📄';
@@ -508,11 +508,11 @@ async function doUpload() {
 
     if (!res.ok) {
       const err = await res.json();
-      throw new Error(err.detail || 'Upload thất bại');
+      throw new Error(err.detail || 'Upload failed');
     }
 
     bar.style.width = '100%';
-    label.textContent = 'Hoàn thành!';
+    label.textContent = 'Done!';
 
     const data = await res.json();
     setTimeout(() => showResult(data), 400);
@@ -521,7 +521,7 @@ async function doUpload() {
     clearInterval(fakeInterval);
     document.getElementById('uploadProgress').style.display = 'none';
     document.getElementById('btnUpload').disabled = false;
-    toast('Lỗi: ' + e.message);
+    toast('Error: ' + e.message);
   }
 }
 
@@ -546,13 +546,13 @@ function showResult(data) {
 
 function copyLink() {
   const url = document.getElementById('shareUrl').textContent;
-  navigator.clipboard.writeText(url).then(() => toast('✓ Đã sao chép link!'));
+  navigator.clipboard.writeText(url).then(() => toast('✓ Link copied!'));
 }
 
 function shareLink() {
   const url = document.getElementById('shareUrl').textContent;
   if (navigator.share) {
-    navigator.share({ title: 'File từ Querencia Vault', url });
+    navigator.share({ title: 'A file from Querencia Vault', url });
   } else {
     copyLink();
   }
@@ -562,7 +562,7 @@ function resetAll() {
   clearFile();
   document.getElementById('stateEmpty').style.display = 'flex';
   document.getElementById('resultCard').style.display = 'none';
-  document.getElementById('qrSection').innerHTML = '<canvas id="qrCanvas"></canvas><div class="qr-label">Quét QR để mở link</div>';
+  document.getElementById('qrSection').innerHTML = '<canvas id="qrCanvas"></canvas><div class="qr-label">Scan the QR to open the link</div>';
   document.getElementById('btnUpload').disabled = true;
   // Clear URL param
   history.replaceState({}, '', location.pathname);
@@ -599,34 +599,34 @@ async function enterReceiveMode(token) {
 
     const sizeStr = formatSize(info.size);
     let metaLines = [sizeStr];
-    if (info.expire_in) metaLines.push(`Hết hạn sau: ${info.expire_in}`);
-    if (info.remaining_reads != null) metaLines.push(`Còn ${info.remaining_reads} lần tải`);
+    if (info.expire_in) metaLines.push(`Expires in: ${info.expire_in}`);
+    if (info.remaining_reads != null) metaLines.push(`${info.remaining_reads} downloads left`);
     document.getElementById('receiveMeta').textContent = metaLines.join(' · ');
 
     if (info.burn_after_read) {
       document.getElementById('receiveWarn').style.display = 'block';
-      document.getElementById('receiveWarn').textContent = '⚠ File này sẽ tự hủy ngay sau khi bạn tải về. Chỉ tải 1 lần duy nhất!';
+      document.getElementById('receiveWarn').textContent = '⚠ This file will self-destruct right after you download it. Only 1 download allowed!';
     }
 
   } catch(e) {
-    showExpired('Không thể kết nối server. Thử lại sau.');
+    showExpired('Could not connect to the server. Please try again later.');
   }
 }
 
 async function doDownload() {
   const pass = needsPassword ? document.getElementById('receivePass').value.trim() : '';
-  if (needsPassword && !pass) { toast('Nhập mật khẩu trước!'); return; }
+  if (needsPassword && !pass) { toast('Enter the password first!'); return; }
 
   document.getElementById('btnDownload').disabled = true;
-  document.getElementById('btnDownload').textContent = '⏳ Đang tải...';
+  document.getElementById('btnDownload').textContent = '⏳ Downloading...';
 
   try {
     const url = `${API}/vault/${receiveToken}/download${pass ? '?password='+encodeURIComponent(pass) : ''}`;
     const res = await fetch(url);
 
-    if (res.status === 401) { toast('Sai mật khẩu!'); document.getElementById('btnDownload').disabled = false; document.getElementById('btnDownload').textContent = '⬇ Tải về ngay'; return; }
-    if (res.status === 404 || res.status === 410) { showExpired('File đã bị xóa.'); return; }
-    if (!res.ok) throw new Error('Tải thất bại');
+    if (res.status === 401) { toast('Wrong password!'); document.getElementById('btnDownload').disabled = false; document.getElementById('btnDownload').textContent = '⬇ Download now'; return; }
+    if (res.status === 404 || res.status === 410) { showExpired('This file has been deleted.'); return; }
+    if (!res.ok) throw new Error('Download failed');
 
     const blob = await res.blob();
     const disposition = res.headers.get('content-disposition') || '';
@@ -639,26 +639,26 @@ async function doDownload() {
     a.href = dlUrl; a.download = filename; a.click();
     URL.revokeObjectURL(dlUrl);
 
-    toast('✓ Đã tải về!');
-    document.getElementById('btnDownload').textContent = '✓ Đã tải về';
+    toast('✓ Downloaded!');
+    document.getElementById('btnDownload').textContent = '✓ Downloaded';
 
     // Update UI to show burned
     setTimeout(() => {
-      document.getElementById('receiveWarn').textContent = '💨 File đã bị xóa khỏi server sau khi bạn tải về.';
+      document.getElementById('receiveWarn').textContent = '💨 The file has been deleted from the server after your download.';
       document.getElementById('receiveWarn').style.display = 'block';
     }, 2000);
 
   } catch(e) {
-    toast('Lỗi: ' + e.message);
+    toast('Error: ' + e.message);
     document.getElementById('btnDownload').disabled = false;
-    document.getElementById('btnDownload').textContent = '⬇ Tải về ngay';
+    document.getElementById('btnDownload').textContent = '⬇ Download now';
   }
 }
 
 function showExpired(msg) {
   document.getElementById('receiveCard').style.display = 'none';
   document.getElementById('expiredCard').style.display = 'block';
-  document.getElementById('expiredMsg').textContent = msg || 'File này đã bị xóa vĩnh viễn khỏi server.';
+  document.getElementById('expiredMsg').textContent = msg || 'This file has been permanently deleted from the server.';
 }
 </script>
 </body>
