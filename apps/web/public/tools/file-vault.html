@@ -141,9 +141,9 @@
 <!-- HERO -->
 <div class="hero">
   <span class="hero-icon">🔐</span>
-  <h1 class="hero-title">Két sắt <span>mã hóa</span></h1>
-  <p class="hero-sub">Mã hóa file bằng AES-256-GCM ngay trên máy bạn. Server không bao giờ thấy nội dung - kể cả chúng tôi cũng không mở được.</p>
-  <span class="hero-badge">🛡️ Zero-knowledge · Mã hóa chuẩn quân đội</span>
+  <h1 class="hero-title">Encrypted <span>vault</span></h1>
+  <p class="hero-sub">Encrypt files with AES-256-GCM right on your device. The server never sees the content - not even we can open it.</p>
+  <span class="hero-badge">🛡️ Zero-knowledge · Military-grade encryption</span>
 </div>
 
 <div class="container">
@@ -153,35 +153,35 @@
     <div class="info-box">
       <div class="info-box-icon">🔒</div>
       <div class="info-box-title">AES-256-GCM</div>
-      <div class="info-box-sub">Chuẩn mã hóa quân đội, không thể crack bằng brute force</div>
+      <div class="info-box-sub">Military-grade encryption, can't be cracked by brute force</div>
     </div>
     <div class="info-box">
       <div class="info-box-icon">💻</div>
-      <div class="info-box-title">Xử lý trên máy bạn</div>
-      <div class="info-box-sub">File không bao giờ rời khỏi thiết bị của bạn</div>
+      <div class="info-box-title">Processed on your device</div>
+      <div class="info-box-sub">Files never leave your device</div>
     </div>
     <div class="info-box">
       <div class="info-box-icon">🗝️</div>
-      <div class="info-box-title">Chỉ bạn có khóa</div>
-      <div class="info-box-sub">Không có mật khẩu = không mở được, kể cả chúng tôi</div>
+      <div class="info-box-title">Only you hold the key</div>
+      <div class="info-box-sub">No password = no one can open it, not even us</div>
     </div>
   </div>
 
   <!-- TABS -->
   <div class="tabs">
-    <button class="tab active" onclick="switchTab('encrypt')">🔒 Mã hóa file</button>
-    <button class="tab" onclick="switchTab('decrypt')">🔓 Giải mã file</button>
+    <button class="tab active" onclick="switchTab('encrypt')">🔒 Encrypt file</button>
+    <button class="tab" onclick="switchTab('decrypt')">🔓 Decrypt file</button>
   </div>
 
   <!-- ══ MÃ HÓA ══ -->
   <div id="tabEncrypt">
     <div class="card">
-      <div class="card-title">Chọn file cần mã hóa</div>
+      <div class="card-title">Choose a file to encrypt</div>
       <div class="drop-zone" id="encDropZone">
         <input type="file" id="encFileInput" onchange="handleEncFile(this.files[0])"/>
         <span class="drop-icon">📁</span>
-        <div class="drop-title">Kéo thả file vào đây</div>
-        <div class="drop-sub">Mọi loại file · Không giới hạn dung lượng</div>
+        <div class="drop-title">Drag & drop a file here</div>
+        <div class="drop-sub">Any file type · No size limit</div>
       </div>
       <div class="file-item" id="encFileItem">
         <span class="file-item-icon" id="encFileIcon">📄</span>
@@ -193,34 +193,34 @@
       </div>
 
       <div class="pass-wrap">
-        <span class="pass-label">Mật khẩu mã hóa</span>
-        <input type="password" class="pass-input" id="encPass" placeholder="Nhập mật khẩu mạnh..." oninput="checkStrength()"/>
+        <span class="pass-label">Encryption password</span>
+        <input type="password" class="pass-input" id="encPass" placeholder="Enter a strong password..." oninput="checkStrength()"/>
         <button class="pass-toggle" onclick="togglePass('encPass',this)" type="button">👁</button>
         <div class="pass-strength"><div class="pass-strength-fill" id="strengthFill"></div></div>
       </div>
 
-      <button class="btn-main" id="encBtn" onclick="encryptFile()" disabled>🔒 Mã hóa & Tải về</button>
+      <button class="btn-main" id="encBtn" onclick="encryptFile()" disabled>🔒 Encrypt & Download</button>
 
       <div class="prog-wrap" id="encProg">
         <div class="prog-bar"><div class="prog-fill" id="encProgFill"></div></div>
-        <div class="prog-label" id="encProgLabel">Đang mã hóa...</div>
+        <div class="prog-label" id="encProgLabel">Encrypting...</div>
       </div>
 
       <div class="result visible" id="encResult" style="display:none">
         <div class="result-icon">✅</div>
-        <div class="result-title">Mã hóa thành công!</div>
+        <div class="result-title">Encryption successful!</div>
         <div class="result-sub" id="encResultSub"></div>
-        <a class="btn-dl" id="encDlBtn" href="#" download>⬇ Tải file đã mã hóa (.vault)</a>
-        <br/><span class="btn-reset" onclick="resetEnc()">Mã hóa file khác</span>
+        <a class="btn-dl" id="encDlBtn" href="#" download>⬇ Download encrypted file (.vault)</a>
+        <br/><span class="btn-reset" onclick="resetEnc()">Encrypt another file</span>
       </div>
 
       <div class="err" id="encErr"></div>
     </div>
 
     <div class="card" style="background:#fffbeb;border-color:#fde68a">
-      <div class="card-title" style="color:#92400e">⚠️ Quan trọng</div>
+      <div class="card-title" style="color:#92400e">⚠️ Important</div>
       <p style="font-size:0.82rem;color:#78350f;line-height:1.7">
-        Nếu quên mật khẩu, <strong>không có cách nào khôi phục file</strong>. Hãy lưu mật khẩu ở nơi an toàn. File được mã hóa có đuôi <code>.vault</code> và chỉ mở được bằng công cụ này với đúng mật khẩu.
+        If you forget the password, <strong>there is no way to recover the file</strong>. Keep your password somewhere safe. Encrypted files have a <code>.vault</code> extension and can only be opened with this tool and the correct password.
       </p>
     </div>
   </div>
@@ -228,12 +228,12 @@
   <!-- ══ GIẢI MÃ ══ -->
   <div id="tabDecrypt" style="display:none">
     <div class="card">
-      <div class="card-title">Chọn file .vault cần giải mã</div>
+      <div class="card-title">Choose a .vault file to decrypt</div>
       <div class="drop-zone" id="decDropZone">
         <input type="file" id="decFileInput" accept=".vault" onchange="handleDecFile(this.files[0])"/>
         <span class="drop-icon">🔐</span>
-        <div class="drop-title">Kéo thả file .vault vào đây</div>
-        <div class="drop-sub">Chỉ nhận file .vault đã được mã hóa bởi File Vault</div>
+        <div class="drop-title">Drag & drop a .vault file here</div>
+        <div class="drop-sub">Only accepts .vault files encrypted by File Vault</div>
       </div>
       <div class="file-item" id="decFileItem">
         <span class="file-item-icon">🔐</span>
@@ -245,24 +245,24 @@
       </div>
 
       <div class="pass-wrap">
-        <span class="pass-label">Mật khẩu giải mã</span>
-        <input type="password" class="pass-input" id="decPass" placeholder="Nhập mật khẩu đã dùng khi mã hóa..."/>
+        <span class="pass-label">Decryption password</span>
+        <input type="password" class="pass-input" id="decPass" placeholder="Enter the password used when encrypting..."/>
         <button class="pass-toggle" onclick="togglePass('decPass',this)" type="button">👁</button>
       </div>
 
-      <button class="btn-main" id="decBtn" onclick="decryptFile()" disabled>🔓 Giải mã & Tải về</button>
+      <button class="btn-main" id="decBtn" onclick="decryptFile()" disabled>🔓 Decrypt & Download</button>
 
       <div class="prog-wrap" id="decProg">
         <div class="prog-bar"><div class="prog-fill" id="decProgFill"></div></div>
-        <div class="prog-label" id="decProgLabel">Đang giải mã...</div>
+        <div class="prog-label" id="decProgLabel">Decrypting...</div>
       </div>
 
       <div class="result" id="decResult" style="display:none">
         <div class="result-icon">✅</div>
-        <div class="result-title">Giải mã thành công!</div>
+        <div class="result-title">Decryption successful!</div>
         <div class="result-sub" id="decResultSub"></div>
-        <a class="btn-dl" id="decDlBtn" href="#" download>⬇ Tải file gốc</a>
-        <br/><span class="btn-reset" onclick="resetDec()">Giải mã file khác</span>
+        <a class="btn-dl" id="decDlBtn" href="#" download>⬇ Download original file</a>
+        <br/><span class="btn-reset" onclick="resetDec()">Decrypt another file</span>
       </div>
 
       <div class="err" id="decErr"></div>
@@ -366,7 +366,7 @@ document.getElementById('encPass').addEventListener('input', updateEncBtn);
 function handleDecFile(file) {
   if (!file) return;
   if (!file.name.endsWith('.vault')) {
-    showErr('decErr', 'Vui lòng chọn file .vault');
+    showErr('decErr', 'Please choose a .vault file');
     return;
   }
   decFile = file;
@@ -418,30 +418,30 @@ const MAGIC = new Uint8Array([0x51, 0x56, 0x4C, 0x54]); // "QVLT"
 async function encryptFile() {
   if (!encFile) return;
   const pass = document.getElementById('encPass').value;
-  if (pass.length < 6) { showErr('encErr', 'Mật khẩu ít nhất 6 ký tự'); return; }
+  if (pass.length < 6) { showErr('encErr', 'Password must be at least 6 characters'); return; }
 
   const btn = document.getElementById('encBtn');
   btn.disabled = true;
-  btn.textContent = '⏳ Đang mã hóa...';
-  setProgress('enc', 10, 'Đang đọc file...');
+  btn.textContent = '⏳ Encrypting...';
+  setProgress('enc', 10, 'Reading file...');
   document.getElementById('encProg').classList.add('visible');
   document.getElementById('encResult').style.display = 'none';
   hideErr('encErr');
 
   try {
     const fileData = await readFileAsArrayBuffer(encFile);
-    setProgress('enc', 30, 'Đang tạo khóa...');
+    setProgress('enc', 30, 'Generating key...');
 
     const salt = crypto.getRandomValues(new Uint8Array(16));
     const iv   = crypto.getRandomValues(new Uint8Array(12));
     const key  = await deriveKey(pass, salt);
 
-    setProgress('enc', 60, 'Đang mã hóa...');
+    setProgress('enc', 60, 'Encrypting...');
     const encrypted = await crypto.subtle.encrypt({ name: 'AES-GCM', iv }, key, fileData);
 
-    setProgress('enc', 85, 'Đang tạo file...');
+    setProgress('enc', 85, 'Creating file...');
 
-    // Ghép header + data
+    // Combine header + data
     const fileNameBytes = new TextEncoder().encode(encFile.name);
     const fnLen = new Uint32Array([fileNameBytes.length]);
 
@@ -454,7 +454,7 @@ async function encryptFile() {
       encrypted
     ]);
 
-    setProgress('enc', 100, 'Hoàn tất!');
+    setProgress('enc', 100, 'Done!');
 
     const url = URL.createObjectURL(blob);
     const outName = encFile.name + '.vault';
@@ -470,22 +470,22 @@ async function encryptFile() {
     }, 500);
 
   } catch(e) {
-    showErr('encErr', 'Mã hóa thất bại: ' + e.message);
+    showErr('encErr', 'Encryption failed: ' + e.message);
   } finally {
     btn.disabled = false;
-    btn.textContent = '🔒 Mã hóa & Tải về';
+    btn.textContent = '🔒 Encrypt & Download';
   }
 }
 
 async function decryptFile() {
   if (!decFile) return;
   const pass = document.getElementById('decPass').value;
-  if (!pass) { showErr('decErr', 'Vui lòng nhập mật khẩu'); return; }
+  if (!pass) { showErr('decErr', 'Please enter a password'); return; }
 
   const btn = document.getElementById('decBtn');
   btn.disabled = true;
-  btn.textContent = '⏳ Đang giải mã...';
-  setProgress('dec', 10, 'Đang đọc file...');
+  btn.textContent = '⏳ Decrypting...';
+  setProgress('dec', 10, 'Reading file...');
   document.getElementById('decProg').classList.add('visible');
   document.getElementById('decResult').style.display = 'none';
   hideErr('decErr');
@@ -494,9 +494,9 @@ async function decryptFile() {
     const buf = await readFileAsArrayBuffer(decFile);
     const data = new Uint8Array(buf);
 
-    // Kiểm tra magic
+    // Check the magic bytes
     for (let i = 0; i < 4; i++) {
-      if (data[i] !== MAGIC[i]) throw new Error('File không phải định dạng .vault hợp lệ');
+      if (data[i] !== MAGIC[i]) throw new Error('Not a valid .vault file');
     }
 
     let offset = 4;
@@ -507,18 +507,18 @@ async function decryptFile() {
     const origName = new TextDecoder().decode(fileNameBytes);
     const encData  = data.slice(offset);
 
-    setProgress('dec', 40, 'Đang tạo khóa...');
+    setProgress('dec', 40, 'Generating key...');
     const key = await deriveKey(pass, salt);
 
-    setProgress('dec', 70, 'Đang giải mã...');
+    setProgress('dec', 70, 'Decrypting...');
     let decrypted;
     try {
       decrypted = await crypto.subtle.decrypt({ name: 'AES-GCM', iv }, key, encData);
     } catch {
-      throw new Error('Sai mật khẩu hoặc file bị hỏng');
+      throw new Error('Wrong password or corrupted file');
     }
 
-    setProgress('dec', 100, 'Hoàn tất!');
+    setProgress('dec', 100, 'Done!');
 
     const blob = new Blob([decrypted]);
     const url  = URL.createObjectURL(blob);
@@ -537,7 +537,7 @@ async function decryptFile() {
     showErr('decErr', e.message);
   } finally {
     btn.disabled = false;
-    btn.textContent = '🔓 Giải mã & Tải về';
+    btn.textContent = '🔓 Decrypt & Download';
   }
 }
 
@@ -550,7 +550,7 @@ function readFileAsArrayBuffer(file) {
   return new Promise((res, rej) => {
     const r = new FileReader();
     r.onload  = e => res(e.target.result);
-    r.onerror = () => rej(new Error('Không đọc được file'));
+    r.onerror = () => rej(new Error('Could not read the file'));
     r.readAsArrayBuffer(file);
   });
 }

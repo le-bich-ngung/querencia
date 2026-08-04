@@ -246,9 +246,9 @@ body.dark .logo-text span:first-child{color:#eee}
   <span class="topbar-title">Photo Collage</span>
 
   <button class="tb-btn" onclick="undoAction()" title="Undo">↩ Undo</button>
-  <button class="tb-btn" onclick="clearCanvas()" title="Xóa tất cả">🗑 Xóa</button>
+  <button class="tb-btn" onclick="clearCanvas()" title="Clear all">🗑 Clear</button>
   <div class="tb-sep"></div>
-  <button class="tb-btn" onclick="addTextOverlay()">✎ Thêm chữ</button>
+  <button class="tb-btn" onclick="addTextOverlay()">✎ Add text</button>
   <div class="tb-sep"></div>
   <button class="tb-btn" onclick="exportCollage('jpeg')">⬇ JPG</button>
   <button class="tb-btn primary" onclick="exportCollage('png')">⬇ PNG</button>
@@ -262,19 +262,19 @@ body.dark .logo-text span:first-child{color:#eee}
 <!-- LEFT: PHOTOS -->
 <div class="sidebar-left">
   <div class="sb-section">
-    <div class="sb-title">Ảnh của bạn</div>
+    <div class="sb-title">Your images</div>
   </div>
 
   <button class="add-photo-btn" id="addPhotoBtn">
     <input type="file" accept="image/*" multiple onchange="addPhotos(this.files)"/>
     <div style="font-size:1.4rem;margin-bottom:4px">＋</div>
-    Thêm ảnh
+    Add images
   </button>
 
   <div class="photo-list" id="photoList">
     <div class="empty-photos" id="emptyPhotos">
       <span class="empty-photos-icon">🖼️</span>
-      Chưa có ảnh nào.<br/>Nhấn nút trên để thêm.
+      No images yet.<br/>Tap the button above to add some.
     </div>
   </div>
 </div>
@@ -286,7 +286,7 @@ body.dark .logo-text span:first-child{color:#eee}
     <div class="canvas-overlay" id="canvasOverlay" style="pointer-events:all"></div>
     <div class="canvas-placeholder" id="canvasPlaceholder">
       <div class="canvas-placeholder-icon">🎨</div>
-      <p>Thêm ảnh rồi chọn layout<br/>để bắt đầu ghép</p>
+      <p>Add images then choose a layout<br/>to start creating</p>
     </div>
   </div>
 </div>
@@ -297,26 +297,26 @@ body.dark .logo-text span:first-child{color:#eee}
   <!-- CANVAS SIZE -->
   <div class="panel">
     <div class="panel-header open" onclick="togglePanel(this)">
-      Kích thước canvas <span class="chevron">▾</span>
+      Canvas size <span class="chevron">▾</span>
     </div>
     <div class="panel-body open">
       <div>
-        <span class="ctrl-label">Tỉ lệ</span>
+        <span class="ctrl-label">Ratio</span>
         <select class="ctrl-select" onchange="setCanvasRatio(this.value)">
           <option value="4:3">4:3 (800×600)</option>
           <option value="16:9">16:9 (960×540)</option>
           <option value="1:1">1:1 (700×700)</option>
           <option value="3:4">3:4 (600×800)</option>
-          <option value="A4">A4 dọc (595×842)</option>
-          <option value="custom">Tùy chỉnh</option>
+          <option value="A4">A4 portrait (595×842)</option>
+          <option value="custom">Custom</option>
         </select>
       </div>
       <div id="customSizeWrap" style="display:none">
         <div class="ctrl-row" style="gap:8px">
-          <input class="ctrl-input" type="number" id="customW" value="800" placeholder="Rộng" style="width:50%"/>
+          <input class="ctrl-input" type="number" id="customW" value="800" placeholder="Width" style="width:50%"/>
           <input class="ctrl-input" type="number" id="customH" value="600" placeholder="Cao" style="width:50%"/>
         </div>
-        <button class="action-btn" style="margin-top:6px" onclick="applyCustomSize()">Áp dụng</button>
+        <button class="action-btn" style="margin-top:6px" onclick="applyCustomSize()">Apply</button>
       </div>
     </div>
   </div>
@@ -331,14 +331,14 @@ body.dark .logo-text span:first-child{color:#eee}
         <!-- Rendered by JS -->
       </div>
       <div>
-        <span class="ctrl-label">Viền giữa ảnh</span>
+        <span class="ctrl-label">Border between images</span>
         <div class="ctrl-row">
           <input type="range" min="0" max="40" value="6" id="gapSlider" oninput="setGap(this.value)"/>
           <span class="ctrl-val" id="gapVal">6px</span>
         </div>
       </div>
       <div>
-        <span class="ctrl-label">Bo góc ảnh</span>
+        <span class="ctrl-label">Image corner radius</span>
         <div class="ctrl-row">
           <input type="range" min="0" max="50" value="0" id="radiusSlider" oninput="setRadius(this.value)"/>
           <span class="ctrl-val" id="radiusVal">0px</span>
@@ -350,26 +350,26 @@ body.dark .logo-text span:first-child{color:#eee}
   <!-- NỀN -->
   <div class="panel">
     <div class="panel-header" onclick="togglePanel(this)">
-      Màu nền <span class="chevron">▾</span>
+      Background color <span class="chevron">▾</span>
     </div>
     <div class="panel-body">
       <div>
-        <span class="ctrl-label">Màu nền</span>
+        <span class="ctrl-label">Background color</span>
         <div class="swatch-row" id="bgSwatches">
-          <div class="swatch active" style="background:#fff" onclick="setBg('#fff',this)" title="Trắng"></div>
+          <div class="swatch active" style="background:#fff" onclick="setBg('#fff',this)" title="White"></div>
           <div class="swatch" style="background:#0e0e0e" onclick="setBg('#0e0e0e',this)" title="Đen"></div>
           <div class="swatch" style="background:#f5f0e8" onclick="setBg('#f5f0e8',this)" title="Kem"></div>
-          <div class="swatch" style="background:#ddeee3" onclick="setBg('#ddeee3',this)" title="Xanh lá nhạt"></div>
-          <div class="swatch" style="background:#e8f0ff" onclick="setBg('#e8f0ff',this)" title="Xanh dương nhạt"></div>
-          <div class="swatch" style="background:#ffe8f0" onclick="setBg('#ffe8f0',this)" title="Hồng nhạt"></div>
-          <div class="swatch" style="background:#fff8e1" onclick="setBg('#fff8e1',this)" title="Vàng nhạt"></div>
-          <div class="swatch custom" title="Màu tùy chỉnh">
+          <div class="swatch" style="background:#ddeee3" onclick="setBg('#ddeee3',this)" title="Light green"></div>
+          <div class="swatch" style="background:#e8f0ff" onclick="setBg('#e8f0ff',this)" title="Light blue"></div>
+          <div class="swatch" style="background:#ffe8f0" onclick="setBg('#ffe8f0',this)" title="Light pink"></div>
+          <div class="swatch" style="background:#fff8e1" onclick="setBg('#fff8e1',this)" title="Light yellow"></div>
+          <div class="swatch custom" title="Custom color">
             <input type="color" class="hidden-color" id="bgColorPicker" oninput="setBg(this.value,null)"/>
           </div>
         </div>
       </div>
       <div>
-        <span class="ctrl-label">Độ dày viền ngoài</span>
+        <span class="ctrl-label">Outer border width</span>
         <div class="ctrl-row">
           <input type="range" min="0" max="60" value="0" id="paddingSlider" oninput="setPadding(this.value)"/>
           <span class="ctrl-val" id="paddingVal">0px</span>
@@ -381,12 +381,12 @@ body.dark .logo-text span:first-child{color:#eee}
   <!-- FILTER -->
   <div class="panel">
     <div class="panel-header" onclick="togglePanel(this)">
-      Bộ lọc màu <span class="chevron">▾</span>
+      Color filters <span class="chevron">▾</span>
     </div>
     <div class="panel-body">
-      <span class="ctrl-label">Áp dụng cho ảnh đang chọn</span>
+      <span class="ctrl-label">Applies to the selected image</span>
       <div class="filter-row">
-        <button class="filter-btn active" onclick="setFilter('none',this)">Gốc</button>
+        <button class="filter-btn active" onclick="setFilter('none',this)">Original</button>
         <button class="filter-btn" onclick="setFilter('grayscale(100%)',this)">B&W</button>
         <button class="filter-btn" onclick="setFilter('sepia(80%)',this)">Sepia</button>
         <button class="filter-btn" onclick="setFilter('saturate(200%)',this)">Vivid</button>
@@ -396,21 +396,21 @@ body.dark .logo-text span:first-child{color:#eee}
         <button class="filter-btn" onclick="setFilter('blur(2px)',this)">Blur</button>
       </div>
       <div>
-        <span class="ctrl-label">Độ sáng</span>
+        <span class="ctrl-label">Brightness</span>
         <div class="ctrl-row">
           <input type="range" min="50" max="150" value="100" id="brightnessSlider" oninput="setImgAdj('brightness',this.value)"/>
           <span class="ctrl-val" id="brightnessVal">100%</span>
         </div>
       </div>
       <div>
-        <span class="ctrl-label">Tương phản</span>
+        <span class="ctrl-label">Contrast</span>
         <div class="ctrl-row">
           <input type="range" min="50" max="200" value="100" id="contrastSlider" oninput="setImgAdj('contrast',this.value)"/>
           <span class="ctrl-val" id="contrastVal">100%</span>
         </div>
       </div>
       <div>
-        <span class="ctrl-label">Bão hòa</span>
+        <span class="ctrl-label">Saturation</span>
         <div class="ctrl-row">
           <input type="range" min="0" max="300" value="100" id="saturateSlider" oninput="setImgAdj('saturate',this.value)"/>
           <span class="ctrl-val" id="saturateVal">100%</span>
@@ -422,10 +422,10 @@ body.dark .logo-text span:first-child{color:#eee}
   <!-- TEXT -->
   <div class="panel">
     <div class="panel-header" onclick="togglePanel(this)">
-      Chữ <span class="chevron">▾</span>
+      Text <span class="chevron">▾</span>
     </div>
     <div class="panel-body" id="textPanel">
-      <span class="ctrl-label" style="color:var(--gray-light);font-size:0.7rem">Chọn text trên canvas để chỉnh</span>
+      <span class="ctrl-label" style="color:var(--gray-light);font-size:0.7rem">Select text on the canvas to editnh</span>
       <div>
         <span class="ctrl-label">Font</span>
         <select class="ctrl-select" id="fontFamily" onchange="updateSelectedText()">
@@ -438,21 +438,21 @@ body.dark .logo-text span:first-child{color:#eee}
         </select>
       </div>
       <div>
-        <span class="ctrl-label">Cỡ chữ</span>
+        <span class="ctrl-label">Font size</span>
         <div class="ctrl-row">
           <input type="range" min="10" max="120" value="28" id="fontSizeSlider" oninput="updateSelectedText()"/>
           <span class="ctrl-val" id="fontSizeVal">28px</span>
         </div>
       </div>
       <div>
-        <span class="ctrl-label">Màu chữ</span>
+        <span class="ctrl-label">Text color</span>
         <div class="swatch-row" id="textSwatches">
           <div class="swatch active" style="background:#fff" onclick="setTextColor('#fff',this)"></div>
           <div class="swatch" style="background:#0e0e0e" onclick="setTextColor('#0e0e0e',this)"></div>
           <div class="swatch" style="background:#4a7c59" onclick="setTextColor('#4a7c59',this)"></div>
           <div class="swatch" style="background:#e74c3c" onclick="setTextColor('#e74c3c',this)"></div>
           <div class="swatch" style="background:#f39c12" onclick="setTextColor('#f39c12',this)"></div>
-          <div class="swatch custom" title="Màu tùy chỉnh">
+          <div class="swatch custom" title="Custom color">
             <input type="color" class="hidden-color" id="textColorPicker" oninput="setTextColor(this.value,null)"/>
           </div>
         </div>
@@ -460,8 +460,8 @@ body.dark .logo-text span:first-child{color:#eee}
       <div class="font-row">
         <button class="style-btn" id="btnBold" onclick="toggleTextStyle('bold')" title="Bold"><b>B</b></button>
         <button class="style-btn" id="btnItalic" onclick="toggleTextStyle('italic')" title="Italic"><i>I</i></button>
-        <button class="style-btn" id="btnShadow" onclick="toggleTextStyle('shadow')" title="Bóng đổ">☁</button>
-        <button class="style-btn" id="btnStroke" onclick="toggleTextStyle('stroke')" title="Viền chữ">◻</button>
+        <button class="style-btn" id="btnShadow" onclick="toggleTextStyle('shadow')" title="Shadow">☁</button>
+        <button class="style-btn" id="btnStroke" onclick="toggleTextStyle('stroke')" title="Text outline">◻</button>
       </div>
       <div class="font-row">
         <button class="align-btn" onclick="setTextAlign('left')">⬅</button>
@@ -469,20 +469,20 @@ body.dark .logo-text span:first-child{color:#eee}
         <button class="align-btn" onclick="setTextAlign('right')">➡</button>
       </div>
       <div>
-        <span class="ctrl-label">Độ trong suốt</span>
+        <span class="ctrl-label">Opacity</span>
         <div class="ctrl-row">
           <input type="range" min="10" max="100" value="100" id="textOpacity" oninput="updateSelectedText()"/>
           <span class="ctrl-val" id="textOpacityVal">100%</span>
         </div>
       </div>
-      <button class="action-btn" onclick="deleteSelectedText()" style="color:#c0392b;border-color:#f5c6c6">🗑 Xóa text đang chọn</button>
+      <button class="action-btn" onclick="deleteSelectedText()" style="color:#c0392b;border-color:#f5c6c6">🗑 Delete selected text</button>
     </div>
   </div>
 
   <!-- SELECTED IMAGE -->
   <div class="panel">
     <div class="panel-header" onclick="togglePanel(this)">
-      Ảnh đang chọn <span class="chevron">▾</span>
+      Selected image <span class="chevron">▾</span>
     </div>
     <div class="panel-body">
       <div>
@@ -493,17 +493,17 @@ body.dark .logo-text span:first-child{color:#eee}
         </div>
       </div>
       <div>
-        <span class="ctrl-label">Zoom ảnh trong khung</span>
+        <span class="ctrl-label">Zoom image in frame</span>
         <div class="ctrl-row">
           <input type="range" min="50" max="200" value="100" id="zoomSlider" oninput="zoomSelected(this.value)"/>
           <span class="ctrl-val" id="zoomVal">100%</span>
         </div>
       </div>
       <div style="display:flex;gap:6px">
-        <button class="action-btn" onclick="moveSelectedUp()" style="flex:1">↑ Lên trên</button>
-        <button class="action-btn" onclick="moveSelectedDown()" style="flex:1">↓ Xuống dưới</button>
+        <button class="action-btn" onclick="moveSelectedUp()" style="flex:1">↑ Move up</button>
+        <button class="action-btn" onclick="moveSelectedDown()" style="flex:1">↓ Move down</button>
       </div>
-      <button class="action-btn" onclick="removeSelectedPhoto()" style="color:#c0392b;border-color:#f5c6c6">🗑 Xóa ảnh này</button>
+      <button class="action-btn" onclick="removeSelectedPhoto()" style="color:#c0392b;border-color:#f5c6c6">🗑 Delete this image</button>
     </div>
   </div>
 
@@ -513,7 +513,7 @@ body.dark .logo-text span:first-child{color:#eee}
 <!-- EXPORT OVERLAY -->
 <div class="export-overlay" id="exportOverlay">
   <div class="spinner"></div>
-  <p>Đang xuất ảnh...</p>
+  <p>Exporting image...</p>
 </div>
 <div class="toast" id="toast"></div>
 
@@ -563,13 +563,13 @@ function togglePanel(header){
 
 // ─── LAYOUT DEFINITIONS ──────────────────────
 const LAYOUTS = [
-  { id:'freeform',    label:'Tự do',   icon:freeformIcon() },
-  { id:'grid-1x1',   label:'1 ảnh',   icon:gridIcon([[1,1]]) },
+  { id:'freeform',    label:'Freeform',   icon:freeformIcon() },
+  { id:'grid-1x1',   label:'1 image',   icon:gridIcon([[1,1]]) },
   { id:'grid-2x1',   label:'2 ngang', icon:gridIcon([[1,2]]) },
-  { id:'grid-1x2',   label:'2 dọc',   icon:gridIcon([[2,1]]) },
+  { id:'grid-1x2',   label:'2 vertical',   icon:gridIcon([[2,1]]) },
   { id:'grid-2x2',   label:'2×2',     icon:gridIcon([[2,2]]) },
   { id:'grid-3x1',   label:'3 ngang', icon:gridIcon([[1,3]]) },
-  { id:'grid-1x3',   label:'3 dọc',   icon:gridIcon([[3,1]]) },
+  { id:'grid-1x3',   label:'3 vertical',   icon:gridIcon([[3,1]]) },
   { id:'grid-3x2',   label:'3×2',     icon:gridIcon([[2,3]]) },
   { id:'tpl-L',      label:'L-shape', icon:lShapeIcon() },
   { id:'tpl-T',      label:'T-shape', icon:tShapeIcon() },
@@ -925,7 +925,7 @@ function setFilter(filter,btn){
   document.querySelectorAll('.filter-btn').forEach(b=>b.classList.remove('active'));
   btn.classList.add('active');
   const p=state.photos.find(x=>x.id===state.selectedPhotoId);
-  if(!p){toast('Chọn ảnh trước!');return;}
+  if(!p){toast('Select an image first!');return;}
   p.filter=filter;
   updateFreeformImage(p);
   if(state.layout!=='freeform') renderCollage();
@@ -976,7 +976,7 @@ function moveSelectedDown(){
 // ─── TEXT OVERLAYS ────────────────────────────
 function addTextOverlay(){
   const id=nextId++;
-  const t={id,text:'Nhập chữ tại đây',x:state.canvasW/2-80,y:state.canvasH/2-20,
+  const t={id,text:'Enter text here',x:state.canvasW/2-80,y:state.canvasH/2-20,
     font:'Plus Jakarta Sans',size:28,color:'#ffffff',
     bold:false,italic:false,shadow:false,stroke:false,align:'left',opacity:100};
   state.texts.push(t);
@@ -1115,14 +1115,14 @@ function deleteSelectedText(){
 
 // ─── EXPORT ──────────────────────────────────
 async function exportCollage(format){
-  if(!state.photos.length){toast('Thêm ảnh trước khi xuất!');return;}
+  if(!state.photos.length){toast('Add images before exporting!');return;}
   const overlay2=document.getElementById('exportOverlay');
   overlay2.classList.add('show');
 
-  // Render tất cả ra canvas trước
+  // Render everything to the canvas first
   await renderToExportCanvas();
 
-  // Vẽ text lên canvas
+  // Draw text onto the canvas
   renderTextsOnCanvas();
 
   setTimeout(()=>{
@@ -1134,8 +1134,8 @@ async function exportCollage(format){
       a.href=url; a.download=`querencia-collage.${format}`; a.click();
       URL.revokeObjectURL(url);
       overlay2.classList.remove('show');
-      toast('✓ Đã xuất ảnh!');
-      // Re-render để restore overlay
+      toast('✓ Image exported!');
+      // Re-render to restore the overlay
       if(state.layout==='freeform') initFreeform();
       else renderCollage();
     }, mime, quality);
@@ -1193,7 +1193,7 @@ function renderTextsOnCanvas(){
 
 // ─── UTILS ───────────────────────────────────
 function clearCanvas(){
-  if(!confirm('Xóa tất cả?')) return;
+  if(!confirm('Clear everything?')) return;
   state.photos=[];state.texts=[];state.selectedPhotoId=null;state.selectedTextId=null;
   overlay.innerHTML='';
   ctx.clearRect(0,0,state.canvasW,state.canvasH);
@@ -1202,7 +1202,7 @@ function clearCanvas(){
   renderPhotoList();
 }
 
-function undoAction(){toast('Undo - tính năng đang phát triển 🔧');}
+function undoAction(){toast('Undo - feature in development 🔧');}
 
 // Click overlay → deselect text
 overlay.addEventListener('click',e=>{
