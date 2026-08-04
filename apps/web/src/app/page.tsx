@@ -477,19 +477,16 @@ export default function HomePage() {
           
           <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(280px, 1fr))', gap: 16 }}>
             <div style={{ background: '#fff', border: '1.5px solid rgba(0,0,0,0.06)', borderRadius: 20, padding: '32px 28px', display: 'flex', flexDirection: 'column', gap: 14 }}>
-              <div style={{ fontSize: '2.5rem' }}>🌿</div>
               <h3 style={{ fontFamily: "'Be Vietnam Pro', sans-serif", fontSize: '2rem', fontWeight: 400, color: '#4a7c59', margin: 0, letterSpacing: -0.5 }}>Nope</h3>
               <p style={{ fontSize: '0.85rem', color: '#888', lineHeight: 1.5, margin: 0 }}>{t('home.nope.desc')}</p>
               <Link href="/dashboard/nope" style={{ display: 'inline-block', padding: '9px 20px', background: '#4a7c59', color: '#fff', borderRadius: 100, textDecoration: 'none', fontSize: '0.82rem', fontWeight: 600, alignSelf: 'flex-start' }}>Use now →</Link>
             </div>
             <div style={{ background: '#fff', border: '1.5px solid rgba(0,0,0,0.06)', borderRadius: 20, padding: '32px 28px', display: 'flex', flexDirection: 'column', gap: 14 }}>
-              <div style={{ fontSize: '2.5rem' }}>🌽</div>
               <h3 style={{ fontFamily: "'Be Vietnam Pro', sans-serif", fontSize: '2rem', fontWeight: 400, color: '#f59e0b', margin: 0, letterSpacing: -0.5 }}>Cùi Bắp</h3>
               <p style={{ fontSize: '0.85rem', color: '#888', lineHeight: 1.5, margin: 0 }}>{t('home.cuibap.desc')}</p>
               <Link href="/dashboard/cui-bap" style={{ display: 'inline-block', padding: '9px 20px', background: '#f59e0b', color: '#fff', borderRadius: 100, textDecoration: 'none', fontSize: '0.82rem', fontWeight: 600, alignSelf: 'flex-start' }}>Use now →</Link>
             </div>
             <div style={{ background: '#fff', border: '1.5px solid rgba(0,0,0,0.06)', borderRadius: 20, padding: '32px 28px', display: 'flex', flexDirection: 'column', gap: 14 }}>
-              <div style={{ fontSize: '2.5rem' }}>🎧</div>
               <h3 style={{ fontFamily: "'Be Vietnam Pro', sans-serif", fontSize: '2rem', fontWeight: 400, color: '#8b5cf6', margin: 0, letterSpacing: -0.5 }}>LàNo</h3>
               <p style={{ fontSize: '0.85rem', color: '#888', lineHeight: 1.5, margin: 0 }}>{t('home.lano.desc')}</p>
               <div style={{ display: 'flex', flexWrap: 'wrap', gap: 8 }}>
