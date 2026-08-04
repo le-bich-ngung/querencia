@@ -18,7 +18,7 @@ export async function apiRequest<T>(
   const res = await fetch(`${API_BASE}${path}`, { ...fetchOpts, headers });
   if (!res.ok) {
     const err = await res.json().catch(() => ({ message: res.statusText }));
-    throw new Error(err.message ?? 'Có lỗi xảy ra');
+    throw new Error(err.message ?? 'Something went wrong');
   }
   return res.json();
 }

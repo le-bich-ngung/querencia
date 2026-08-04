@@ -64,7 +64,7 @@ export function extractContextLinks(text: string): ContextLink[] {
         text:  target.name,
         href:  target.href,
         type:  'tool',
-        description: `Mở ${target.name}`,
+        description: `Open ${target.name}`,
       });
     }
   }
@@ -76,7 +76,7 @@ export function extractContextLinks(text: string): ContextLink[] {
         text:  target.name,
         href:  target.href,
         type:  'app',
-        description: `Vào ${target.name}`,
+        description: `Go to ${target.name}`,
       });
     }
   }

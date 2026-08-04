@@ -143,7 +143,7 @@ export function BottomNav() {
                 borderLeft: '1px solid rgba(255,255,255,0.12)',
                 paddingLeft: 6, marginLeft: 1,
               }}>
-                {qExpiring} hết hạn
+                {qExpiring} expiring
               </span>
             )}
           </Link>
@@ -185,9 +185,9 @@ export function BottomNav() {
             Apps
           </div>
           {[
-            { href: '/dashboard/nope',    emoji: '🌿', name: 'Nope',     desc: 'Chia sẻ kinh nghiệm sống' },
-            { href: '/dashboard/cui-bap', emoji: '🌽', name: 'Cùi Bắp', desc: 'Nhắn tin riêng tư' },
-            { href: '/dashboard/lano',    emoji: '🎧', name: 'LàNo',     desc: 'AI lắng nghe bạn' },
+            { href: '/dashboard/nope',    emoji: '🌿', name: 'Nope',     desc: 'Share your life experience' },
+            { href: '/dashboard/cui-bap', emoji: '🌽', name: 'Cùi Bắp', desc: 'Private messaging' },
+            { href: '/dashboard/lano',    emoji: '🎧', name: 'LàNo',     desc: 'AI that listens' },
           ].map(app => (
             <Link
               key={app.href}
@@ -288,12 +288,12 @@ export function BottomNav() {
 
               {/* Menu items */}
               {[
-                { href: '/wallet',           icon: '🔮', label: 'Q Wallet', sub: `${totalQ} Q còn lại` },
-                { href: '/pricing',          icon: '⭐', label: 'Nâng cấp Pro', sub: '$0.50/ngày · 1/7/30 ngày' },
-                { href: '/q-pool',           icon: '🎁', label: 'Q Pool', sub: 'Tặng Q cho cộng đồng' },
-                { href: '/settings/profile', icon: '👤', label: 'Tài khoản', sub: 'Thông tin cá nhân' },
-                { href: '/settings',         icon: '⚙️', label: 'Cài đặt', sub: 'Giao diện, thông báo' },
-                { href: '/message',          icon: '✉️', label: 'Nhắn tin cho Querencia', sub: 'Gửi feedback · Không hồi âm' },
+                { href: '/wallet',           icon: '🔮', label: 'Q Wallet', sub: `${totalQ} Q remaining` },
+                { href: '/pricing',          icon: '⭐', label: 'Upgrade to Pro', sub: '$0.50/day · 1/7/30 days' },
+                { href: '/q-pool',           icon: '🎁', label: 'Q Pool', sub: 'Gift Q to the community' },
+                { href: '/settings/profile', icon: '👤', label: 'Account', sub: 'Personal info' },
+                { href: '/settings',         icon: '⚙️', label: 'Settings', sub: 'Appearance, notifications' },
+                { href: '/message',          icon: '✉️', label: 'Message Querencia', sub: 'Send feedback · No reply' },
               ].map((item, i, arr) => (
                 <Link
                   key={item.href}
@@ -340,7 +340,7 @@ export function BottomNav() {
               >
                 <span style={{ fontSize: '1.1rem', width: 24, textAlign: 'center' }}>🚪</span>
                 <span style={{ fontSize: '0.85rem', fontWeight: 600, color: '#c0392b' }}>
-                  Đăng xuất
+                  Sign out
                 </span>
               </button>
             </>
@@ -351,7 +351,7 @@ export function BottomNav() {
                 fontSize: '0.85rem', color: 'var(--text-secondary)',
                 textAlign: 'center', marginBottom: 8,
               }}>
-                Đăng nhập để dùng đầy đủ tính năng
+                Sign in to unlock all features
               </p>
               <button
                 onClick={() => { closeAll(); signIn('google'); }}
@@ -368,7 +368,7 @@ export function BottomNav() {
                 onMouseLeave={e => (e.currentTarget.style.background = 'var(--bg)')}
               >
                 <GoogleIcon/>
-                Tiếp tục với Google
+                Continue with Google
               </button>
             </div>
           )}
