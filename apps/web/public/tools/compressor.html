@@ -3,7 +3,7 @@
 <head>
   <meta charset="UTF-8"/>
   <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
-  <title>Nén ảnh & File - Querencia</title>
+  <title>Compress Images & Files - Querencia</title>
   <link rel="preconnect" href="https://fonts.googleapis.com"/>
   <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700&display=swap" rel="stylesheet"/>
   <script src="https://cdnjs.cloudflare.com/ajax/libs/jszip/3.10.1/jszip.min.js"></script>
@@ -118,19 +118,19 @@
       <circle cx="55" cy="55" r="38" fill="none" stroke="#4a7c59" stroke-width="7" stroke-linecap="round"/>
       <line x1="81" y1="79" x2="98" y2="98" stroke="#4a7c59" stroke-width="7" stroke-linecap="round"/>
     </svg>
-    <span class="nav-title">Nén ảnh & File</span>
+    <span class="nav-title">Compress Images & Files</span>
   </a>
   <a class="nav-back" href="/">← Querencia</a>
 </nav>
 
 <div class="container">
-  <h1 class="page-title">Nén ảnh & File</h1>
-  <p class="page-sub">Miễn phí · Xử lý trên máy bạn · Không upload lên server</p>
+  <h1 class="page-title">Compress Images & Files</h1>
+  <p class="page-sub">Free · Processed on your device · No upload to any server</p>
 
   <!-- TABS -->
   <div class="tabs">
-    <button class="tab active" onclick="switchTab('image')">🖼 Nén ảnh</button>
-    <button class="tab" onclick="switchTab('zip')">📦 Nén file (ZIP)</button>
+    <button class="tab active" onclick="switchTab('image')">🖼 Compress image</button>
+    <button class="tab" onclick="switchTab('zip')">📦 Compress files (ZIP)</button>
   </div>
 
   <!-- ══ TAB NÉN ẢNH ══ -->
@@ -138,32 +138,32 @@
     <div class="drop-zone" id="imgDropZone">
       <input type="file" id="imgInput" accept="image/jpeg,image/png,image/webp" onchange="handleImageFile(this.files[0])"/>
       <span class="drop-icon">🖼️</span>
-      <div class="drop-title">Kéo thả ảnh vào đây</div>
-      <div class="drop-sub">Hoặc click để chọn · JPG, PNG, WebP · Tối đa 20MB</div>
+      <div class="drop-title">Drag & drop an image here</div>
+      <div class="drop-sub">Or click to choose · JPG, PNG, WebP · Max 20MB</div>
     </div>
 
     <div class="quality-wrap" id="qualityWrap" style="display:none">
       <div class="quality-header">
-        <span class="quality-label">Chất lượng</span>
+        <span class="quality-label">Quality</span>
         <span class="quality-value" id="qualityVal">80%</span>
       </div>
       <input type="range" id="qualitySlider" min="10" max="100" value="80" oninput="onQualityChange()"/>
-      <div class="quality-hints"><span>Nhỏ hơn</span><span>Chất lượng cao hơn</span></div>
+      <div class="quality-hints"><span>Smaller size</span><span>Higher quality</span></div>
     </div>
 
     <div class="img-preview" id="imgPreview">
       <div class="preview-box">
-        <img id="previewOriginal" src="" alt="Gốc"/>
+        <img id="previewOriginal" src="" alt="Original"/>
         <div class="preview-info">
-          <div class="preview-label">Gốc</div>
+          <div class="preview-label">Original</div>
           <div class="preview-size" id="sizeOriginal">-</div>
           <div class="preview-name" id="nameOriginal"></div>
         </div>
       </div>
       <div class="preview-box">
-        <img id="previewCompressed" src="" alt="Sau nén"/>
+        <img id="previewCompressed" src="" alt="Compressed"/>
         <div class="preview-info">
-          <div class="preview-label">Sau nén</div>
+          <div class="preview-label">Compressed</div>
           <div class="preview-size saved" id="sizeCompressed">-</div>
           <div class="savings-badge" id="savingsBadge"></div>
         </div>
@@ -171,8 +171,8 @@
     </div>
 
     <div class="img-actions" id="imgActions" style="display:none">
-      <button class="btn-primary" onclick="downloadImage()">⬇ Tải ảnh đã nén</button>
-      <button class="btn-outline" onclick="resetImage()">✕ Chọn ảnh khác</button>
+      <button class="btn-primary" onclick="downloadImage()">⬇ Download compressed image</button>
+      <button class="btn-outline" onclick="resetImage()">✕ Choose another image</button>
     </div>
   </div>
 
@@ -181,19 +181,19 @@
     <div class="drop-zone" id="zipDropZone">
       <input type="file" id="zipInput" multiple onchange="handleZipFiles(this.files)"/>
       <span class="drop-icon">📂</span>
-      <div class="drop-title">Kéo thả file vào đây</div>
-      <div class="drop-sub">Hoặc click để chọn · Nhiều file cùng lúc · Tối đa 100MB tổng</div>
+      <div class="drop-title">Drag & drop files here</div>
+      <div class="drop-sub">Or click to choose · Multiple files at once · Max 100MB total</div>
     </div>
 
     <div class="file-list" id="fileList"></div>
 
     <div class="zip-footer" id="zipFooter" style="display:none">
       <div class="zip-info">
-        <strong id="zipFileCount">0 file</strong> · Tổng <strong id="zipTotalSize">0 KB</strong>
+        <strong id="zipFileCount">0 files</strong> · Total <strong id="zipTotalSize">0 KB</strong>
       </div>
       <div style="display:flex;gap:10px;flex-wrap:wrap">
-        <button class="btn-outline" onclick="clearFiles()">✕ Xóa tất cả</button>
-        <button class="btn-primary" id="zipBtn" onclick="createZip()">📦 Tạo ZIP & Tải về</button>
+        <button class="btn-outline" onclick="clearFiles()">✕ Clear all</button>
+        <button class="btn-primary" id="zipBtn" onclick="createZip()">📦 Create ZIP & Download</button>
       </div>
     </div>
   </div>
@@ -227,11 +227,11 @@ function formatSize(bytes) {
 function handleImageFile(file) {
   if (!file) return;
   if (!file.type.startsWith('image/')) {
-    alert('Vui lòng chọn file ảnh (JPG, PNG, WebP)');
+    alert('Please select an image file (JPG, PNG, WebP)');
     return;
   }
   if (file.size > 20 * 1024 * 1024) {
-    alert('File quá lớn! Tối đa 20MB.');
+    alert('File too large! Max 20MB.');
     return;
   }
   originalFile = file;
@@ -277,11 +277,11 @@ function compressImage() {
       const pct   = Math.round(saved / originalFile.size * 100);
       const badge = document.getElementById('savingsBadge');
       if (saved > 0) {
-        badge.textContent = `↓ Tiết kiệm ${formatSize(saved)} (${pct}%)`;
+        badge.textContent = `↓ Saved ${formatSize(saved)} (${pct}%)`;
         badge.style.background = 'var(--sage-pale)';
         badge.style.color = 'var(--sage-dark)';
       } else {
-        badge.textContent = 'Không thể nén thêm ở chất lượng này';
+        badge.textContent = 'Cannot compress further at this quality';
         badge.style.background = '#fef3c7';
         badge.style.color = '#92400e';
       }
@@ -312,7 +312,7 @@ function resetImage() {
   document.getElementById('qualityVal').textContent = '80%';
 }
 
-// Drag & drop cho ảnh
+// Drag & drop for images
 const imgDrop = document.getElementById('imgDropZone');
 imgDrop.addEventListener('dragover', e => { e.preventDefault(); imgDrop.classList.add('dragover'); });
 imgDrop.addEventListener('dragleave', () => imgDrop.classList.remove('dragover'));
@@ -337,13 +337,13 @@ function getFileIcon(name) {
 function handleZipFiles(files) {
   const MAX_TOTAL = 100 * 1024 * 1024; // 100MB
   for (const file of files) {
-    if (zipFiles.find(f => f.name === file.name)) continue; // bỏ qua trùng tên
+    if (zipFiles.find(f => f.name === file.name)) continue; // skip duplicate names
     zipFiles.push(file);
   }
-  // Kiểm tra tổng size
+  // Check total size
   const total = zipFiles.reduce((s, f) => s + f.size, 0);
   if (total > MAX_TOTAL) {
-    alert('Tổng dung lượng vượt quá 100MB!');
+    alert('Total size exceeds 100MB!');
     zipFiles = zipFiles.slice(0, -files.length);
     return;
   }
@@ -367,7 +367,7 @@ function renderFileList() {
         <div class="file-item-name">${esc(f.name)}</div>
         <div class="file-item-size">${formatSize(f.size)}</div>
       </div>
-      <button class="file-item-remove" onclick="removeFile(${i})" title="Xóa">✕</button>
+      <button class="file-item-remove" onclick="removeFile(${i})" title="Delete">✕</button>
     </div>
   `).join('');
 
@@ -392,7 +392,7 @@ async function createZip() {
   if (zipFiles.length === 0) return;
   const btn = document.getElementById('zipBtn');
   btn.disabled = true;
-  btn.textContent = '⏳ Đang nén...';
+  btn.textContent = '⏳ Compressing...';
 
   try {
     const zip = new JSZip();
@@ -405,16 +405,16 @@ async function createZip() {
     link.download = 'querencia-files.zip';
     link.click();
 
-    // Hiện thông báo tiết kiệm
+    // Show the savings message
     const total = zipFiles.reduce((s, f) => s + f.size, 0);
     const saved = total - blob.size;
     const pct   = Math.round(saved / total * 100);
-    if (saved > 0) btn.textContent = `✓ Đã nén! Tiết kiệm ${pct}%`;
-    else btn.textContent = '✓ Đã tạo ZIP!';
-    setTimeout(() => { btn.textContent = '📦 Tạo ZIP & Tải về'; btn.disabled = false; }, 3000);
+    if (saved > 0) btn.textContent = `✓ Compressed! Saved ${pct}%`;
+    else btn.textContent = '✓ ZIP created!';
+    setTimeout(() => { btn.textContent = '📦 Create ZIP & Download'; btn.disabled = false; }, 3000);
   } catch (err) {
-    btn.textContent = '✗ Lỗi!';
-    setTimeout(() => { btn.textContent = '📦 Tạo ZIP & Tải về'; btn.disabled = false; }, 2000);
+    btn.textContent = '✗ Error!';
+    setTimeout(() => { btn.textContent = '📦 Create ZIP & Download'; btn.disabled = false; }, 2000);
   }
 }
 

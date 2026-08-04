@@ -103,14 +103,14 @@
 
 <div class="container">
   <h1 class="page-title">PDF → Word</h1>
-  <p class="page-sub">Chuyển PDF sang .docx · Giữ nguyên bảng biểu, font, layout · Tối đa 20MB</p>
+  <p class="page-sub">Convert PDF to .docx · Keeps tables, fonts, and layout · Max 20MB</p>
 
   <!-- DROP ZONE -->
   <div class="drop-zone" id="dropZone">
     <input type="file" id="fileInput" accept=".pdf,application/pdf" onchange="handleFile(this.files[0])"/>
     <span class="drop-icon">📄</span>
-    <div class="drop-title">Kéo thả file PDF vào đây</div>
-    <div class="drop-sub">Hoặc click để chọn · Tối đa 20MB</div>
+    <div class="drop-title">Drag & drop your PDF here</div>
+    <div class="drop-sub">Or click to choose · Max 20MB</div>
   </div>
 
   <!-- FILE INFO -->
@@ -120,32 +120,32 @@
       <div class="file-name" id="fileName"></div>
       <div class="file-size" id="fileSize"></div>
     </div>
-    <button class="file-remove" onclick="reset()" title="Xóa">✕</button>
+    <button class="file-remove" onclick="reset()" title="Delete">✕</button>
   </div>
 
   <!-- CONVERT BTN -->
   <button class="btn-convert" id="convertBtn" onclick="convert()">
-    ✨ Chuyển sang Word
+    ✨ Convert to Word
   </button>
 
   <!-- PROGRESS -->
   <div class="progress-wrap" id="progressWrap">
     <div class="progress-label">
-      <span id="progressLabel">Đang xử lý...</span>
+      <span id="progressLabel">Processing...</span>
       <span id="progressPct"></span>
     </div>
     <div class="progress-bar"><div class="progress-fill" id="progressFill"></div></div>
-    <div class="progress-hint">Tùy độ phức tạp của tài liệu, có thể mất 10–60 giây</div>
+    <div class="progress-hint">Depending on document complexity, this may take 10-60 seconds</div>
   </div>
 
   <!-- RESULT -->
   <div class="result-wrap" id="resultWrap">
     <div class="result-icon">✅</div>
-    <div class="result-title">Chuyển đổi thành công!</div>
+    <div class="result-title">Conversion successful!</div>
     <div class="result-sub" id="resultSub"></div>
-    <a class="btn-download" id="downloadBtn" href="#" download>⬇ Tải file Word</a>
+    <a class="btn-download" id="downloadBtn" href="#" download>⬇ Download Word file</a>
     <br/>
-    <span class="btn-another" onclick="reset()">Chuyển file khác</span>
+    <span class="btn-another" onclick="reset()">Convert another file</span>
   </div>
 
   <!-- ERROR -->
@@ -155,11 +155,11 @@
 
   <!-- NOTE -->
   <div class="note-box">
-    <div class="note-title">📌 Lưu ý</div>
+    <div class="note-title">📌 Notes</div>
     <div class="note-text">
-      • File PDF scan (chỉ là ảnh chụp) sẽ không chuyển được chữ - cần dùng OCR trước.<br/>
-      • Tài liệu phức tạp (nhiều cột, bảng lồng nhau) có thể cần chỉnh nhỏ sau khi chuyển.<br/>
-      • File chỉ được xử lý tạm thời trên server và xóa ngay sau khi bạn tải về.
+      • Scanned PDFs (image-only) won't convert text - use OCR first.<br/>
+      • Complex documents (multiple columns, nested tables) may need small fixes after conversion.<br/>
+      • Files are processed temporarily on the server and deleted right after you download.
     </div>
   </div>
 </div>
@@ -177,11 +177,11 @@ function formatSize(bytes) {
 function handleFile(file) {
   if (!file) return;
   if (!file.name.toLowerCase().endsWith('.pdf')) {
-    showError('Vui lòng chọn file PDF (.pdf)');
+    showError('Please select a PDF file (.pdf)');
     return;
   }
   if (file.size > 20 * 1024 * 1024) {
-    showError('File quá lớn! Tối đa 20MB.');
+    showError('File too large! Max 20MB.');
     return;
   }
 
@@ -199,14 +199,14 @@ async function convert() {
 
   const btn = document.getElementById('convertBtn');
   btn.disabled = true;
-  btn.textContent = '⏳ Đang gửi...';
+  btn.textContent = '⏳ Uploading...';
 
   // Show progress
   document.getElementById('progressWrap').classList.add('visible');
   document.getElementById('resultWrap').classList.remove('visible');
   document.getElementById('errorWrap').style.display = 'none';
 
-  // Animate progress (giả lập vì không biết tiến trình thật)
+  // Animate progress (simulated since actual progress is unknown)
   animateProgress();
 
   try {
@@ -219,19 +219,19 @@ async function convert() {
     });
 
     if (!res.ok) {
-      const err = await res.json().catch(() => ({ detail: 'Lỗi không xác định' }));
-      throw new Error(err.detail || `Lỗi server: ${res.status}`);
+      const err = await res.json().catch(() => ({ detail: 'Unknown error' }));
+      throw new Error(err.detail || `Server error: ${res.status}`);
     }
 
-    // Nhận file blob
+    // Receive the file blob
     const blob = await res.blob();
     const docxName = selectedFile.name.replace(/\.pdf$/i, '.docx');
 
     if (downloadUrl) URL.revokeObjectURL(downloadUrl);
     downloadUrl = URL.createObjectURL(blob);
 
-    // Hiện kết quả
-    setProgress(100, 'Hoàn tất!');
+    // Show the result
+    setProgress(100, 'Done!');
     document.getElementById('downloadBtn').href     = downloadUrl;
     document.getElementById('downloadBtn').download = docxName;
     document.getElementById('resultSub').textContent = `${docxName} · ${formatSize(blob.size)}`;
@@ -241,28 +241,28 @@ async function convert() {
       document.getElementById('resultWrap').classList.add('visible');
     }, 600);
 
-    btn.textContent = '✨ Chuyển sang Word';
+    btn.textContent = '✨ Convert to Word';
     btn.disabled = false;
 
   } catch (err) {
     document.getElementById('progressWrap').classList.remove('visible');
-    showError(err.message || 'Có lỗi xảy ra. Vui lòng thử lại.');
-    btn.textContent = '✨ Chuyển sang Word';
+    showError(err.message || 'Something went wrong. Please try again.');
+    btn.textContent = '✨ Convert to Word';
     btn.disabled = false;
   }
 }
 
-// Animate thanh progress giả lập
+// Animate a simulated progress bar
 let progressTimer = null;
 function animateProgress() {
   clearInterval(progressTimer);
   let pct = 0;
-  setProgress(0, 'Đang tải file lên...');
+  setProgress(0, 'Uploading file...');
 
   progressTimer = setInterval(() => {
-    if (pct < 30) { pct += 5; setProgress(pct, 'Đang tải file lên...'); }
-    else if (pct < 60) { pct += 2; setProgress(pct, 'Đang phân tích tài liệu...'); }
-    else if (pct < 85) { pct += 1; setProgress(pct, 'Đang chuyển đổi nội dung...'); }
+    if (pct < 30) { pct += 5; setProgress(pct, 'Uploading file...'); }
+    else if (pct < 60) { pct += 2; setProgress(pct, 'Analyzing document...'); }
+    else if (pct < 85) { pct += 1; setProgress(pct, 'Converting content...'); }
     else { clearInterval(progressTimer); }
   }, 400);
 }
@@ -288,7 +288,7 @@ function reset() {
   document.getElementById('fileInfo').classList.remove('visible');
   document.getElementById('convertBtn').classList.remove('visible');
   document.getElementById('convertBtn').disabled = false;
-  document.getElementById('convertBtn').textContent = '✨ Chuyển sang Word';
+  document.getElementById('convertBtn').textContent = '✨ Convert to Word';
   document.getElementById('progressWrap').classList.remove('visible');
   document.getElementById('resultWrap').classList.remove('visible');
   document.getElementById('errorWrap').style.display = 'none';

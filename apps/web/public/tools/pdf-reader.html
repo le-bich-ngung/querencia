@@ -223,14 +223,14 @@
     <span><span style="color:#111">ueren</span><span style="color:#4a7c59">cia</span></span>
   </a>
   <div class="topbar-file">
-    <span class="topbar-filename" id="topFilename">Chưa mở file</span>
+    <span class="topbar-filename" id="topFilename">No file open</span>
     <span class="topbar-meta" id="topMeta"></span>
   </div>
   <div style="display:flex;align-items:center;gap:8px;padding:0 12px">
     <button onclick="toggleDark()" style="background:none;border:none;cursor:pointer;font-size:1rem;color:var(--gray-light);padding:4px">◐</button>
     <button class="topbar-open">
       <input type="file" accept="application/pdf" onchange="openPDF(this.files[0])"/>
-      📂 Mở PDF
+      📂 Open PDF
     </button>
   </div>
 </div>
@@ -238,10 +238,10 @@
 <!-- TOOLBAR -->
 <div class="toolbar">
   <!-- Page nav -->
-  <button class="tb-btn" id="btnPrev" onclick="goPage(-1)" disabled>‹ Trước</button>
+  <button class="tb-btn" id="btnPrev" onclick="goPage(-1)" disabled>‹ Prev</button>
   <input class="tb-input" id="pageInput" type="number" min="1" value="1" onchange="goToPage(parseInt(this.value))"/>
   <span class="tb-label" id="pageTotal">/ -</span>
-  <button class="tb-btn" id="btnNext" onclick="goPage(1)" disabled>Sau ›</button>
+  <button class="tb-btn" id="btnNext" onclick="goPage(1)" disabled>Next ›</button>
 
   <div class="tb-sep"></div>
 
@@ -254,22 +254,22 @@
   <div class="tb-sep"></div>
 
   <!-- Mode -->
-  <button class="tb-btn active" id="btnModeSelect" onclick="setMode('select')" title="Chế độ chọn văn bản">✍ Chọn & Highlight</button>
-  <button class="tb-btn" id="btnModeNote" onclick="setMode('note')" title="Chế độ ghi chú">📌 Ghi chú</button>
+  <button class="tb-btn active" id="btnModeSelect" onclick="setMode('select')" title="Text selection mode">✍ Select & Highlight</button>
+  <button class="tb-btn" id="btnModeNote" onclick="setMode('note')" title="Note mode">📌 Notes</button>
 
   <div class="tb-sep"></div>
 
   <!-- Highlight colors -->
-  <span class="tb-label">Màu:</span>
+  <span class="tb-label">Color:</span>
   <div class="hl-colors">
-    <div class="hl-dot yellow active" title="Vàng" onclick="setHLColor('yellow',this)"></div>
-    <div class="hl-dot green" title="Xanh lá" onclick="setHLColor('green',this)"></div>
-    <div class="hl-dot blue" title="Xanh dương" onclick="setHLColor('blue',this)"></div>
-    <div class="hl-dot pink" title="Hồng" onclick="setHLColor('pink',this)"></div>
+    <div class="hl-dot yellow active" title="Yellow" onclick="setHLColor('yellow',this)"></div>
+    <div class="hl-dot green" title="Green" onclick="setHLColor('green',this)"></div>
+    <div class="hl-dot blue" title="Blue" onclick="setHLColor('blue',this)"></div>
+    <div class="hl-dot pink" title="Pink" onclick="setHLColor('pink',this)"></div>
   </div>
 
   <div class="tb-sep"></div>
-  <button class="tb-btn" onclick="exportData()" title="Xuất ghi chú & highlight">⬇ Xuất ghi chú</button>
+  <button class="tb-btn" onclick="exportData()" title="Export notes & highlights">⬇ Export notes</button>
 </div>
 
 <!-- MAIN -->
@@ -281,18 +281,18 @@
     <!-- Landing -->
     <div class="landing" id="landing">
       <div class="landing-icon">📖</div>
-      <h2>PDF Reader thông minh</h2>
-      <p>Highlight, ghi chú và lưu từ vựng ngay khi đọc. Dữ liệu được lưu tự động vào trình duyệt.</p>
+      <h2>Smart PDF Reader</h2>
+      <p>Highlight, take notes, and save vocabulary as you read. Data is saved automatically in your browser.</p>
       <button class="landing-btn">
         <input type="file" accept="application/pdf" onchange="openPDF(this.files[0])"/>
-        📂 Mở file PDF
+        📂 Open a PDF file
       </button>
     </div>
 
     <!-- Loading -->
     <div class="loading-wrap" id="loadingWrap">
       <div class="spinner"></div>
-      <span style="font-size:0.82rem;color:var(--gray-light)" id="loadingText">Đang tải...</span>
+      <span style="font-size:0.82rem;color:var(--gray-light)" id="loadingText">Loading...</span>
     </div>
 
     <!-- Pages will render here -->
@@ -303,33 +303,33 @@
   <div class="sidebar">
     <div class="sidebar-tabs">
       <button class="stab active" onclick="setSTab('highlights',this)">🖊 Highlight</button>
-      <button class="stab" onclick="setSTab('notes',this)">📌 Ghi chú</button>
-      <button class="stab" onclick="setSTab('vocab',this)">📚 Từ vựng</button>
+      <button class="stab" onclick="setSTab('notes',this)">📌 Notes</button>
+      <button class="stab" onclick="setSTab('vocab',this)">📚 Vocabulary</button>
     </div>
 
     <!-- HIGHLIGHTS -->
     <div class="sidebar-panel active" id="spanel-highlights">
       <div id="hlList">
-        <div class="empty-state"><div class="empty-state-icon">🖊</div><p>Chọn văn bản trong PDF rồi click "Highlight" để lưu.</p></div>
+        <div class="empty-state"><div class="empty-state-icon">🖊</div><p>Select text in the PDF then click "Highlight" to save.</p></div>
       </div>
     </div>
 
     <!-- NOTES -->
     <div class="sidebar-panel" id="spanel-notes">
       <div id="noteList">
-        <div class="empty-state"><div class="empty-state-icon">📌</div><p>Chuyển sang chế độ Ghi chú rồi click vào trang PDF.</p></div>
+        <div class="empty-state"><div class="empty-state-icon">📌</div><p>Switch to Note mode then click on the PDF page.</p></div>
       </div>
     </div>
 
     <!-- VOCABULARY -->
     <div class="sidebar-panel" id="spanel-vocab">
       <div class="vocab-add-form">
-        <input class="vocab-input" id="vocabWord" placeholder="Từ / cụm từ..."/>
-        <input class="vocab-input" id="vocabDef" placeholder="Nghĩa / ghi chú..."/>
-        <button class="vocab-add-btn" onclick="addVocab()">+ Thêm từ vựng</button>
+        <input class="vocab-input" id="vocabWord" placeholder="Word / phrase..."/>
+        <input class="vocab-input" id="vocabDef" placeholder="Meaning / note..."/>
+        <button class="vocab-add-btn" onclick="addVocab()">+ Add word</button>
       </div>
       <div id="vocabList">
-        <div class="empty-state"><div class="empty-state-icon">📚</div><p>Lưu từ vựng khi đọc. Chọn văn bản → "Lưu từ vựng".</p></div>
+        <div class="empty-state"><div class="empty-state-icon">📚</div><p>Save vocabulary as you read. Select text → "Save to vocabulary".</p></div>
       </div>
     </div>
   </div>
@@ -338,21 +338,21 @@
 <!-- CONTEXT MENU -->
 <div class="ctx-menu" id="ctxMenu">
   <div class="ctx-item" onclick="ctxHighlight()"><span>🖊</span> Highlight</div>
-  <div class="ctx-item" onclick="ctxSaveVocab()"><span>📚</span> Lưu vào từ vựng</div>
+  <div class="ctx-item" onclick="ctxSaveVocab()"><span>📚</span> Save to vocabulary</div>
   <div class="ctx-sep"></div>
-  <div class="ctx-item" onclick="ctxCopy()"><span>📋</span> Sao chép</div>
+  <div class="ctx-item" onclick="ctxCopy()"><span>📋</span> Copy</div>
 </div>
 
 <!-- NOTE POPUP -->
 <div class="note-popup" id="notePopup">
   <div class="note-popup-header">
-    <span class="note-popup-title">📌 Ghi chú</span>
+    <span class="note-popup-title">📌 Note</span>
     <button class="note-close" onclick="closeNotePopup()">✕</button>
   </div>
-  <textarea id="noteText" placeholder="Gõ ghi chú của bạn..."></textarea>
+  <textarea id="noteText" placeholder="Type your note..."></textarea>
   <div class="note-popup-footer">
-    <button class="note-del" id="noteDelBtn" onclick="deleteCurrentNote()" style="display:none">Xóa</button>
-    <button class="note-save" onclick="saveNote()">Lưu</button>
+    <button class="note-del" id="noteDelBtn" onclick="deleteCurrentNote()" style="display:none">Delete</button>
+    <button class="note-save" onclick="saveNote()">Save</button>
   </div>
 </div>
 
@@ -404,7 +404,7 @@ async function openPDF(file) {
     await renderAllPages();
     renderSidebar();
   } catch(e) {
-    toast('Không thể mở file này: ' + e.message);
+    toast('Could not open this file: ' + e.message);
     document.getElementById('loadingWrap').style.display = 'none';
     document.getElementById('landing').style.display = 'flex';
   }
@@ -588,7 +588,7 @@ function ctxHighlight() {
   applyHighlightsToPage(pageNum, anchor?.querySelector('.textLayer'));
   renderSidebar();
   window.getSelection()?.removeAllRanges();
-  toast('✓ Đã highlight!');
+  toast('✓ Highlighted!');
 }
 
 function ctxSaveVocab() {
@@ -598,13 +598,13 @@ function ctxSaveVocab() {
   document.getElementById('vocabDef').value = '';
   setSTab('vocab', document.querySelectorAll('.stab')[2]);
   document.getElementById('vocabDef').focus();
-  toast('Điền nghĩa rồi nhấn Thêm từ vựng!', 3000);
+  toast('Fill in the meaning then tap Add word!', 3000);
   window.getSelection()?.removeAllRanges();
 }
 
 function ctxCopy() {
   hideCtx();
-  navigator.clipboard.writeText(selectedText).then(() => toast('✓ Đã sao chép!'));
+  navigator.clipboard.writeText(selectedText).then(() => toast('✓ Copied!'));
 }
 
 // ── APPLY HIGHLIGHTS ──
@@ -633,9 +633,9 @@ function applyHighlightsToPage(pageNum, textLayer) {
         span.style.background = getHLCss(hl.color);
         span.style.borderRadius = '2px';
         span.style.cursor = 'pointer';
-        span.title = 'Highlight · Click để xóa';
+        span.title = 'Highlight · Click to delete';
         span.onclick = () => {
-          if (confirm('Xóa highlight này?')) {
+          if (confirm('Delete this highlight?')) {
             data.highlights = data.highlights.filter(h => h.id !== hl.id);
             saveData();
             renderAllPages();
@@ -682,7 +682,7 @@ function saveNote() {
   closeNotePopup();
   renderAllPages();
   renderSidebar();
-  toast('✓ Đã lưu ghi chú!');
+  toast('✓ Note saved!');
 }
 
 function deleteCurrentNote() {
@@ -692,7 +692,7 @@ function deleteCurrentNote() {
   closeNotePopup();
   renderAllPages();
   renderSidebar();
-  toast('Đã xóa ghi chú.');
+  toast('Note deleted.');
 }
 
 function applyNotesToPage(pageNum, annotLayer) {
@@ -725,13 +725,13 @@ function applyNotesToPage(pageNum, annotLayer) {
 function addVocab() {
   const word = document.getElementById('vocabWord').value.trim();
   const def  = document.getElementById('vocabDef').value.trim();
-  if (!word) { toast('Nhập từ vựng trước!'); return; }
+  if (!word) { toast('Enter a word first!'); return; }
   data.vocab.push({ id: Date.now(), word, def, ts: new Date().toLocaleString('vi-VN') });
   document.getElementById('vocabWord').value = '';
   document.getElementById('vocabDef').value = '';
   saveData();
   renderSidebar();
-  toast('✓ Đã lưu từ vựng!');
+  toast('✓ Word saved!');
 }
 
 function deleteVocab(id) {
@@ -757,7 +757,7 @@ function renderSidebar() {
 function renderHLPanel() {
   const wrap = document.getElementById('hlList');
   if (!data.highlights.length) {
-    wrap.innerHTML = '<div class="empty-state"><div class="empty-state-icon">🖊</div><p>Chọn văn bản trong PDF rồi click "Highlight".</p></div>';
+    wrap.innerHTML = '<div class="empty-state"><div class="empty-state-icon">🖊</div><p>Select text in the PDF then click "Highlight".</p></div>';
     return;
   }
   wrap.innerHTML = data.highlights.map(h => `
@@ -778,7 +778,7 @@ function deleteHL(id) {
 function renderNotePanel() {
   const wrap = document.getElementById('noteList');
   if (!data.notes.length) {
-    wrap.innerHTML = '<div class="empty-state"><div class="empty-state-icon">📌</div><p>Chuyển sang chế độ Ghi chú rồi click vào trang PDF.</p></div>';
+    wrap.innerHTML = '<div class="empty-state"><div class="empty-state-icon">📌</div><p>Switch to Note mode then click on the PDF page.</p></div>';
     return;
   }
   wrap.innerHTML = data.notes.map(n => `
@@ -792,7 +792,7 @@ function renderNotePanel() {
 function renderVocabPanel() {
   const wrap = document.getElementById('vocabList');
   if (!data.vocab.length) {
-    wrap.innerHTML = '<div class="empty-state"><div class="empty-state-icon">📚</div><p>Lưu từ vựng khi đọc. Chọn văn bản → "Lưu vào từ vựng".</p></div>';
+    wrap.innerHTML = '<div class="empty-state"><div class="empty-state-icon">📚</div><p>Save vocabulary as you read. Select text → "Save to vocabulary".</p></div>';
     return;
   }
   wrap.innerHTML = data.vocab.map(v => `
@@ -817,7 +817,7 @@ function loadSavedData() {
 
 // ── EXPORT ──
 function exportData() {
-  if (!pdfDoc) { toast('Mở file PDF trước!'); return; }
+  if (!pdfDoc) { toast('Open a PDF file first!'); return; }
   const out = {
     file: document.getElementById('topFilename').textContent,
     exported: new Date().toLocaleString('vi-VN'),
@@ -830,7 +830,7 @@ function exportData() {
   const a = document.createElement('a');
   a.href = url; a.download = 'querencia-notes.json'; a.click();
   URL.revokeObjectURL(url);
-  toast('✓ Đã xuất ghi chú!');
+  toast('✓ Notes exported!');
 }
 </script>
 </body>

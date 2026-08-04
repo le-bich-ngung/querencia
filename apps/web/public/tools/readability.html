@@ -79,29 +79,29 @@
 
 <div class="header">
   <h1>Readability Checker</h1>
-  <p>Kiểm tra văn bản của bạn dễ đọc không - phù hợp trình độ nào</p>
+  <p>Check how readable your text is - and what grade level it fits</p>
 </div>
 
 <div class="main">
   <!-- LEFT: INPUT -->
   <div class="text-panel">
-    <textarea id="textInput" class="text-area" placeholder="Dán văn bản của bạn vào đây (tiếng Anh hoặc tiếng Việt)...
+    <textarea id="textInput" class="text-area" placeholder="Paste your text here (English or Vietnamese)...
 
-Ví dụ: một đoạn bài viết, email, báo cáo, mô tả sản phẩm..." oninput="updateMeta()"></textarea>
+Example: an article, an email, a report, a product description..." oninput="updateMeta()"></textarea>
     <div class="text-meta">
-      <span id="wordCount">0 từ</span>
-      <span id="sentCount">0 câu</span>
-      <span id="charCount">0 ký tự</span>
-      <span id="readTime">~0 phút đọc</span>
+      <span id="wordCount">0 words</span>
+      <span id="sentCount">0 sentences</span>
+      <span id="charCount">0 characters</span>
+      <span id="readTime">~0 min read</span>
     </div>
-    <button class="analyze-btn" onclick="analyze()">✦ Phân tích ngay</button>
+    <button class="analyze-btn" onclick="analyze()">✦ Analyze now</button>
 
     <!-- Highlighted -->
     <div class="highlighted-wrap" id="hlWrap" style="display:none">
       <div class="legend">
-        <span class="legend-item"><span class="legend-dot" style="background:var(--red)"></span>Từ phức tạp</span>
-        <span class="legend-item"><span class="legend-dot" style="background:var(--amber)"></span>Câu quá dài</span>
-        <span class="legend-item"><span class="legend-dot" style="background:var(--blue)"></span>Bị động</span>
+        <span class="legend-item"><span class="legend-dot" style="background:var(--red)"></span>Complex words</span>
+        <span class="legend-item"><span class="legend-dot" style="background:var(--amber)"></span>Sentence too long</span>
+        <span class="legend-item"><span class="legend-dot" style="background:var(--blue)"></span>Passive voice</span>
       </div>
       <div class="highlighted-text" id="hlText"></div>
     </div>
@@ -111,7 +111,7 @@ Ví dụ: một đoạn bài viết, email, báo cáo, mô tả sản phẩm..."
   <div class="results-panel" id="resultsPanel">
     <div class="empty-state">
       <div class="icon">📖</div>
-      <div>Nhập văn bản và nhấn Phân tích</div>
+      <div>Enter some text and click Analyze</div>
     </div>
   </div>
 </div>
@@ -121,10 +121,10 @@ function updateMeta() {
   const text = document.getElementById('textInput').value;
   const words = text.trim() ? text.trim().split(/\s+/).length : 0;
   const sents = text.trim() ? text.split(/[.!?]+/).filter(s=>s.trim().length>0).length : 0;
-  document.getElementById('wordCount').textContent = words + ' từ';
-  document.getElementById('sentCount').textContent = sents + ' câu';
-  document.getElementById('charCount').textContent = text.length + ' ký tự';
-  document.getElementById('readTime').textContent = '~' + Math.max(1, Math.round(words/200)) + ' phút đọc';
+  document.getElementById('wordCount').textContent = words + ' words';
+  document.getElementById('sentCount').textContent = sents + ' sentences';
+  document.getElementById('charCount').textContent = text.length + ' characters';
+  document.getElementById('readTime').textContent = '~' + Math.max(1, Math.round(words/200)) + ' min read';
 }
 
 const COMPLEX_WORDS = ['utilize','implementation','functionality','consequently','subsequently','nevertheless','aforementioned','commencement','termination','demonstrate','approximately','methodology','facilitate','transparency','comprehensive','fundamental','sophisticated','substantial','accordingly','furthermore','notwithstanding','endeavor','utilize','paradigm','leverage','synergy','bandwidth','ecosystem','scalable'];
@@ -142,7 +142,7 @@ function syllableCount(word) {
 
 function analyze() {
   const text = document.getElementById('textInput').value.trim();
-  if (!text) { alert('Vui lòng nhập văn bản!'); return; }
+  if (!text) { alert('Please enter some text!'); return; }
 
   const sentences = text.split(/[.!?]+/).filter(s => s.trim().length > 2);
   const words = text.split(/\s+/).filter(w => w.length > 0);
@@ -166,21 +166,21 @@ function analyze() {
   const uniqueRatio = Math.round((new Set(words.map(w=>w.toLowerCase())).size / numWords) * 100);
 
   let grade, gradeColor, scoreColor, meter;
-  if (score >= 90)      { grade='Lớp 5 (Rất dễ)'; gradeColor='#27ae60'; scoreColor='#27ae60'; meter=score; }
-  else if (score >= 80) { grade='Lớp 6 (Dễ)'; gradeColor='#2ecc71'; scoreColor='#2ecc71'; meter=score; }
-  else if (score >= 70) { grade='Lớp 7 (Khá dễ)'; gradeColor='#f39c12'; scoreColor='#f39c12'; meter=score; }
-  else if (score >= 60) { grade='Lớp 8–9 (Bình thường)'; gradeColor='#e67e22'; scoreColor='#e67e22'; meter=score; }
-  else if (score >= 50) { grade='Lớp 10–12 (Hơi khó)'; gradeColor='#e74c3c'; scoreColor='#e74c3c'; meter=score; }
-  else if (score >= 30) { grade='Đại học (Khó)'; gradeColor='#c0392b'; scoreColor='#c0392b'; meter=score; }
-  else                  { grade='Chuyên gia (Rất khó)'; gradeColor='#922b21'; scoreColor='#922b21'; meter=score; }
+  if (score >= 90)      { grade='5th grade (Very easy)'; gradeColor='#27ae60'; scoreColor='#27ae60'; meter=score; }
+  else if (score >= 80) { grade='6th grade (Easy)'; gradeColor='#2ecc71'; scoreColor='#2ecc71'; meter=score; }
+  else if (score >= 70) { grade='7th grade (Fairly easy)'; gradeColor='#f39c12'; scoreColor='#f39c12'; meter=score; }
+  else if (score >= 60) { grade='8th-9th grade (Standard)'; gradeColor='#e67e22'; scoreColor='#e67e22'; meter=score; }
+  else if (score >= 50) { grade='10th-12th grade (Fairly difficult)'; gradeColor='#e74c3c'; scoreColor='#e74c3c'; meter=score; }
+  else if (score >= 30) { grade='College (Difficult)'; gradeColor='#c0392b'; scoreColor='#c0392b'; meter=score; }
+  else                  { grade='Graduate level (Very difficult)'; gradeColor='#922b21'; scoreColor='#922b21'; meter=score; }
 
   const suggestions = [];
-  if (avgSentLen > 20) suggestions.push({icon:'✂️', text:`Câu trung bình ${avgSentLen} từ - hãy rút ngắn xuống dưới 20 từ/câu`});
-  if (longSents > 0) suggestions.push({icon:'📏', text:`${longSents} câu quá dài (>25 từ) - chia nhỏ để dễ đọc hơn`});
-  if (complexWords > 2) suggestions.push({icon:'📚', text:`${complexWords} từ phức tạp được phát hiện - dùng từ đơn giản hơn`});
-  if (passiveCount > 3) suggestions.push({icon:'🔄', text:`${passiveCount} cấu trúc bị động - chuyển sang chủ động để tự nhiên hơn`});
-  if (uniqueRatio < 40) suggestions.push({icon:'🔁', text:'Nhiều từ bị lặp lại - thêm từ đồng nghĩa để đa dạng hơn'});
-  if (!suggestions.length) suggestions.push({icon:'✅', text:'Văn bản của bạn rất tốt! Tiếp tục giữ phong cách này.'});
+  if (avgSentLen > 20) suggestions.push({icon:'✂️', text:`Average sentence is ${avgSentLen} words - try to keep it under 20 words per sentence`});
+  if (longSents > 0) suggestions.push({icon:'📏', text:`${longSents} sentences are too long (>25 words) - break them up for easier reading`});
+  if (complexWords > 2) suggestions.push({icon:'📚', text:`${complexWords} complex words detected - use simpler words`});
+  if (passiveCount > 3) suggestions.push({icon:'🔄', text:`${passiveCount} passive constructions - switch to active voice for a more natural read`});
+  if (uniqueRatio < 40) suggestions.push({icon:'🔁', text:'Many repeated words - use synonyms for more variety'});
+  if (!suggestions.length) suggestions.push({icon:'✅', text:'Your text reads really well! Keep up this style.'});
 
   document.getElementById('resultsPanel').innerHTML = `
     <div class="score-card">
@@ -191,21 +191,21 @@ function analyze() {
     </div>
 
     <div class="stat-card">
-      <div class="stat-title">Thống kê</div>
+      <div class="stat-title">Statistics</div>
       ${[
-        ['Số từ', numWords],
-        ['Số câu', numSentences],
-        ['Câu dài (>25 từ)', longSents],
-        ['Từ/câu trung bình', avgSentLen],
-        ['Từ phức tạp', complexWords],
-        ['Cấu trúc bị động', passiveCount],
-        ['Tỉ lệ từ duy nhất', uniqueRatio + '%'],
-        ['Thời gian đọc', '~' + Math.max(1,Math.round(numWords/200)) + ' phút'],
+        ['Word count', numWords],
+        ['Sentence count', numSentences],
+        ['Long sentences (>25 words)', longSents],
+        ['Avg words/sentence', avgSentLen],
+        ['Complex words', complexWords],
+        ['Passive constructions', passiveCount],
+        ['Unique word ratio', uniqueRatio + '%'],
+        ['Reading time', '~' + Math.max(1,Math.round(numWords/200)) + ' min'],
       ].map(([k,v])=>`<div class="stat-row"><span>${k}</span><span class="stat-val">${v}</span></div>`).join('')}
     </div>
 
     <div class="suggestions">
-      <div class="stat-title" style="color:var(--amber)">💡 Gợi ý cải thiện</div>
+      <div class="stat-title" style="color:var(--amber)">💡 Suggestions</div>
       ${suggestions.map(s=>`<div class="sug-item"><span>${s.icon}</span><span>${s.text}</span></div>`).join('')}
     </div>`;
 
@@ -213,12 +213,12 @@ function analyze() {
   let highlighted = text;
   highlighted = highlighted.replace(/([^.!?]*[.!?])/g, (match) => {
     const wordCount = match.trim().split(/\s+/).length;
-    return wordCount > 25 ? `<span class="hl-long" title="Câu quá dài (${wordCount} từ)">${match}</span>` : match;
+    return wordCount > 25 ? `<span class="hl-long" title="Sentence too long (${wordCount} words)">${match}</span>` : match;
   });
   COMPLEX_WORDS.forEach(w => {
-    highlighted = highlighted.replace(new RegExp(`\\b${w}\\b`, 'gi'), `<span class="hl-complex" title="Từ phức tạp">$&</span>`);
+    highlighted = highlighted.replace(new RegExp(`\\b${w}\\b`, 'gi'), `<span class="hl-complex" title="Complex word">$&</span>`);
   });
-  highlighted = highlighted.replace(/\b(is|are|was|were|be|been|being)\s+\w+ed\b/gi, m => `<span class="hl-passive" title="Bị động">${m}</span>`);
+  highlighted = highlighted.replace(/\b(is|are|was|were|be|been|being)\s+\w+ed\b/gi, m => `<span class="hl-passive" title="Passive voice">${m}</span>`);
 
   document.getElementById('hlText').innerHTML = highlighted.replace(/\n/g,'<br/>');
   document.getElementById('hlWrap').style.display = 'block';

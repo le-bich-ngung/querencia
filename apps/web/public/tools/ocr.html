@@ -3,7 +3,7 @@
 <head>
   <meta charset="UTF-8"/>
   <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
-  <meta name="description" content="Querencia OCR - Trích xuất chữ từ ảnh bằng AI"/>
+  <meta name="description" content="Querencia OCR - Extract text from images with AI"/>
   <title>OCR · Querencia Tools</title>
 
   <link rel="shortcut icon" type="image/svg+xml" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 120 120'><circle cx='55' cy='55' r='38' fill='none' stroke='%234a7c59' stroke-width='7' stroke-linecap='round'/><line x1='81' y1='79' x2='98' y2='98' stroke='%234a7c59' stroke-width='7' stroke-linecap='round'/><polyline points='20,55 28,38 35,68 43,32 51,60 58,43 66,70 74,48 90,55' fill='none' stroke='%234a7c59' stroke-width='3' stroke-linecap='round' stroke-linejoin='round'/></svg>"/>
@@ -357,7 +357,7 @@
   <div style="display:flex;align-items:center;gap:12px">
     <button onclick="toggleDark()" title="Dark mode" style="background:none;border:none;cursor:pointer;font-size:1.1rem;color:var(--gray-light);padding:4px 8px">◐</button>
     <a class="nav-back" href="https://querencia.com.vn">
-      ← Về trang chủ
+      ← Back to home
     </a>
   </div>
 </nav>
@@ -365,8 +365,8 @@
 <!-- PAGE HEADER -->
 <div class="page-header">
   <p class="page-label">Tools · OCR</p>
-  <h1 class="page-title">Trích xuất chữ <em>từ ảnh</em> <span class="badge-free">Free</span></h1>
-  <p class="page-desc">Tải ảnh lên - chụp sách, tài liệu, bảng biểu - AI sẽ đọc và chuyển thành văn bản có thể chỉnh sửa ngay.</p>
+  <h1 class="page-title">Extract text <em>from images</em> <span class="badge-free">Free</span></h1>
+  <p class="page-desc">Upload an image - a book, document, or table - and AI will read it and turn it into editable text.</p>
 </div>
 
 <!-- MAIN TOOL -->
@@ -374,15 +374,15 @@
 
   <!-- LEFT: UPLOAD -->
   <div class="panel-left">
-    <p class="panel-title">Ảnh đầu vào</p>
+    <p class="panel-title">Input image</p>
 
     <!-- Drop zone -->
     <div class="drop-zone" id="dropZone">
       <input type="file" id="fileInput" accept="image/*" onchange="handleFile(this.files[0])"/>
       <div class="drop-icon">🖼️</div>
-      <h3>Kéo thả ảnh vào đây</h3>
-      <p>hoặc <span class="browse-link">click để chọn file</span><br/>
-      Hỗ trợ JPG, PNG, WEBP, BMP · Tối đa 20MB</p>
+      <h3>Drag & drop an image here</h3>
+      <p>or <span class="browse-link">click to choose a file</span><br/>
+      Supports JPG, PNG, WEBP, BMP · Max 20MB</p>
     </div>
 
     <!-- Preview -->
@@ -390,19 +390,19 @@
       <img id="previewImg" src="" alt="Preview"/>
       <div class="img-preview-actions">
         <span class="img-filename" id="imgFilename">-</span>
-        <button class="btn-change" onclick="resetFile()">Đổi ảnh</button>
+        <button class="btn-change" onclick="resetFile()">Change image</button>
       </div>
     </div>
 
     <!-- Language -->
     <div class="lang-row">
-      <span class="lang-label">Ngôn ngữ trong ảnh:</span>
+      <span class="lang-label">Language in the image:</span>
       <select class="lang-select" id="langSelect">
-        <option value="vie">🇻🇳 Tiếng Việt</option>
+        <option value="vie">🇻🇳 Vietnamese</option>
         <option value="eng" selected>🇬🇧 English</option>
-        <option value="vie+eng">🇻🇳🇬🇧 Việt + Anh</option>
+        <option value="vie+eng">🇻🇳🇬🇧 Vietnamese + English</option>
         <option value="jpn">🇯🇵 日本語</option>
-        <option value="chi_sim">🇨🇳 中文 (Giản thể)</option>
+        <option value="chi_sim">🇨🇳 中文 (Simplified)</option>
         <option value="kor">🇰🇷 한국어</option>
         <option value="fra">🇫🇷 Français</option>
         <option value="deu">🇩🇪 Deutsch</option>
@@ -413,28 +413,28 @@
     <!-- Action -->
     <div class="action-row">
       <button class="btn-primary" id="btnExtract" onclick="runOCR()" disabled>
-        ✦ Trích xuất văn bản
+        ✦ Extract text
       </button>
-      <span id="fileInfo" style="font-size:0.78rem;color:var(--gray-light)">Chưa chọn ảnh</span>
+      <span id="fileInfo" style="font-size:0.78rem;color:var(--gray-light)">No image selected</span>
     </div>
   </div>
 
   <!-- RIGHT: RESULT -->
   <div class="panel-right">
     <div class="result-header">
-      <p class="panel-title">Kết quả</p>
+      <p class="panel-title">Result</p>
     </div>
 
     <!-- Empty state -->
     <div class="result-empty" id="resultEmpty">
       <div class="result-empty-icon">📄</div>
-      <p>Văn bản trích xuất sẽ xuất hiện ở đây sau khi bạn tải ảnh lên và nhấn trích xuất.</p>
+      <p>The extracted text will appear here after you upload an image and click extract.</p>
     </div>
 
     <!-- Progress -->
     <div class="progress-wrap" id="progressWrap">
       <div class="progress-spinner"></div>
-      <p class="progress-text" id="progressText">Đang khởi tạo...</p>
+      <p class="progress-text" id="progressText">Initializing...</p>
       <div class="progress-bar-wrap">
         <div class="progress-bar" id="progressBar"></div>
       </div>
@@ -443,11 +443,11 @@
     <!-- Result -->
     <div class="result-box" id="resultBox">
       <div class="result-stats" id="resultStats"></div>
-      <textarea class="result-textarea" id="resultText" placeholder="Văn bản sẽ xuất hiện ở đây..."></textarea>
+      <textarea class="result-textarea" id="resultText" placeholder="The extracted text will appear here..."></textarea>
       <div class="result-actions">
-        <button class="btn-primary" onclick="copyText()">Sao chép</button>
-        <button class="btn-outline" onclick="downloadText()">Tải về .txt</button>
-        <button class="btn-outline" onclick="clearResult()">Xóa</button>
+        <button class="btn-primary" onclick="copyText()">Copy</button>
+        <button class="btn-outline" onclick="downloadText()">Download .txt</button>
+        <button class="btn-outline" onclick="clearResult()">Clear</button>
       </div>
     </div>
   </div>
@@ -458,18 +458,18 @@
 <div class="tips-section">
   <div class="tip-card">
     <div class="tip-icon">📸</div>
-    <h4>Ảnh rõ cho kết quả tốt</h4>
-    <p>Chụp thẳng, đủ sáng, không bị mờ. Ảnh độ phân giải cao sẽ cho độ chính xác tốt hơn đáng kể.</p>
+    <h4>Clear images give better results</h4>
+    <p>Shoot straight-on, well-lit, and in focus. Higher resolution images give noticeably better accuracy.</p>
   </div>
   <div class="tip-card">
     <div class="tip-icon">🌐</div>
-    <h4>Chọn đúng ngôn ngữ</h4>
-    <p>Chọn ngôn ngữ phù hợp với nội dung ảnh. Nếu tài liệu có cả Việt lẫn Anh, chọn "Việt + Anh".</p>
+    <h4>Choose the right language</h4>
+    <p>Choose the language that matches your image. If the document has both Vietnamese and English, choose "Vietnamese + English".</p>
   </div>
   <div class="tip-card">
     <div class="tip-icon">🔒</div>
-    <h4>Ảnh không rời khỏi máy</h4>
-    <p>Toàn bộ xử lý diễn ra ngay trên trình duyệt của bạn. Không có ảnh nào được gửi lên server.</p>
+    <h4>Your image never leaves your device</h4>
+    <p>All processing happens right in your browser. No image is ever sent to a server.</p>
   </div>
 </div>
 
@@ -488,7 +488,7 @@
 </footer>
 
 <!-- Copy toast -->
-<div class="copy-toast" id="copyToast">✓ Đã sao chép!</div>
+<div class="copy-toast" id="copyToast">✓ Copied!</div>
 
 <script>
   // ── DARK MODE ──
@@ -514,7 +514,7 @@
   function handleFile(file) {
     if (!file) return;
     if (file.size > 20 * 1024 * 1024) {
-      alert('File quá lớn. Vui lòng chọn ảnh dưới 20MB.'); return;
+      alert('File too large. Please choose an image under 20MB.'); return;
     }
     currentFile = file;
     const reader = new FileReader();
@@ -535,7 +535,7 @@
     document.getElementById('dropZone').style.display = 'block';
     document.getElementById('fileInput').value = '';
     document.getElementById('btnExtract').disabled = true;
-    document.getElementById('fileInfo').textContent = 'Chưa chọn ảnh';
+    document.getElementById('fileInfo').textContent = 'No image selected';
     clearResult();
   }
 
@@ -553,11 +553,11 @@
     btn.disabled = true;
 
     const progressMessages = [
-      'Đang tải engine nhận dạng...',
-      'Đang phân tích ảnh...',
-      'Đang nhận dạng ký tự...',
-      'Đang tinh chỉnh kết quả...',
-      'Gần xong rồi...'
+      'Loading recognition engine...',
+      'Analyzing image...',
+      'Recognizing characters...',
+      'Fine-tuning results...',
+      'Almost done...'
     ];
 
     try {
@@ -569,13 +569,13 @@
             const idx = Math.min(Math.floor(m.progress * progressMessages.length), progressMessages.length - 1);
             document.getElementById('progressText').textContent = progressMessages[idx];
           } else if (m.status === 'loading tesseract core') {
-            document.getElementById('progressText').textContent = 'Đang tải engine nhận dạng...';
+            document.getElementById('progressText').textContent = 'Loading recognition engine...';
           } else if (m.status === 'loading language traineddata') {
-            document.getElementById('progressText').textContent = 'Đang tải dữ liệu ngôn ngữ...';
+            document.getElementById('progressText').textContent = 'Loading language data...';
             const pct = Math.round(m.progress * 100);
             document.getElementById('progressBar').style.width = pct + '%';
           } else if (m.status === 'initialized api') {
-            document.getElementById('progressText').textContent = 'Đang phân tích ảnh...';
+            document.getElementById('progressText').textContent = 'Analyzing image...';
           }
         }
       });
@@ -588,12 +588,12 @@
       // Show result
       document.getElementById('progressWrap').style.display = 'none';
       document.getElementById('resultBox').style.display = 'flex';
-      document.getElementById('resultText').value = text || '(Không nhận dạng được văn bản từ ảnh này)';
+      document.getElementById('resultText').value = text || '(No text recognized in this image)';
 
       document.getElementById('resultStats').innerHTML = `
-        <span class="stat-chip">~${wordCount} từ</span>
-        <span class="stat-chip">${charCount} ký tự</span>
-        <span class="stat-chip">Độ tin cậy: ${confidence}%</span>
+        <span class="stat-chip">~${wordCount} words</span>
+        <span class="stat-chip">${charCount} characters</span>
+        <span class="stat-chip">Confidence: ${confidence}%</span>
       `;
 
     } catch (err) {
@@ -601,7 +601,7 @@
       document.getElementById('resultEmpty').style.display = 'flex';
       document.getElementById('resultEmpty').innerHTML = `
         <div class="result-empty-icon">⚠️</div>
-        <p>Có lỗi xảy ra: ${err.message || 'Không thể nhận dạng ảnh này'}. Thử lại với ảnh khác.</p>
+        <p>Something went wrong: ${err.message || 'Could not recognize this image'}. Try another image.</p>
       `;
     }
 
@@ -614,7 +614,7 @@
     document.getElementById('resultEmpty').style.display = 'flex';
     document.getElementById('resultEmpty').innerHTML = `
       <div class="result-empty-icon">📄</div>
-      <p>Văn bản trích xuất sẽ xuất hiện ở đây sau khi bạn tải ảnh lên và nhấn trích xuất.</p>
+      <p>The extracted text will appear here after you upload an image and click extract.</p>
     `;
   }
 

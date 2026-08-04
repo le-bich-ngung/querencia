@@ -116,46 +116,46 @@
 </nav>
 
 <div class="container">
-  <h1 class="page-title">Ảnh → PDF</h1>
-  <p class="page-sub">Ghép nhiều ảnh thành 1 file PDF · Miễn phí · Xử lý trên máy bạn</p>
+  <h1 class="page-title">Image → PDF</h1>
+  <p class="page-sub">Combine multiple images into 1 PDF file · Free · Processed on your device</p>
 
   <!-- DROP ZONE -->
   <div class="drop-zone" id="dropZone">
     <input type="file" id="fileInput" accept="image/jpeg,image/png,image/webp,image/gif" multiple onchange="handleFiles(this.files)"/>
     <span class="drop-icon">🖼️</span>
-    <div class="drop-title">Kéo thả ảnh vào đây</div>
-    <div class="drop-sub">Hoặc click để chọn · JPG, PNG, WebP · Nhiều ảnh cùng lúc</div>
+    <div class="drop-title">Drag & drop images here</div>
+    <div class="drop-sub">Or click to choose · JPG, PNG, WebP · Multiple images at once</div>
   </div>
 
   <!-- IMAGE LIST -->
   <div class="img-list" id="imgList"></div>
-  <p class="drag-hint" id="dragHint" style="display:none">💡 Kéo thả để sắp xếp thứ tự trang</p>
+  <p class="drag-hint" id="dragHint" style="display:none">💡 Drag & drop to reorder pages</p>
 
   <!-- OPTIONS -->
   <div class="options-bar" id="optionsBar" style="display:none">
     <div class="opt-group">
-      <span class="opt-label">Kích thước trang</span>
+      <span class="opt-label">Page size</span>
       <select class="opt-select" id="pageSize">
         <option value="a4">A4</option>
         <option value="a3">A3</option>
         <option value="letter">Letter</option>
-        <option value="fit">Vừa ảnh</option>
+        <option value="fit">Fit image</option>
       </select>
     </div>
     <div class="opt-group">
-      <span class="opt-label">Chiều</span>
+      <span class="opt-label">Orientation</span>
       <select class="opt-select" id="orientation">
-        <option value="auto">Tự động</option>
-        <option value="portrait">Dọc</option>
-        <option value="landscape">Ngang</option>
+        <option value="auto">Auto</option>
+        <option value="portrait">Portrait</option>
+        <option value="landscape">Landscape</option>
       </select>
     </div>
     <div class="opt-group">
-      <span class="opt-label">Lề</span>
+      <span class="opt-label">Margin</span>
       <select class="opt-select" id="margin">
-        <option value="0">Không có</option>
-        <option value="10" selected>Nhỏ (10mm)</option>
-        <option value="20">Vừa (20mm)</option>
+        <option value="0">None</option>
+        <option value="10" selected>Small (10mm)</option>
+        <option value="20">Medium (20mm)</option>
       </select>
     </div>
   </div>
@@ -163,18 +163,18 @@
   <!-- ACTIONS -->
   <div class="actions-bar" id="actionsBar" style="display:none">
     <div class="actions-info">
-      <strong id="imgCount">0</strong> ảnh · Thêm ảnh hoặc kéo để sắp xếp lại
+      <strong id="imgCount">0</strong> images · Add more or drag to reorder
     </div>
     <div class="actions-btns">
-      <button class="btn-outline" onclick="clearAll()">✕ Xóa tất cả</button>
-      <button class="btn-primary" id="convertBtn" onclick="convertToPDF()">📄 Tạo PDF & Tải về</button>
+      <button class="btn-outline" onclick="clearAll()">✕ Clear all</button>
+      <button class="btn-primary" id="convertBtn" onclick="convertToPDF()">📄 Create PDF & Download</button>
     </div>
   </div>
 
   <!-- PROGRESS -->
   <div class="progress-wrap" id="progressWrap">
     <div class="progress-text">
-      <span id="progressLabel">Đang xử lý...</span>
+      <span id="progressLabel">Processing...</span>
       <span id="progressPct">0%</span>
     </div>
     <div class="progress-bar"><div class="progress-fill" id="progressFill"></div></div>
@@ -230,7 +230,7 @@ function renderList() {
       ondragend="onDragEnd()"
       style="animation:fadeUp 0.2s ease">
       <span class="img-item-num">${i + 1}</span>
-      <button class="img-item-del" onclick="removeImage(${i})" title="Xóa">✕</button>
+      <button class="img-item-del" onclick="removeImage(${i})" title="Delete">✕</button>
       <img src="${img.url}" alt="${esc(img.name)}" loading="lazy"/>
       <div class="img-item-info">
         <div class="img-item-name">${esc(img.name)}</div>
@@ -290,7 +290,7 @@ function onDragEnd() {
   });
 }
 
-// ── Drop zone từ ngoài vào ──
+// ── Drop zone (drag from outside) ──
 const dropZone = document.getElementById('dropZone');
 dropZone.addEventListener('dragover', e => { e.preventDefault(); dropZone.classList.add('dragover'); });
 dropZone.addEventListener('dragleave', () => dropZone.classList.remove('dragover'));
@@ -308,7 +308,7 @@ async function convertToPDF() {
 
   const btn = document.getElementById('convertBtn');
   btn.disabled = true;
-  btn.textContent = '⏳ Đang tạo PDF...';
+  btn.textContent = '⏳ Creating PDF...';
 
   const progressWrap = document.getElementById('progressWrap');
   const progressFill = document.getElementById('progressFill');
@@ -324,7 +324,7 @@ async function convertToPDF() {
     let pdf = null;
 
     for (let i = 0; i < images.length; i++) {
-      progressLabel.textContent = `Đang xử lý ảnh ${i + 1}/${images.length}...`;
+      progressLabel.textContent = `Processing image ${i + 1}/${images.length}...`;
       const pct = Math.round((i / images.length) * 100);
       progressFill.style.width = pct + '%';
       progressPct.textContent = pct + '%';
@@ -332,18 +332,18 @@ async function convertToPDF() {
       const imgData = await loadImageAsDataURL(images[i].file);
       const imgDims = await getImageDimensions(images[i].url);
 
-      // Xác định chiều trang
+      // Determine page orientation
       let orient = orientOpt;
       if (orient === 'auto') {
         orient = imgDims.width >= imgDims.height ? 'landscape' : 'portrait';
       }
 
-      // Kích thước trang PDF (mm)
+      // PDF page size (mm)
       let pageW, pageH;
       if (pageSize === 'a4') { pageW = 210; pageH = 297; }
       else if (pageSize === 'a3') { pageW = 297; pageH = 420; }
       else if (pageSize === 'letter') { pageW = 215.9; pageH = 279.4; }
-      else { // fit - tính theo tỷ lệ ảnh
+      else { // fit - based on image aspect ratio
         const dpi = 96;
         pageW = imgDims.width / dpi * 25.4;
         pageH = imgDims.height / dpi * 25.4;
@@ -358,7 +358,7 @@ async function convertToPDF() {
         pdf.addPage(pageSize === 'fit' ? [pageW, pageH] : pageSize, orient);
       }
 
-      // Tính kích thước ảnh trong trang (giữ tỷ lệ)
+      // Calculate image size within the page (keep aspect ratio)
       const availW = pageW - marginMM * 2;
       const availH = pageH - marginMM * 2;
       const ratio  = Math.min(availW / imgDims.width, availH / imgDims.height);
@@ -370,23 +370,23 @@ async function convertToPDF() {
       const fmt = images[i].file.type === 'image/png' ? 'PNG' : 'JPEG';
       pdf.addImage(imgData, fmt, x, y, drawW, drawH);
 
-      // Nhả luồng cho UI cập nhật
+      // Yield to let the UI update
       await new Promise(r => setTimeout(r, 10));
     }
 
     progressFill.style.width = '100%';
     progressPct.textContent = '100%';
-    progressLabel.textContent = '✓ Hoàn tất!';
+    progressLabel.textContent = '✓ Done!';
 
     pdf.save('querencia-images.pdf');
 
-    btn.textContent = '✓ Đã tạo PDF!';
-    setTimeout(() => { btn.textContent = '📄 Tạo PDF & Tải về'; btn.disabled = false; }, 3000);
+    btn.textContent = '✓ PDF created!';
+    setTimeout(() => { btn.textContent = '📄 Create PDF & Download'; btn.disabled = false; }, 3000);
 
   } catch (err) {
     console.error(err);
-    progressLabel.textContent = '✗ Có lỗi xảy ra';
-    btn.textContent = '📄 Tạo PDF & Tải về';
+    progressLabel.textContent = '✗ Something went wrong';
+    btn.textContent = '📄 Create PDF & Download';
     btn.disabled = false;
   }
 }
