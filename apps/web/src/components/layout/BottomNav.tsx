@@ -168,7 +168,7 @@ export function BottomNav() {
           position: 'fixed', bottom: 58, left: '50%',
           transform: 'translateX(-50%)',
           zIndex: 102, width: 'min(340px, calc(100vw - 32px))',
-          background: 'var(--bg)',
+          background: '#ffffff',
           border: '1.5px solid var(--border)',
           borderRadius: 18,
           boxShadow: '0 -4px 40px rgba(0,0,0,0.15)',
@@ -231,7 +231,7 @@ export function BottomNav() {
           position: 'fixed', bottom: 58, left: '50%',
           transform: 'translateX(-50%)',
           zIndex: 102, width: 'min(340px, calc(100vw - 32px))',
-          background: 'var(--bg)',
+          background: '#ffffff',
           border: '1.5px solid var(--border)',
           borderRadius: 18,
           boxShadow: '0 -4px 40px rgba(0,0,0,0.15)',
@@ -359,13 +359,13 @@ export function BottomNav() {
                   display: 'flex', alignItems: 'center', justifyContent: 'center', gap: 10,
                   padding: '12px', borderRadius: 10,
                   border: '1.5px solid var(--border)',
-                  background: 'var(--bg)', color: 'var(--text)',
+                  background: '#ffffff', color: 'var(--text)',
                   cursor: 'pointer', fontFamily: 'inherit',
                   fontWeight: 700, fontSize: '0.9rem',
                   transition: 'background 0.12s',
                 }}
                 onMouseEnter={e => (e.currentTarget.style.background = 'var(--bg-surface)')}
-                onMouseLeave={e => (e.currentTarget.style.background = 'var(--bg)')}
+                onMouseLeave={e => (e.currentTarget.style.background = '#ffffff')}
               >
                 <GoogleIcon/>
                 Continue with Google
