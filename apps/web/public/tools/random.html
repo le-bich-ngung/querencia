@@ -3,7 +3,7 @@
 <head>
   <meta charset="UTF-8"/>
   <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
-  <meta name="description" content="Querencia Random - Random mọi thứ bạn muốn"/>
+  <meta name="description" content="Querencia Random - Randomize anything you need"/>
   <title>Random · Querencia Tools</title>
 
   <link rel="shortcut icon" type="image/svg+xml" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 120 120'><circle cx='55' cy='55' r='38' fill='none' stroke='%234a7c59' stroke-width='7' stroke-linecap='round'/><line x1='81' y1='79' x2='98' y2='98' stroke='%234a7c59' stroke-width='7' stroke-linecap='round'/><polyline points='20,55 28,38 35,68 43,32 51,60 58,43 66,70 74,48 90,55' fill='none' stroke='%234a7c59' stroke-width='3' stroke-linecap='round' stroke-linejoin='round'/></svg>"/>
@@ -191,27 +191,27 @@
   </a>
   <div style="display:flex;align-items:center;gap:12px">
     <button onclick="toggleDark()" title="Dark mode" style="background:none;border:none;cursor:pointer;font-size:1.1rem;color:var(--gray-light);padding:4px 8px">◐</button>
-    <a class="nav-back" href="https://querencia.com.vn">← Về trang chủ</a>
+    <a class="nav-back" href="https://querencia.com.vn">← Back to home</a>
   </div>
 </nav>
 
 <!-- HEADER -->
 <div class="page-header">
   <p class="page-label">Tools · Random</p>
-  <h1 class="page-title">Random <em>mọi thứ</em> <span class="badge-free">Free</span></h1>
-  <p class="page-desc">Số, danh sách, màu sắc, tên, xúc xắc, đồng xu - bạn muốn random gì, có ngay ở đây.</p>
+  <h1 class="page-title">Random <em>anything</em> <span class="badge-free">Free</span></h1>
+  <p class="page-desc">Numbers, lists, colors, names, dice, coins - whatever you need to randomize, its here.</p>
 </div>
 
 <!-- MODE SELECTOR -->
 <div class="mode-grid">
-  <button class="mode-card active" onclick="setMode('number')"><div class="mode-icon">🔢</div><div class="mode-name">Số ngẫu nhiên</div></button>
-  <button class="mode-card" onclick="setMode('list')"><div class="mode-icon">📋</div><div class="mode-name">Chọn từ danh sách</div></button>
-  <button class="mode-card" onclick="setMode('coin')"><div class="mode-icon">🪙</div><div class="mode-name">Tung đồng xu</div></button>
-  <button class="mode-card" onclick="setMode('dice')"><div class="mode-icon">🎲</div><div class="mode-name">Xúc xắc</div></button>
-  <button class="mode-card" onclick="setMode('color')"><div class="mode-icon">🎨</div><div class="mode-name">Màu ngẫu nhiên</div></button>
-  <button class="mode-card" onclick="setMode('name')"><div class="mode-icon">👤</div><div class="mode-name">Rút thăm tên</div></button>
-  <button class="mode-card" onclick="setMode('password')"><div class="mode-icon">🔑</div><div class="mode-name">Mật khẩu</div></button>
-  <button class="mode-card" onclick="setMode('yesno')"><div class="mode-icon">❓</div><div class="mode-name">Có / Không</div></button>
+  <button class="mode-card active" onclick="setMode('number')"><div class="mode-icon">🔢</div><div class="mode-name">Random number</div></button>
+  <button class="mode-card" onclick="setMode('list')"><div class="mode-icon">📋</div><div class="mode-name">Pick from a list</div></button>
+  <button class="mode-card" onclick="setMode('coin')"><div class="mode-icon">🪙</div><div class="mode-name">Flip a coin</div></button>
+  <button class="mode-card" onclick="setMode('dice')"><div class="mode-icon">🎲</div><div class="mode-name">Dice</div></button>
+  <button class="mode-card" onclick="setMode('color')"><div class="mode-icon">🎨</div><div class="mode-name">Random color</div></button>
+  <button class="mode-card" onclick="setMode('name')"><div class="mode-icon">👤</div><div class="mode-name">Draw names</div></button>
+  <button class="mode-card" onclick="setMode('password')"><div class="mode-icon">🔑</div><div class="mode-name">Password</div></button>
+  <button class="mode-card" onclick="setMode('yesno')"><div class="mode-icon">❓</div><div class="mode-name">Yes / No</div></button>
 </div>
 
 <!-- TOOL AREA -->
@@ -219,20 +219,20 @@
 
   <!-- LEFT: CONFIG -->
   <div class="panel-left">
-    <p class="panel-title" id="leftTitle">Tuỳ chỉnh</p>
+    <p class="panel-title" id="leftTitle">Settings</p>
 
-    <!-- 🔢 Số ngẫu nhiên -->
+    <!-- 🔢 Random number -->
     <div class="input-section active" id="sec-number">
       <div class="form-group">
-        <label class="form-label">Từ</label>
+        <label class="form-label">From</label>
         <input class="form-input" type="number" id="numFrom" value="1"/>
       </div>
       <div class="form-group">
-        <label class="form-label">Đến</label>
+        <label class="form-label">To</label>
         <input class="form-input" type="number" id="numTo" value="100"/>
       </div>
       <div class="form-group">
-        <label class="form-label">Số lượng kết quả</label>
+        <label class="form-label">Number of results</label>
         <div class="slider-wrap">
           <input type="range" min="1" max="20" value="1" id="numCount" oninput="document.getElementById('numCountVal').textContent=this.value"/>
           <span class="slider-val" id="numCountVal">1</span>
@@ -240,25 +240,25 @@
       </div>
       <div class="form-group">
         <label style="display:flex;align-items:center;gap:8px;font-size:0.85rem;cursor:pointer">
-          <input type="checkbox" id="numUnique" style="accent-color:var(--sage)"/> Không trùng nhau
+          <input type="checkbox" id="numUnique" style="accent-color:var(--sage)"/> No duplicates
         </label>
       </div>
       <button class="btn-primary" onclick="doRandom()">🎲 Random!</button>
     </div>
 
-    <!-- 📋 Danh sách -->
+    <!-- 📋 List -->
     <div class="input-section" id="sec-list">
       <div class="form-group">
-        <label class="form-label">Nhập các lựa chọn</label>
+        <label class="form-label">Enter your options</label>
         <div class="tags-wrap" id="listTagsWrap" onclick="document.getElementById('listTagInput').focus()">
           <div class="tags-inner" id="listTagsInner">
-            <input class="tags-input" id="listTagInput" placeholder="Nhập rồi nhấn Enter hoặc dấu phẩy..." onkeydown="handleTagKey(event,'list')"/>
+            <input class="tags-input" id="listTagInput" placeholder="Type then press Enter or comma..." onkeydown="handleTagKey(event,'list')"/>
           </div>
         </div>
-        <p class="form-hint">Nhấn Enter hoặc dấu phẩy để thêm. Ví dụ: Phở, Bún bò, Cơm tấm...</p>
+        <p class="form-hint">Press Enter or comma to add. Example: Pizza, Sushi, Tacos...</p>
       </div>
       <div class="form-group">
-        <label class="form-label">Số lượng chọn ra</label>
+        <label class="form-label">Number to pick</label>
         <div class="slider-wrap">
           <input type="range" min="1" max="10" value="1" id="listCount" oninput="document.getElementById('listCountVal').textContent=this.value"/>
           <span class="slider-val" id="listCountVal">1</span>
@@ -267,33 +267,33 @@
       <button class="btn-primary" onclick="doRandom()">🎲 Random!</button>
     </div>
 
-    <!-- 🪙 Đồng xu -->
+    <!-- 🪙 Coin -->
     <div class="input-section" id="sec-coin">
       <div class="form-group">
-        <label class="form-label">Số lần tung</label>
+        <label class="form-label">Number of flips</label>
         <div class="slider-wrap">
           <input type="range" min="1" max="10" value="1" id="coinCount" oninput="document.getElementById('coinCountVal').textContent=this.value"/>
           <span class="slider-val" id="coinCountVal">1</span>
         </div>
       </div>
       <div class="form-group">
-        <label class="form-label">Tên mặt xu (tuỳ chọn)</label>
+        <label class="form-label">Side names (optional)</label>
         <div class="form-row">
           <div>
-            <input class="form-input" id="coinHead" value="Ngửa" placeholder="Mặt ngửa"/>
+            <input class="form-input" id="coinHead" value="Heads" placeholder="Heads side"/>
           </div>
           <div>
-            <input class="form-input" id="coinTail" value="Sấp" placeholder="Mặt sấp"/>
+            <input class="form-input" id="coinTail" value="Tails" placeholder="Tails side"/>
           </div>
         </div>
       </div>
       <button class="btn-primary" onclick="doRandom()">🪙 Tung!</button>
     </div>
 
-    <!-- 🎲 Xúc xắc -->
+    <!-- 🎲 Dice -->
     <div class="input-section" id="sec-dice">
       <div class="form-group">
-        <label class="form-label">Loại xúc xắc</label>
+        <label class="form-label">Dice type</label>
         <div style="display:flex;flex-wrap:wrap;gap:8px">
           <button class="range-mode-btn active" onclick="selectDice(this,6)" id="dice6">D6</button>
           <button class="range-mode-btn" onclick="selectDice(this,4)">D4</button>
@@ -306,99 +306,99 @@
         <style>.range-mode-btn{padding:7px 16px;border:1.5px solid var(--border);border-radius:20px;font-size:0.8rem;font-weight:600;cursor:pointer;background:none;color:var(--gray);transition:all 0.2s}.range-mode-btn.active{background:var(--sage);color:#fff;border-color:var(--sage)}</style>
       </div>
       <div class="form-group">
-        <label class="form-label">Số xúc xắc</label>
+        <label class="form-label">Number of dice</label>
         <div class="slider-wrap">
           <input type="range" min="1" max="10" value="1" id="diceCount" oninput="document.getElementById('diceCountVal').textContent=this.value"/>
           <span class="slider-val" id="diceCountVal">1</span>
         </div>
       </div>
-      <button class="btn-primary" onclick="doRandom()">🎲 Lắc!</button>
+      <button class="btn-primary" onclick="doRandom()">🎲 Roll!</button>
     </div>
 
-    <!-- 🎨 Màu -->
+    <!-- 🎨 Color -->
     <div class="input-section" id="sec-color">
       <div class="form-group">
-        <label class="form-label">Kiểu màu</label>
+        <label class="form-label">Color style</label>
         <select class="form-input" id="colorMode">
-          <option value="any">Bất kỳ</option>
-          <option value="pastel">Pastel (nhạt)</option>
-          <option value="vivid">Vivid (tươi)</option>
-          <option value="dark">Tối</option>
-          <option value="warm">Ấm (đỏ, cam, vàng)</option>
-          <option value="cool">Lạnh (xanh, tím)</option>
+          <option value="any">Any</option>
+          <option value="pastel">Pastel (soft)</option>
+          <option value="vivid">Vivid (bright)</option>
+          <option value="dark">Dark</option>
+          <option value="warm">Warm (red, orange, yellow)</option>
+          <option value="cool">Cool (blue, purple)</option>
           <option value="earth">Earth tones</option>
         </select>
       </div>
       <div class="form-group">
-        <label class="form-label">Số màu</label>
+        <label class="form-label">Number of colors</label>
         <div class="slider-wrap">
           <input type="range" min="1" max="6" value="1" id="colorCount" oninput="document.getElementById('colorCountVal').textContent=this.value"/>
           <span class="slider-val" id="colorCountVal">1</span>
         </div>
       </div>
-      <button class="btn-primary" onclick="doRandom()">🎨 Random màu!</button>
+      <button class="btn-primary" onclick="doRandom()">🎨 Randomize colors!</button>
     </div>
 
-    <!-- 👤 Rút thăm tên -->
+    <!-- 👤 Draw names -->
     <div class="input-section" id="sec-name">
       <div class="form-group">
-        <label class="form-label">Danh sách tên</label>
+        <label class="form-label">List of names</label>
         <div class="tags-wrap" id="nameTagsWrap" onclick="document.getElementById('nameTagInput').focus()">
           <div class="tags-inner" id="nameTagsInner">
-            <input class="tags-input" id="nameTagInput" placeholder="Nhập tên rồi nhấn Enter..." onkeydown="handleTagKey(event,'name')"/>
+            <input class="tags-input" id="nameTagInput" placeholder="Type a name then press Enter..." onkeydown="handleTagKey(event,'name')"/>
           </div>
         </div>
-        <p class="form-hint">Thêm tên từng người vào danh sách rồi random.</p>
+        <p class="form-hint">Add each persons name to the list then draw randomly.</p>
       </div>
       <div class="form-group">
-        <label class="form-label">Rút bao nhiêu người?</label>
+        <label class="form-label">How many to draw?</label>
         <div class="slider-wrap">
           <input type="range" min="1" max="10" value="1" id="nameCount" oninput="document.getElementById('nameCountVal').textContent=this.value"/>
           <span class="slider-val" id="nameCountVal">1</span>
         </div>
       </div>
-      <button class="btn-primary" onclick="doRandom()">🎲 Rút thăm!</button>
+      <button class="btn-primary" onclick="doRandom()">🎲 Draw!</button>
     </div>
 
-    <!-- 🔑 Mật khẩu -->
+    <!-- 🔑 Password -->
     <div class="input-section" id="sec-password">
       <div class="form-group">
-        <label class="form-label">Độ dài</label>
+        <label class="form-label">Length</label>
         <div class="slider-wrap">
           <input type="range" min="6" max="64" value="16" id="passLen" oninput="document.getElementById('passLenVal').textContent=this.value"/>
           <span class="slider-val" id="passLenVal">16</span>
         </div>
       </div>
       <div class="form-group" style="display:flex;flex-direction:column;gap:10px">
-        <label style="display:flex;align-items:center;gap:8px;font-size:0.85rem;cursor:pointer"><input type="checkbox" id="passUpper" checked style="accent-color:var(--sage)"/> Chữ hoa (A–Z)</label>
-        <label style="display:flex;align-items:center;gap:8px;font-size:0.85rem;cursor:pointer"><input type="checkbox" id="passLower" checked style="accent-color:var(--sage)"/> Chữ thường (a–z)</label>
-        <label style="display:flex;align-items:center;gap:8px;font-size:0.85rem;cursor:pointer"><input type="checkbox" id="passNum" checked style="accent-color:var(--sage)"/> Số (0–9)</label>
-        <label style="display:flex;align-items:center;gap:8px;font-size:0.85rem;cursor:pointer"><input type="checkbox" id="passSym" style="accent-color:var(--sage)"/> Ký tự đặc biệt (!@#...)</label>
+        <label style="display:flex;align-items:center;gap:8px;font-size:0.85rem;cursor:pointer"><input type="checkbox" id="passUpper" checked style="accent-color:var(--sage)"/> Uppercase (A-Z)</label>
+        <label style="display:flex;align-items:center;gap:8px;font-size:0.85rem;cursor:pointer"><input type="checkbox" id="passLower" checked style="accent-color:var(--sage)"/> Lowercase (a-z)</label>
+        <label style="display:flex;align-items:center;gap:8px;font-size:0.85rem;cursor:pointer"><input type="checkbox" id="passNum" checked style="accent-color:var(--sage)"/> Numbers (0-9)</label>
+        <label style="display:flex;align-items:center;gap:8px;font-size:0.85rem;cursor:pointer"><input type="checkbox" id="passSym" style="accent-color:var(--sage)"/> Special characters (!@#...)</label>
       </div>
-      <button class="btn-primary" onclick="doRandom()">🔑 Tạo mật khẩu!</button>
+      <button class="btn-primary" onclick="doRandom()">🔑 Generate password!</button>
     </div>
 
-    <!-- ❓ Có / Không -->
+    <!-- ❓ Yes / No -->
     <div class="input-section" id="sec-yesno">
       <div class="form-group">
-        <label class="form-label">Câu hỏi của bạn (tuỳ chọn)</label>
-        <input class="form-input" id="yesnoQ" placeholder="Ví dụ: Hôm nay có nên ăn ngoài không?"/>
+        <label class="form-label">Your question (optional)</label>
+        <input class="form-input" id="yesnoQ" placeholder="Example: Should I eat out today?"/>
       </div>
       <div class="form-group">
-        <label class="form-label">Tuỳ chỉnh câu trả lời</label>
+        <label class="form-label">Customize the answers</label>
         <div class="form-row">
-          <input class="form-input" id="yesText" value="Có ✅" placeholder="Câu trả lời Yes"/>
-          <input class="form-input" id="noText" value="Không ❌" placeholder="Câu trả lời No"/>
+          <input class="form-input" id="yesText" value="Yes ✅" placeholder="Yes answer"/>
+          <input class="form-input" id="noText" value="No ❌" placeholder="No answer"/>
         </div>
       </div>
       <div class="form-group">
-        <label class="form-label">Tỉ lệ Có : Không</label>
+        <label class="form-label">Yes : No ratio</label>
         <div class="slider-wrap">
           <input type="range" min="10" max="90" value="50" id="yesProb" oninput="updateYesProb()"/>
           <span class="slider-val" id="yesProbVal">50 / 50</span>
         </div>
       </div>
-      <button class="btn-primary" onclick="doRandom()">❓ Hỏi ngay!</button>
+      <button class="btn-primary" onclick="doRandom()">❓ Ask now!</button>
     </div>
 
   </div>
@@ -407,20 +407,20 @@
   <div class="panel-right">
     <div class="result-area">
       <div class="result-display" id="resultDisplay">
-        <button class="copy-btn" id="copyBtn" onclick="copyResult()">Sao chép</button>
+        <button class="copy-btn" id="copyBtn" onclick="copyResult()">Copy</button>
         <div class="result-idle" id="resultIdle">
           <div class="result-idle-icon">🎲</div>
-          <span>Nhấn Random để bắt đầu</span>
+          <span>Click Random to get started</span>
         </div>
         <div id="resultContent" style="display:none;width:100%;text-align:center"></div>
       </div>
 
       <div style="display:flex;gap:10px;width:100%;justify-content:center" id="resultActions" style="display:none">
-        <button class="btn-secondary" onclick="doRandom()" id="btnAgain" style="display:none">↺ Random lại</button>
+        <button class="btn-secondary" onclick="doRandom()" id="btnAgain" style="display:none">↺ Randomize again</button>
       </div>
 
       <div class="history-wrap" id="historyWrap" style="display:none">
-        <div class="history-title">Kết quả gần đây</div>
+        <div class="history-title">Recent results</div>
         <div class="history-list" id="historyList"></div>
       </div>
     </div>
@@ -554,7 +554,7 @@ function renderHistory() {
 // ── COPY ──
 function copyResult() {
   if (!lastResultText) return;
-  navigator.clipboard.writeText(lastResultText).then(() => showToast('✓ Đã sao chép!'));
+  navigator.clipboard.writeText(lastResultText).then(() => showToast('✓ Copied!'));
 }
 
 function showToast(msg) {
@@ -632,7 +632,7 @@ function randomNumber() {
   const count = parseInt(document.getElementById('numCount').value) || 1;
   const unique = document.getElementById('numUnique').checked;
 
-  if (from > to) { showToast('Số bắt đầu phải nhỏ hơn số kết thúc!'); return; }
+  if (from > to) { showToast('Start number must be less than end number!'); return; }
 
   let results;
   if (unique && count > 1) {
@@ -642,16 +642,16 @@ function randomNumber() {
   }
 
   if (count === 1) {
-    showResult(`<div class="result-number">${results[0]}</div><div class="result-label">trong khoảng ${from} – ${to}</div>`, String(results[0]));
+    showResult(`<div class="result-number">${results[0]}</div><div class="result-label">in the range ${from} - ${to}</div>`, String(results[0]));
   } else {
     const pills = results.map(n => `<div class="result-pill">${n}</div>`).join('');
-    showResult(`<div class="result-list">${pills}</div><div class="result-label" style="margin-top:16px">${count} số trong khoảng ${from} – ${to}</div>`, results.join(', '));
+    showResult(`<div class="result-list">${pills}</div><div class="result-label" style="margin-top:16px">${count} numbers in the range ${from} - ${to}</div>`, results.join(', '));
   }
 }
 
 function randomList() {
   const tags = listTags.list;
-  if (tags.length === 0) { showToast('Hãy thêm ít nhất một lựa chọn!'); return; }
+  if (tags.length === 0) { showToast('Add at least one option!'); return; }
   const count = Math.min(parseInt(document.getElementById('listCount').value) || 1, tags.length);
   const picked = shuffle(tags).slice(0, count);
 
@@ -665,8 +665,8 @@ function randomList() {
 
 function randomCoin() {
   const count = parseInt(document.getElementById('coinCount').value) || 1;
-  const headText = document.getElementById('coinHead').value || 'Ngửa';
-  const tailText = document.getElementById('coinTail').value || 'Sấp';
+  const headText = document.getElementById('coinHead').value || 'Heads';
+  const tailText = document.getElementById('coinTail').value || 'Tails';
 
   const results = Array.from({length: count}, () => Math.random() < 0.5 ? headText : tailText);
   const heads = results.filter(r => r === headText).length;
@@ -690,7 +690,7 @@ function randomDice() {
     showResult(`<div class="result-dice">${emoji}</div><div class="result-number" style="font-size:3rem;margin-top:8px">${results[0]}</div><div class="result-label">D${diceMax}</div>`, String(results[0]));
   } else {
     const pills = results.map(r => `<div class="result-pill">${diceMax===6?(diceEmoji[r]||r):r}</div>`).join('');
-    showResult(`<div class="result-list">${pills}</div><div class="result-label" style="margin-top:16px">Tổng: ${total} · ${count} xúc xắc D${diceMax}</div>`, `${results.join(', ')} (Tổng: ${total})`);
+    showResult(`<div class="result-list">${pills}</div><div class="result-label" style="margin-top:16px">Total: ${total} · ${count} D${diceMax} dice</div>`, `${results.join(', ')} (Total: ${total})`);
   }
 }
 
@@ -721,12 +721,12 @@ function randomColor() {
 
 function randomName() {
   const tags = listTags.name;
-  if (tags.length === 0) { showToast('Hãy thêm ít nhất một tên!'); return; }
+  if (tags.length === 0) { showToast('Add at least one name!'); return; }
   const count = Math.min(parseInt(document.getElementById('nameCount').value) || 1, tags.length);
   const picked = shuffle(tags).slice(0, count);
 
   if (count === 1) {
-    showResult(`<div style="font-size:2rem;margin-bottom:8px">🎉</div><div class="result-text">${picked[0]}</div><div class="result-label">được chọn ngẫu nhiên</div>`, picked[0]);
+    showResult(`<div style="font-size:2rem;margin-bottom:8px">🎉</div><div class="result-text">${picked[0]}</div><div class="result-label">selected at random</div>`, picked[0]);
   } else {
     const pills = picked.map((p,i) => `<div class="result-pill">${i+1}. ${p}</div>`).join('');
     showResult(`<div class="result-list" style="flex-direction:column;align-items:center">${pills}</div>`, picked.join(', '));
@@ -746,25 +746,25 @@ function randomPassword() {
   if (useNum)   chars += '0123456789';
   if (useSym)   chars += '!@#$%^&*()-_=+[]{}|;:,.<>?';
 
-  if (!chars) { showToast('Chọn ít nhất một loại ký tự!'); return; }
+  if (!chars) { showToast('Select at least one character type!'); return; }
 
   let pass = '';
   for (let i = 0; i < len; i++) pass += chars[rand(0, chars.length - 1)];
 
   // Strength
   const strength = [useUpper, useLower, useNum, useSym].filter(Boolean).length;
-  const strengthLabel = strength <= 1 ? '🔴 Yếu' : strength === 2 ? '🟡 Trung bình' : strength === 3 ? '🟢 Mạnh' : '💪 Rất mạnh';
+  const strengthLabel = strength <= 1 ? '🔴 Weak' : strength === 2 ? '🟡 Medium' : strength === 3 ? '🟢 Strong' : '💪 Very strong';
 
   showResult(`
     <div style="font-family:monospace;font-size:clamp(0.75rem,2vw,1rem);font-weight:600;word-break:break-all;line-height:1.8;color:var(--black);animation:pop 0.3s both;padding:0 8px">${pass}</div>
-    <div class="result-label" style="margin-top:12px">${len} ký tự · ${strengthLabel}</div>
+    <div class="result-label" style="margin-top:12px">${len} characters · ${strengthLabel}</div>
   `, pass);
 }
 
 function randomYesNo() {
   const prob = parseInt(document.getElementById('yesProb').value) || 50;
-  const yesText = document.getElementById('yesText').value || 'Có ✅';
-  const noText  = document.getElementById('noText').value  || 'Không ❌';
+  const yesText = document.getElementById('yesText').value || 'Yes ✅';
+  const noText  = document.getElementById('noText').value  || 'No ❌';
   const question = document.getElementById('yesnoQ').value.trim();
 
   const isYes = Math.random() * 100 < prob;
