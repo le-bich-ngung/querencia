@@ -87,7 +87,7 @@ export async function decryptIncomingMessage(
       deviceId,
     });
   } catch {
-    return '[🔒 Không thể giải mã tin nhắn]';
+    return '[🔒 Could not decrypt message]';
   }
 }
 
