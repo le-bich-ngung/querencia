@@ -22,7 +22,7 @@ export function LoginScreen({ navigation }: Props) {
 
   async function handleLogin() {
     if (!email.trim() || !password) {
-      Alert.alert('Vui lòng điền đầy đủ thông tin.'); return;
+      Alert.alert('Please fill in all fields.'); return;
     }
     setLoading(true);
     try {
@@ -30,7 +30,7 @@ export function LoginScreen({ navigation }: Props) {
       setAuth(d.user, d.access_token, d.refresh_token);
       setupE2EE().catch(() => {});
     } catch (e: any) {
-      Alert.alert('Đăng nhập thất bại', e.message ?? 'Email hoặc mật khẩu không đúng.');
+      Alert.alert('Sign in failed', e.message ?? 'Incorrect email or password.');
     } finally { setLoading(false); }
   }
 
@@ -39,11 +39,11 @@ export function LoginScreen({ navigation }: Props) {
       <ScrollView contentContainerStyle={s.inner} keyboardShouldPersistTaps="handled">
         <Text style={s.logo}>🌽</Text>
         <Text style={s.title}>Cùi Bắp</Text>
-        <Text style={s.sub}>Nhắn tin riêng tư · Không quảng cáo</Text>
+        <Text style={s.sub}>Private messaging · No ads</Text>
 
-        {/* Social sign-in - Apple trên iOS, Google trên mọi nền tảng */}
+        {/* Social sign-in - Apple on iOS, Google on all platforms */}
         <View style={s.socialBtns}>
-          {/* Apple hiện trước trên iOS (App Store requirement) */}
+          {/* Apple shown first on iOS (App Store requirement) */}
           <AppleSignInButton/>
           <GoogleSignInButton/>
         </View>
@@ -51,7 +51,7 @@ export function LoginScreen({ navigation }: Props) {
         {/* Divider */}
         <View style={s.divider}>
           <View style={s.divLine}/>
-          <Text style={s.divText}>hoặc đăng nhập bằng email</Text>
+          <Text style={s.divText}>or sign in with email</Text>
           <View style={s.divLine}/>
         </View>
 
@@ -59,11 +59,11 @@ export function LoginScreen({ navigation }: Props) {
         <Text style={s.label}>Email</Text>
         <TextInput
           style={s.input} value={email} onChangeText={setEmail}
-          placeholder="ban@email.com" placeholderTextColor={colors.gray}
+          placeholder="you@email.com" placeholderTextColor={colors.gray}
           keyboardType="email-address" autoCapitalize="none" autoCorrect={false}
         />
 
-        <Text style={s.label}>Mật khẩu</Text>
+        <Text style={s.label}>Password</Text>
         <TextInput
           style={s.input} value={password} onChangeText={setPassword}
           placeholder="••••••••" placeholderTextColor={colors.gray}
@@ -76,14 +76,14 @@ export function LoginScreen({ navigation }: Props) {
         >
           {loading
             ? <ActivityIndicator color="#fff"/>
-            : <Text style={s.btnTxt}>Đăng nhập</Text>
+            : <Text style={s.btnTxt}>Sign in</Text>
           }
         </TouchableOpacity>
 
         <TouchableOpacity onPress={() => navigation.navigate('Register')} style={s.switchBtn}>
           <Text style={s.switchTxt}>
-            Chưa có tài khoản?{' '}
-            <Text style={s.link}>Đăng ký miễn phí</Text>
+            Don't have an account?{' '}
+            <Text style={s.link}>Sign up for free</Text>
           </Text>
         </TouchableOpacity>
 
@@ -91,7 +91,7 @@ export function LoginScreen({ navigation }: Props) {
         <View style={s.trustRow}>
           <Text style={s.trustText}>🔒 E2EE</Text>
           <Text style={s.trustDot}>·</Text>
-          <Text style={s.trustText}>🚫 Không quảng cáo</Text>
+          <Text style={s.trustText}>🚫 No ads</Text>
           <Text style={s.trustDot}>·</Text>
           <Text style={s.trustText}>🌿 Querencia</Text>
         </View>
