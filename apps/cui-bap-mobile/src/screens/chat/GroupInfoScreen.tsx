@@ -29,9 +29,9 @@ interface Member {
 type Props = NativeStackScreenProps<RootStackParams, 'GroupInfo'>;
 
 const ROLE_LABEL: Record<string, string> = {
-  owner: '👑 Trưởng nhóm',
+  owner: '👑 Owner',
   admin: '🛡️ Admin',
-  member: 'Thành viên',
+  member: 'Member',
 };
 
 export function GroupInfoScreen({ route, navigation }: Props) {
@@ -65,32 +65,32 @@ export function GroupInfoScreen({ route, navigation }: Props) {
       setShowAdd(false);
       await loadMembers();
     } catch (e: any) {
-      Alert.alert('Lỗi', e.message);
+      Alert.alert('Error', e.message);
     } finally { setAddLoad(false); }
   }
 
   async function handleRemove(member: Member) {
     const isSelf = member.id === currentUser?.id;
-    const title  = isSelf ? 'Rời nhóm' : `Xóa ${member.name}`;
+    const title  = isSelf ? 'Leave group' : `Remove ${member.name}`;
     const msg    = isSelf
-      ? 'Bạn có chắc muốn rời nhóm này không?'
-      : `Xóa ${member.name} khỏi nhóm?`;
+      ? 'Are you sure you want to leave this group?'
+      : `Remove ${member.name} from the group?`;
 
     Alert.alert(title, msg, [
-      { text: 'Hủy', style: 'cancel' },
+      { text: 'Cancel', style: 'cancel' },
       {
-        text: isSelf ? 'Rời nhóm' : 'Xóa',
+        text: isSelf ? 'Leave group' : 'Remove',
         style: 'destructive',
         onPress: async () => {
           try {
             await api.removeGroupMember(groupId, member.id);
             if (isSelf) {
               navigation.goBack();
-              navigation.goBack(); // về chat list
+              navigation.goBack(); // back to chat list
             } else {
               await loadMembers();
             }
-          } catch (e: any) { Alert.alert('Lỗi', e.message); }
+          } catch (e: any) { Alert.alert('Error', e.message); }
         },
       },
     ]);
@@ -98,16 +98,16 @@ export function GroupInfoScreen({ route, navigation }: Props) {
 
   async function handlePromote(member: Member) {
     if (myRole !== 'owner') return;
-    Alert.alert(`Phân quyền ${member.name}`, 'Chọn quyền mới:', [
-      { text: 'Hủy', style: 'cancel' },
+    Alert.alert(`Change role for ${member.name}`, 'Choose a new role:', [
+      { text: 'Cancel', style: 'cancel' },
       {
-        text: member.role === 'admin' ? 'Xuống Member' : 'Lên Admin',
+        text: member.role === 'admin' ? 'Demote to Member' : 'Promote to Admin',
         onPress: async () => {
           try {
             const newRole = member.role === 'admin' ? 'member' : 'admin';
             await api.setMemberRole(groupId, member.id, newRole);
             await loadMembers();
-          } catch (e: any) { Alert.alert('Lỗi', e.message); }
+          } catch (e: any) { Alert.alert('Error', e.message); }
         },
       },
     ]);
@@ -129,7 +129,7 @@ export function GroupInfoScreen({ route, navigation }: Props) {
         <View style={{ flex: 1 }}>
           <Text style={s.memberName}>
             {item.name}
-            {isSelf && <Text style={{ color: colors.sage }}> (bạn)</Text>}
+            {isSelf && <Text style={{ color: colors.sage }}> (you)</Text>}
           </Text>
           <Text style={s.memberRole}>{ROLE_LABEL[item.role]}</Text>
         </View>
@@ -146,7 +146,7 @@ export function GroupInfoScreen({ route, navigation }: Props) {
           {(canManage || canLeave) && (
             <TouchableOpacity onPress={() => handleRemove(item)} style={[s.actionBtn, s.removeBtn]}>
               <Text style={{ color: colors.error, fontSize: 12 }}>
-                {canLeave ? 'Rời' : 'Xóa'}
+                {canLeave ? 'Leave' : 'Remove'}
               </Text>
             </TouchableOpacity>
           )}
@@ -163,13 +163,13 @@ export function GroupInfoScreen({ route, navigation }: Props) {
           <Text style={{ fontSize: 28 }}>👥</Text>
         </View>
         <Text style={s.groupName}>{groupName}</Text>
-        <Text style={s.memberCount}>{members.length} thành viên</Text>
+        <Text style={s.memberCount}>{members.length} members</Text>
       </View>
 
       {/* Add member button */}
       {(myRole === 'owner' || myRole === 'admin') && (
         <TouchableOpacity style={s.addBtn} onPress={() => setShowAdd(true)}>
-          <Text style={s.addBtnTxt}>➕ Thêm thành viên</Text>
+          <Text style={s.addBtnTxt}>➕ Add member</Text>
         </TouchableOpacity>
       )}
 
@@ -185,7 +185,7 @@ export function GroupInfoScreen({ route, navigation }: Props) {
           renderItem={renderMember}
           contentContainerStyle={{ paddingBottom: 40 }}
           ListHeaderComponent={
-            <Text style={s.sectionLabel}>Thành viên</Text>
+            <Text style={s.sectionLabel}>Members</Text>
           }
         />
       )}
@@ -195,17 +195,17 @@ export function GroupInfoScreen({ route, navigation }: Props) {
         onRequestClose={() => setShowAdd(false)}>
         <View style={s.modal}>
           <View style={s.modalHeader}>
-            <Text style={s.modalTitle}>Thêm thành viên</Text>
+            <Text style={s.modalTitle}>Add member</Text>
             <TouchableOpacity onPress={() => setShowAdd(false)}>
-              <Text style={{ color: colors.sage, fontSize: 16 }}>Đóng</Text>
+              <Text style={{ color: colors.sage, fontSize: 16 }}>Close</Text>
             </TouchableOpacity>
           </View>
-          <Text style={s.inputLabel}>Email người dùng</Text>
+          <Text style={s.inputLabel}>User email</Text>
           <TextInput
             style={s.input}
             value={addEmail}
             onChangeText={setAddEmail}
-            placeholder="ban@email.com"
+            placeholder="you@email.com"
             placeholderTextColor={colors.gray}
             keyboardType="email-address"
             autoCapitalize="none"
@@ -218,7 +218,7 @@ export function GroupInfoScreen({ route, navigation }: Props) {
           >
             {addLoading
               ? <ActivityIndicator color="#fff"/>
-              : <Text style={s.confirmTxt}>Thêm vào nhóm</Text>
+              : <Text style={s.confirmTxt}>Add to group</Text>
             }
           </TouchableOpacity>
         </View>
