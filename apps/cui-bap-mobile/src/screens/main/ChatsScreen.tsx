@@ -9,7 +9,7 @@ import { api } from '../../lib/api';
 import { useSocket } from '../../hooks/useSocket';
 import { colors, spacing, radius } from '../../theme';
 import { formatDistanceToNow } from 'date-fns';
-import { vi } from 'date-fns/locale';
+import { enUS } from 'date-fns/locale';
 
 type Props = NativeStackScreenProps<RootStackParams, 'Main'>;
 
@@ -60,12 +60,12 @@ export function ChatsScreen({ navigation }: Props) {
       </View>
       <View style={s.searchWrap}>
         <TextInput style={s.search} value={search} onChangeText={setSearch}
-          placeholder="Tìm kiếm..." placeholderTextColor={colors.gray}/>
+          placeholder="Search..." placeholderTextColor={colors.gray}/>
       </View>
       <View style={s.tabs}>
         {(['chats','groups'] as Tab[]).map(t=>(
           <TouchableOpacity key={t} onPress={()=>setTab(t)} style={[s.tab, tab===t&&s.tabOn]}>
-            <Text style={[s.tabTxt, tab===t&&s.tabTxtOn]}>{t==='chats'?'💬 Chat':'👥 Nhóm'}</Text>
+            <Text style={[s.tabTxt, tab===t&&s.tabTxtOn]}>{t==='chats'?'💬 Chats':'👥 Groups'}</Text>
           </TouchableOpacity>
         ))}
       </View>
@@ -97,13 +97,13 @@ export function ChatsScreen({ navigation }: Props) {
                   </Text>
                   {(c as any).lastMessageAt && (
                     <Text style={s.time}>
-                      {formatDistanceToNow(new Date((c as any).lastMessageAt),{locale:vi})}
+                      {formatDistanceToNow(new Date((c as any).lastMessageAt),{locale:enUS})}
                     </Text>
                   )}
                 </View>
                 <View style={{flexDirection:'row',justifyContent:'space-between',alignItems:'center'}}>
                   <Text style={s.preview} numberOfLines={1}>
-                    {(c as any).lastMessage?.content || (tab==='groups'?`${(c as any).memberCount} thành viên`:'Bắt đầu trò chuyện')}
+                    {(c as any).lastMessage?.content || (tab==='groups'?`${(c as any).memberCount} members`:'Start a conversation')}
                   </Text>
                   {(c as any).unreadCount > 0 && (
                     <View style={s.badge}><Text style={s.badgeTxt}>{(c as any).unreadCount}</Text></View>
@@ -116,7 +116,7 @@ export function ChatsScreen({ navigation }: Props) {
             <View style={s.empty}>
               <Text style={{fontSize:48,marginBottom:12}}>{tab==='chats'?'💬':'👥'}</Text>
               <Text style={{color:colors.gray,textAlign:'center',fontSize:15}}>
-                {tab==='chats'?'Chưa có cuộc trò chuyện\nBấm ✏️ để nhắn tin mới':'Chưa có nhóm nào'}
+                {tab==='chats'?'No conversations yet\nTap ✏️ to start a new one':'No groups yet'}
               </Text>
             </View>
           }

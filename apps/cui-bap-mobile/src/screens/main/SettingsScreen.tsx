@@ -12,7 +12,7 @@ export function SettingsScreen({ navigation }: Props) {
 
   return (
     <View style={s.container}>
-      <Text style={s.title}>Cài đặt</Text>
+      <Text style={s.title}>Settings</Text>
       <TouchableOpacity style={s.card} onPress={() => (navigation as any).navigate('EditProfile')} activeOpacity={0.8}>
         <View style={s.avatar}><Text style={s.avatarTxt}>{user?.name?.[0]?.toUpperCase()}</Text></View>
         <View style={{flex:1}}>
@@ -21,20 +21,20 @@ export function SettingsScreen({ navigation }: Props) {
           <Text style={s.plan}>{user?.plan==='pro'?'⭐ Pro':'Free'}</Text>
         </View>
       </TouchableOpacity>
-      <Text style={s.editHint}>Nhấn để chỉnh sửa hồ sơ</Text>
+      <Text style={s.editHint}>Tap to edit your profile</Text>
       {[
-        {label:'🔔 Thông báo',onPress:()=>{}},
-        {label:'🎨 Giao diện',onPress:()=>{}},
-        {label:'🔒 Bảo mật',onPress:()=>{}},
-        {label:'🌿 Về Querencia',onPress:()=>{}},
+        {label:'🔔 Notifications',onPress:()=>{}},
+        {label:'🎨 Appearance',onPress:()=>{}},
+        {label:'🔒 Security',onPress:()=>{}},
+        {label:'🌿 About Querencia',onPress:()=>{}},
       ].map(item=>(
         <TouchableOpacity key={item.label} style={s.row} onPress={item.onPress}>
           <Text style={s.rowTxt}>{item.label}</Text>
           <Text style={{color:colors.gray,fontSize:20}}>›</Text>
         </TouchableOpacity>
       ))}
-      <TouchableOpacity style={s.logout} onPress={()=>Alert.alert('Đăng xuất?','',[ {text:'Hủy',style:'cancel'},{text:'Đăng xuất',style:'destructive',onPress:()=>logout()} ])}>
-        <Text style={s.logoutTxt}>🚪 Đăng xuất</Text>
+      <TouchableOpacity style={s.logout} onPress={()=>Alert.alert('Sign out?','',[ {text:'Cancel',style:'cancel'},{text:'Sign out',style:'destructive',onPress:()=>logout()} ])}>
+        <Text style={s.logoutTxt}>🚪 Sign out</Text>
       </TouchableOpacity>
     </View>
   );

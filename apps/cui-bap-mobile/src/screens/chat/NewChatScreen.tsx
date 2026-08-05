@@ -18,8 +18,8 @@ export function NewChatScreen({ navigation }: Props) {
   const { setConversations, setGroups } = useChatStore();
 
   async function handle() {
-    if (mode==='direct'&&!email.trim()) { Alert.alert('Nhập email người nhận'); return; }
-    if (mode==='group'&&!name.trim())   { Alert.alert('Nhập tên nhóm'); return; }
+    if (mode==='direct'&&!email.trim()) { Alert.alert('Enter the recipient email'); return; }
+    if (mode==='group'&&!name.trim())   { Alert.alert('Enter a group name'); return; }
     setLoading(true);
     try {
       if (mode==='direct') {
@@ -33,7 +33,7 @@ export function NewChatScreen({ navigation }: Props) {
         setGroups(grps);
         navigation.replace('Chat',{convId:d.id, convType:'group', name:name.trim()});
       }
-    } catch (e:any) { Alert.alert('Lỗi',e.message); }
+    } catch (e:any) { Alert.alert('Error',e.message); }
     finally { setLoading(false); }
   }
 
@@ -42,27 +42,27 @@ export function NewChatScreen({ navigation }: Props) {
       <View style={s.tabs}>
         {(['direct','group'] as Mode[]).map(m=>(
           <TouchableOpacity key={m} onPress={()=>setMode(m)} style={[s.tab, mode===m&&s.tabOn]}>
-            <Text style={[s.tabTxt, mode===m&&s.tabTxtOn]}>{m==='direct'?'💬 Chat 1-1':'👥 Nhóm mới'}</Text>
+            <Text style={[s.tabTxt, mode===m&&s.tabTxtOn]}>{m==='direct'?'💬 1-1 chat':'👥 New group'}</Text>
           </TouchableOpacity>
         ))}
       </View>
       {mode==='direct' ? (
         <>
-          <Text style={s.label}>Email người nhận</Text>
+          <Text style={s.label}>Recipient email</Text>
           <TextInput style={s.input} value={email} onChangeText={setEmail}
-            placeholder="ban@email.com" placeholderTextColor={colors.gray}
+            placeholder="you@email.com" placeholderTextColor={colors.gray}
             keyboardType="email-address" autoCapitalize="none" autoFocus/>
         </>
       ) : (
         <>
-          <Text style={s.label}>Tên nhóm *</Text>
-          <TextInput style={s.input} value={name} onChangeText={setName} placeholder="Nhóm của mình" placeholderTextColor={colors.gray} autoFocus/>
-          <Text style={s.label}>Mô tả</Text>
-          <TextInput style={s.input} value={desc} onChangeText={setDesc} placeholder="Tùy chọn" placeholderTextColor={colors.gray}/>
+          <Text style={s.label}>Group name *</Text>
+          <TextInput style={s.input} value={name} onChangeText={setName} placeholder="My group" placeholderTextColor={colors.gray} autoFocus/>
+          <Text style={s.label}>Description</Text>
+          <TextInput style={s.input} value={desc} onChangeText={setDesc} placeholder="Optional" placeholderTextColor={colors.gray}/>
         </>
       )}
       <TouchableOpacity style={[s.btn, loading&&s.btnOff]} onPress={handle} disabled={loading}>
-        <Text style={s.btnTxt}>{loading?'Đang tạo...':(mode==='direct'?'Bắt đầu chat':'Tạo nhóm')}</Text>
+        <Text style={s.btnTxt}>{loading?'Creating...':(mode==='direct'?'Start chat':'Create group')}</Text>
       </TouchableOpacity>
     </View>
   );
