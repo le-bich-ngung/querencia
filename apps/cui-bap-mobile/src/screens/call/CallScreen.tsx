@@ -91,8 +91,8 @@ export function CallScreen({
       <View style={cs.topInfo}>
         <Text style={cs.callerName}>{callerName}</Text>
         <Text style={cs.statusText}>
-          {callState === 'calling'   ? 'Đang gọi...' :
-           callState === 'ringing'   ? 'Cuộc gọi đến' :
+          {callState === 'calling'   ? 'Calling...' :
+           callState === 'ringing'   ? 'Incoming call' :
            callState === 'connected' ? fmtDuration(duration) :
            ''}
         </Text>
@@ -133,7 +133,7 @@ export function CallScreen({
               <TouchableOpacity style={[cs.callBtn, cs.rejectBtn]} onPress={onReject}>
                 <Icon name="call" size={28} color="#fff" style={{ transform: [{ rotate: '135deg' }] }}/>
               </TouchableOpacity>
-              <Text style={cs.btnLabel}>Từ chối</Text>
+              <Text style={cs.btnLabel}>Decline</Text>
             </View>
 
             {/* Answer */}
@@ -141,7 +141,7 @@ export function CallScreen({
               <TouchableOpacity style={[cs.callBtn, cs.answerBtn]} onPress={onAnswer}>
                 <Icon name="call" size={28} color="#fff"/>
               </TouchableOpacity>
-              <Text style={cs.btnLabel}>Trả lời</Text>
+              <Text style={cs.btnLabel}>Answer</Text>
             </View>
           </View>
         </View>
@@ -160,7 +160,7 @@ export function CallScreen({
               >
                 <Icon name={isMuted ? 'mic-off' : 'mic'} size={22} color="#fff"/>
               </TouchableOpacity>
-              <Text style={cs.ctrlLabel}>{isMuted ? 'Bỏ tắt' : 'Tắt mic'}</Text>
+              <Text style={cs.ctrlLabel}>{isMuted ? 'Unmute' : 'Mute'}</Text>
             </View>
 
             {/* End call */}
@@ -168,7 +168,7 @@ export function CallScreen({
               <TouchableOpacity style={[cs.ctrlBtn, cs.endBtn]} onPress={onHangUp}>
                 <Icon name="call" size={26} color="#fff" style={{ transform: [{ rotate: '135deg' }] }}/>
               </TouchableOpacity>
-              <Text style={cs.ctrlLabel}>Kết thúc</Text>
+              <Text style={cs.ctrlLabel}>End</Text>
             </View>
 
             {/* Camera (video only) */}
@@ -180,15 +180,15 @@ export function CallScreen({
                 >
                   <Icon name={isCamOff ? 'videocam-off' : 'videocam'} size={22} color="#fff"/>
                 </TouchableOpacity>
-                <Text style={cs.ctrlLabel}>{isCamOff ? 'Bật cam' : 'Tắt cam'}</Text>
+                <Text style={cs.ctrlLabel}>{isCamOff ? 'Turn on cam' : 'Turn off cam'}</Text>
               </View>
             ) : (
-              // Speaker toggle cho voice call
+              // Speaker toggle for voice calls
               <View style={cs.ctrlWrap}>
                 <TouchableOpacity style={cs.ctrlBtn} onPress={() => {}}>
                   <Icon name="volume-high" size={22} color="#fff"/>
                 </TouchableOpacity>
-                <Text style={cs.ctrlLabel}>Loa ngoài</Text>
+                <Text style={cs.ctrlLabel}>Speaker</Text>
               </View>
             )}
 

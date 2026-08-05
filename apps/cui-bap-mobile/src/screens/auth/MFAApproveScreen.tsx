@@ -54,7 +54,7 @@ export function MFAApproveScreen({ request, onDismiss }: Props) {
       setResponded('approved');
       setTimeout(onDismiss, 1500);
     } catch (e: any) {
-      Alert.alert('Lỗi', e.message);
+      Alert.alert('Error', e.message);
     } finally { setLoading(false); }
   }
 
@@ -65,7 +65,7 @@ export function MFAApproveScreen({ request, onDismiss }: Props) {
       setResponded('rejected');
       setTimeout(onDismiss, 1500);
     } catch (e: any) {
-      Alert.alert('Lỗi', e.message);
+      Alert.alert('Error', e.message);
     } finally { setLoading(false); }
   }
 
@@ -79,7 +79,7 @@ export function MFAApproveScreen({ request, onDismiss }: Props) {
             color={responded === 'approved' ? colors.sage : colors.error}
           />
           <Text style={s.resultText}>
-            {responded === 'approved' ? 'Đã phê duyệt' : 'Đã từ chối'}
+            {responded === 'approved' ? 'Approved' : 'Declined'}
           </Text>
         </View>
       </View>
@@ -94,9 +94,9 @@ export function MFAApproveScreen({ request, onDismiss }: Props) {
           <Icon name="laptop" size={36} color={colors.sage}/>
         </View>
 
-        <Text style={s.title}>Yêu cầu đăng nhập</Text>
+        <Text style={s.title}>Sign-in request</Text>
         <Text style={s.subtitle}>
-          Có người đang đăng nhập vào tài khoản Querencia của bạn
+          Someone is signing in to your Querencia account
         </Text>
 
         {/* Device info */}
@@ -118,14 +118,14 @@ export function MFAApproveScreen({ request, onDismiss }: Props) {
           <View style={s.infoRow}>
             <Icon name="time-outline" size={16} color={colors.textSec}/>
             <Text style={s.infoText}>
-              {new Date(request.createdAt).toLocaleTimeString('vi-VN')}
+              {new Date(request.createdAt).toLocaleTimeString('en-US')}
             </Text>
           </View>
         </View>
 
         {/* Countdown */}
         <Text style={s.countdown}>
-          Hết hạn sau {fmtCountdown()}
+          Expires in {fmtCountdown()}
         </Text>
 
         {/* Buttons */}
@@ -138,7 +138,7 @@ export function MFAApproveScreen({ request, onDismiss }: Props) {
             {loading ? <ActivityIndicator color="#fff" size="small"/> : (
               <>
                 <Icon name="close" size={18} color="#fff"/>
-                <Text style={s.btnText}>Từ chối</Text>
+                <Text style={s.btnText}>Decline</Text>
               </>
             )}
           </TouchableOpacity>
@@ -151,14 +151,14 @@ export function MFAApproveScreen({ request, onDismiss }: Props) {
             {loading ? <ActivityIndicator color="#fff" size="small"/> : (
               <>
                 <Icon name="checkmark" size={18} color="#fff"/>
-                <Text style={s.btnText}>Phê duyệt</Text>
+                <Text style={s.btnText}>Approve</Text>
               </>
             )}
           </TouchableOpacity>
         </View>
 
         <Text style={s.warning}>
-          ⚠️ Nếu bạn không yêu cầu đăng nhập, hãy từ chối và đổi mật khẩu ngay.
+          ⚠️ If you didn't request this sign-in, decline it and change your password right away.
         </Text>
       </View>
     </View>
