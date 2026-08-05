@@ -855,7 +855,7 @@ let isDirty = false;
 // ═══════════════════════════════════════════
 // LOCK / UNLOCK
 // ═══════════════════════════════════════════
-const isFirstTime = !localStorage.getItem(HASH_KEY);
+const isFirstTime = !localStorage.getItem(STORAGE_KEY);
 
 if (isFirstTime) {
   document.getElementById('lockSetupNote').style.display = 'block';
@@ -865,11 +865,86 @@ if (isFirstTime) {
   document.getElementById('lockModeToggle').style.display = 'block';
 }
 
-function hashPass(pass) {
-  return CryptoJS.SHA256(pass + 'querencia_salt_2025').toString();
+// ═══════════════════════════════════════════
+// ENCRYPTION (v3 - Web Crypto API, PBKDF2 + random salt + AES-GCM)
+// Replaces the old v2 scheme (CryptoJS with a fixed shared salt), which is
+// kept below ONLY to transparently migrate existing users' data the first
+// time they unlock after this upgrade. New data is always saved as v3.
+// ═══════════════════════════════════════════
+async function deriveKey(password, salt, usage) {
+  const enc = new TextEncoder();
+  const keyMaterial = await crypto.subtle.importKey('raw', enc.encode(password), 'PBKDF2', false, ['deriveKey']);
+  return crypto.subtle.deriveKey(
+    { name: 'PBKDF2', salt, iterations: 100000, hash: 'SHA-256' },
+    keyMaterial, { name: 'AES-GCM', length: 256 }, false, [usage]
+  );
 }
 
-function unlock() {
+async function encrypt(data, password) {
+  const enc  = new TextEncoder();
+  const salt = crypto.getRandomValues(new Uint8Array(16));
+  const key  = await deriveKey(password, salt, 'encrypt');
+  const iv   = crypto.getRandomValues(new Uint8Array(12));
+  const plainBuf  = enc.encode(JSON.stringify(data));
+  const cipherBuf = await crypto.subtle.encrypt({ name: 'AES-GCM', iv }, key, plainBuf);
+  const out = new Uint8Array(salt.byteLength + iv.byteLength + cipherBuf.byteLength);
+  out.set(salt, 0); out.set(iv, 16); out.set(new Uint8Array(cipherBuf), 28);
+  return 'v3:' + btoa(String.fromCharCode(...out));
+}
+
+async function decrypt(cipherStr, password) {
+  try {
+    if (!cipherStr.startsWith('v3:')) return null; // not the new format
+    const bytes = Uint8Array.from(atob(cipherStr.slice(3)), c => c.charCodeAt(0));
+    const salt = bytes.slice(0, 16), iv = bytes.slice(16, 28), data = bytes.slice(28);
+    const key  = await deriveKey(password, salt, 'decrypt');
+    const plainBuf = await crypto.subtle.decrypt({ name: 'AES-GCM', iv }, key, data);
+    return JSON.parse(new TextDecoder().decode(plainBuf));
+  } catch (e) { return null; }
+}
+
+async function saveEncrypted() {
+  const cipher = await encrypt(entries, masterKey);
+  localStorage.setItem(STORAGE_KEY, cipher);
+}
+
+// ── Legacy v2 scheme - read-only, used once to migrate old data ──────────
+function legacyHashPass(pass) {
+  return CryptoJS.SHA256(pass + 'querencia_salt_2025').toString();
+}
+function legacyDecrypt(cipher, pass) {
+  try {
+    const bytes = CryptoJS.AES.decrypt(cipher, pass);
+    return JSON.parse(bytes.toString(CryptoJS.enc.Utf8));
+  } catch (e) { return null; }
+}
+
+async function loadDecrypted(pass) {
+  const cipher = localStorage.getItem(STORAGE_KEY);
+  if (!cipher) { entries = []; return true; }
+
+  // Try the current (v3) format first
+  const fresh = await decrypt(cipher, pass);
+  if (fresh !== null) { entries = fresh; return true; }
+
+  // Fall back to the legacy (v2) format for users who haven't migrated yet
+  const legacyHash = localStorage.getItem(HASH_KEY);
+  if (legacyHash) {
+    if (legacyHashPass(pass) !== legacyHash) return false; // wrong password
+    const legacyEntries = legacyDecrypt(cipher, pass);
+    if (legacyEntries === null) return false;
+    entries = legacyEntries;
+    // Silently upgrade this account to the stronger v3 encryption
+    masterKey = pass;
+    await saveEncrypted();
+    localStorage.removeItem(HASH_KEY);
+    return true;
+  }
+
+  return false; // wrong password, and no legacy data to fall back to
+}
+
+async function unlock() {
   const pass    = document.getElementById('lockPassword').value;
   const confirm = document.getElementById('lockConfirm').value;
   const errEl   = document.getElementById('lockError');
@@ -880,15 +955,13 @@ function unlock() {
 
   if (isFirstTime) {
     if (pass !== confirm) { showLockError('Passwords do not match'); return; }
-    localStorage.setItem(HASH_KEY, hashPass(pass));
     masterKey = pass;
     entries   = [];
-    saveEncrypted();
+    await saveEncrypted();
   } else {
-    const stored = localStorage.getItem(HASH_KEY);
-    if (hashPass(pass) !== stored) { showLockError('Incorrect password 🔒'); return; }
+    const ok = await loadDecrypted(pass);
+    if (!ok) { showLockError('Incorrect password 🔒'); return; }
     masterKey = pass;
-    loadDecrypted();
   }
 
   errEl.style.display = 'none';
@@ -917,31 +990,6 @@ function lockDiary() {
   document.getElementById('lockPassword').value    = '';
   document.getElementById('lockConfirm').value     = '';
   document.getElementById('lockError').style.display = 'none';
-}
-
-// ═══════════════════════════════════════════
-// ENCRYPTION
-// ═══════════════════════════════════════════
-function encrypt(data) {
-  return CryptoJS.AES.encrypt(JSON.stringify(data), masterKey).toString();
-}
-
-function decrypt(cipher) {
-  try {
-    const bytes = CryptoJS.AES.decrypt(cipher, masterKey);
-    return JSON.parse(bytes.toString(CryptoJS.enc.Utf8));
-  } catch(e) { return []; }
-}
-
-function saveEncrypted() {
-  const cipher = encrypt(entries);
-  localStorage.setItem(STORAGE_KEY, cipher);
-}
-
-function loadDecrypted() {
-  const cipher = localStorage.getItem(STORAGE_KEY);
-  if (!cipher) { entries = []; return; }
-  entries = decrypt(cipher) || [];
 }
 
 // ═══════════════════════════════════════════
@@ -1303,13 +1351,15 @@ function showChangePass() {
   document.getElementById('changePassModal').classList.add('show');
 }
 
-function doChangePass() {
+async function doChangePass() {
   const old = document.getElementById('cpOld').value;
   const nw  = document.getElementById('cpNew').value;
   const cf  = document.getElementById('cpConfirm').value;
   const err = document.getElementById('cpError');
 
-  if (hashPass(old) !== localStorage.getItem(HASH_KEY)) {
+  const cipher = localStorage.getItem(STORAGE_KEY);
+  const check  = cipher ? await decrypt(cipher, old) : [];
+  if (cipher && check === null) {
     err.textContent = 'Old password is incorrect'; err.style.display='block'; return;
   }
   if (nw.length < 4) {
@@ -1319,10 +1369,9 @@ function doChangePass() {
     err.textContent = 'Passwords do not match'; err.style.display='block'; return;
   }
 
-  // Re-encrypt with new password
+  // Re-encrypt with the new password
   masterKey = nw;
-  localStorage.setItem(HASH_KEY, hashPass(nw));
-  saveEncrypted();
+  await saveEncrypted();
   closeModal('changePassModal');
   toast('✓ Password changed successfully!');
 }
