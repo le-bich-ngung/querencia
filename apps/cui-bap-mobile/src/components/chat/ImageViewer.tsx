@@ -25,7 +25,7 @@ export function ImageViewer({ uri, fileName, visible, onClose }: Props) {
       await Share.share({
         url:     Platform.OS === 'ios' ? uri : undefined,
         message: Platform.OS === 'android' ? uri : undefined,
-        title:   fileName ?? 'Hình ảnh từ Cùi Bắp',
+        title:   fileName ?? 'Image from Cùi Bắp',
       });
     } catch {}
   }
