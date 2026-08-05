@@ -31,7 +31,7 @@ const SAGE   = colors.sage;
 const EMOJIS = ['❤️','😂','👍','😮','😢','🔥','🎉','👏','🙏','💯'];
 
 function fmt(iso: string) {
-  return new Date(iso).toLocaleTimeString('vi-VN', { hour: '2-digit', minute: '2-digit' });
+  return new Date(iso).toLocaleTimeString('en-US', { hour: '2-digit', minute: '2-digit' });
 }
 
 // ── Message bubble ─────────────────────────────────────────────
@@ -44,15 +44,15 @@ function Bubble({ msg, isOut, onLongPress, myId }: {
     return (
       <View style={[ms.row, isOut && ms.rowOut]}>
         <View style={[ms.bubble, { backgroundColor: colors.bgSurface, opacity: 0.5 }]}>
-          <Text style={{ color: colors.gray, fontStyle: 'italic', fontSize: 13 }}>🗑 Đã xóa</Text>
+          <Text style={{ color: colors.gray, fontStyle: 'italic', fontSize: 13 }}>🗑 Deleted</Text>
         </View>
       </View>
     );
   }
 
-  // Receipt status - từ store (cập nhật real-time qua WebSocket)
+  // Receipt status - from store (updated real-time via WebSocket)
   const receiptStatus = !isOut
-    ? undefined  // chỉ show cho tin mình gửi
+    ? undefined  // only show for messages I sent
     : msg.pending
       ? 'sending'
       : msg.receiptStatus ?? 'sent';
@@ -74,7 +74,7 @@ function Bubble({ msg, isOut, onLongPress, myId }: {
         {/* Reply preview */}
         {msg.replyToId && (
           <View style={[ms.replyBar, isOut && ms.replyBarOut]}>
-            <Text style={ms.replyText} numberOfLines={1}>↩️ Trả lời tin nhắn</Text>
+            <Text style={ms.replyText} numberOfLines={1}>↩️ Replying to a message</Text>
           </View>
         )}
 
@@ -117,7 +117,7 @@ function Bubble({ msg, isOut, onLongPress, myId }: {
             <>
                <Text style={[ms.txt, isOut && ms.txtOut]}>
                  {msg.content}
-                 {msg.isEdited && <Text style={{ opacity: 0.5, fontSize: 10 }}> (đã sửa)</Text>}
+                 {msg.isEdited && <Text style={{ opacity: 0.5, fontSize: 10 }}> (edited)</Text>}
                </Text>
                {msg.content && extractUrls(msg.content).length > 0 && (
                  <LinkPreview text={msg.content} isOut={isOut}/>
@@ -203,7 +203,7 @@ export function ChatScreen({ route, navigation }: Props) {
     ...socketFns,
     onCallOffer:  (d) => setIncoming(d),
     onCallEnd:    () => {},
-    onCallReject: () => Alert.alert('Cuộc gọi bị từ chối'),
+    onCallReject: () => Alert.alert('Call declined'),
   });
 
   // Header
@@ -309,9 +309,9 @@ export function ChatScreen({ route, navigation }: Props) {
       const sent = isDirect ? await api.sendMsg(convId, body) : await api.sendGroupMsg(convId, body);
       store.updateMessage(convId, tempId, { ...sent, id: sent.id, pending: false, receiptStatus: 'sent' });
     } catch {
-      // Lưu vào offline queue - sẽ retry khi có mạng
+      // Save to the offline queue - will retry when back online
       enqueue({ tempId, convId, convType, body, queuedAt: new Date().toISOString(), retries: 0 });
-      // Message vẫn hiện nhưng với icon pending (sẽ tự gửi lại)
+      // Message still shows but with a pending icon (will auto-resend)
     }
   }
 
@@ -327,7 +327,7 @@ export function ChatScreen({ route, navigation }: Props) {
       const body = { content: a.fileName ?? 'photo.jpg', msgType: 'image', fileUrl: u.url, fileName: a.fileName, fileSize: a.fileSize };
       const msg  = isDirect ? await api.sendMsg(convId, body) : await api.sendGroupMsg(convId, body);
       store.appendMessage(convId, msg);
-    } catch { Alert.alert('Lỗi', 'Không thể gửi ảnh.'); }
+    } catch { Alert.alert('Error', 'Could not send the photo.'); }
   }
 
 
@@ -336,9 +336,9 @@ export function ChatScreen({ route, navigation }: Props) {
     const r = await launchImageLibrary({ mediaType: 'video', videoQuality: 'medium' });
     if (!r.assets?.[0]) return;
     const a = r.assets[0];
-    // Giới hạn 50MB
+    // 50MB limit
     if (a.fileSize && a.fileSize > 50 * 1024 * 1024) {
-      Alert.alert('File quá lớn', 'Video tối đa 50MB. Thử nén video lại nhé.'); return;
+      Alert.alert('File too large', 'Videos are limited to 50MB. Try compressing the video first.'); return;
     }
     const form = new FormData();
     form.append('file', { uri: a.uri, name: a.fileName ?? 'video.mp4', type: a.type ?? 'video/mp4' } as any);
@@ -347,7 +347,7 @@ export function ChatScreen({ route, navigation }: Props) {
       const body = { content: a.fileName ?? 'video.mp4', msgType: 'video', fileUrl: u.url, fileName: a.fileName, fileSize: a.fileSize };
       const msg  = isDirect ? await api.sendMsg(convId, body) : await api.sendGroupMsg(convId, body);
       store.appendMessage(convId, msg);
-    } catch { Alert.alert('Lỗi', 'Không thể gửi video.'); }
+    } catch { Alert.alert('Error', 'Could not send the video.'); }
   }
 
   // File
@@ -373,27 +373,27 @@ export function ChatScreen({ route, navigation }: Props) {
       const body = { content: name, msgType: 'audio', fileUrl: u.url, fileName: name, fileSize: u.size };
       const msg  = isDirect ? await api.sendMsg(convId, body) : await api.sendGroupMsg(convId, body);
       store.appendMessage(convId, msg);
-    } catch { Alert.alert('Lỗi', 'Không thể gửi voice message.'); }
+    } catch { Alert.alert('Error', 'Could not send the voice message.'); }
   }
 
   // Long press
   function handleLongPress(msg: CBMessage) {
     const isOut = msg.sender?.id === user?.id;
     const opts: any[] = [
-      { text: '↩️ Trả lời',      onPress: () => setReplyTo(msg) },
+      { text: '↩️ Reply',        onPress: () => setReplyTo(msg) },
       { text: '😊 React',        onPress: () => setShowEmoji(msg.id) },
-      { text: '↗️ Chuyển tiếp', onPress: () => setForwardMsg(msg) },
+      { text: '↗️ Forward',      onPress: () => setForwardMsg(msg) },
     ];
     if (isOut) {
       opts.push({
-        text: '🗑 Xóa', style: 'destructive',
+        text: '🗑 Delete', style: 'destructive',
         onPress: async () => {
           await api.deleteMsg(msg.id);
           store.updateMessage(convId, msg.id, { isDeleted: true, content: null });
         },
       });
     }
-    opts.push({ text: 'Đóng', style: 'cancel' });
+    opts.push({ text: 'Cancel', style: 'cancel' });
     Alert.alert('', undefined, opts);
   }
 
@@ -468,14 +468,14 @@ export function ChatScreen({ route, navigation }: Props) {
                 <TouchableOpacity onPress={loadMore} style={cs.loadMore}>
                   {loadingMore
                     ? <ActivityIndicator size="small" color={SAGE}/>
-                    : <Text style={cs.loadMoreTxt}>Tải thêm tin nhắn cũ hơn</Text>
+                    : <Text style={cs.loadMoreTxt}>Load older messages</Text>
                   }
                 </TouchableOpacity>
               ) : null
             }
             ListEmptyComponent={
               <View style={cs.center}>
-                <Text style={{ color: colors.gray, fontSize: 15 }}>Bắt đầu trò chuyện 👋</Text>
+                <Text style={{ color: colors.gray, fontSize: 15 }}>Start the conversation 👋</Text>
               </View>
             }
             scrollIndicatorInsets={{ right: 1 }}
@@ -484,7 +484,7 @@ export function ChatScreen({ route, navigation }: Props) {
 
         {/* Typing indicator */}
         {typingNames.length > 0 && (
-          <Text style={cs.typing}>{typingNames[0]} đang nhập...</Text>
+          <Text style={cs.typing}>{typingNames[0]} is typing...</Text>
         )}
 
         {/* Emoji reaction picker */}
@@ -508,7 +508,7 @@ export function ChatScreen({ route, navigation }: Props) {
         {replyTo && (
           <View style={cs.replyBar}>
             <View style={{ flex: 1 }}>
-              <Text style={{ fontSize: 11, color: SAGE, fontWeight: '700' }}>↩️ Trả lời</Text>
+              <Text style={{ fontSize: 11, color: SAGE, fontWeight: '700' }}>↩️ Replying</Text>
               <Text style={{ fontSize: 12, color: colors.textSec }} numberOfLines={1}>
                 {replyTo.content || '📎 File'}
               </Text>
@@ -524,12 +524,12 @@ export function ChatScreen({ route, navigation }: Props) {
           <View style={cs.timerBar}>
             <Icon name="timer" size={13} color={SAGE}/>
             <Text style={cs.timerTxt}>
-              Tin nhắn tiếp theo sẽ tự hủy sau{' '}
+              Your next message will self-destruct in{' '}
               {autoDelete < 3600
-                ? `${autoDelete / 60} phút`
+                ? `${autoDelete / 60} min`
                 : autoDelete < 86400
-                  ? `${autoDelete / 3600} giờ`
-                  : `${autoDelete / 86400} ngày`
+                  ? `${autoDelete / 3600} hr`
+                  : `${autoDelete / 86400} day(s)`
               }
             </Text>
             <TouchableOpacity onPress={() => setAutoDelete(null)}>
@@ -559,7 +559,7 @@ export function ChatScreen({ route, navigation }: Props) {
             style={cs.input}
             value={text}
             onChangeText={onTextChange}
-            placeholder="Nhắn tin..."
+            placeholder="Type a message..."
             placeholderTextColor={colors.gray}
             multiline
             maxLength={4000}

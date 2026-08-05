@@ -31,7 +31,7 @@ export function ConvOptionsModal({ visible, onClose, convId, convName, convType,
     try {
       await api.pinConversation(convId, !isPinned);
       setPinned(v => !v);
-    } catch (e: any) { Alert.alert('Lỗi', e.message); }
+    } catch (e: any) { Alert.alert('Error', e.message); }
     finally { setWork(false); onClose(); }
   }
 
@@ -45,17 +45,17 @@ export function ConvOptionsModal({ visible, onClose, convId, convName, convType,
   async function handleToggleHide() {
     const ok = await toggleHideConversation(convId);
     if (ok) { setHidden(v => !v); onClose(); }
-    else Alert.alert('Xác thực thất bại');
+    else Alert.alert('Authentication failed');
   }
 
   async function handleDelete() {
-    Alert.alert('Xóa cuộc trò chuyện?', 'Chỉ xóa ở phía bạn.', [
-      { text: 'Hủy', style: 'cancel' },
-      { text: 'Xóa', style: 'destructive', onPress: async () => {
+    Alert.alert('Delete this conversation?', 'This only deletes it on your side.', [
+      { text: 'Cancel', style: 'cancel' },
+      { text: 'Delete', style: 'destructive', onPress: async () => {
         try {
           await api.deleteConversation(convId);
           onClose();
-        } catch (e: any) { Alert.alert('Lỗi', e.message); }
+        } catch (e: any) { Alert.alert('Error', e.message); }
       }},
     ]);
   }
@@ -63,35 +63,35 @@ export function ConvOptionsModal({ visible, onClose, convId, convName, convType,
   const options = [
     {
       icon:  isPinned ? 'pin' : 'pin-outline',
-      label: isPinned ? 'Bỏ ghim' : 'Ghim cuộc trò chuyện',
-      desc:  'Giữ ở đầu danh sách',
+      label: isPinned ? 'Unpin' : 'Pin conversation',
+      desc:  'Keep at the top of the list',
       onPress: handleTogglePin,
     },
     {
       icon:  isConvHidden ? 'eye' : 'eye-off',
-      label: isConvHidden ? 'Bỏ ẩn' : 'Ẩn cuộc trò chuyện',
-      desc:  hasBio ? 'Yêu cầu sinh trắc học để xem' : 'Ẩn khỏi danh sách',
+      label: isConvHidden ? 'Unhide' : 'Hide conversation',
+      desc:  hasBio ? 'Requires biometrics to view' : 'Hide from the list',
       onPress: handleToggleHide,
     },
     {
       icon:  isMuted ? 'notifications' : 'notifications-off',
-      label: isMuted  ? 'Bật thông báo' : 'Tắt thông báo',
+      label: isMuted  ? 'Turn on notifications' : 'Mute notifications',
       toggle: { value: isMuted, onChange: handleToggleMute },
       onPress: () => handleToggleMute(!isMuted),
     },
     ...(convType === 'direct' ? [
       {
-        icon: 'flag', label: `Báo cáo ${convName}`, color: '#f59e0b',
+        icon: 'flag', label: `Report ${convName}`, color: '#f59e0b',
         onPress: () => { onClose(); onNavigate('BlockReport', { targetUserId: otherUserId, targetName: convName }); },
       },
       {
-        icon: 'ban', label: `Chặn ${convName}`, color: colors.error,
+        icon: 'ban', label: `Block ${convName}`, color: colors.error,
         onPress: () => { onClose(); onNavigate('BlockReport', { targetUserId: otherUserId, targetName: convName }); },
       },
     ] : []),
     {
-      icon: 'trash', label: 'Xóa cuộc trò chuyện', color: colors.error,
-      desc: 'Chỉ xóa ở phía bạn',
+      icon: 'trash', label: 'Delete conversation', color: colors.error,
+      desc: 'This only deletes it on your side',
       onPress: handleDelete,
     },
   ];
@@ -103,7 +103,7 @@ export function ConvOptionsModal({ visible, onClose, convId, convName, convType,
         <View style={s.convInfo}>
           <View style={s.avatar}><Text style={s.avatarTxt}>{convName[0]?.toUpperCase()}</Text></View>
           <Text style={s.convName}>{convName}</Text>
-          <Text style={s.convType}>{convType === 'direct' ? 'Tin nhắn trực tiếp' : 'Nhóm'}</Text>
+          <Text style={s.convType}>{convType === 'direct' ? 'Direct message' : 'Group'}</Text>
         </View>
         <View style={s.options}>
           {options.map((opt, i) => (
@@ -124,7 +124,7 @@ export function ConvOptionsModal({ visible, onClose, convId, convName, convType,
           ))}
         </View>
         <TouchableOpacity style={s.closeBtn} onPress={onClose}>
-          <Text style={s.closeTxt}>Đóng</Text>
+          <Text style={s.closeTxt}>Close</Text>
         </TouchableOpacity>
       </View>
     </Modal>
