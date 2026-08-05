@@ -44,7 +44,7 @@ export function VoiceRecorder({ onAudioReady, disabled }: Props) {
     if (disabled) return;
     const hasPermission = await checkMicPermission();
     if (!hasPermission) {
-      Alert.alert('Cần quyền microphone', 'Vui lòng cho phép trong Cài đặt.');
+      Alert.alert('Microphone permission needed', 'Please allow it in Settings.');
       return;
     }
 
@@ -112,7 +112,7 @@ export function VoiceRecorder({ onAudioReady, disabled }: Props) {
         <View style={s.recordingBar}>
           <View style={s.recordDot}/>
           <Text style={s.recordTime}>{formatDuration(duration)}</Text>
-          <Text style={s.recordHint}>Thả để gửi · Vuốt để hủy</Text>
+          <Text style={s.recordHint}>Release to send · Swipe to cancel</Text>
         </View>
       )}
       <Animated.View style={{ transform: [{ scale: scaleAnim }] }}>

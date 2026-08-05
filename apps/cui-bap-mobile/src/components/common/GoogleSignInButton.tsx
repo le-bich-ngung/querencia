@@ -14,11 +14,11 @@ export function GoogleSignInButton() {
     try {
       const { user, accessToken, refreshToken } = await signInWithGoogle();
       setAuth(user, accessToken, refreshToken);
-      // Setup E2EE keys nếu là user mới
+      // Set up E2EE keys if this is a new user
       setupE2EE().catch(() => {}); // background
     } catch (error: any) {
       if (error.code !== 'SIGN_IN_CANCELLED') {
-        Alert.alert('Lỗi đăng nhập', error.message ?? 'Không thể đăng nhập với Google.');
+        Alert.alert('Sign-in error', error.message ?? 'Could not sign in with Google.');
       }
     } finally {
       setLoading(false);
@@ -40,7 +40,7 @@ export function GoogleSignInButton() {
           <View style={s.gLogo}>
             <Text style={s.gText}>G</Text>
           </View>
-          <Text style={s.label}>Tiếp tục với Google</Text>
+          <Text style={s.label}>Continue with Google</Text>
         </>
       )}
     </TouchableOpacity>

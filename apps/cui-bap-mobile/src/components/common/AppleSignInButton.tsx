@@ -23,7 +23,7 @@ export function AppleSignInButton() {
       setupE2EE().catch(() => {});
     } catch (e: any) {
       if (e.code !== '1001') { // 1001 = user cancelled
-        Alert.alert('Lỗi đăng nhập', e.message ?? 'Không thể đăng nhập với Apple.');
+        Alert.alert('Sign-in error', e.message ?? 'Could not sign in with Apple.');
       }
     } finally { setLoading(false); }
   }
@@ -35,7 +35,7 @@ export function AppleSignInButton() {
       ) : (
         <>
           <Text style={s.appleIcon}></Text>
-          <Text style={s.label}>Tiếp tục với Apple</Text>
+          <Text style={s.label}>Continue with Apple</Text>
         </>
       )}
     </TouchableOpacity>

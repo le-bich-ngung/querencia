@@ -18,12 +18,12 @@ interface Props {
 }
 
 const OPTIONS = [
-  { label: 'Tắt',    value: null,  icon: 'timer-off-outline' },
-  { label: '30 giây', value: 30,   icon: 'timer-outline' },
-  { label: '5 phút',  value: 300,  icon: 'timer-outline' },
-  { label: '1 giờ',   value: 3600, icon: 'timer-outline' },
-  { label: '1 ngày',  value: 86400,icon: 'timer-outline' },
-  { label: '1 tuần',  value: 604800,icon: 'timer-outline' },
+  { label: 'Off',     value: null,  icon: 'timer-off-outline' },
+  { label: '30 seconds', value: 30,   icon: 'timer-outline' },
+  { label: '5 minutes',  value: 300,  icon: 'timer-outline' },
+  { label: '1 hour',   value: 3600, icon: 'timer-outline' },
+  { label: '1 day',  value: 86400,icon: 'timer-outline' },
+  { label: '1 week',  value: 604800,icon: 'timer-outline' },
 ];
 
 export function SelfDestructPicker({ visible, current, onSelect, onClose }: Props) {
@@ -33,7 +33,7 @@ export function SelfDestructPicker({ visible, current, onSelect, onClose }: Prop
         <View style={s.menu}>
           <View style={s.header}>
             <Icon name="timer-outline" size={18} color={colors.sage}/>
-            <Text style={s.title}>Tự hủy sau</Text>
+            <Text style={s.title}>Self-destruct after</Text>
           </View>
           {OPTIONS.map(opt => (
             <TouchableOpacity

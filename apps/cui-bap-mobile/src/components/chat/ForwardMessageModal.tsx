@@ -60,7 +60,7 @@ export function ForwardMessageModal({ visible, message, onClose, onSent }: Props
       <View style={s.container}>
         {/* Header */}
         <View style={s.header}>
-          <Text style={s.title}>Chuyển tiếp đến</Text>
+          <Text style={s.title}>Forward to</Text>
           <TouchableOpacity onPress={onClose}>
             <Icon name="close" size={22} color={colors.text}/>
           </TouchableOpacity>
@@ -81,7 +81,7 @@ export function ForwardMessageModal({ visible, message, onClose, onSent }: Props
             style={s.search}
             value={search}
             onChangeText={setSearch}
-            placeholder="Tìm cuộc trò chuyện..."
+            placeholder="Search conversations..."
             placeholderTextColor={colors.gray}
           />
         </View>
@@ -124,7 +124,7 @@ export function ForwardMessageModal({ visible, message, onClose, onSent }: Props
 
         {sent.length > 0 && (
           <TouchableOpacity style={s.doneBtn} onPress={() => { onSent(); onClose(); }}>
-            <Text style={s.doneBtnText}>Xong · Đã gửi đến {sent.length} cuộc trò chuyện</Text>
+            <Text style={s.doneBtnText}>Done · Sent to {sent.length} conversations</Text>
           </TouchableOpacity>
         )}
       </View>
