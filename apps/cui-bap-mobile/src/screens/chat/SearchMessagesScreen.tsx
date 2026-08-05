@@ -71,7 +71,7 @@ export function SearchMessagesScreen({ route, navigation }: Props) {
           style={s.input}
           value={query}
           onChangeText={q => { setQuery(q); search(q); }}
-          placeholder="Tìm trong cuộc trò chuyện..."
+          placeholder="Search in this conversation..."
           placeholderTextColor={colors.gray}
           autoFocus
           returnKeyType="search"
@@ -94,8 +94,8 @@ export function SearchMessagesScreen({ route, navigation }: Props) {
       ) : searched && results.length === 0 ? (
         <View style={s.center}>
           <Icon name="search" size={40} color={colors.grayLight}/>
-          <Text style={s.emptyText}>Không tìm thấy kết quả nào</Text>
-          <Text style={s.emptySubText}>Thử từ khóa khác</Text>
+          <Text style={s.emptyText}>No results found</Text>
+          <Text style={s.emptySubText}>Try a different search term</Text>
         </View>
       ) : (
         <FlatList
@@ -103,7 +103,7 @@ export function SearchMessagesScreen({ route, navigation }: Props) {
           keyExtractor={m => m.id}
           contentContainerStyle={{ padding: spacing.md }}
           ListHeaderComponent={searched && results.length > 0 ? (
-            <Text style={s.countText}>{results.length} kết quả</Text>
+            <Text style={s.countText}>{results.length} results</Text>
           ) : null}
           renderItem={({ item }) => (
             <TouchableOpacity
@@ -126,7 +126,7 @@ export function SearchMessagesScreen({ route, navigation }: Props) {
                 <View style={sr.header}>
                   <Text style={sr.senderName}>{item.sender?.name}</Text>
                   <Text style={sr.time}>
-                    {new Date(item.sentAt).toLocaleDateString('vi-VN')}
+                    {new Date(item.sentAt).toLocaleDateString('en-US')}
                   </Text>
                 </View>
                 {highlight(item.content ?? '', query)}

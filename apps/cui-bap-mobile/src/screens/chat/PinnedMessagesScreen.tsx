@@ -42,8 +42,8 @@ export function PinnedMessagesScreen({ route, navigation }: Props) {
       ) : pinned.length === 0 ? (
         <View style={s.center}>
           <Icon name="pin" size={40} color={colors.grayLight}/>
-          <Text style={s.emptyTitle}>Chưa có tin nhắn nào được ghim</Text>
-          <Text style={s.emptySub}>Giữ lâu tin nhắn để ghim</Text>
+          <Text style={s.emptyTitle}>No pinned messages yet</Text>
+          <Text style={s.emptySub}>Long press a message to pin it</Text>
         </View>
       ) : (
         <FlatList
@@ -51,7 +51,7 @@ export function PinnedMessagesScreen({ route, navigation }: Props) {
           keyExtractor={m => m.id}
           contentContainerStyle={{ padding: spacing.md }}
           ListHeaderComponent={
-            <Text style={s.count}>{pinned.length} tin nhắn được ghim</Text>
+            <Text style={s.count}>{pinned.length} pinned messages</Text>
           }
           renderItem={({ item }) => (
             <View style={s.item}>
@@ -60,7 +60,7 @@ export function PinnedMessagesScreen({ route, navigation }: Props) {
                 <Text style={s.senderName}>{item.sender?.name}</Text>
                 <Text style={s.content} numberOfLines={3}>{item.content}</Text>
                 <Text style={s.time}>
-                  {new Date(item.sentAt).toLocaleDateString('vi-VN')}
+                  {new Date(item.sentAt).toLocaleDateString('en-US')}
                 </Text>
               </View>
               <TouchableOpacity onPress={() => handleUnpin(item.id)} style={s.unpinBtn}>
