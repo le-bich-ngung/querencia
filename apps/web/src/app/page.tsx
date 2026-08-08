@@ -314,7 +314,7 @@ export default function HomePage() {
         </Link>
         <div style={{ width: 1, height: 16, background: 'rgba(255,255,255,0.1)' }} />
         {session ? (
-          <Link href="/dashboard/nope" style={{ fontSize: '0.78rem', fontWeight: 600, color: '#fff', background: SAGE, borderRadius: 100, padding: '5px 13px', textDecoration: 'none' }}>Dashboard</Link>
+          <Link href="/dashboard" style={{ fontSize: '0.78rem', fontWeight: 600, color: '#fff', background: SAGE, borderRadius: 100, padding: '5px 13px', textDecoration: 'none' }}>Dashboard</Link>
         ) : (
           <div style={{ display: 'flex', alignItems: 'center', gap: 4 }}>
             <button onClick={() => signIn('google')} style={{ fontSize: '0.78rem', fontWeight: 600, color: '#fff', background: SAGE, border: 'none', borderRadius: 100, padding: '5px 13px', cursor: 'pointer' }}>{t('nav.getstarted')}</button>

@@ -142,7 +142,7 @@ export function Navbar() {
                 padding: 6, zIndex: 200, minWidth: 180,
               }}>
                 {[
-                  { label: 'Dashboard', href: '/dashboard/nope' },
+                  { label: 'Dashboard', href: '/dashboard' },
                   { label: 'Settings', href: '/settings' },
                   { label: 'Q Wallet', href: '/wallet' },
                   { label: 'Pricing', href: '/pricing' },
