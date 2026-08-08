@@ -185,9 +185,9 @@ export function BottomNav() {
             Apps
           </div>
           {[
-            { href: '/dashboard/nope',    emoji: '🌿', name: 'Nope',     desc: 'Share your life experience' },
-            { href: '/dashboard/cui-bap', emoji: '🌽', name: 'Cùi Bắp', desc: 'Private messaging' },
-            { href: '/dashboard/lano',    emoji: '🎧', name: 'LàNo',     desc: 'AI that listens' },
+            { href: '/dashboard/nope',    name: 'Nope' },
+            { href: '/dashboard/cui-bap', name: 'Cùi Bắp' },
+            { href: '/dashboard/lano',    name: 'LàNo' },
           ].map(app => (
             <Link
               key={app.href}
@@ -203,21 +203,8 @@ export function BottomNav() {
               onMouseEnter={e => (e.currentTarget.style.background = 'var(--bg-surface)')}
               onMouseLeave={e => (e.currentTarget.style.background = '')}
             >
-              <span style={{
-                width: 42, height: 42, borderRadius: 12,
-                background: 'var(--bg-surface)',
-                display: 'flex', alignItems: 'center', justifyContent: 'center',
-                fontSize: '1.3rem', flexShrink: 0,
-              }}>
-                {app.emoji}
-              </span>
-              <div>
-                <div style={{ fontWeight: 700, fontSize: '0.9rem', color: 'var(--text)' }}>
-                  {app.name}
-                </div>
-                <div style={{ fontSize: '0.75rem', color: 'var(--text-secondary)', marginTop: 1 }}>
-                  {app.desc}
-                </div>
+              <div style={{ fontWeight: 700, fontSize: '0.9rem', color: 'var(--text)' }}>
+                {app.name}
               </div>
               <span style={{ marginLeft: 'auto', color: 'var(--gray)', fontSize: '0.85rem' }}>›</span>
             </Link>
