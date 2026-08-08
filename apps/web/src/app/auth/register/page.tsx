@@ -196,14 +196,18 @@ export default function RegisterPage() {
       </p>
 
       {/* Privacy note */}
+      {/* NOTE: Terms/Privacy links are intentionally plain text (not <Link>) until
+          the legal pages are ready for public launch (company registration pending).
+          Once ready, swap the two <span> below back to <Link href="/pages/terms">
+          and <Link href="/pages/privacy"> respectively. */}
       <p style={{
         textAlign: 'center', fontSize: '0.72rem',
         color: 'var(--gray)', marginTop: 14, lineHeight: 1.5,
       }}>
         By signing up, you agree to our{' '}
-        <Link href="/pages/terms" style={{ color: 'var(--sage)' }}>Terms</Link>
+        <span style={{ color: 'var(--sage)' }}>Terms</span>
         {' '}and{' '}
-        <Link href="/pages/privacy" style={{ color: 'var(--sage)' }}>Privacy Policy</Link>.
+        <span style={{ color: 'var(--sage)' }}>Privacy Policy</span>.
       </p>
     </AuthCard>
   );

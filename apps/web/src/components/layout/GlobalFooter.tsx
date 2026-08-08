@@ -34,18 +34,15 @@ export function GlobalFooter() {
           <span style={{ fontSize: '0.7rem', color: '#ccc' }}>{t('footer.rights')}</span>
 
           {/* Links */}
+          {/* NOTE: intentionally plain text (not <Link>) until the legal pages are
+              ready for public launch (company registration pending). Once ready,
+              change this back to map over an array of <Link> like before. */}
           <div style={{ display: 'flex', gap: 10 }}>
-            {[
-              { label: 'Privacy', href: '/pages/privacy' },
-              { label: 'Security', href: '/pages/security' },
-              { label: 'Terms', href: '/pages/terms' },
-            ].map(function(l) {
+            {['Privacy', 'Security', 'Terms'].map(function(label) {
               return (
-                <Link key={l.label} href={l.href}
-                  style={{ fontSize: '0.72rem', color: SAGE, textDecoration: 'none', transition: 'opacity 0.15s', opacity: 0.7 }}
-                  onMouseEnter={function(e) { e.currentTarget.style.opacity = '1'; }}
-                  onMouseLeave={function(e) { e.currentTarget.style.opacity = '0.7'; }}
-                >{l.label}</Link>
+                <span key={label}
+                  style={{ fontSize: '0.72rem', color: SAGE, opacity: 0.5 }}
+                >{label}</span>
               );
             })}
           </div>

@@ -1,13 +1,12 @@
 'use client';
 import { useState, useEffect } from 'react';
-import Link from 'next/link';
 import { useI18n } from '../../lib/i18n';
 
 // ── Types ────────────────────────────────────────────────────
 export interface CookiePreferences {
   essential: true;       // always true, cannot be disabled
   analytics: boolean;
-  marketing: boolean;
+  preferences: boolean;
 }
 
 const STORAGE_KEY = 'qrncia_cookie_consent';
@@ -45,8 +44,8 @@ const T = {
     essentialDesc: 'Required for the site to function. Cannot be disabled.',
     analytics: 'Analytics',
     analyticsDesc: 'Help us understand how visitors use Querencia (anonymous data only).',
-    marketing: 'Marketing',
-    marketingDesc: 'Used to show relevant content. We never sell your data.',
+    preferences: 'Preferences',
+    preferencesDesc: 'Remembers your language and display settings.',
     acceptAll: 'Accept all',
     rejectAll: 'Reject optional',
     customize: 'Customize',
@@ -98,7 +97,7 @@ export function CookieConsent() {
   var [visible, setVisible] = useState(false);
   var [view, setView] = useState<'banner' | 'customize'>('banner');
   var [analytics, setAnalytics] = useState(false);
-  var [marketing, setMarketing] = useState(false);
+  var [preferences, setPreferences] = useState(false);
 
   useEffect(function() {
     var saved = loadPrefs();
@@ -110,17 +109,17 @@ export function CookieConsent() {
   }, []);
 
   function handleAcceptAll() {
-    savePrefs({ essential: true, analytics: true, marketing: true });
+    savePrefs({ essential: true, analytics: true, preferences: true });
     setVisible(false);
   }
 
   function handleRejectAll() {
-    savePrefs({ essential: true, analytics: false, marketing: false });
+    savePrefs({ essential: true, analytics: false, preferences: false });
     setVisible(false);
   }
 
   function handleSave() {
-    savePrefs({ essential: true, analytics, marketing });
+    savePrefs({ essential: true, analytics, preferences });
     setVisible(false);
   }
 
@@ -177,10 +176,7 @@ export function CookieConsent() {
                 fontSize: '0.83rem', color: '#555', lineHeight: 1.6,
                 marginBottom: 20,
               }}>
-                {tx.desc}{' '}
-                <Link href="/pages/privacy" style={{ color: SAGE, textDecoration: 'none', fontWeight: 500 }}>
-                  {tx.learnMore} →
-                </Link>
+                {tx.desc}
               </p>
 
               {/* Buttons */}
@@ -279,24 +275,24 @@ export function CookieConsent() {
                   <Toggle checked={analytics} onChange={setAnalytics} />
                 </div>
 
-                {/* Marketing */}
+                {/* Preferences */}
                 <div style={{
                   display: 'flex', alignItems: 'flex-start',
                   justifyContent: 'space-between', gap: 16,
                   padding: '14px 16px',
                   background: '#f9fafb', borderRadius: 12,
-                  border: '1px solid ' + (marketing ? 'rgba(74,124,89,0.3)' : '#e5e7eb'),
+                  border: '1px solid ' + (preferences ? 'rgba(74,124,89,0.3)' : '#e5e7eb'),
                   transition: 'border-color 0.2s',
                 }}>
                   <div style={{ flex: 1 }}>
                     <div style={{ marginBottom: 4 }}>
-                      <span style={{ fontSize: '0.85rem', fontWeight: 700, color: '#111' }}>{tx.marketing}</span>
+                      <span style={{ fontSize: '0.85rem', fontWeight: 700, color: '#111' }}>{tx.preferences}</span>
                     </div>
                     <p style={{ fontSize: '0.78rem', color: '#777', lineHeight: 1.5, margin: 0 }}>
-                      {tx.marketingDesc}
+                      {tx.preferencesDesc}
                     </p>
                   </div>
-                  <Toggle checked={marketing} onChange={setMarketing} />
+                  <Toggle checked={preferences} onChange={setPreferences} />
                 </div>
               </div>
 
@@ -335,25 +331,14 @@ export function CookieConsent() {
         </div>
 
         {/* Bottom bar */}
+        {/* NOTE: Privacy Policy link intentionally removed until the legal pages
+            are ready for public launch (company registration pending). Once ready,
+            add back a <Link href="/pages/privacy">{tx.learnMore} →</Link> here. */}
         <div style={{
           padding: '10px 24px',
           background: '#f9fafb',
           borderTop: '1px solid #f0f0f0',
-          display: 'flex', alignItems: 'center', justifyContent: 'space-between',
-          gap: 8,
         }}>
-          <span style={{ fontSize: '0.7rem', color: '#bbb' }}>
-            GDPR · CCPA compliant
-          </span>
-          <Link href="/pages/privacy" style={{
-            fontSize: '0.7rem', color: '#aaa',
-            textDecoration: 'none',
-          }}
-            onMouseEnter={function(e) { (e.currentTarget as HTMLElement).style.color = SAGE; }}
-            onMouseLeave={function(e) { (e.currentTarget as HTMLElement).style.color = '#aaa'; }}
-          >
-            {tx.learnMore} →
-          </Link>
         </div>
       </div>
 
