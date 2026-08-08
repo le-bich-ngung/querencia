@@ -162,10 +162,6 @@ export function CookieConsent() {
               margin: 0,
             }}>{tx.title}</h2>
           </div>
-          {/* Version indicator */}
-          <span style={{ fontSize: '0.65rem', color: '#bbb', fontFamily: 'monospace' }}>
-            v{CONSENT_VERSION}
-          </span>
         </div>
 
         {/* Content */}
