@@ -12,7 +12,7 @@ export default function PrivacyPolicyPage() {
   return (
     <LegalPage title="Privacy Policy" lastUpdated="[DATE]">
       <H2>{"1. Who We Are"}</H2>
-      <P>{"Querencia is operated by [LEGAL ENTITY NAME], a company registered in [JURISDICTION] (\"we,\" \"us\"). For any privacy questions, contact us at "}<Strong>{"[email protected]"}</Strong>{" or through the "}<A href="/message">{"Message Querencia"}</A>{" page in the app."}</P>
+      <P>{"Querencia is operated by [LEGAL ENTITY NAME], a company registered in [JURISDICTION] (\"we,\" \"us\"). For any privacy questions, contact us at "}<Strong>{"hello@querencia.dev"}</Strong>{" or through the "}<A href="/message">{"Message Querencia"}</A>{" page in the app."}</P>
       <P>{"If we appoint a Data Protection Officer or an EU/UK representative in the future, their contact details will be published on this page."}</P>
       <HR/>
       <H2>{"2. Information We Collect"}</H2>
@@ -118,7 +118,7 @@ export default function PrivacyPolicyPage() {
       <LI><Strong>{"Non-discrimination"}</Strong>{" (California residents) - we will not deny you the Services or charge you a different price for exercising your privacy rights."}</LI>
       <LI><Strong>{"Lodge a complaint"}</Strong>{" - with your local data protection authority (e.g., in the EU, the supervisory authority in your country of residence)."}</LI>
       </UL>
-      <P>{"To exercise any of these rights, contact us at "}<Strong>{"[email protected]"}</Strong>{" or via the "}<A href="/message">{"Message Querencia"}</A>{" page. We will respond within the timeframe required by applicable law (typically 30 days under GDPR, 45 days under CCPA)."}</P>
+      <P>{"To exercise any of these rights, contact us at "}<Strong>{"hello@querencia.dev"}</Strong>{" or via the "}<A href="/message">{"Message Querencia"}</A>{" page. We will respond within the timeframe required by applicable law (typically 30 days under GDPR, 45 days under CCPA)."}</P>
       <H3>{"9.1 Vietnam Privacy Rights (Law on Personal Data Protection)"}</H3>
       <P>{"If Querencia is registered in Vietnam, we are subject to Vietnam's Law on Personal Data Protection (Law No. 91/2025/QH15, effective January 1, 2026) and its implementing decree, which replaced the earlier Decree 13/2023/ND-CP. This law applies to us regardless of where a user is physically located, whenever we process the personal data of a Vietnamese individual, and it is a "}<Strong>{"separate legal framework from GDPR"}</Strong>{" - compliance with GDPR does not automatically satisfy Vietnamese law."}</P>
       <P>{"Under this law, Vietnamese users additionally have the right to: know how their data is processed; give, decline, or withdraw consent; view, correct, or delete their data; request restriction of or object to processing; and file complaints, denunciations, or lawsuits, and request compensation for damages, through the competent Vietnamese authority (the Ministry of Public Security's Department of Data Protection and other relevant bodies)."}</P>
@@ -128,7 +128,7 @@ export default function PrivacyPolicyPage() {
       <P>{"Querencia does not sell or share personal information as defined under the CCPA/CPRA, and we do not use sensitive personal information beyond what is necessary to provide the Services. California residents have the rights listed in Section 9 above, plus the right to know the categories of personal information collected and disclosed, which are described in Section 2 and Section 5 of this policy."}</P>
       <HR/>
       <H2>{"10. Children's Privacy"}</H2>
-      <P>{"The Services are not directed at children under 13 (or the minimum age required by your country's law, e.g., 16 in some EU member states). We do not knowingly collect personal information from children below this age. If we learn that we have collected personal data from a child without appropriate consent, we will delete it promptly. If you believe a child has provided us with personal data, please contact us at "}<Strong>{"[email protected]"}</Strong>{"."}</P>
+      <P>{"The Services are not directed at children under 13 (or the minimum age required by your country's law, e.g., 16 in some EU member states). We do not knowingly collect personal information from children below this age. If we learn that we have collected personal data from a child without appropriate consent, we will delete it promptly. If you believe a child has provided us with personal data, please contact us at "}<Strong>{"hello@querencia.dev"}</Strong>{"."}</P>
       <P>{"If Querencia is registered in Vietnam, note that Vietnamese law imposes additional, specific obligations for processing the personal data of children, including obtaining consent from a parent or legal guardian and, in some cases, verification of that consent. This section should be reviewed by Vietnam-qualified legal counsel to confirm the exact mechanism used before launch."}</P>
       <HR/>
       <H2>{"11. Data Security"}</H2>
@@ -149,7 +149,7 @@ export default function PrivacyPolicyPage() {
       <H2>{"13. Contact Us"}</H2>
       <P>{"If you have questions about this Privacy Policy or how we handle your data:"}</P>
       <UL>
-      <LI><Strong>{"Email:"}</Strong>{" [email protected]"}</LI>
+      <LI><Strong>{"Email:"}</Strong>{" hello@querencia.dev"}</LI>
       <LI><Strong>{"In-app:"}</Strong>{" "}<A href="/message">{"Message Querencia"}</A></LI>
       </UL>
       <HR/>

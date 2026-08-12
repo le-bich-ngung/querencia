@@ -20,7 +20,7 @@ export default function TermsOfServicePage() {
       <LI>{"You must provide accurate information when creating your account."}</LI>
       <LI>{"You may sign in using email/password, Google Sign-In, or Apple Sign-In (on supported platforms)."}</LI>
       <LI>{"You may enable multi-factor authentication (MFA) for additional security; if enabled, approving sign-in requests is your responsibility."}</LI>
-      <LI>{"Notify us immediately at "}<Strong>{"[email protected]"}</Strong>{" if you suspect unauthorized access to your account."}</LI>
+      <LI>{"Notify us immediately at "}<Strong>{"hello@querencia.dev"}</Strong>{" if you suspect unauthorized access to your account."}</LI>
       </UL>
       <P>{"You may delete your account at any time from Settings. Deleting your account removes your profile and associated content, subject to the retention exceptions described in our "}<A href="/pages/privacy">{"Privacy Policy"}</A>{"."}</P>
       <HR/>
@@ -69,7 +69,7 @@ export default function TermsOfServicePage() {
       <H3>{"6.3 Payment processing"}</H3>
       <P>{"All payments are processed by "}<Strong>{"Paddle"}</Strong>{", acting as the authorized reseller and merchant of record for digital purchases made on Querencia. Your purchase is subject to Paddle's own terms and privacy policy in addition to these Terms. Querencia does not store your full payment card details."}</P>
       <H3>{"6.4 Refunds"}</H3>
-      <P>{"You may request a refund for any full, unused day(s) remaining in your current access period, calculated at $0.50 USD per unused full day. The day currently in use is non-refundable and will continue until the end of its 24-hour period. Refund transaction fees, if any, are your responsibility. Q already granted for the day in use is non-refundable. To request a refund, contact us via the "}<A href="/message">{"Message Querencia"}</A>{" page or "}<Strong>{"[email protected]"}</Strong>{"."}</P>
+      <P>{"You may request a refund for any full, unused day(s) remaining in your current access period, calculated at $0.50 USD per unused full day. The day currently in use is non-refundable and will continue until the end of its 24-hour period. Refund transaction fees, if any, are your responsibility. Q already granted for the day in use is non-refundable. To request a refund, contact us via the "}<A href="/message">{"Message Querencia"}</A>{" page or "}<Strong>{"hello@querencia.dev"}</Strong>{"."}</P>
       <H3>{"6.5 Gifting Q"}</H3>
       <P>{"You may gift Q to other users or to the community Q Pool. Gifted Q is non-refundable once transferred."}</P>
       <H3>{"6.6 Pricing changes"}</H3>
@@ -117,7 +117,7 @@ export default function TermsOfServicePage() {
       <HR/>
       <H2>{"17. Contact Us"}</H2>
       <UL>
-      <LI><Strong>{"Email:"}</Strong>{" [email protected]"}</LI>
+      <LI><Strong>{"Email:"}</Strong>{" hello@querencia.dev"}</LI>
       <LI><Strong>{"In-app:"}</Strong>{" "}<A href="/message">{"Message Querencia"}</A></LI>
       </UL>
       <HR/>

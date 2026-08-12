@@ -50,7 +50,7 @@ export default function SecurityPage() {
       <H2>{"6. Vulnerability Reporting"}</H2>
       <P>{"If you believe you've found a security vulnerability in Querencia, please report it responsibly:"}</P>
       <UL>
-      <LI><Strong>{"Email:"}</Strong>{" [email protected]"}</LI>
+      <LI><Strong>{"Email:"}</Strong>{" hello@querencia.dev"}</LI>
       <LI>{"Please include: a description of the vulnerability, steps to reproduce it, and its potential impact."}</LI>
       <LI>{"Please do not publicly disclose a vulnerability before we've had a reasonable opportunity to investigate and address it."}</LI>
       <LI>{"We commit to acknowledging reports within [X] business days."}</LI>
@@ -75,7 +75,7 @@ export default function SecurityPage() {
       </UL>
       <HR/>
       <H2>{"9. Questions"}</H2>
-      <P>{"If you have questions about our security practices, contact us at "}<Strong>{"[email protected]"}</Strong>{" or through the "}<A href="/message">{"Message Querencia"}</A>{" page."}</P>
+      <P>{"If you have questions about our security practices, contact us at "}<Strong>{"hello@querencia.dev"}</Strong>{" or through the "}<A href="/message">{"Message Querencia"}</A>{" page."}</P>
       <HR/>
       <Disclaimer>{"This Security page is a draft prepared for legal and technical review. Before publishing, sections referencing specific certifications (e.g., Paddle's PCI-DSS status) should be verified directly against the provider's current published compliance status, response-time commitments should be finalized with the team, and a qualified security professional should confirm the accuracy of all technical claims."}</Disclaimer>
     </LegalPage>

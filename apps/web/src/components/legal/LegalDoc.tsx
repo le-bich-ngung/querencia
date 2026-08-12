@@ -41,9 +41,10 @@ export function LegalPage({
   );
 }
 
-export function H2({ children }: { children: React.ReactNode }) {
+export function H2({ children, id }: { children: React.ReactNode; id?: string }) {
   return (
     <h2
+      id={id}
       style={{
         fontSize: '1.25rem',
         fontWeight: 800,
@@ -51,6 +52,7 @@ export function H2({ children }: { children: React.ReactNode }) {
         marginTop: 40,
         marginBottom: 14,
         letterSpacing: -0.3,
+        scrollMarginTop: 24,
       }}
     >
       {children}
@@ -74,9 +76,9 @@ export function H3({ children }: { children: React.ReactNode }) {
   );
 }
 
-export function P({ children }: { children: React.ReactNode }) {
+export function P({ children, style }: { children: React.ReactNode; style?: React.CSSProperties }) {
   return (
-    <p style={{ marginBottom: 14, color: 'var(--text-secondary)' }}>{children}</p>
+    <p style={{ marginBottom: 14, color: 'var(--text-secondary)', ...style }}>{children}</p>
   );
 }
 
