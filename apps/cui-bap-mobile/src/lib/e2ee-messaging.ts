@@ -26,7 +26,7 @@ export async function sendEncryptedMessage(opts: SendOptions) {
 
   try {
     // Kiểm tra đã có session chưa
-    const needsBundle = !hasSession(recipientId, deviceId);
+    const needsBundle = !(await hasSession(recipientId, deviceId));
 
     let recipientBundle;
     if (needsBundle) {
@@ -104,11 +104,9 @@ export async function setupE2EE() {
  * Upload thêm prekeys khi gần hết (< 10 còn lại)
  */
 async function replenishPreKeys() {
-  const { generateAndStoreKeys: gen } = await import('./e2ee');
-  // Chỉ generate thêm prekeys, không generate lại identity key
   const { KeyHelper } = await import('@privacyresearch/libsignal-protocol-typescript');
-  const { MMKV } = await import('react-native-mmkv');
-  const storage = new MMKV({ id: 'e2ee-keys' });
+  const { getE2eeStorage } = await import('./e2ee');
+  const storage = await getE2eeStorage();
 
   const startId = (storage.getNumber('lastPreKeyId') ?? 100) + 1;
   const newKeys = [];

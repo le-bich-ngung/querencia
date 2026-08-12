@@ -390,7 +390,61 @@
 <!-- QR lib -->
 <script src="https://cdnjs.cloudflare.com/ajax/libs/qrcodejs/1.0.0/qrcode.min.js"></script>
 <script>
-const API = '/ai';
+const API = '/api/v1/file-share';
+
+// ══════════════════════════════════════════════
+// CRYPTO - Web Crypto API (AES-256-GCM)
+// When a password is set, the file is encrypted client-side before
+// upload so the server/R2 storage only ever sees ciphertext — makes
+// the "Encrypted local storage" claim actually true (previously the
+// password was only a server-side download gate; file bytes went up
+// in plaintext). Same PBKDF2/AES-GCM scheme as file-vault.html.
+// Container: [4B magic "QVL2"][16B salt][12B iv][encrypted bytes]
+// ══════════════════════════════════════════════
+const VAULT_MAGIC = new Uint8Array([0x51, 0x56, 0x4C, 0x32]); // "QVL2"
+
+async function deriveVaultKey(password, salt) {
+  const enc = new TextEncoder();
+  const keyMaterial = await crypto.subtle.importKey(
+    'raw', enc.encode(password), 'PBKDF2', false, ['deriveKey']
+  );
+  return crypto.subtle.deriveKey(
+    { name: 'PBKDF2', salt, iterations: 200000, hash: 'SHA-256' },
+    keyMaterial,
+    { name: 'AES-GCM', length: 256 },
+    false,
+    ['encrypt', 'decrypt']
+  );
+}
+
+async function encryptFileForUpload(file, password) {
+  const salt = crypto.getRandomValues(new Uint8Array(16));
+  const iv   = crypto.getRandomValues(new Uint8Array(12));
+  const key  = await deriveVaultKey(password, salt);
+  const data = await file.arrayBuffer();
+  const encrypted = await crypto.subtle.encrypt({ name: 'AES-GCM', iv }, key, data);
+  return new Blob([VAULT_MAGIC, salt, iv, new Uint8Array(encrypted)]);
+}
+
+async function blobHasVaultMagic(blob) {
+  const head = new Uint8Array(await blob.slice(0, 4).arrayBuffer());
+  return head.length === 4 && head.every((b, i) => b === VAULT_MAGIC[i]);
+}
+
+async function decryptDownloadedBlob(blob, password) {
+  const buf = new Uint8Array(await blob.arrayBuffer());
+  const magic = buf.slice(0, 4);
+  if (!magic.every((b, i) => b === VAULT_MAGIC[i])) {
+    // Not one of our encrypted containers (e.g. no-password share) - pass through
+    return blob;
+  }
+  const salt = buf.slice(4, 20);
+  const iv   = buf.slice(20, 32);
+  const ciphertext = buf.slice(32);
+  const key = await deriveVaultKey(password, salt);
+  const plain = await crypto.subtle.decrypt({ name: 'AES-GCM', iv }, key, ciphertext);
+  return new Blob([plain]);
+}
 
 // ── DARK MODE ──
 if (localStorage.getItem('darkMode') === '1') document.body.classList.add('dark');
@@ -472,22 +526,33 @@ function togglePass(cb) {
 }
 
 // ── UPLOAD ──
+const MODE_HOURS = { '1h': 1, '24h': 24, '7d': 168, '1read': 168 };
+
 async function doUpload() {
   if (!selectedFile) return;
 
-  const formData = new FormData();
-  formData.append('file', selectedFile);
-  formData.append('mode', expireMode);
+  const pass = document.getElementById('passToggle').checked
+    ? document.getElementById('passInput').value.trim() : '';
 
+  const formData = new FormData();
+  if (pass) {
+    // Real client-side encryption - password never leaves the browser,
+    // server/R2 only ever stores ciphertext (zero-knowledge).
+    const encryptedBlob = await encryptFileForUpload(selectedFile, pass);
+    formData.append('file', encryptedBlob, selectedFile.name);
+  } else {
+    formData.append('file', selectedFile);
+  }
+
+  let expiryHours = MODE_HOURS[expireMode] ?? 24;
+  let dlLimit = expireMode === '1read' ? 1 : 0;
   if (expireMode === 'custom') {
     const val = parseInt(document.getElementById('customVal').value) || 30;
     const unit = parseInt(document.getElementById('customUnit').value) || 1;
-    formData.append('custom_minutes', val * unit);
+    expiryHours = Math.max(1, Math.ceil((val * unit) / 60));
   }
-
-  const pass = document.getElementById('passToggle').checked
-    ? document.getElementById('passInput').value.trim() : '';
-  if (pass) formData.append('password', pass);
+  formData.append('expiry', String(expiryHours));
+  formData.append('dlLimit', String(dlLimit));
 
   // UI
   document.getElementById('btnUpload').disabled = true;
@@ -503,19 +568,24 @@ async function doUpload() {
   }, 200);
 
   try {
-    const res = await fetch(`${API}/vault/upload`, { method: 'POST', body: formData });
+    const res = await fetch(`${API}/upload`, { method: 'POST', body: formData });
     clearInterval(fakeInterval);
 
     if (!res.ok) {
-      const err = await res.json();
-      throw new Error(err.detail || 'Upload failed');
+      let msg = 'Upload failed';
+      try { msg = (await res.json()).message || msg; } catch {}
+      throw new Error(msg);
     }
 
     bar.style.width = '100%';
     label.textContent = 'Done!';
 
-    const data = await res.json();
-    setTimeout(() => showResult(data), 400);
+    const data = await res.json(); // { fileId }
+    const shareUrl = `${location.origin}${location.pathname}?token=${data.fileId}`;
+    const expireLabel = expireMode === '1read' ? '1 download'
+      : expireMode === 'custom' ? `${expiryHours}h`
+      : expireMode;
+    setTimeout(() => showResult({ share_url: shareUrl, expire_label: expireLabel }), 400);
 
   } catch(e) {
     clearInterval(fakeInterval);
@@ -570,7 +640,6 @@ function resetAll() {
 
 // ── RECEIVE MODE ──
 let receiveToken = '';
-let needsPassword = false;
 
 async function enterReceiveMode(token) {
   receiveToken = token;
@@ -581,29 +650,34 @@ async function enterReceiveMode(token) {
 
   // Fetch info
   try {
-    const res = await fetch(`${API}/vault/${token}/info`);
+    const res = await fetch(`${API}/meta/${token}`);
     if (res.status === 404 || res.status === 410) {
-      const err = await res.json();
-      showExpired(err.detail);
+      showExpired('This file has been deleted or the link is invalid.');
       return;
     }
-    const info = await res.json();
+    if (!res.ok) throw new Error('Could not load file info');
+    const info = await res.json(); // { name, size, hasPassword, expiresAt, dlLimit, dlCount }
 
-    if (info.needs_password) {
-      needsPassword = true;
-      document.getElementById('receivePassWrap').style.display = 'block';
-    }
+    // The server is zero-knowledge - it never learns whether the file is
+    // password-encrypted. We always show the field as optional; if the
+    // downloaded bytes turn out to be encrypted we'll prompt then.
+    document.getElementById('receivePassWrap').style.display = 'block';
 
-    document.getElementById('receiveIcon').textContent = info.burn_after_read ? '🔥' : '📦';
-    document.getElementById('receiveTitle').textContent = info.filename;
+    const burnAfterRead = info.dlLimit === 1;
+    document.getElementById('receiveIcon').textContent = burnAfterRead ? '🔥' : '📦';
+    document.getElementById('receiveTitle').textContent = info.name;
 
     const sizeStr = formatSize(info.size);
     let metaLines = [sizeStr];
-    if (info.expire_in) metaLines.push(`Expires in: ${info.expire_in}`);
-    if (info.remaining_reads != null) metaLines.push(`${info.remaining_reads} downloads left`);
+    if (info.expiresAt) {
+      const mins = Math.max(0, Math.round((new Date(info.expiresAt) - Date.now()) / 60000));
+      const label = mins >= 1440 ? `${Math.round(mins/1440)}d` : mins >= 60 ? `${Math.round(mins/60)}h` : `${mins}m`;
+      metaLines.push(`Expires in: ${label}`);
+    }
+    if (info.dlLimit > 0) metaLines.push(`${Math.max(0, info.dlLimit - info.dlCount)} downloads left`);
     document.getElementById('receiveMeta').textContent = metaLines.join(' · ');
 
-    if (info.burn_after_read) {
+    if (burnAfterRead) {
       document.getElementById('receiveWarn').style.display = 'block';
       document.getElementById('receiveWarn').textContent = '⚠ This file will self-destruct right after you download it. Only 1 download allowed!';
     }
@@ -614,25 +688,41 @@ async function enterReceiveMode(token) {
 }
 
 async function doDownload() {
-  const pass = needsPassword ? document.getElementById('receivePass').value.trim() : '';
-  if (needsPassword && !pass) { toast('Enter the password first!'); return; }
+  const pass = document.getElementById('receivePass').value.trim();
 
   document.getElementById('btnDownload').disabled = true;
   document.getElementById('btnDownload').textContent = '⏳ Downloading...';
 
   try {
-    const url = `${API}/vault/${receiveToken}/download${pass ? '?password='+encodeURIComponent(pass) : ''}`;
-    const res = await fetch(url);
+    // Zero-knowledge: nothing password-related is ever sent to the server.
+    const res = await fetch(`${API}/download/${receiveToken}`);
 
-    if (res.status === 401) { toast('Wrong password!'); document.getElementById('btnDownload').disabled = false; document.getElementById('btnDownload').textContent = '⬇ Download now'; return; }
     if (res.status === 404 || res.status === 410) { showExpired('This file has been deleted.'); return; }
     if (!res.ok) throw new Error('Download failed');
 
-    const blob = await res.blob();
+    let blob = await res.blob();
     const disposition = res.headers.get('content-disposition') || '';
     let filename = 'file';
-    const match = disposition.match(/filename="?([^";\n]+)"?/);
-    if (match) filename = match[1];
+    const match = disposition.match(/filename=\"?([^\";\n]+)\"?/);
+    if (match) filename = decodeURIComponent(match[1]);
+
+    const isEncrypted = await blobHasVaultMagic(blob);
+    if (isEncrypted) {
+      if (!pass) {
+        toast('This file is password-protected — enter the password.');
+        document.getElementById('btnDownload').disabled = false;
+        document.getElementById('btnDownload').textContent = '⬇ Download now';
+        return;
+      }
+      try {
+        blob = await decryptDownloadedBlob(blob, pass);
+      } catch (e) {
+        toast('Wrong password or corrupted file.');
+        document.getElementById('btnDownload').disabled = false;
+        document.getElementById('btnDownload').textContent = '⬇ Download now';
+        return;
+      }
+    }
 
     const dlUrl = URL.createObjectURL(blob);
     const a = document.createElement('a');

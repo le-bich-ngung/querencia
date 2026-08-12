@@ -26,22 +26,72 @@ import {
   StorageType,
 } from '@privacyresearch/libsignal-protocol-typescript';
 import { MMKV } from 'react-native-mmkv';
+import * as Keychain from 'react-native-keychain';
 
-const storage = new MMKV({ id: 'e2ee-keys' });
+// ── Encrypted MMKV instance ────────────────────────────────────
+// Long-term identity keys, prekeys, and Double Ratchet session state
+// are the crown jewels of E2EE — if they leak, past/future messages
+// can be decrypted. MMKV is NOT encrypted at rest by default, so we
+// generate a random 256-bit key, store *that* key in the OS Keychain
+// / Keystore (hardware-backed where available), and hand it to MMKV
+// as `encryptionKey`. This mirrors the pattern already used for the
+// auth token store (see auth.store.ts).
+const MMKV_KEY_SERVICE = 'e2ee-mmkv-encryption-key';
+let storagePromise: Promise<MMKV> | null = null;
+
+async function getOrCreateEncryptionKey(): Promise<string> {
+  const existing = await Keychain.getGenericPassword({ service: MMKV_KEY_SERVICE });
+  if (existing) return existing.password;
+
+  const randomBytes = new Uint8Array(32);
+  // libsignal-protocol-typescript already requires a WebCrypto-grade
+  // CSPRNG to be present globally for its own key generation, so we
+  // reuse the same source here rather than introducing a new one.
+  (globalThis as any).crypto.getRandomValues(randomBytes);
+  let binary = '';
+  for (let i = 0; i < randomBytes.length; i++) binary += String.fromCharCode(randomBytes[i]);
+  const key = btoa(binary);
+
+  await Keychain.setGenericPassword('querencia-e2ee', key, { service: MMKV_KEY_SERVICE });
+  return key;
+}
+
+async function getStorage(): Promise<MMKV> {
+  if (!storagePromise) {
+    storagePromise = getOrCreateEncryptionKey().then(
+      (encryptionKey) => new MMKV({ id: 'e2ee-keys', encryptionKey }),
+    );
+  }
+  return storagePromise;
+}
+
+export const getE2eeStorage = getStorage;
+
+/**
+ * Call once at app startup (before any E2EE key generation, encrypt,
+ * or decrypt call) so the Keychain round-trip happens up front instead
+ * of stalling the first message.
+ */
+export async function initE2EEStorage(): Promise<void> {
+  await getStorage();
+}
 
 // ── Signal Protocol Store - lưu keys vào MMKV (encrypted) ────
 export class SignalStore implements StorageType {
   // Identity key pair
   async getIdentityKeyPair() {
+    const storage = await getStorage();
     const stored = storage.getString('identityKeyPair');
     return stored ? JSON.parse(stored) : undefined;
   }
 
   async getLocalRegistrationId(): Promise<number> {
+    const storage = await getStorage();
     return storage.getNumber('registrationId') ?? 0;
   }
 
   async isTrustedIdentity(identifier: string, identityKey: ArrayBuffer): Promise<boolean> {
+    const storage = await getStorage();
     const trusted = storage.getString(`identity:${identifier}`);
     if (!trusted) {
       // First time - trust and store (Trust On First Use)
@@ -53,12 +103,14 @@ export class SignalStore implements StorageType {
   }
 
   async saveIdentity(identifier: string, identityKey: ArrayBuffer): Promise<boolean> {
+    const storage = await getStorage();
     const existing = storage.getString(`identity:${identifier}`);
     storage.set(`identity:${identifier}`, arrayBufferToBase64(identityKey));
     return !!existing; // true = identity changed (key change warning)
   }
 
   async loadPreKey(keyId: number | string) {
+    const storage = await getStorage();
     const stored = storage.getString(`preKey:${keyId}`);
     if (!stored) return undefined;
     const parsed = JSON.parse(stored);
@@ -69,6 +121,7 @@ export class SignalStore implements StorageType {
   }
 
   async storePreKey(keyId: number | string, keyPair: { pubKey: ArrayBuffer; privKey: ArrayBuffer }) {
+    const storage = await getStorage();
     storage.set(`preKey:${keyId}`, JSON.stringify({
       pubKey:  arrayBufferToBase64(keyPair.pubKey),
       privKey: arrayBufferToBase64(keyPair.privKey),
@@ -76,10 +129,12 @@ export class SignalStore implements StorageType {
   }
 
   async removePreKey(keyId: number | string) {
+    const storage = await getStorage();
     storage.delete(`preKey:${keyId}`);
   }
 
   async loadSignedPreKey(keyId: number | string) {
+    const storage = await getStorage();
     const stored = storage.getString(`signedPreKey:${keyId}`);
     if (!stored) return undefined;
     const parsed = JSON.parse(stored);
@@ -90,6 +145,7 @@ export class SignalStore implements StorageType {
   }
 
   async storeSignedPreKey(keyId: number | string, keyPair: { pubKey: ArrayBuffer; privKey: ArrayBuffer }) {
+    const storage = await getStorage();
     storage.set(`signedPreKey:${keyId}`, JSON.stringify({
       pubKey:  arrayBufferToBase64(keyPair.pubKey),
       privKey: arrayBufferToBase64(keyPair.privKey),
@@ -97,25 +153,30 @@ export class SignalStore implements StorageType {
   }
 
   async removeSignedPreKey(keyId: number | string) {
+    const storage = await getStorage();
     storage.delete(`signedPreKey:${keyId}`);
   }
 
   async loadSession(identifier: string) {
+    const storage = await getStorage();
     const stored = storage.getString(`session:${identifier}`);
     return stored ? base64ToArrayBuffer(stored) : undefined;
   }
 
   async storeSession(identifier: string, record: ArrayBuffer) {
+    const storage = await getStorage();
     storage.set(`session:${identifier}`, arrayBufferToBase64(record));
   }
 
   async removeSession(identifier: string) {
+    const storage = await getStorage();
     storage.delete(`session:${identifier}`);
   }
 
   async removeAllSessions(identifier: string) {
     // Find and remove all sessions for this identifier
     // MMKV doesn't support prefix scan natively, track them manually
+    const storage = await getStorage();
     storage.delete(`session:${identifier}`);
   }
 }
@@ -130,6 +191,7 @@ export interface PublicKeyBundle {
 
 export async function generateAndStoreKeys(): Promise<PublicKeyBundle> {
   const store = new SignalStore();
+  const storage = await getStorage();
 
   // Identity key pair
   const identityKeyPair = await KeyHelper.generateIdentityKeyPair();
@@ -244,12 +306,14 @@ export async function decryptMessage(
 }
 
 // ── Check nếu cần fetch keys mới ─────────────────────────────
-export function hasSession(recipientId: string, deviceId: number): boolean {
+export async function hasSession(recipientId: string, deviceId: number): Promise<boolean> {
+  const storage = await getStorage();
   const key = `session:${recipientId}.${deviceId}`;
   return storage.contains(key);
 }
 
-export function getLocalRegistrationId(): number {
+export async function getLocalRegistrationId(): Promise<number> {
+  const storage = await getStorage();
   return storage.getNumber('registrationId') ?? 0;
 }
 

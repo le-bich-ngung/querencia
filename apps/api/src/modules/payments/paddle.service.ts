@@ -63,7 +63,15 @@ export class PaddleService {
 
   /** Verify Paddle webhook signature */
   verifyWebhookSignature(rawBody: string, signature: string): boolean {
-    if (!this.webhookKey) return true; // dev mode: bypass
+    if (!this.webhookKey) {
+      // Fail closed in production; only bypass in non-production when no secret is configured
+      if (!this.isSandbox) {
+        this.logger.error('PADDLE_WEBHOOK_SECRET missing in production — rejecting webhook');
+        return false;
+      }
+      return true;
+    }
+    if (!signature) return false;
 
     // Paddle v2 HMAC-SHA256
     const expected = crypto
@@ -71,10 +79,13 @@ export class PaddleService {
       .update(rawBody)
       .digest('hex');
 
-    return crypto.timingSafeEqual(
-      Buffer.from(signature),
-      Buffer.from(expected),
-    );
+    const sigBuf = Buffer.from(signature, 'hex');
+    const expBuf = Buffer.from(expected, 'hex');
+    // timingSafeEqual throws on length mismatch — guard first to avoid a
+    // crash/error-based side channel and to keep comparison constant-time
+    if (sigBuf.length !== expBuf.length) return false;
+
+    return crypto.timingSafeEqual(sigBuf, expBuf);
   }
 
   /** Parse và validate webhook event */

@@ -62,13 +62,14 @@ export class FileShareService {
     // Save to vaultFiles table (reuse existing schema)
     await this.db.insert(vaultFiles).values({
       token,
-      filename: 'encrypted', // real name is encrypted in payload
+      filename: file.originalname || 'file',
       filepath: r2Key,
       filesize: file.size,
       expireAt,
       maxReads: dlLimit > 0 ? dlLimit : null,
       readCount: 0,
-      password: null, // password handled client-side (E2EE)
+      password: null, // zero-knowledge: encryption (when used) happens client-side with a
+                       // password that's never sent to or stored on the server
       mode: expiry <= 1 ? '1h' : expiry <= 24 ? '24h' : '7d',
     });
 
@@ -93,7 +94,7 @@ export class FileShareService {
   }
 
   // ── Download encrypted blob ───────────────────────────────
-  async download(fileId: string): Promise<Buffer> {
+  async download(fileId: string): Promise<{ buffer: Buffer; filename: string }> {
     const share = await this.findValid(fileId);
 
     // Get from R2
@@ -119,7 +120,7 @@ export class FileShareService {
       this.logger.log(`[FileShare] Auto-deleted after ${newCount} downloads: ${fileId}`);
     }
 
-    return buffer;
+    return { buffer, filename: share.filename };
   }
 
   // ── Delete expired (cron) ─────────────────────────────────

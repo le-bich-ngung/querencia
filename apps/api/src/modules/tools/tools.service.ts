@@ -17,7 +17,6 @@ interface ToolEntry {
 // Chỉ list tools có backend - pure client-side tools không cần register ở đây
 const BACKEND_TOOLS: ToolEntry[] = [
   { slug: 'flashcards',             name: 'Flashcards',              tier: 'free', qCost: 0, backend: 'ai-service' },
-  { slug: 'vault',                  name: 'Vault - Self-destruct Link', tier: 'free', qCost: 0, backend: 'ai-service' },
   { slug: 'pdf-to-word',            name: 'PDF → Word',              tier: 'free', qCost: 1, backend: 'ai-service' },
   { slug: 'screenshot-translator',  name: 'Screenshot Translator',   tier: 'paid', qCost: 2, backend: 'ai-service' },
 ];

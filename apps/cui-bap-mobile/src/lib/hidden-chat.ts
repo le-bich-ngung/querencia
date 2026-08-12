@@ -46,18 +46,21 @@ export async function toggleHideConversation(convId: string): Promise<boolean> {
 // ── Xác thực biometrics để xem hidden chats ──────────────────
 export async function authenticateForHiddenChat(): Promise<boolean> {
   try {
-    const { available } = await rnBiometrics.isSensorAvailable();
-    if (!available) {
-      // Fallback: dùng PIN hệ thống
-      return true; // Trên device không có biometrics → cho qua
-    }
-
+    // Don't bypass just because isSensorAvailable() reports no biometric
+    // sensor — this device may still have a PIN/pattern/password set,
+    // which allowDeviceCredentials lets simplePrompt fall back to. The
+    // old code treated "no biometric sensor" as "let them in", which
+    // defeated the whole point of this lock on any device without
+    // fingerprint/face hardware. Fail closed instead: only grant access
+    // on an explicit successful authentication.
     const { success } = await rnBiometrics.simplePrompt({
       promptMessage: 'Xác thực để xem tin nhắn ẩn',
       cancelButtonText: 'Hủy',
     });
     return success;
   } catch {
+    // No biometric AND no device credential configured, prompt failed to
+    // show, or any other error — deny access rather than silently allow.
     return false;
   }
 }

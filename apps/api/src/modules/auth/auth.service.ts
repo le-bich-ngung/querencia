@@ -69,6 +69,18 @@ export class AuthService {
   }
 
   // ─────────────────────────────────────────────────────────────
+  // TOKEN-AT-REST HASHING
+  // Email verification / password-reset tokens are high-entropy
+  // secrets, mirroring how passwords are never stored in plaintext.
+  // We store only SHA-256(token) so a DB leak doesn't hand out
+  // directly-usable tokens; the raw token only ever exists in the
+  // emailed link and briefly in memory here.
+  // ─────────────────────────────────────────────────────────────
+  private hashToken(token: string): string {
+    return crypto.createHash('sha256').update(token).digest('hex');
+  }
+
+  // ─────────────────────────────────────────────────────────────
   // JWT HELPERS
   // sub = email (giữ tương thích - token cũ từ production vẫn valid)
   // ─────────────────────────────────────────────────────────────
@@ -116,12 +128,12 @@ export class AuthService {
     if (existing) throw new ConflictException('Email này đã được đăng ký rồi');
 
     // 2. Hash password + tạo verification token
-    const [hashedPassword, verificationToken] = await Promise.all([
+    const [hashedPassword, rawVerificationToken] = await Promise.all([
       this.hashPassword(data.password),
       Promise.resolve(crypto.randomBytes(32).toString('base64url')),
     ]);
 
-    // 3. Insert user
+    // 3. Insert user (only the SHA-256 hash of the token is persisted)
     const [newUser] = await this.db
       .insert(users)
       .values({
@@ -130,13 +142,14 @@ export class AuthService {
         hashedPassword,
         isVerified:        false,
         isActive:          true,
-        verificationToken,
+        verificationToken: this.hashToken(rawVerificationToken),
         plan:              'free',
       })
       .returning({ id: users.id, email: users.email, name: users.name });
 
     // 4. Gửi email xác nhận (không block nếu lỗi - giữ y chang code cũ)
-    await this.sendVerificationEmail(email, data.name, verificationToken);
+    // Raw token goes in the link; only its hash lives in the DB.
+    await this.sendVerificationEmail(email, data.name, rawVerificationToken);
 
     this.logger.log(`[REGISTER] New user: ${email}`);
     return { message: 'Đăng ký thành công! Vui lòng kiểm tra email để xác nhận tài khoản.' };
@@ -149,7 +162,7 @@ export class AuthService {
 
   async verifyEmail(token: string): Promise<{ username: string; redirectUrl: string }> {
     const user = await this.db.query.users.findFirst({
-      where: eq(users.verificationToken, token),
+      where: eq(users.verificationToken, this.hashToken(token)),
       columns: { id: true, name: true },
     });
 
@@ -237,8 +250,14 @@ export class AuthService {
     if (!user) throw new UnauthorizedException('User không tồn tại');
 
     // Rotation guard: token phải khớp với cái đang lưu trong Redis
+    // (constant-time compare — avoids leaking match-length via timing)
     const stored = await this.sessionRedis.get(sessionKey(user.id));
-    if (stored !== refreshToken) {
+    const storedBuf = Buffer.from(stored ?? '');
+    const givenBuf  = Buffer.from(refreshToken);
+    const matches = stored !== null
+      && storedBuf.length === givenBuf.length
+      && crypto.timingSafeEqual(storedBuf, givenBuf);
+    if (!matches) {
       // Token reuse → thu hồi luôn (bảo mật)
       await this.sessionRedis.del(sessionKey(user.id));
       throw new UnauthorizedException('Refresh token đã bị thu hồi. Vui lòng đăng nhập lại.');
@@ -286,9 +305,10 @@ export class AuthService {
 
       await this.db
         .update(users)
-        .set({ verificationToken: resetToken, updatedAt: new Date() })
+        .set({ verificationToken: this.hashToken(resetToken), updatedAt: new Date() })
         .where(eq(users.id, user.id));
 
+      // Raw token only goes out in the email link; DB keeps only the hash.
       await this.sendPasswordResetEmail(lowerEmail, user.name ?? 'bạn', resetToken);
     }
 
@@ -306,7 +326,7 @@ export class AuthService {
     }
 
     const user = await this.db.query.users.findFirst({
-      where: eq(users.verificationToken, token),
+      where: eq(users.verificationToken, this.hashToken(token)),
       columns: { id: true },
     });
     if (!user) throw new BadRequestException('Token không hợp lệ hoặc đã hết hạn');

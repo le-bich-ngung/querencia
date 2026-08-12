@@ -49,10 +49,10 @@ export class FileShareController {
     @Param('id') id: string,
     @Res() res: Response,
   ) {
-    const buffer = await this.service.download(id);
+    const { buffer, filename } = await this.service.download(id);
     res.set({
       'Content-Type': 'application/octet-stream',
-      'Content-Disposition': `attachment; filename="encrypted.bin"`,
+      'Content-Disposition': `attachment; filename="${encodeURIComponent(filename)}"`,
       'Content-Length': buffer.length,
       // Security headers
       'X-Content-Type-Options': 'nosniff',

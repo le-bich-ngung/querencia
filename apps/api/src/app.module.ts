@@ -25,8 +25,7 @@ import { SecurityMiddleware } from './common/middleware/security.middleware';
 import { AllExceptionsFilter } from './common/filters/http-exception.filter';
 import { APP_FILTER }         from '@nestjs/core';
 import { AppController }      from './app.controller';
-// T?M T?T - thi?u dependency (typeorm, @nestjs/schedule), ???ng d?n sai. B?t l?i khi ho?n thi?n.
-// import { FileShareModule } from './modules/tools/file-share/file-share.module';
+import { FileShareModule } from './modules/tools/file-share/file-share.module';
 
 @Module({
   imports: [
@@ -46,7 +45,7 @@ import { AppController }      from './app.controller';
     WebhooksModule,
     E2eeModule,
     MetaModule,
-    // FileShareModule,
+    FileShareModule,
     VocabModule,
   ],
   controllers: [AppController],
