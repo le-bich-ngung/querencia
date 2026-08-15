@@ -18,6 +18,7 @@ import { WebhooksModule }  from './modules/webhooks/webhooks.module';
 import { MetaModule }      from './modules/meta/meta.module';
 import { E2eeModule }      from './modules/e2ee/e2ee.module';
 import { VocabModule }     from './modules/vocab/vocab.module';
+import { MessageModule }   from './modules/message/message.module';
 
 import { JwtAuthGuard }       from './common/guards/jwt-auth.guard';
 import { ThrottleGuard }      from './common/guards/throttle.guard';
@@ -47,6 +48,7 @@ import { FileShareModule } from './modules/tools/file-share/file-share.module';
     MetaModule,
     FileShareModule,
     VocabModule,
+    MessageModule,
   ],
   controllers: [AppController],
   providers: [

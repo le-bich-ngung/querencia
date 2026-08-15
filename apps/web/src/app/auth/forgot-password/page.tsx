@@ -9,17 +9,22 @@ import Link          from 'next/link';
 import { AuthCard }    from '../../../components/auth/AuthCard';
 import { AuthInput }   from '../../../components/auth/AuthInput';
 import { AuthMessage } from '../../../components/auth/AuthMessage';
+import { Turnstile }   from '../../../components/common/Turnstile';
 
 export default function ForgotPasswordPage() {
   const [email,   setEmail]   = useState('');
   const [loading, setLoading] = useState(false);
   const [sent,    setSent]    = useState(false);
   const [msg,     setMsg]     = useState<{ text: string; type: 'success' | 'error' } | null>(null);
+  const [captchaToken, setCaptchaToken] = useState('');
 
   async function handleSubmit(e: React.FormEvent) {
     e.preventDefault();
     if (!email.trim()) {
       setMsg({ text: 'Please enter your email.', type: 'error' }); return;
+    }
+    if (!captchaToken) {
+      setMsg({ text: 'Please complete the verification check.', type: 'error' }); return;
     }
     setLoading(true);
     setMsg(null);
@@ -27,7 +32,7 @@ export default function ForgotPasswordPage() {
       await fetch('/api/v1/auth/forgot-password', {
         method:  'POST',
         headers: { 'Content-Type': 'application/json' },
-        body:    JSON.stringify({ email }),
+        body:    JSON.stringify({ email, captchaToken }),
       });
       // Always show success - keeps old behavior (anti-enumeration)
       setSent(true);
@@ -74,6 +79,7 @@ export default function ForgotPasswordPage() {
           autoComplete="email"
           autoFocus
         />
+        <Turnstile onVerify={setCaptchaToken} />
         <AuthMessage message={msg?.text ?? null} type={msg?.type ?? 'error'} />
         <button
           type="submit"

@@ -30,6 +30,7 @@ class RegisterDto {
   email: string;
   name: string;
   password: string;
+  captchaToken: string;
 }
 
 class LoginDto {
@@ -39,6 +40,7 @@ class LoginDto {
 
 class ForgotPasswordDto {
   email: string;
+  captchaToken: string;
 }
 
 class ResetPasswordDto {
@@ -56,6 +58,8 @@ export class AuthController {
 
   // ── REGISTER ──────────────────────────────────────────────
   @Public()
+  @UseGuards(CaptchaGuard)
+  @RequireCaptcha()
   @Post('register')
   @HttpCode(HttpStatus.CREATED)
   @ApiOperation({ summary: 'Đăng ký tài khoản mới' })
@@ -73,19 +77,19 @@ export class AuthController {
       // Trả HTML giống code cũ - tự redirect sau 2 giây
       return res.send(`
         <html><body style="font-family:sans-serif;text-align:center;padding:60px">
-          <h2 style="color:#4a7c59">✓ Tài khoản đã được xác nhận!</h2>
-          <p>Xin chào <strong>${username}</strong>, tài khoản của bạn đã sẵn sàng.</p>
-          <p>Đang chuyển về trang đăng nhập...</p>
+          <h2 style="color:#4a7c59">✓ Your account has been confirmed!</h2>
+          <p>Hi <strong>${username}</strong>, your account is ready to go.</p>
+          <p>Redirecting you to sign in...</p>
           <script>setTimeout(() => window.location.href = '${redirectUrl}', 2000)</script>
-          <a href="${redirectUrl}">← Về trang chủ</a>
+          <a href="${redirectUrl}">← Back to home</a>
         </body></html>
       `);
     } catch {
       return res.status(400).send(`
         <html><body style="font-family:sans-serif;text-align:center;padding:60px">
-          <h2 style="color:#c0392b">Link không hợp lệ hoặc đã hết hạn</h2>
-          <p>Vui lòng đăng ký lại hoặc liên hệ hỗ trợ.</p>
-          <a href="https://querencia.com.vn">← Về trang chủ</a>
+          <h2 style="color:#c0392b">This link is invalid or has expired</h2>
+          <p>Please sign up again or contact support.</p>
+          <a href="https://querencia.dev">← Back to home</a>
         </body></html>
       `);
     }
@@ -120,6 +124,8 @@ export class AuthController {
 
   // ── FORGOT PASSWORD ───────────────────────────────────────
   @Public()
+  @UseGuards(CaptchaGuard)
+  @RequireCaptcha()
   @Post('forgot-password')
   @HttpCode(HttpStatus.OK)
   @ApiOperation({ summary: 'Gửi email đặt lại mật khẩu' })

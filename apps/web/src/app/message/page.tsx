@@ -5,6 +5,7 @@
  */
 import { useState } from 'react';
 import { useSession } from 'next-auth/react';
+import { Turnstile } from '../../components/common/Turnstile';
 
 export default function MessagePage() {
   const { data: session } = useSession();
@@ -13,18 +14,22 @@ export default function MessagePage() {
   const [sent,    setSent]    = useState(false);
   const [loading, setLoading] = useState(false);
   const [error,   setError]   = useState('');
+  const [captchaToken, setCaptchaToken] = useState('');
 
   async function handleSend(e: React.FormEvent) {
     e.preventDefault();
     if (!subject.trim() || !content.trim()) {
       setError('Please fill in all fields.'); return;
     }
+    if (!captchaToken) {
+      setError('Please complete the verification check.'); return;
+    }
     setLoading(true); setError('');
     try {
       const res = await fetch('/api/v1/message', {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({ subject, content }),
+        body: JSON.stringify({ subject, content, captchaToken }),
       });
       if (res.ok) setSent(true);
       else setError('Failed to send. Please try again.');
@@ -114,6 +119,8 @@ export default function MessagePage() {
             onBlur={e => (e.currentTarget.style.borderColor = 'var(--border)')}
           />
         </div>
+
+        <Turnstile onVerify={setCaptchaToken} />
 
         {error && (
           <div style={{

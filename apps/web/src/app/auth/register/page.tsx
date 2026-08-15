@@ -12,6 +12,7 @@ import { useRouter } from 'next/navigation';
 import { AuthCard }    from '../../../components/auth/AuthCard';
 import { AuthInput }   from '../../../components/auth/AuthInput';
 import { AuthMessage } from '../../../components/auth/AuthMessage';
+import { Turnstile }   from '../../../components/common/Turnstile';
 
 const GoogleIcon = () => (
   <svg width="18" height="18" viewBox="0 0 24 24">
@@ -35,6 +36,7 @@ export default function RegisterPage() {
   const [loading,    setLoading]    = useState(false);
   const [msg,        setMsg]        = useState<{ text: string; type: 'success' | 'error' } | null>(null);
   const [errors,     setErrors]     = useState<Record<string, string>>({});
+  const [captchaToken, setCaptchaToken] = useState('');
 
   function validate(): boolean {
     const e: Record<string, string> = {};
@@ -52,6 +54,7 @@ export default function RegisterPage() {
   async function handleRegister(e: React.FormEvent) {
     e.preventDefault();
     if (!validate()) return;
+    if (!captchaToken) { setMsg({ text: 'Please complete the verification check.', type: 'error' }); return; }
 
     setLoading(true);
     setMsg(null);
@@ -63,7 +66,7 @@ export default function RegisterPage() {
       const res = await fetch('/api/v1/auth/register', {
         method:  'POST',
         headers: { 'Content-Type': 'application/json' },
-        body:    JSON.stringify({ name, email: email.toLowerCase(), password }),
+        body:    JSON.stringify({ name, email: email.toLowerCase(), password, captchaToken }),
       });
       const data = await res.json();
 
@@ -167,6 +170,8 @@ export default function RegisterPage() {
           autoComplete="new-password"
           error={errors.confirm}
         />
+
+        <Turnstile onVerify={setCaptchaToken} />
 
         <AuthMessage message={msg?.text ?? null} type={msg?.type ?? 'error'} />
 

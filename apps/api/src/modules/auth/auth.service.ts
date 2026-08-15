@@ -48,7 +48,7 @@ export class AuthService {
     private readonly jwtService:  JwtService,
     private readonly config:      ConfigService,
   ) {
-    this.frontendUrl = config.get('NEXTAUTH_URL') ?? 'https://querencia.com.vn';
+    this.frontendUrl = config.get('NEXTAUTH_URL') ?? 'https://querencia.dev';
     this.apiUrl      = config.get('API_PUBLIC_URL') ?? 'https://querencia.fly.dev';
 
     const resendKey = config.get<string>('RESEND_API_KEY');
@@ -125,7 +125,7 @@ export class AuthService {
       where: eq(users.email, email),
       columns: { id: true },
     });
-    if (existing) throw new ConflictException('Email này đã được đăng ký rồi');
+    if (existing) throw new ConflictException('This email is already registered');
 
     // 2. Hash password + tạo verification token
     const [hashedPassword, rawVerificationToken] = await Promise.all([
@@ -166,7 +166,7 @@ export class AuthService {
       columns: { id: true, name: true },
     });
 
-    if (!user) throw new BadRequestException('Link không hợp lệ hoặc đã hết hạn');
+    if (!user) throw new BadRequestException('This link is invalid or has expired');
 
     // Kích hoạt + xóa token (dùng 1 lần - giữ y chang code cũ)
     await this.db
@@ -199,11 +199,11 @@ export class AuthService {
       : false;
 
     if (!user || !passwordOk) {
-      throw new UnauthorizedException('Email hoặc mật khẩu không đúng');
+      throw new UnauthorizedException('Incorrect email or password');
     }
 
     if (!user.isActive) {
-      throw new ForbiddenException('Tài khoản này đã bị khóa');
+      throw new ForbiddenException('This account has been locked');
     }
 
     // Kiểm tra verify - giữ y chang message từ code cũ
@@ -240,14 +240,14 @@ export class AuthService {
 
   async refresh(refreshToken: string) {
     const payload = this.verifyRefreshToken(refreshToken);
-    if (!payload) throw new UnauthorizedException('Refresh token không hợp lệ hoặc đã hết hạn');
+    if (!payload) throw new UnauthorizedException('Refresh token is invalid or has expired');
 
     // Tìm user để lấy id (cần cho Redis key)
     const user = await this.db.query.users.findFirst({
       where: eq(users.email, payload.sub),
       columns: { id: true, email: true, plan: true },
     });
-    if (!user) throw new UnauthorizedException('User không tồn tại');
+    if (!user) throw new UnauthorizedException('User does not exist');
 
     // Rotation guard: token phải khớp với cái đang lưu trong Redis
     // (constant-time compare — avoids leaking match-length via timing)
@@ -260,7 +260,7 @@ export class AuthService {
     if (!matches) {
       // Token reuse → thu hồi luôn (bảo mật)
       await this.sessionRedis.del(sessionKey(user.id));
-      throw new UnauthorizedException('Refresh token đã bị thu hồi. Vui lòng đăng nhập lại.');
+      throw new UnauthorizedException('This refresh token has been revoked. Please sign in again.');
     }
 
     const newAccess  = this.createAccessToken(user.email);
@@ -322,14 +322,14 @@ export class AuthService {
 
   async resetPassword(token: string, newPassword: string): Promise<{ message: string }> {
     if (newPassword.length < 8) {
-      throw new BadRequestException('Mật khẩu cần ít nhất 8 ký tự');
+      throw new BadRequestException('Password must be at least 8 characters');
     }
 
     const user = await this.db.query.users.findFirst({
       where: eq(users.verificationToken, this.hashToken(token)),
       columns: { id: true },
     });
-    if (!user) throw new BadRequestException('Token không hợp lệ hoặc đã hết hạn');
+    if (!user) throw new BadRequestException('This token is invalid or has expired');
 
     const hashed = await this.hashPassword(newPassword);
 
@@ -457,7 +457,7 @@ export class AuthService {
         avatarUrl: true, plan: true, createdAt: true,
       },
     });
-    if (!user) throw new NotFoundException('Không tìm thấy người dùng');
+    if (!user) throw new NotFoundException('User not found');
     return user;
   }
 
@@ -471,9 +471,9 @@ export class AuthService {
     try {
       if (this.resend) {
         await this.resend.emails.send({
-          from:    'Querencia <no-reply@querencia.com.vn>',
+          from:    'Querencia <no-reply@querencia.dev>',
           to:      email,
-          subject: 'Xác nhận tài khoản Querencia của bạn',
+          subject: 'Confirm your Querencia account',
           html:    this.verificationEmailHtml(name, verifyUrl),
         });
       }
@@ -489,9 +489,9 @@ export class AuthService {
     try {
       if (this.resend) {
         await this.resend.emails.send({
-          from:    'Querencia <no-reply@querencia.com.vn>',
+          from:    'Querencia <no-reply@querencia.dev>',
           to:      email,
-          subject: 'Đặt lại mật khẩu Querencia',
+          subject: 'Reset your Querencia password',
           html:    this.resetEmailHtml(name, resetUrl),
         });
       }
@@ -507,15 +507,15 @@ export class AuthService {
     return `
     <div style="font-family:sans-serif;max-width:480px;margin:auto;padding:40px 24px">
       <h1 style="font-size:2rem;color:#2d5a3d;margin-bottom:8px">Querencia</h1>
-      <p style="color:#555;font-size:1rem">Xin chào <strong>${name}</strong>,</p>
-      <p style="color:#555">Cảm ơn bạn đã đăng ký! Vui lòng xác nhận email để kích hoạt tài khoản.</p>
+      <p style="color:#555;font-size:1rem">Hi <strong>${name}</strong>,</p>
+      <p style="color:#555">Thanks for signing up! Please confirm your email to activate your account.</p>
       <a href="${verifyUrl}"
          style="display:inline-block;margin:24px 0;padding:14px 32px;background:#4a7c59;color:#fff;border-radius:32px;text-decoration:none;font-weight:600;font-size:1rem">
-        Xác nhận tài khoản
+        Confirm account
       </a>
-      <p style="color:#999;font-size:0.82rem">Link có hiệu lực trong 24 giờ. Nếu bạn không đăng ký, hãy bỏ qua email này.</p>
+      <p style="color:#999;font-size:0.82rem">This link is valid for 24 hours. If you didn't sign up, you can safely ignore this email.</p>
       <hr style="border:none;border-top:1px solid #eee;margin:32px 0"/>
-      <p style="color:#bbb;font-size:0.78rem">© 2026 Querencia · querencia.com.vn</p>
+      <p style="color:#bbb;font-size:0.78rem">© 2026 Querencia · querencia.dev</p>
     </div>`;
   }
 
@@ -523,15 +523,15 @@ export class AuthService {
     return `
     <div style="font-family:sans-serif;max-width:480px;margin:auto;padding:40px 24px">
       <h1 style="font-size:2rem;color:#2d5a3d;margin-bottom:8px">Querencia</h1>
-      <p style="color:#555">Xin chào <strong>${name}</strong>,</p>
-      <p style="color:#555">Chúng tôi nhận được yêu cầu đặt lại mật khẩu cho tài khoản của bạn.</p>
+      <p style="color:#555">Hi <strong>${name}</strong>,</p>
+      <p style="color:#555">We received a request to reset the password for your account.</p>
       <a href="${resetUrl}"
          style="display:inline-block;margin:24px 0;padding:14px 32px;background:#4a7c59;color:#fff;border-radius:32px;text-decoration:none;font-weight:600;font-size:1rem">
-        Đặt lại mật khẩu
+        Reset password
       </a>
-      <p style="color:#999;font-size:0.82rem">Link có hiệu lực trong 1 giờ. Nếu bạn không yêu cầu, hãy bỏ qua email này.</p>
+      <p style="color:#999;font-size:0.82rem">This link is valid for 1 hour. If you didn't request this, you can safely ignore this email.</p>
       <hr style="border:none;border-top:1px solid #eee;margin:32px 0"/>
-      <p style="color:#bbb;font-size:0.78rem">© 2026 Querencia · querencia.com.vn</p>
+      <p style="color:#bbb;font-size:0.78rem">© 2026 Querencia · querencia.dev</p>
     </div>`;
   }
 
@@ -645,10 +645,10 @@ export class AuthService {
 
   async respondMfa(mfaToken: string, status: 'approved' | 'rejected') {
     const raw = await this.sessionRedis.get(`mfa:${mfaToken}`);
-    if (!raw) throw new BadRequestException('MFA token hết hạn hoặc không hợp lệ');
+    if (!raw) throw new BadRequestException('MFA token has expired or is invalid');
 
     const data = JSON.parse(raw);
-    if (data.status !== 'pending') throw new BadRequestException('MFA token đã được sử dụng');
+    if (data.status !== 'pending') throw new BadRequestException('This MFA token has already been used');
 
     await this.sessionRedis.setex(`mfa:${mfaToken}`, 30, JSON.stringify({
       ...data, status,

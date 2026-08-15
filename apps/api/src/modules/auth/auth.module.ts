@@ -6,6 +6,7 @@ import { AuthController } from './auth.controller';
 import { AuthService }    from './auth.service';
 import { TokenService }   from './token.service';
 import { JwtStrategy }    from '../../common/strategies/jwt.strategy';
+import { CaptchaGuard }   from '../../common/guards/captcha.guard';
 
 @Module({
   imports: [
@@ -20,7 +21,7 @@ import { JwtStrategy }    from '../../common/strategies/jwt.strategy';
     }),
   ],
   controllers: [AuthController],
-  providers:   [AuthService, TokenService, JwtStrategy],
+  providers:   [AuthService, TokenService, JwtStrategy, CaptchaGuard],
   exports:     [AuthService, TokenService, JwtModule],
 })
 export class AuthModule {}
