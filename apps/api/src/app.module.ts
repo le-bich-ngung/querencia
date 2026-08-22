@@ -26,7 +26,14 @@ import { SecurityMiddleware } from './common/middleware/security.middleware';
 import { AllExceptionsFilter } from './common/filters/http-exception.filter';
 import { APP_FILTER }         from '@nestjs/core';
 import { AppController }      from './app.controller';
-import { FileShareModule } from './modules/tools/file-share/file-share.module';
+// DISABLED AGAIN (2026-08-22): FileShareModule -> file-share.entity.ts imports from
+// 'typeorm', which is NOT installed in this project (entire codebase uses Drizzle ORM
+// via @querencia/db instead). Re-enabling this without that dependency crashes the
+// whole API on bootstrap, taking down every feature that calls the backend (not just
+// file-share). Root fix: rewrite file-share.entity.ts to use Drizzle instead of
+// TypeORM, matching every other module, then re-enable. Tracked in Tier 4 of
+// QUERENCIA_MASTER_PLAN.md.
+// import { FileShareModule } from './modules/tools/file-share/file-share.module';
 
 @Module({
   imports: [
@@ -46,7 +53,7 @@ import { FileShareModule } from './modules/tools/file-share/file-share.module';
     WebhooksModule,
     E2eeModule,
     MetaModule,
-    FileShareModule,
+    // FileShareModule, // disabled again - see note above import, missing typeorm dependency
     VocabModule,
     MessageModule,
   ],
