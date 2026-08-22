@@ -11,7 +11,7 @@ import type { Redis } from 'ioredis';
 const ALLOWED_ORIGINS = [
   'https://querencia.com.vn',
   'https://www.querencia.com.vn',
-  'https://querencia-api.fly.dev',   // internal
+  'https://querencia.fly.dev',   // internal
   'http://localhost:3000',            // dev
   'http://localhost:3001',            // dev
 ];
@@ -50,7 +50,7 @@ export class SecurityMiddleware implements NestMiddleware {
       "script-src 'self' 'unsafe-inline' https://challenges.cloudflare.com; " +
       "frame-src https://challenges.cloudflare.com; " +
       "img-src 'self' data: https://files.querencia.com.vn; " +
-      "connect-src 'self' https://querencia-api.fly.dev https://querencia-ai.fly.dev"
+      "connect-src 'self' https://querencia.fly.dev https://querencia-ai.fly.dev"
     );
 
     // ── Remove fingerprinting headers ────────────────────────

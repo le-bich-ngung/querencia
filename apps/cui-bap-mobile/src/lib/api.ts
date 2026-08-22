@@ -2,7 +2,7 @@ import { useAuthStore } from '../store/auth.store';
 
 const BASE = __DEV__
   ? 'http://10.0.2.2:3001/api/v1'  // Android emulator → localhost
-  : 'https://querencia-api.fly.dev/api/v1';
+  : 'https://querencia.fly.dev/api/v1';
 
 export async function apiRequest<T = any>(path: string, opts: RequestInit = {}): Promise<T> {
   const { accessToken, refreshToken, setAuth, logout, user } = useAuthStore.getState();

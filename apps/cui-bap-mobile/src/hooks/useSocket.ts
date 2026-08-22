@@ -5,7 +5,7 @@ import { useChatStore } from '../store/chat.store';
 
 const WS = __DEV__
   ? 'http://10.0.2.2:3001'
-  : 'https://querencia-api.fly.dev';
+  : 'https://querencia.fly.dev';
 
 function normalize(raw: any) {
   return {
