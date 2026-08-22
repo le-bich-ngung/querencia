@@ -26,6 +26,9 @@ import { SecurityMiddleware } from './common/middleware/security.middleware';
 import { AllExceptionsFilter } from './common/filters/http-exception.filter';
 import { APP_FILTER }         from '@nestjs/core';
 import { AppController }      from './app.controller';
+// Deploy pipeline note (2026-08-22): GitHub Actions workflows were relocated from
+// infra/github-actions/ to .github/workflows/ - the only path GitHub actually reads.
+// This is why backend fixes previously never auto-deployed to Fly.io.
 // DISABLED AGAIN (2026-08-22): FileShareModule -> file-share.entity.ts imports from
 // 'typeorm', which is NOT installed in this project (entire codebase uses Drizzle ORM
 // via @querencia/db instead). Re-enabling this without that dependency crashes the
